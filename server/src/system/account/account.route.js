@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const service = require('./account.query')
-const { secure, hash } = require('../../../secure/secure')
+const { secure, hash } = require('../../../res/secure/secure')
 
 router
     .route('/account')

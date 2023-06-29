@@ -1,4 +1,4 @@
-const my = require('../../data/mysql')
+const my = require('../../res/data/mysql')
 const handler = require("express-async-handler")
 
 const proceed = (json) => {
