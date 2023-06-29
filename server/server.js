@@ -9,9 +9,9 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
 
-const errors = require('./errors/errors')
-const corsoptions = require('./secure/options')
-const approutes = require('./src/control/route.control')
+const errors = require('./res/errors/errors')
+const corsoptions = require('./res/secure/options')
+const approutes = require('./routes')
 
 const port = process.env.API_PORT || 5200
 
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors(corsoptions))
 app.use('/', express.static(path.join(__dirname, '/public')))
-app.use('/', require('./routes/root'))
+app.use('/', require('./res/routes/root'))
 
 app.use('/app', approutes.account)
 

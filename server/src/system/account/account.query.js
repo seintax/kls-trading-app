@@ -1,7 +1,7 @@
-const my = require('../../../data/mysql')
+const my = require('../../../res/data/mysql')
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray } = require("../../utilities/callback.utility")
-const { match, tokenize } = require("../../../secure/secure")
+const { match, tokenize } = require("../../../res/secure/secure")
 const helper = require('./account.helper')
 
 const _create = handler(async (req, res) => {

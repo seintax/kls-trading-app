@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 const handler = require("express-async-handler")
-const helper = require('../src/system/account/account.helper')
-const { poolwrap } = require('../src/utilities/callback.utility')
+const helper = require('../../src/system/account/account.helper')
+const { poolwrap } = require('../../src/utilities/callback.utility')
 
 const authorize = handler(async (param, callback) => {
     // check for authorization
