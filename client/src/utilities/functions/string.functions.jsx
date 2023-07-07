@@ -1,7 +1,11 @@
 const ENC_VAL = import.meta.env.VITE_ENC_VAL
 const ENC_KEY = import.meta.env.VITE_ENC_KEY
 
-export function generateZeros(str, maxcount) {
+export const isEmpty = (value) => {
+    return value === undefined || value === "" || value === null || value === 0
+}
+
+const formatWithZeros = (str, maxcount) => {
     if (str) {
         let maxlen = Number(maxcount) - str?.toString().length
         return `${Array(maxlen + 1).join("0")}${str}`
@@ -9,7 +13,7 @@ export function generateZeros(str, maxcount) {
     return str
 }
 
-export function generateChar(str, char, maxcount) {
+const formatWithChar = (str, char, maxcount) => {
     if (str) {
         let maxlen = Number(maxcount) - str?.toString().length
         if (maxlen > 0)
@@ -19,6 +23,28 @@ export function generateChar(str, char, maxcount) {
     }
     return str
 }
+
+const properCase = (str) => {
+    if (str) return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    })
+    return str
+}
+
+const appendString = (str, separator = ",") => {
+    if (isEmpty(str)) return str
+    return `${this}${separator}${str}`
+}
+
+const Utils = {
+    isEmpty,
+    formatWithZeros,
+    formatWithChar,
+    properCase,
+    appendString
+}
+
+export const StrFn = Utils
 
 export const encryptToken = (token) => {
     var t = token

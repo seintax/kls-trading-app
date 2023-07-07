@@ -1,15 +1,15 @@
 import { Dialog, Transition } from "@headlessui/react"
 import { ExclamationTriangleIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { Fragment } from "react"
-import { useNotificationContext } from "../../context/notification.context"
+import { useNotifyContext } from "../../context/notify.context"
 
 const NotificationDelete = ({ name, show, setshow, refetch, handleDelete }) => {
-    const { handleNotification } = useNotificationContext()
+    const { notify } = useNotifyContext()
 
     const performDelete = async () => {
         let res = await handleDelete()
         if (res.success) {
-            handleNotification({
+            notify({
                 type: 'success',
                 message: `Record ${name} has been successfuly deleted.`,
             })

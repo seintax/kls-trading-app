@@ -18,7 +18,6 @@ export default function AppSideBar({ menulist }) {
         setSidebarMenu(menulist)
     }, [menulist])
 
-
     function handleSidebarOpen(isOpen) {
         setSidebarOpen(isOpen)
     }
@@ -64,8 +63,8 @@ export default function AppSideBar({ menulist }) {
         handleSidebarOpen(false)
     }
 
-    const activeLink = "bg-[#1c2c79] text-gray-300"
-    const normalLink = "text-white-600 hover:bg-[#32395e] hover:text-gray-300"
+    const activeLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-primary-200"
+    const normalLink = "text-secondary-500 hover:bg-gradient-to-b hover:from-primary-300 hover:via-primary-300 hover:to-primary-400 hover:text-secondary-500 border border-transparent hover:border-secondary-400"
 
     const renderNavigation = () => {
         return (
@@ -74,11 +73,11 @@ export default function AppSideBar({ menulist }) {
                     (!item.children) ? (
                         <div
                             key={item.name}
-                            className={`${item.current ? activeLink : normalLink} group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer`}
+                            className={`${item.current ? activeLink : normalLink} group flex items-center px-2 py-2 text-xs font-medium rounded-md cursor-pointer`}
                             onClick={() => handleMenuSelect(item)}
                         >
                             <item.icon
-                                className="text-gray-400 mr-3 flex-shrink-0 h-6 w-6 group-hover:text-gray-500"
+                                className="text-secondary-600 mr-3 flex-shrink-0 h-6 w-6 group-hover:text-secondary-600"
                                 aria-hidden="true"
                             />
                             {item.name}
@@ -88,20 +87,20 @@ export default function AppSideBar({ menulist }) {
                             key={item.name}
                         >
                             <NavLink
-                                className={`${item.current ? activeLink : normalLink} group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer`}
+                                className={`${item.current ? activeLink : normalLink} group flex items-center px-2 py-2 text-xs font-medium rounded-md cursor-pointer`}
                                 onClick={() => handleMenuSelect(item)}
                             >
                                 <item.icon
-                                    className="text-gray-400 mr-3 flex-shrink-0 h-6 w-6 group-hover:text-gray-500"
+                                    className="text-secondary-600 mr-3 flex-shrink-0 h-6 w-6 group-hover:text-secondary-600"
                                     aria-hidden="true"
                                 />
                                 {item.name}
-                                <ChevronRightIcon className={`${item.cascade ? "rotate-90" : ""} ml-auto h-4 w-4 text-gray-300`} />
+                                <ChevronRightIcon className={`${item.cascade ? "rotate-90" : ""} ml-auto h-4 w-4 text-secondary-600`} />
                             </NavLink>
                             {item.cascade && item.children.map((subItem) => (
                                 <div
                                     key={subItem.name}
-                                    className={`${subItem.current ? activeLink : normalLink} group mt-1 flex items-center pl-[43px] pr-2 py-2 text-sm font-medium rounded-md cursor-pointer`}
+                                    className={`${subItem.current ? activeLink : normalLink} group mt-1 flex items-center pl-[43px] pr-2 py-2 text-xs font-medium rounded-md cursor-pointer`}
                                     onClick={() => handleSubMenuSelect(item, subItem)}
                                 >
                                     {subItem.name}
@@ -181,22 +180,19 @@ export default function AppSideBar({ menulist }) {
                     </div>
                 </Dialog>
             </Transition.Root>
-            <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col no-select">
-                <div className="flex flex-grow flex-col overflow-y-auto border-r border-[#32395e] text-white bg-[#010a3a]">
-                    <div className="bg-gradient-to-r from-[#11045f] to-[#4b023f] bg-opacity-[40%] mx-2 px-2 py-3 rounded-[1px]">
-                        {<AppLogo inverted={true} style="h-[2.5rem]" />}
-                    </div>
-                    <div className="mt-2 flex flex-grow flex-col">
+            <div className="hidden md:fixed md:inset-y-0 md:flex md:w-56 md:flex-col no-select">
+                <div className="flex flex-grow flex-col overflow-y-auto border-r border-r-secondary-500 text-white bg-white shadow-md border-shadow scroll-sm">
+                    <div className="mt-20 px-1 flex flex-grow flex-col">
                         {renderNavigation()}
                     </div>
-                </div>
-            </div>
-            <div className="flex flex-0 flex-col md:pl-64 no-select">
+                </div >
+            </div >
+            <div className="flex flex-0 flex-col no-select" >
                 <AppNavigation
                     userNavigation={userNavigation}
                     handleSidebarOpen={handleSidebarOpen}
                 />
-            </div>
+            </div >
         </>
     )
 }

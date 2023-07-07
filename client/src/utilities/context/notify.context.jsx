@@ -1,12 +1,12 @@
 import { createContext, useContext, useState } from "react"
 
-export const NotificationContext = createContext()
+export const NotifyContext = createContext()
 
-export function useNotificationContext() {
-    return useContext(NotificationContext)
+export function useNotifyContext() {
+    return useContext(NotifyContext)
 }
 
-export function NotificationProvider({ children }) {
+export default function NotifyProvider({ children }) {
     const [notifications, setNotifications] = useState([])
 
     function ShowNotification(type, message) {
@@ -19,19 +19,19 @@ export function NotificationProvider({ children }) {
         setNotifications([...notifications, notificationProperties])
     }
 
-    function handleNotification(params) {
+    function notify(params) {
         ShowNotification(params.type, params.message)
     }
 
     return (
-        <NotificationContext.Provider
+        <NotifyContext.Provider
             value={{
-                handleNotification,
+                notify,
                 notifications,
                 setNotifications,
             }}
         >
             {children}
-        </NotificationContext.Provider>
+        </NotifyContext.Provider>
     )
 }

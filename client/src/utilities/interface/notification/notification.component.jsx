@@ -7,12 +7,12 @@ import useTimeout from "../../hooks/useTimeout"
 const Notification = ({ notification, deleteNotification }) => {
     const [show, setShow] = useState(true)
 
-    function handleNotification() {
+    function showNotification() {
         deleteNotification(notification?.id)
         setShow(false)
     }
 
-    useTimeout(handleNotification, 3500)
+    useTimeout(showNotification, 3500)
 
     return (
         <>
@@ -57,7 +57,7 @@ const Notification = ({ notification, deleteNotification }) => {
                                     type="button"
                                     className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                                     onClick={() => {
-                                        handleNotification()
+                                        showNotification()
                                     }}
                                 >
                                     <span className="sr-only">Close</span>

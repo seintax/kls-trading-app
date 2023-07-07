@@ -1,6 +1,6 @@
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
-import { useNotificationContext } from "../../../utilities/context/notification.context"
+import { useNotifyContext } from "../../../utilities/context/notify.context"
 import { processForm } from '../../../utilities/functions/query.functions'
 import useYup from '../../../utilities/hooks/useYup'
 import DataInputs from '../../../utilities/interface/datastack/data.inputs'
@@ -8,7 +8,7 @@ import Active from "../../../utilities/interface/forminput/input.active"
 import { createAccount, fetchAccountById, updateAccount } from './account.services'
 
 const AccountManage = ({ id, name, manage }) => {
-    const { handleNotification } = useNotificationContext()
+    const { notify } = useNotifyContext()
     const [values, setvalues] = useState()
     const { yup } = useYup()
     const { mutate } = processForm(id, name, updateAccount, createAccount)

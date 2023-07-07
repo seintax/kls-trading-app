@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import { useNavigate } from "react-router-dom"
+import { StrFn } from "../functions/string.functions"
 import AppLoading from "../interface/application/errormgmt/app.loading"
 
 const ClientContext = createContext()
@@ -10,10 +11,11 @@ export function useClientContext() {
 
 export default function ClientProvider({ children }) {
     const navigate = useNavigate()
-    const cred = JSON.parse(localStorage.getItem("cred"))
     const [loading, setloading] = useState(false)
     const [trail, setTrail] = useState([])
     const [config, setConfig] = useState({})
+    const [selected, setSelected] = useState({})
+    const [print, setPrint] = useState([])
     const [cache, setcache] = useState({
         schedule: []
     })
@@ -25,23 +27,14 @@ export default function ClientProvider({ children }) {
             conversion: "N"
         }
     })
-    const [selected, setSelected] = useState({})
-    const [print, setPrint] = useState([])
-    const [user, setuser] = useState()
-
-    useEffect(() => {
-        if (cred) setuser(cred)
-    }, [])
 
     function handleTrail(pathname) {
-        let path = pathname.split("/").filter(path => path !== "")
-        setTrail(path.map((p, i) => {
-            if (p) {
-                return {
-                    name: p.toProperCase(),
-                    href: `/${p}`,
-                    current: (path.length - 1) === i
-                }
+        let patharray = pathname.split("/").filter(path => path !== "")
+        setTrail(patharray.map((path, i) => {
+            if (path) return {
+                current: (patharray.length - 1) === i,
+                name: StrFn.properCase(path),
+                href: `/${path}`,
             }
         }) || [])
     }
@@ -72,7 +65,6 @@ export default function ClientProvider({ children }) {
             setSelected,
             cache,
             setcache,
-            user,
             print,
             setPrint,
             loading,

@@ -21,3 +21,12 @@ export default function useApi() {
         dataRetrieveHandler
     }
 }
+
+const axiosAuth = axios.create({
+    baseURL: "BASE_API_URL",
+    timeout: 5000,
+    headers: {
+        'Authorization': 'Bearer my-token',
+        'Content-Type': 'application/json'
+    }
+})

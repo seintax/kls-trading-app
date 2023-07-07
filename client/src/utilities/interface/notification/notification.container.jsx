@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
-import { NotificationContext } from "../../context/notification.context"
+import React from 'react'
+import { useNotifyContext } from "../../context/notify.context"
 import Notification from "./notification.component"
 
 const NotificationContainer = () => {
-    const { notifications, setNotifications } = useContext(NotificationContext)
+    const { notifications, setNotifications } = useNotifyContext()
 
     const deleteNotification = async (notificationId) => {
         const notificationList = await notifications.filter(

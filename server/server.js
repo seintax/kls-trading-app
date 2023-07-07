@@ -26,6 +26,8 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 app.use('/', require('./res/routes/root'))
 
 app.use('/app', approutes.account)
+app.use('/app', approutes.category)
+app.use('/app', approutes.schedule)
 
 app.all('*', (req, res) => {
     if (req.accepts('html')) {

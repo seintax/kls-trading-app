@@ -2,19 +2,14 @@ import { EyeIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import DevLogo from "../../../assets/logo.ico"
-import { useNotificationContext } from "../../../utilities/context/notification.context"
 import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
-import { loginAccount } from "./account.services"
+import { userAuth } from "./account.services"
 
 const AccountLogin = () => {
-    const { handleNotification } = useNotificationContext()
     const navigate = useNavigate()
     const [error, seterror] = useState("")
     const [view, setview] = useState("password")
-    const [login, setlogin] = useState({
-        user: "",
-        pass: ""
-    })
+    const [login, setlogin] = useState({ user: "", pass: "" })
 
     useEffect(() => {
         localStorage.removeItem("cred")
@@ -28,34 +23,15 @@ const AccountLogin = () => {
         seterror("")
     }
 
-    // const checkForShift = async (id) => {
-    //     if (id) {
-    //         let res = await fetchShiftByStart(id)
-    //         if (res?.result?.id) {
-    //             localStorage.setItem("shift", JSON.stringify({
-    //                 shift: res?.result?.id,
-    //                 status: res?.result?.status,
-    //                 begcash: res?.result?.begcash,
-    //                 begshift: res?.result?.begshift
-    //             }))
-    //         }
-    //         else localStorage.removeItem("shift")
-    //     }
-    //     else localStorage.removeItem("shift")
-    // }
-
     const onLogin = async (e) => {
         e.preventDefault()
         let param = {
             user: login.user,
             pass: login.pass
         }
-        let res = await loginAccount(param.user, param.pass, param.token)
-        if (res?.result?.name) {
-            let id = res?.result?.id
-            let token = JSON.stringify(res?.result)
-            localStorage.setItem("cred", token)
-            // await checkForShift(id)
+        let resAuth = await userAuth(param.user, param.pass, param.token)
+        if (resAuth.success) {
+            localStorage.setItem("auth", JSON.stringify(resAuth.data))
             navigate("/dashboard")
             return
         }
@@ -65,29 +41,29 @@ const AccountLogin = () => {
     return (
         <div className="flex min-h-full flex-col justify-center py-12 bg-gradient-to-b from-[#f1b83b] to-[#c28606] sm:px-6 lg:px-8 no-select">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <AppLogo style="h-[15rem]" inverted={true} />
-                <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-primary-300">
-                    Sign in to your account
-                </h2>
             </div>
             <div className="text-center text-red-500 max-w-md w-full rounded-[20px] mx-auto mt-5">
                 {error ? error : ""}
             </div>
             <div className="mt-1 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="py-10 px-4 shadow sm:rounded-lg sm:px-10">
+                <div className="py-10 px-4 shadow sm:rounded-lg sm:px-10 bg-gradient-to-b from-[#ffffff30] via-[#c7c6c610] to-[#ffffff90] border-shadow">
+                    <AppLogo style="h-[15rem]" inverted={false} />
+                    <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-primary-200">
+                        Sign in to your account
+                    </h2>
                     <form onSubmit={onLogin} className="space-y-6">
                         <div>
                             <div className="mt-1">
                                 <input
                                     id="user"
                                     name="user"
-                                    type="email"
+                                    type="text"
                                     autoComplete="off"
                                     placeholder="Email Address"
                                     value={login.user}
                                     required
                                     onChange={onChange}
-                                    className="block w-full appearance-none rounded-md border border-primary-500 bg-primary-500 px-3 py-2 placeholder-primary-800 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm"
+                                    className="block w-full appearance-none rounded-md border border-primary-500 bg-white px-3 py-2 placeholder-primary-800 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm"
                                 />
                             </div>
                         </div>
@@ -103,7 +79,7 @@ const AccountLogin = () => {
                                     value={login.pass}
                                     required
                                     onChange={onChange}
-                                    className="block w-full appearance-none rounded-md border border-primary-500 bg-primary-500 px-3 py-2 placeholder-primary-800 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm"
+                                    className="block w-full appearance-none rounded-md border border-primary-500 bg-white px-3 py-2 placeholder-primary-800 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm"
                                 />
                                 <div className="absolute right-0 mr-1 cursor-pointer p-2" onMouseDown={() => setview("text")} onMouseUp={() => setview("password")} onMouseLeave={() => setview("password")}>
                                     <EyeIcon className="w-4 h-4" />
@@ -147,8 +123,12 @@ const AccountLogin = () => {
                         </div>
                     </form>
                 </div>
-                <div className="flex justify-center p-5 text-center text-blue-300 items-center">
-                    In partnership with: <img src={DevLogo} className="h-10 w-10 ml-3" /> <span className="text-blue-200 rounded-[10px] hover:underline cursor-pointer flex items-center">KL Info. Tech Services</span>
+                <div className="flex flex-col gap-4 justify-start px-4 py-5 mt-5 text-blue-600 items-start bg-gradient-to-b from-[#ffffff50] via-[#c7c6c650] to-[#ffffff] rounded-xl shadow border-shadow">
+                    <span>In partnership with:</span>
+                    <div className="w-full flex justify-center gap-3">
+                        <img src={DevLogo} className="h-7 w-7 ml-3" />
+                        <span className="text-blue-800 font-bold rounded-[10px] hover:underline cursor-pointer flex items-center text-lg">KL Info. Tech Services</span>
+                    </div>
                 </div>
             </div>
         </div>

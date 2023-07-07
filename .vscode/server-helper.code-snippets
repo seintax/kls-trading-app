@@ -1,0 +1,15 @@
+{
+	"server-helper": {
+		"prefix": "svHelper",
+		"body": [
+			"const { Table } = require(\"../../utilities/builder.utility\")\r",
+			"\r",
+			"const ${2:HelperName} = new Table(\"${1:TableName}\", {\r",
+			"    ${4:FieldName}: '${3:FieldTag}_${4:FieldName}',\r",
+			"})\r",
+			"\r",
+			"module.exports = ${2:HelperName}"
+		],
+		"description": ""
+	}
+}

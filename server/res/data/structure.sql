@@ -3,8 +3,8 @@ CREATE TABLE sys_account (
     acct_email       varchar(99) unique,
     acct_password    text,
     acct_fullname    varchar(99),
-    acct_confirmed   tinyint,
-    acct_isblocked   tinyint,
+    acct_confirmed   tinyint DEFAULT 0,
+    acct_isblocked   tinyint DEFAULT 0,
     acct_store       varchar(50)
 );
 

@@ -1,7 +1,6 @@
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
-const { match, tokenize } = require("../../../res/secure/secure")
-const helper = require('./account.helper')
+const helper = require('./category.helper')
 const { Param, Field } = require("../../utilities/builder.utility")
 
 function p(object) {
@@ -66,60 +65,11 @@ const _findone = handler(async (req, res) => {
     })
 })
 
-const _specify = handler(async (req, res) => {
-    // const builder = helper.specific(req.body)
-    console.log(req.body)
-    // await poolarray(builder, (err, ans) => {
-    //     if (err) return res.status(401).json(force(err))
-    //     res.status(200).json(proceed(ans, req))
-    // })
-})
-
-const authenticate = handler(async (req, res) => {
-    // login
-    const { user, pass } = req.body
-    const builder = helper.findone({ user: user })
-    await poolwrap(builder, handler(async (err, ans) => {
-        if (err) return res.status(401).json(force(err))
-        if (ans.distinctResult.distinct) {
-            let isauthentic = await match(pass, ans.distinctResult.data.pass)
-            if (isauthentic) {
-                const payload = { id: ans.distinctResult.data.id, store: ans.distinctResult.data.store }
-                tokenize(res, payload)
-                return res.status(200).json(proceed({
-                    message: "Authorized.",
-                    data: {
-                        id: ans.distinctResult.data.id,
-                        user: ans.distinctResult.data.user,
-                        name: ans.distinctResult.data.name,
-                        confirm: ans.distinctResult.data.confirm,
-                        store: ans.distinctResult.data.store
-                    }
-                }, req))
-            }
-        }
-        res.status(401).json({
-            err: "Invalid credentials."
-        })
-    }))
-})
-
-const logout = (req, res) => {
-    res.cookie('jwt', '', {
-        httpOnly: true,
-        expires: new Date(0),
-    })
-    res.status(200).json({ message: 'Logged out successfully.' })
-}
-
 module.exports = {
-    authenticate,
     _create,
     _record,
     _update,
     _delete,
     _search,
     _findone,
-    _specify,
-    logout
 }

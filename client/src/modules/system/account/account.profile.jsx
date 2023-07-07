@@ -3,12 +3,12 @@ import bcrypt from "bcryptjs-react"
 import React, { useEffect, useState } from 'react'
 import { useLocation } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
-import { useNotificationContext } from "../../../utilities/context/notification.context"
+import { useNotifyContext } from "../../../utilities/context/notify.context"
 import { encryptToken } from "../../../utilities/functions/string.functions"
 import { fetchAccountById, updateAccount } from "./account.services"
 
 const AccountProfile = () => {
-    const { handleNotification } = useNotificationContext()
+    const { notify } = useNotifyContext()
     const { handleTrail } = useClientContext()
     const location = useLocation()
     const { user } = useClientContext()
@@ -83,7 +83,7 @@ const AccountProfile = () => {
                 id: user.id
             })
             if (!resAcc.success) {
-                handleNotification({
+                notify({
                     type: 'error',
                     message: "Error occured while updating your account information.",
                 })
@@ -99,21 +99,21 @@ const AccountProfile = () => {
         if (pass.current && pass.new && pass.confirm) {
             let hashcurr = bcrypt.hashSync(`${info?.user}-${pass.current}`, '$2a$10$tSnuDwpZctfa5AvyRzczJu')
             if (hashcurr !== info.pass) {
-                handleNotification({
+                notify({
                     type: 'error',
                     message: "Password is incorrect.",
                 })
                 return
             }
             if (pass.new.length < 6) {
-                handleNotification({
+                notify({
                     type: 'error',
                     message: "Password strength is invalid.",
                 })
                 return
             }
             if (pass.new !== pass.confirm) {
-                handleNotification({
+                notify({
                     type: 'error',
                     message: "Password is mismatch.",
                 })
@@ -125,7 +125,7 @@ const AccountProfile = () => {
                 id: user.id
             })
             if (!resPass.success) {
-                handleNotification({
+                notify({
                     type: 'error',
                     message: "Error occured while updating your password.",
                 })
@@ -137,7 +137,7 @@ const AccountProfile = () => {
             new: "",
             confirm: ""
         })
-        handleNotification({
+        notify({
             type: 'success',
             message: "Changes has been applied.",
         })

@@ -1,30 +1,29 @@
 import { useMutation, useQueryClient } from "react-query"
-import { useNotificationContext } from "../context/notification.context"
+import { useNotifyContext } from "../context/notify.context"
 import useSystemTool from "../hooks/useSystem"
 
 export const processForm = (id, name, updateFunc, createFunc, queryKey, callBack) => {
-    const { handleNotification } = useNotificationContext()
-    const { moveBack, dataErrorHandler } = useSystemTool()
+    const { notify } = useNotifyContext()
+    const { dataErrorHandler } = useSystemTool()
     const queryClient = useQueryClient()
 
     const { mutate } = useMutation(id ? updateFunc : createFunc, {
         onSuccess: data => {
             if (data.success) {
-                handleNotification({
+                notify({
                     type: 'success',
                     message: `${name} has been ${id ? 'updated' : 'added'}.`,
                 })
-                // moveBack()
             }
             else {
-                handleNotification({
+                notify({
                     type: 'error',
                     message: dataErrorHandler(data),
                 })
             }
         },
         onError: () => {
-            handleNotification({
+            notify({
                 type: 'error',
                 message: 'An error occured during data mutation.',
             })
