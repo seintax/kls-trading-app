@@ -5,8 +5,8 @@ const account = new Table("sys_account", {
     name: 'acct_fullname',
     user: 'acct_username',
     pass: 'acct_password',
-    token: 'acct_keytoken',
     time: 'acct_duration',
+    token: 'acct_keytoken',
 })
 
 module.exports = account

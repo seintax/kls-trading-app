@@ -139,12 +139,17 @@ class Table {
         }
         this.statements = {}
         let raw = {}
+        let inv = {}
         this.fields = {}
         for (const prop in fields) {
             let field = new Field(prop, fields[prop])
             raw = {
                 ...raw,
                 [prop]: fields[prop]
+            }
+            inv = {
+                ...inv,
+                [fields[prop]]: prop
             }
             this.fields = {
                 ...this.fields,
@@ -153,7 +158,8 @@ class Table {
         }
         this.fields = {
             ...this.fields,
-            raw: raw
+            raw: raw,
+            inv: inv
         }
     }
 
@@ -224,7 +230,7 @@ class Table {
     }
 
     findone(request) {
-        let sought = this.alias()
+        // let sought = this.alias()
         const parameters = []
         const fields = []
         for (const prop in request) {
@@ -233,21 +239,69 @@ class Table {
                 parameters.push(request[prop])
             }
         }
+        // return {
+        //     sql: `SELECT ${sought} FROM ${this.name} WHERE ${fields.join(" AND ")}`,
+        //     arr: parameters
+        // }
         return {
-            sql: `SELECT ${sought} FROM ${this.name} WHERE ${fields.join(" AND ")}`,
-            arr: parameters
+            sql: `SELECT * FROM ${this.name} WHERE ${fields.join(" AND ")}`,
+            arr: parameters,
+            fnc: this.maskone
         }
     }
 
     inquiry(clausearray, paramarray, orderarray, limitcount) {
-        let sought = this.alias()
+        // let sought = this.alias()
         let clause = clausearray?.filter(f => f !== undefined)?.join(" AND ")
         let order = orderarray && orderarray.length ? ` ORDER BY ${orderarray.join(", ")}` : ""
         let limit = limitcount ? ` LIMIT ${limitcount}` : ""
+        // return {
+        //     sql: `SELECT ${sought} FROM ${this.name} WHERE ${clause}${order}${limit}`,
+        //     arr: paramarray
+        // }
         return {
-            sql: `SELECT ${sought} FROM ${this.name} WHERE ${clause}${order}${limit}`,
-            arr: paramarray
+            sql: `SELECT * FROM ${this.name} WHERE ${clause}${order}${limit}`,
+            arr: paramarray,
+            fnc: this.maskall
         }
+    }
+
+    maskone(result) {
+        if (result.length === 1) {
+            let data = result[0]
+            for (const prop in data) {
+                if (this.fields.inv[prop]) {
+                    data[this.fields.inv[prop]] = data[prop]
+                    delete data[prop]
+                }
+            }
+            return data
+        }
+        return {}
+    }
+
+    maskall(results) {
+        if (results.length > 0) {
+            return results?.map(result => {
+                let data = result
+                let masked = {}
+                for (const prop in data) {
+                    if (this.fields.inv[prop]) {
+                        masked = {
+                            ...masked,
+                            [this.fields.inv[prop]]: data[prop]
+                        }
+                        continue
+                    }
+                    masked = {
+                        ...masked,
+                        prop: data[prop]
+                    }
+                }
+                return masked
+            })
+        }
+        return results
     }
 
     formattedparams(request) {

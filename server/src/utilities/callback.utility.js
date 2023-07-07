@@ -17,14 +17,14 @@ const poolwrap = handler(async (param, callback) => {
     my.pool.query(param.sql, param.arr, async (err, ans) => {
         if (err) return callback(sqlerror(err))
         if (ans.length > 1) return callback({ err: "Expecting a single result." })
-        return callback(null, { single: ans.length === 1, data: ans.length === 1 ? ans[0] : {} })
+        return callback(null, { single: ans.length === 1, data: param?.fnc(ans) })
     })
 })
 
 const poolarray = handler(async (param, callback) => {
     my.pool.query(param.sql, param.arr, async (err, ans) => {
         if (err) throw new Error(err)
-        return callback(null, ans)
+        return callback(null, param?.fnc(ans))
     })
 })
 
