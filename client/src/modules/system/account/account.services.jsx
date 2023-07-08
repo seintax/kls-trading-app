@@ -40,7 +40,7 @@ export const searchAccount = async (search) => {
 export const specifyhAccount = async (filter) => {
     const opt = { art: JSON.stringify(filter.array) }
     console.log(opt)
-    const res = await axios.put(`${BASE_URL}/account/specify`, opt)
+    const res = await axios.post(`${BASE_URL}/account/specify`, opt)
     return res.data
 }
 

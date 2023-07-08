@@ -10,7 +10,7 @@ router
     .delete(secure, service._delete)
 router.get('/account/id', secure, service._findone)
 router.get('/account/search', secure, service._search)
-router.put('/account/specify', secure, service._specify)
+router.post('/account/specify', secure, service._specify)
 router.post('/auth', service.authenticate)
 router.post('/logout', service.logout)
 

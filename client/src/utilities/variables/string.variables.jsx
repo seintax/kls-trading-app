@@ -6,4 +6,5 @@ export const specifyfilter = {
         { enjoined: { user: ['DE', 'VE'] } },
         { optional: [{ contains: { id: 1 } }, { contains: { id: 2 } }] }
     ]
-}
+} // request JSON body
+export const authHeader = { 'Authorization': 'Bearer my-token' }
