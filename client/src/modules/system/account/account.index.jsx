@@ -4,12 +4,12 @@ import { useClientContext } from "../../../utilities/context/client.context"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import AccountManage from "./account.manage"
 import AccountRecords from "./account.records"
-import { searchAccount } from "./account.services"
 
 const AccountIndex = () => {
     const { search } = useClientContext()
     const name = 'Account'
-    const { data, isLoading, isError, refetch } = useQuery(`${name.toLowerCase()}-index`, () => searchAccount(search.key))
+    // const { data, isLoading, isError, refetch } = useQuery(`${name.toLowerCase()}-index`, () => searchAccount(search.key))
+    const { data, isLoading, isError, refetch } = useQuery(`${name.toLowerCase()}-index`, () => { })
     const [manage, setManage] = useState(false)
     const [id, setId] = useState()
 

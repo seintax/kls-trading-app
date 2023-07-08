@@ -1,32 +1,23 @@
 import { useMutation, useQueryClient } from "react-query"
-import { useNotifyContext } from "../context/notify.context"
 import useSystemTool from "../hooks/useSystem"
+import useToast from "../hooks/useToast"
 
 export const processForm = (id, name, updateFunc, createFunc, queryKey, callBack) => {
-    const { notify } = useNotifyContext()
+    const toast = useToast()
     const { dataErrorHandler } = useSystemTool()
     const queryClient = useQueryClient()
 
     const { mutate } = useMutation(id ? updateFunc : createFunc, {
         onSuccess: data => {
             if (data.success) {
-                notify({
-                    type: 'success',
-                    message: `${name} has been ${id ? 'updated' : 'added'}.`,
-                })
+                toast.showSuccess(`${name} has been ${id ? 'updated' : 'added'}.`)
             }
             else {
-                notify({
-                    type: 'error',
-                    message: dataErrorHandler(data),
-                })
+                toast.showError(dataErrorHandler(data))
             }
         },
         onError: () => {
-            notify({
-                type: 'error',
-                message: 'An error occured during data mutation.',
-            })
+            toast.showError('An error occured during data mutation.')
         },
         onSettled: async () => {
             if (callBack) await callBack()
@@ -35,4 +26,10 @@ export const processForm = (id, name, updateFunc, createFunc, queryKey, callBack
     })
 
     return { mutate }
+}
+
+export const specifyArgs = (array) => {
+    return {
+        array: JSON.stringify(array)
+    }
 }

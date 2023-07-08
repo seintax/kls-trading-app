@@ -1,21 +1,27 @@
 import { EyeIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import DevLogo from "../../../assets/logo.ico"
+import useAuth from "../../../utilities/hooks/useAuth"
+import useToast from "../../../utilities/hooks/useToast"
 import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
-import { userAuth } from "./account.services"
+import { setCredentials } from "../../../utilities/redux/slices/authSlice"
+import { useLoginMutation } from "./account.services"
 
 const AccountLogin = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [error, seterror] = useState("")
     const [view, setview] = useState("password")
     const [login, setlogin] = useState({ user: "", pass: "" })
+    const toast = useToast()
+    const [authLogin, { isLoading }] = useLoginMutation()
+    const auth = useAuth()
 
     useEffect(() => {
-        localStorage.removeItem("cred")
-        localStorage.removeItem("shift")
-    }, [])
-
+        if (auth) navigate("/dashboard")
+    }, [navigate, auth])
 
     const onChange = (e) => {
         const { name, value } = e.target
@@ -25,16 +31,14 @@ const AccountLogin = () => {
 
     const onLogin = async (e) => {
         e.preventDefault()
-        let param = {
-            user: login.user,
-            pass: login.pass
-        }
-        let resAuth = await userAuth(param.user, param.pass, param.token)
-        if (resAuth.success) {
-            localStorage.setItem("auth", JSON.stringify(resAuth.data))
-            navigate("/dashboard")
-            return
-        }
+        const { user, pass } = login
+        await authLogin({ user, pass }).unwrap()
+            .then(res => {
+                toast.userNotify(user)
+                dispatch(setCredentials(res.data))
+            })
+            .catch(err => console.log(err))
+
         seterror("Invalid credentials. Please try again.")
     }
 

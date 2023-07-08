@@ -3,12 +3,12 @@ import bcrypt from "bcryptjs-react"
 import React, { useEffect, useState } from 'react'
 import { useLocation } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
-import { useNotifyContext } from "../../../utilities/context/notify.context"
 import { encryptToken } from "../../../utilities/functions/string.functions"
+import useToast from "../../../utilities/hooks/useToast"
 import { fetchAccountById, updateAccount } from "./account.services"
 
 const AccountProfile = () => {
-    const { notify } = useNotifyContext()
+    const toast = useToast()
     const { handleTrail } = useClientContext()
     const location = useLocation()
     const { user } = useClientContext()
@@ -83,10 +83,7 @@ const AccountProfile = () => {
                 id: user.id
             })
             if (!resAcc.success) {
-                notify({
-                    type: 'error',
-                    message: "Error occured while updating your account information.",
-                })
+                toast.showError("Error occured while updating your account information.")
                 return
             }
             let token = JSON.stringify({
@@ -99,24 +96,15 @@ const AccountProfile = () => {
         if (pass.current && pass.new && pass.confirm) {
             let hashcurr = bcrypt.hashSync(`${info?.user}-${pass.current}`, '$2a$10$tSnuDwpZctfa5AvyRzczJu')
             if (hashcurr !== info.pass) {
-                notify({
-                    type: 'error',
-                    message: "Password is incorrect.",
-                })
+                toast.showError("Password is incorrect.")
                 return
             }
             if (pass.new.length < 6) {
-                notify({
-                    type: 'error',
-                    message: "Password strength is invalid.",
-                })
+                toast.showError("Password strength is invalid.")
                 return
             }
             if (pass.new !== pass.confirm) {
-                notify({
-                    type: 'error',
-                    message: "Password is mismatch.",
-                })
+                toast.showError("Password is mismatch.")
                 return
             }
             let hashpass = encryptToken(bcrypt.hashSync(`${info?.user}-${pass.new}`, '$2a$10$tSnuDwpZctfa5AvyRzczJu'))
@@ -125,10 +113,7 @@ const AccountProfile = () => {
                 id: user.id
             })
             if (!resPass.success) {
-                notify({
-                    type: 'error',
-                    message: "Error occured while updating your password.",
-                })
+                toast.showError("Error occured while updating your password.")
                 return
             }
         }
@@ -137,10 +122,7 @@ const AccountProfile = () => {
             new: "",
             confirm: ""
         })
-        notify({
-            type: 'success',
-            message: "Changes has been applied.",
-        })
+        toast.showSuccess("Changes has been applied.")
     }
 
     return (

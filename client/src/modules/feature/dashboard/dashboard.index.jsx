@@ -10,17 +10,16 @@ import {
 import React, { useEffect } from 'react'
 import { Outlet } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
-import { useNotifyContext } from "../../../utilities/context/notify.context"
-import { useUserContext } from "../../../utilities/context/user.context"
+import { specifyArgs } from "../../../utilities/functions/query.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import AppBreadcrumbs from "../../../utilities/interface/application/aesthetics/app.breadcrumb"
 import AppSidebar from "../../../utilities/interface/application/navigation/app.sidebar"
 import NotificationContainer from "../../../utilities/interface/notification/notification.container"
-import { updateAccount } from "../../system/account/account.services"
+import { useSpecifyAccountsMutation, useUpdateAccountMutation } from "../../system/account/account.services"
 
 export const userNavigation = [
     { name: "My Profile", href: "/profile" },
     { name: "Activity", href: "/activity" },
-    { name: "Sign out", href: "/" },
 ]
 
 const menulist = [
@@ -64,46 +63,24 @@ const menulist = [
 ]
 
 const DashboardIndex = () => {
-    const { notify } = useNotifyContext()
     const { trail } = useClientContext()
-    const { user, setuser } = useUserContext()
+    const [updateAccount] = useUpdateAccountMutation()
+    const [specifyAccount] = useSpecifyAccountsMutation()
+    const auth = useAuth()
 
     useEffect(() => {
-        const auth = JSON.parse(localStorage.getItem("auth"))
-        if (auth) setuser(auth)
-    }, [])
-
-    useEffect(() => {
-        if (user) {
-            const instantiateUser = async () => {
-                // let spec = await specifyhAccount(specifyfilter)
-                let spec = await updateAccount({ name: "SEINTAXZZZZ", id: "1" })
-                console.log(spec)
-                // if (user?.id) {
-                //     let res = await fetchShiftByStart(user.id)
-                //     if (!res.success) {
-                //         notify({ type: 'error', message: "An error occured during retrieval for shift schedule." })
-                //         return
-                //     }
-                //     if (res?.result?.id) {
-                //         localStorage.setItem("shift", JSON.stringify({
-                //             shift: res?.result?.id,
-                //             status: res?.result?.status,
-                //             begcash: res?.result?.begcash,
-                //             begshift: res?.result?.begshift
-                //         }))
-                //     }
-                //     else localStorage.removeItem("shift")
-                // }
-                // else {
-                //     notify({ type: 'error', message: "Invalid user data." })
-                //     localStorage.removeItem("shift")
-                // }
-            }
-
-            instantiateUser()
+        const instantiate = async () => {
+            await specifyAccount(specifyArgs([
+                { contains: { name: "DEVELOPER" } }
+            ])).unwrap()
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(err => console.log(err))
         }
-    }, [user])
+
+        instantiate()
+    }, [])
 
     return (
         <div className="flex h-screen flex-col">

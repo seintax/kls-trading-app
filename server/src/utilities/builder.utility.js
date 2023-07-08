@@ -257,7 +257,6 @@ class Table {
     }
 
     findone(request) {
-        // let sought = this.pseudonym()
         const parameters = []
         const fields = []
         for (const prop in request) {
@@ -340,7 +339,7 @@ class Table {
     }
 
     specific(request) {
-        let filter = JSON.parse(request.filter)
+        let filter = JSON.parse(request.array)
         let specs = filter?.map(prop => {
             if (prop.hasOwnProperty("distinct")) {
                 return this.#Distinctive(prop.distinct)
@@ -390,10 +389,7 @@ class Table {
                         }
                         continue
                     }
-                    alter = {
-                        ...alter,
-                        prop: data[prop]
-                    }
+                    alter = { ...alter, prop: data[prop] }
                 }
                 return alter
             })

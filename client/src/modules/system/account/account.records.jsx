@@ -4,7 +4,6 @@ import { sortBy } from '../../../utilities/functions/array.functions'
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import NotificationDelete from '../../../utilities/interface/notification/notification.delete'
-import { deleteAccount } from './account.services'
 
 const AccountRecords = ({ setter, manage, refetch, data }) => {
     const [records, setrecords] = useState()
@@ -36,11 +35,11 @@ const AccountRecords = ({ setter, manage, refetch, data }) => {
     }
 
     const handleDelete = async () => {
-        if (currentRecord) {
-            let res = await deleteAccount(currentRecord?.id)
-            setShowDelete(false)
-            if (res.success) refetch()
-        }
+        // if (currentRecord) {
+        //     let res = await deleteAccount(currentRecord?.id)
+        //     setShowDelete(false)
+        //     if (res.success) refetch()
+        // }
     }
 
     const actions = (item) => {

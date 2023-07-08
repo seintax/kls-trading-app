@@ -6,7 +6,7 @@ const force = (err) => {
 }
 
 const proceed = (json, req) => {
-    if (req.auth) return { success: true, ...json, auth: req.auth }
+    if (req.auth) return { success: true, ...json, authorized: req?.auth?.id ? true : false }
     return { success: true, ...json }
 }
 
