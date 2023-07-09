@@ -37,7 +37,7 @@ const AccountLogin = () => {
                 toast.userNotify(user)
                 dispatch(setCredentials(res.data))
             })
-            .catch(err => console.log(err))
+            .catch(err => console.error(err))
 
         seterror("Invalid credentials. Please try again.")
     }

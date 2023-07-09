@@ -68,7 +68,7 @@ export default function Listbox(props) {
     return (
         <StaticContainer style={wrapper}>
             {label && (<StaticLabel name={name} label={label} optional={optional} />)}
-            <StaticWrapper>
+            <StaticWrapper isblock={false}>
                 <div className="w-full min-h-[100px] max-h-[200px] overflow-auto rounded-[5px] border border-1 border-gray-300 flex flex-col">
                     {
                         list?.map((item, index) => (

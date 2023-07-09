@@ -7,6 +7,7 @@ export function useModalContext() {
 }
 
 export default function ModalProvider({ children }) {
+    const [deleteCallback, setDeleteCallback] = useState({ callback: () => { } })
     const [activeModals, setActiveModals] = useState([])
     const [currentModal, setCurrentModal] = useState("")
     const [deleteProps, setDeleteProps] = useState("")
@@ -52,9 +53,13 @@ export default function ModalProvider({ children }) {
     }
 
     useEffect(() => {
-        console.log("current modal is: ", currentModal)
+        if (import.meta.env.MODE === "development")
+            console.info("current modal is: ", currentModal)
     }, [currentModal])
 
+    const assignDeleteCallback = (callback) => {
+        setDeleteCallback(callback)
+    }
 
     return (
         <ModalContext.Provider value={{
@@ -67,7 +72,9 @@ export default function ModalProvider({ children }) {
             closeDelete,
             deleteProps,
             modalProps,
-            setModalProps
+            setModalProps,
+            deleteCallback,
+            assignDeleteCallback
         }}>
             {children}
         </ModalContext.Provider>

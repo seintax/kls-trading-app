@@ -2,7 +2,7 @@ import React from 'react'
 
 const StaticLabel = ({ name, label, optional }) => {
     return (
-        <div className="flex justify-between">
+        <div className="flex justify-between no-select">
             <label
                 htmlFor={name}
                 className="block text-sm font-medium text-gray-700"

@@ -68,7 +68,6 @@ const _findone = handler(async (req, res) => {
 
 const _specify = handler(async (req, res) => {
     const builder = helper.specific(req.query)
-    console.log(builder.sql)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))

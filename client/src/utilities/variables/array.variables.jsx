@@ -8,6 +8,17 @@ const booleans = [
     { value: "N", key: "No" }
 ]
 
+const VariantOptions = [
+    { value: "PART NO", key: "PART NO" },
+    { value: "MACHINE", key: "MACHINE" },
+    { value: "SERIAL", key: "SERIAL" },
+    { value: "MODEL", key: "MODEL" },
+    { value: "MAKE", key: "MAKE" },
+    { value: "BRAND", key: "BRAND" },
+    { value: "VOLUME", key: "VOLUME" },
+    { value: "UNIT", key: "UNIT" },
+]
+
 const FormatSelection = [
     { value: "a-z", key: "Alphabetical Lowercase Format (a-z)" },
     { value: "A-Z", key: "Alphabetical Uppercase Format (A-Z)" },

@@ -14,7 +14,7 @@ export default function useLogout() {
                 dispatch(clearCredentials())
                 navigate('/')
             })
-            .catch(err => console.log(err))
+            .catch(err => console.error(err))
     }
 
     return {

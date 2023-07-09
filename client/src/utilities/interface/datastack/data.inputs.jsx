@@ -1,55 +1,63 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import React, { useEffect } from 'react'
 import { useForm } from "react-hook-form"
-import { Link, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import SpinnerIcon from "../../../assets/SpinnerIcon"
 import { useClientContext } from "../../context/client.context"
 
-const DataInputs = ({ id, name, fields, schema, submit, values, manage, option }) => {
+const DataInputs = ({ formData, fields, change, submit, closed }) => {
     const location = useLocation()
     const { handleTrail } = useClientContext()
-    const isEdit = !!id
+    const isEdit = !!formData.id
     const {
         register,
         setValue,
         watch,
         reset,
         handleSubmit,
+        clearErrors,
         formState: { errors, isSubmitting },
     } = useForm({
-        resolver: yupResolver(schema),
-        defaultValues: values,
+        resolver: yupResolver(formData.schema),
+        defaultValues: formData?.values,
     })
 
     useEffect(() => {
-        if (!id) reset()
-    }, [])
-
-    useEffect(() => {
-        handleTrail(location.pathname.split("/").filter(fvar => fvar !== id).join("/"))
+        handleTrail(location.pathname.split("/").filter(fvar => fvar !== formData.id).join("/"))
     }, [location])
 
     useEffect(() => {
-        if (values) for (const prop in values) setValue(prop, values[prop])
-    }, [values])
+        if (formData?.values)
+            for (const prop in formData?.values)
+                setValue(prop, formData?.values[prop])
+    }, [formData?.values])
+
+    useEffect(() => {
+        if (formData?.values) {
+            const subscription = watch((value, { name }) => {
+                clearErrors(name)
+                change(value, name)
+            })
+            return () => {
+                subscription.unsubscribe()
+            }
+        }
+    }, [watch, formData?.values])
 
     const doSubmit = (data) => {
         submit(data)
-        reset()
     }
 
-    // function prevLocation() {
-    //     return location.pathname.split("/").filter(fvar => fvar !== id).slice(0, -1).join("/")
-    // }
-
-    const toggleLinkCancel = () => {
-        manage(false)
-        reset()
+    const toggleReset = () => {
+        if (!formData?.values) {
+            reset()
+            return
+        }
+        reset(formData?.values, { keepDefaultValues: true })
     }
 
-    const toggleButtonCancel = () => {
-        option?.setshow()
-        reset()
+    const toggleCancel = () => {
+        closed()
     }
 
     const preventSubmit = (e) => {
@@ -57,37 +65,39 @@ const DataInputs = ({ id, name, fields, schema, submit, values, manage, option }
     }
 
     return (
-        <div className={option?.modal ? "py-2 px-2" : "py-6 px-4 sm:px-6 lg:px-8"}>
-            <div className={option?.modal ? "" : "px-4 py-5 sm:p-6 shadow bg-white rounded"}>
+        <div className="w-full h-full py-2 px-4 sm:px-6 lg:px-8">
+            <div className={"h-full px-4 py-5 sm:p-6 shadow bg-white rounded"}>
                 <form
                     onSubmit={submit ? handleSubmit(doSubmit) : preventSubmit}
-                    className="space-y-8"
+                    className="w-full h-full space-y-8 flex flex-col justify-between"
                 >
                     <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-                        <div className="space-y-6 sm:space-y-5">
+                        <div className="space-y-6 sm:space-y-5 w-full">
                             <div className="flex items-center justify-between pb-5">
-                                <div className={option?.modal ? "hidden" : "text-lg font-medium leading-6 text-[#010a3a] uppercase"}>
-                                    {isEdit ? `Edit ${name}` : `Add ${name}`}
+                                <div className="text-lg font-medium leading-6 text-[#010a3a] uppercase">
+                                    {isEdit ? `Edit ${formData.name}` : `Add ${formData.name}`}
                                 </div>
                             </div>
 
-                            {fields(errors, register, values, setValue, watch, reset)}
+                            {fields(errors, register, formData?.values, setValue)}
 
                         </div>
                     </div>
-                    <div className={submit ? "" : "hidden"}>
-                        <div className="mt-10 flex justify-end">
-                            <Link
-                                onClick={() => toggleLinkCancel()}
-                                type="button"
-                                className={option?.modal ? "hidden" : "button-cancel"}
-                            >
-                                Cancel
-                            </Link>
+                    <div className={`${submit ? "" : "hidden"}`}>
+                        <div className=" py-4 flex justify-end">
                             <button
                                 type="button"
-                                className={option?.modal ? "button-cancel" : "hidden"}
-                                onClick={() => toggleButtonCancel()}
+                                className="button-blue mr-auto"
+                                onClick={() => toggleReset()}
+                                tabIndex={-1}
+                            >
+                                Reset
+                            </button>
+                            <button
+                                type="button"
+                                className="button-cancel"
+                                onClick={() => toggleCancel()}
+                                tabIndex={-1}
                             >
                                 Cancel
                             </button>

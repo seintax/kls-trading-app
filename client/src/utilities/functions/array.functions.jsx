@@ -1,3 +1,28 @@
+export function SelectObjectsWithEmptyLabel(stringArray, emptyLabel) {
+    return [{ value: "", key: emptyLabel }, ...stringArray]
+}
+
+export function SelectOptionsWithEmptyLabel(stringArray, emptyLabel) {
+    let options = stringArray.map(opt => {
+        return { value: opt, key: opt }
+    })
+    return [{ value: "", key: emptyLabel }, ...options]
+}
+
+export function FormatOptionsWithEmptyLabel(dataArray, valueProp, nameProp, emptyLabel) {
+    let options = dataArray?.map(arr => {
+        return { value: arr[valueProp], key: arr[nameProp], data: arr }
+    })
+    return [{ value: "", key: emptyLabel, data: {} }, ...options]
+}
+
+export function FormatOptionsNoLabel(dataArray, valueProp, nameProp) {
+    let options = dataArray?.map(arr => {
+        return { value: arr[valueProp], key: arr[nameProp], data: arr }
+    })
+    return options
+}
+
 export const sortBy = (function () {
     var toString = Object.prototype.toString,
         parse = function (value) { return value },

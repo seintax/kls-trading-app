@@ -1,103 +1,173 @@
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { isEmpty } from "../../../utilities/functions/string.functions"
+import useToast from "../../../utilities/hooks/useToast"
+import useYup from "../../../utilities/hooks/useYup"
+import DataInputs from "../../../utilities/interface/datastack/data.inputs"
+import FormEl from "../../../utilities/interface/forminput/input.active"
+import { resetAccountManager, setAccountNotifier } from "./account.reducer"
+import { useCreateAccountMutation, useUpdateAccountMutation } from "./account.services"
 
-const AccountManage = ({ id, name, manage }) => {
-    // const toast = useToast()
-    // const [values, setvalues] = useState()
-    // const { yup } = useYup()
-    // const { mutate } = processForm(id, name, updateAccount, createAccount)
-    // const [instantiated, setinstantiated] = useState(false)
+const AccountManage = () => {
+    const dataSelector = useSelector(state => state.account)
+    const dispatch = useDispatch()
+    const [instantiated, setInstantiated] = useState(false)
+    const [listener, setListener] = useState()
+    const [element, setElement] = useState()
+    const [values, setValues] = useState()
+    const { yup } = useYup()
+    const toast = useToast()
 
-    // const schema = yup.object().shape({
-    //     user: yup
-    //         .string()
-    //         .required('Please enter your username.'),
-    //     pass: yup
-    //         .string()
-    //         .required('Please enter your password.')
-    //         .matches(/^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-    //             "Password must contain at least 8 characters, one uppercase, one number and one special case character"),
-    //     confirm: yup
-    //         .string()
-    //         .min(8)
-    //         .required('Please confirm your password.')
-    //         .oneOf([yup.ref('pass'), null], "Passwords do not match."),
-    // })
+    const [createAccount] = useCreateAccountMutation()
+    const [updateAccount] = useUpdateAccountMutation()
 
-    // const fields = (errors, register, values, setValue, watch) => {
-    //     return (
-    //         <>
-    //             <Active.Text
-    //                 label='Username'
-    //                 register={register}
-    //                 name='user'
-    //                 errors={errors}
-    //                 autoComplete='off'
-    //                 wrapper='lg:w-1/4'
-    //             />
-    //             <Active.Group style="lg:w-1/2">
-    //                 <Active.Password
-    //                     label='Password'
-    //                     register={register}
-    //                     name='pass'
-    //                     errors={errors}
-    //                     autoComplete='off'
-    //                 />
-    //                 <Active.Password
-    //                     label='Confirm Password'
-    //                     register={register}
-    //                     name='confirm'
-    //                     errors={errors}
-    //                     autoComplete='off'
-    //                 />
-    //             </Active.Group>
-    //         </>
-    //     )
-    // }
+    useEffect(() => {
+        const instantiate = async () => {
+            setInstantiated(true)
+            // fetch all library dependencies here. (e.g. dropdown values, etc.)
+        }
 
-    // useEffect(() => {
-    //     const instantiate = async () => {
-    //         setinstantiated(true)
-    //     }
+        instantiate()
+        return () => {
+            setInstantiated(false)
+        }
+    }, [])
 
-    //     instantiate()
-    //     return () => {
-    //         setinstantiated(false)
-    //     }
-    // }, [])
+    const init = (value, initial = "") => {
+        if (!isEmpty(value)) {
+            return value
+        }
+        return initial
+    }
 
-    // useEffect(() => {
-    //     if (id && instantiated) {
-    //         fetchAccountById(id).then((ret) => {
-    //             setvalues({
-    //                 user: ret?.result?.user,
-    //                 pass: "",
-    //                 confirm: ""
-    //             })
-    //         })
-    //     }
-    // }, [id, instantiated])
+    useEffect(() => {
+        if (instantiated) {
+            let item = dataSelector.item
+            setValues({
+                user: init(item.user),
+                name: init(item.name),
+                pass: "",
+                confirm: ""
+            })
+        }
+    }, [instantiated])
 
-    // const submit = (data) => {
-    //     let param = {
-    //         user: data.user,
-    //         pass: data.pass
-    //     }
-    //     if (id) param = { ...param, id: id }
-    //     if (!id) param = { ...param, name: `User${moment(new Date()).format("YYYYMMDDHHmmss")}` }
-    //     mutate(param)
-    //     manage(false)
-    // }
+    const onFields = (errors, register, values, setValue) => {
+        return (
+            <>
+                <FormEl.Email
+                    label='Email Address'
+                    register={register}
+                    name='user'
+                    errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
+                <FormEl.Text
+                    label='Fullname'
+                    register={register}
+                    name='name'
+                    errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
+                <FormEl.Password
+                    label='Password'
+                    register={register}
+                    name='pass'
+                    errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
+                <FormEl.Password
+                    label='Confirm Password'
+                    register={register}
+                    name='confirm'
+                    errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
+            </>
+        )
+    }
 
-    // return (
-    //     <DataInputs
-    //         id={id}
-    //         name={name}
-    //         values={values}
-    //         schema={schema}
-    //         fields={fields}
-    //         submit={submit}
-    //         manage={manage}
-    //     />
-    // )
+    const onChange = (values, element) => {
+        setListener(values)
+        setElement(element)
+    }
+
+    useEffect(() => {
+        if (listener) {
+            // console.log(`${element}`, listener[element])
+        }
+    }, [listener])
+
+    const onSchema = yup.object().shape({
+        user: yup
+            .string()
+            .required('Please enter your username.'),
+        pass: yup
+            .string()
+            .required('Please enter your password.')
+            .min(8, "Password must contain atleast 8 characters"),
+        confirm: yup
+            .string()
+            .required('Please confirm your password.')
+            .min(8, "Password must contain atleast 8 characters")
+            .required('Please confirm your password.')
+            .oneOf([yup.ref('pass'), null], "Passwords do not match."),
+    })
+
+    const onClose = () => {
+        dispatch(resetAccountManager())
+    }
+
+    const onCompleted = () => {
+        dispatch(setAccountNotifier(true))
+        dispatch(resetAccountManager())
+    }
+
+    const onSubmit = async (data) => {
+        const { user, name, pass, confirm } = data
+        if (dataSelector.item.id) {
+            await updateAccount({ ...data, id: dataSelector.item.id })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        toast.showUpdate("Account successfully updated.")
+                        onCompleted()
+                    }
+                })
+                .catch(err => console.error(err))
+            return
+        }
+        await createAccount(data)
+            .unwrap()
+            .then(res => {
+                if (res.success) {
+                    toast.showCreate("Account successfully created.")
+                    onCompleted()
+                }
+            })
+            .catch(err => console.error(err))
+    }
+
+    const inputFormData = {
+        id: dataSelector.item.id,
+        name: dataSelector.display.name,
+        values: values,
+        schema: onSchema
+    }
+
+    return (
+        <DataInputs
+            formData={inputFormData}
+            fields={onFields}
+            change={onChange}
+            submit={onSubmit}
+            closed={onClose}
+        />
+    )
 }
 
 export default AccountManage

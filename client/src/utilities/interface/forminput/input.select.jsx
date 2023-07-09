@@ -22,7 +22,6 @@ export default function Select(props) {
         return (
             (options?.length) ? (
                 <>
-                    <option value=""></option>
                     {
                         options?.map((option, index) => (
                             <option key={index} value={option.value || option}>

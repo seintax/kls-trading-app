@@ -1,45 +1,50 @@
-import moment from "moment"
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "react-redux"
+import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
+import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
-import NotificationDelete from '../../../utilities/interface/notification/notification.delete'
+import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
+import { setAccountItem, setAccountNotifier, showAccountManager } from "./account.reducer"
+import { useDeleteAccountMutation } from "./account.services"
 
-const AccountRecords = ({ setter, manage, refetch, data }) => {
+const AccountRecords = () => {
+    const dataSelector = useSelector(state => state.account)
+    const { assignDeleteCallback } = useModalContext()
+    const dispatch = useDispatch()
     const [records, setrecords] = useState()
-    const [showDelete, setShowDelete] = useState(false)
-    const [currentRecord, setCurrentRecord] = useState({})
-    const [sorted, setsorted] = useState()
     const [startpage, setstartpage] = useState(1)
-    const itemsperpage = 150
-    const columns = {
-        style: '',
-        items: [
-            { name: 'Username', stack: true, sort: 'user' },
-            { name: 'Fullname', stack: false, sort: 'name', size: 250 },
-            { name: 'Duration', stack: true, sort: 'time', size: 250 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 },
-        ]
-    }
+    const [sorted, setsorted] = useState()
+    const columns = dataSelector.header
+    const toast = useToast()
 
-    const rowSelect = (record) => setCurrentRecord(record)
-
-    const toggleDelete = (record) => {
-        setCurrentRecord(record)
-        setShowDelete(true)
-    }
+    const [deleteAccount] = useDeleteAccountMutation()
 
     const toggleEdit = (item) => {
-        setter(item.id)
-        manage(true)
+        dispatch(setAccountItem(item))
+        dispatch(showAccountManager())
     }
 
-    const handleDelete = async () => {
-        // if (currentRecord) {
-        //     let res = await deleteAccount(currentRecord?.id)
-        //     setShowDelete(false)
-        //     if (res.success) refetch()
-        // }
+    const toggleDelete = (item) => {
+        assignDeleteCallback({ item: item, callback: handleDelete })
+        dispatch(showDelete({ description: "Email address", reference: item.user }))
+    }
+
+    const handleDelete = async (item) => {
+        if (!item.id) {
+            toast.showError("Reference id does not exist.")
+            return
+        }
+        await deleteAccount({ id: item.id })
+            .unwrap()
+            .then(res => {
+                if (res.success) {
+                    dispatch(setAccountNotifier(true))
+                }
+            })
+            .catch(err => console.error(err))
+        return true
     }
 
     const actions = (item) => {
@@ -53,39 +58,33 @@ const AccountRecords = ({ setter, manage, refetch, data }) => {
         return [
             { value: item.user },
             { value: item.name || <span className="italic">Unnamed</span> },
-            { value: item.time ? moment(item.time).format("MM-DD-YYYY HH:mm:ss") : "" },
+            { value: item.confirm ? "YES" : "NO" },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }
 
     useEffect(() => {
-        if (data) {
-            let tempdata = sorted ? sortBy(data, sorted) : data
-            setrecords(tempdata?.map((item, i) => {
+        if (dataSelector?.data) {
+            let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
+            setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
-                    ondoubleclick: () => rowSelect(item),
-                    items: items(item)
+                    items: items(item),
+                    ondoubleclick: () => { },
                 }
             }))
         }
-    }, [data, sorted])
+    }, [dataSelector?.data, sorted])
 
     return (
         <>
             <DataRecords
+                page={startpage}
                 columns={columns}
                 records={records}
-                page={startpage}
-                setPage={setstartpage}
-                itemsperpage={itemsperpage}
                 setsorted={setsorted}
-            />
-            <NotificationDelete
-                name={currentRecord?.supplier}
-                show={showDelete}
-                setshow={setShowDelete}
-                handleDelete={handleDelete}
+                setPage={setstartpage}
+                itemsperpage={dataSelector?.perpage}
             />
         </>
     )

@@ -1,8 +1,8 @@
 import React from 'react'
 
-const StaticWrapper = ({ children }) => {
+const StaticWrapper = ({ isblock = true, children }) => {
     return (
-        <div className="relative mt-1 rounded-md shadow-sm flex items-center gap-[5px]">
+        <div className={`relative mt-1 rounded-md shadow-sm flex ${isblock ? "items-center" : "flex-col "} gap-[5px]`}>
             {children}
         </div>
     )

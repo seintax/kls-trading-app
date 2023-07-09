@@ -10,12 +10,10 @@ import {
 import React, { useEffect } from 'react'
 import { Outlet } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
-import { specifyArgs } from "../../../utilities/functions/query.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import AppBreadcrumbs from "../../../utilities/interface/application/aesthetics/app.breadcrumb"
 import AppSidebar from "../../../utilities/interface/application/navigation/app.sidebar"
 import NotificationContainer from "../../../utilities/interface/notification/notification.container"
-import { useSpecifyAccountsMutation, useUpdateAccountMutation } from "../../system/account/account.services"
 
 export const userNavigation = [
     { name: "My Profile", href: "/profile" },
@@ -52,10 +50,11 @@ const menulist = [
         icon: NewspaperIcon,
         cascade: false,
         children: [
-            { name: "Categories", href: "/category" },
-            { name: "Masterlist", href: "/masterlist" },
             { name: "Suppliers", href: "/suppliers" },
             { name: "Customers", href: "/customer" },
+            { name: "Categories", href: "/category" },
+            { name: "Masterlist", href: "/masterlist" },
+            { name: "Options", href: "/option" },
         ]
     },
     { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
@@ -64,19 +63,10 @@ const menulist = [
 
 const DashboardIndex = () => {
     const { trail } = useClientContext()
-    const [updateAccount] = useUpdateAccountMutation()
-    const [specifyAccount] = useSpecifyAccountsMutation()
     const auth = useAuth()
 
     useEffect(() => {
         const instantiate = async () => {
-            await specifyAccount(specifyArgs([
-                { contains: { name: "DEVELOPER" } }
-            ])).unwrap()
-                .then(res => {
-                    console.log(res)
-                })
-                .catch(err => console.log(err))
         }
 
         instantiate()
@@ -88,11 +78,11 @@ const DashboardIndex = () => {
             <main className="flex flex-col md:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4]">
                 <AppBreadcrumbs pages={trail} />
                 <div className="p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto relative scroll-md">
-                    <div className="w-full flex flex-col bg-white border drop-shadow-md items-start p-5 text-xs">
+                    <div className="w-full flex flex-col bg-white border drop-shadow-md items-start p-5 text-xs min-h-full flex-none">
                         <Outlet />
                     </div>
                 </div>
-                <div className="w-full h-[75px] bg-white border border-t-secondary-500"></div>
+                <div className="flex flex-none w-full h-[40px] bg-white border border-t-secondary-500"></div>
             </main>
             <NotificationContainer />
         </div>

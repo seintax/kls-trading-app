@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import DataPagination from "./data.pagination"
 
 const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination }) => {
-    // const [page, setPage] = useState(1)
     const refList = useRef()
     const [data, setData] = useState()
     const [order, setOrder] = useState()
@@ -45,6 +44,19 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
         })
     }
 
+    const setPosition = (position, isheader = true) => {
+        if (position === "center") {
+            if (isheader) return "justify-center pl-4"
+            return "text-center"
+        }
+        if (position === "right") {
+            if (isheader) return "justify-end"
+            return "text-right"
+        }
+        if (isheader) return "justify-start"
+        return "text-left"
+    }
+
     return (
         <>
             <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg">
@@ -53,7 +65,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                         <tr className={`${columns?.style}`}>
                             <th
                                 scope="col"
-                                className={`hidden lg:table-cell sticky top-0 z-10 bg-gray-200 backdrop-blur border-b border-gray-300 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200`}
+                                className={`hidden lg:table-cell sticky top-0 z-10 bg-gray-200 backdrop-blur border-b border-gray-300 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top`}
                             >
                                 #
                             </th>
@@ -64,10 +76,10 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             key={colindex}
                                             scope="col"
                                             width={col.size}
-                                            className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-10 backdrop-blur border-b border-gray-300 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 bg-gray-200 ${col.style} ${col.position}`}
+                                            className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-10 backdrop-blur border-b border-gray-300 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 bg-gray-200 align-top ${col.style}`}
                                         >
                                             <div
-                                                className={`flex items-center gap-[10px] group ${col.sort ? "cursor-pointer" : ""}`}
+                                                className={`w-full flex items-center ${setPosition(col.position)} gap-[10px] group ${col.sort ? "cursor-pointer" : ""}`}
                                                 onClick={() => sortcallback(colindex, col)}
                                             >
                                                 {col.name}
@@ -89,7 +101,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                     onDoubleClick={row?.ondoubleclick}
                                     className={`hover:bg-gray-100 ${rowstyle}`}
                                 >
-                                    <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-sm text-gray-500 lg:table-cell no-select">
+                                    <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-sm text-gray-500 lg:table-cell align-top no-select">
                                         {index + rowindex}.
                                     </td>
                                     {
@@ -97,7 +109,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             row.items?.map((item, itemindex) => (
                                                 <td
                                                     key={itemindex}
-                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 pl-4 pr-6 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6 lg:table-cell ${order[itemindex]?.screenreader ? "flex justify-end gap-2" : ""} ${order[itemindex]?.stack ? "hidden" : ""} ${itemstyle} ${order[itemindex]?.position}`}
+                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 pl-4 pr-6 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6 lg:table-cell align-top ${order[itemindex]?.screenreader ? "flex justify-end gap-2" : ""} ${order[itemindex]?.stack ? "hidden" : ""} ${itemstyle} ${setPosition(order[itemindex]?.position, false)}`}
                                                     onClick={item?.onclick}
                                                     onDoubleClick={item?.ondoubleclick}
                                                 >

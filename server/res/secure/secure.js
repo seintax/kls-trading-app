@@ -35,7 +35,7 @@ const secure = handler(async (req, res, next) => {
             })
         }
         catch (err) {
-            console.log(err)
+            console.error(err)
             res.status(401)
             throw new Error('Unauthorized: Token failed.')
         }

@@ -35,7 +35,6 @@ class Field {
     }
 
     Like(val = undefined) {
-        console.log(this.value)
         return this.value ? `${this.value} LIKE ${val ? val : "?"}` : ""
     }
 

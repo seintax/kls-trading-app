@@ -25,8 +25,11 @@ app.use(cors(corsoptions))
 app.use('/', express.static(path.join(__dirname, '/public')))
 app.use('/', require('./res/routes/root'))
 
-app.use('/app', approutes.account)
 app.use('/app', approutes.category)
+app.use('/app', approutes.masterlist)
+app.use('/app', approutes.option)
+app.use('/app', approutes.variant)
+app.use('/app', approutes.account)
 app.use('/app', approutes.schedule)
 
 app.all('*', (req, res) => {

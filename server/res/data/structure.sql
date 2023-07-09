@@ -37,6 +37,24 @@ CREATE TABLE lib_category (
     ctgy_status      varchar(1) DEFAULT "A"
 );
 
+CREATE TABLE lib_option (
+    optn_id          int auto_increment primary key,
+    optn_name        varchar(75),
+    optn_status      varchar(1) DEFAULT "A"
+);
+
+CREATE TABLE lib_variant (
+    vrnt_id          int auto_increment primary key,
+    vrnt_product     int,
+    vrnt_category    varchar(75),
+    vrnt_option1     varchar(50),
+    vrnt_serial      varchar(99),
+    vrnt_option2     varchar(50),
+    vrnt_model       varchar(99),
+    vrnt_option3     varchar(50),
+    vrnt_brand       varchar(99)
+);
+
 CREATE TABLE pos_archive_customer (
     cust_id          int auto_increment primary key,
     cust_name        varchar(99),
@@ -77,12 +95,6 @@ CREATE TABLE pos_stock_masterlist (
     prod_name        varchar(75),
     prod_category    varchar(75),
     prod_status      varchar(1) DEFAULT "A"
-);
-
-CREATE TABLE pos_stock_variant (
-    vrnt_id          int auto_increment primary key,
-    vrnt_product     int,
-    vrnt_name        varchar(150),
 );
 
 CREATE TABLE pos_purchase_order (

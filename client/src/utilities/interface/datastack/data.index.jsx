@@ -5,7 +5,7 @@ import DataError from "./data.error"
 import DataLoading from "./data.loading"
 import DataNoRecord from "./data.norecord"
 
-const DataIndex = ({ name, data, isLoading, isError, inputLink, setter, manage, children }) => {
+const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, children }) => {
     const location = useLocation()
     const { handleTrail } = useClientContext()
 
@@ -13,39 +13,36 @@ const DataIndex = ({ name, data, isLoading, isError, inputLink, setter, manage, 
         handleTrail(location?.pathname)
     }, [location])
 
-    const toggleAdd = () => {
-        setter()
-        manage(true)
-    }
-
-    if (!manage && (!data?.result || data?.result?.length == 0 || !isLoading)) {
+    if (data?.length === 0 && !isLoading) {
         return (
             <DataNoRecord
                 title="No records"
-                description={`Get started by creating a new ${name}`}
-                button={{ name: `Add ${name}`, link: inputLink, trigger: () => toggleAdd() }}
+                description={`Get started by creating a new ${display.name}`}
+                button={{ name: `Add ${display.name}`, link: inputLink, trigger: actions && actions[0]?.callback }}
             />
         )
     }
 
     return (
-        <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8 h-full'>
+        <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8 w-full h-full'>
             <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto no-select">
-                    <h1 className="text-2xl font-semibold text-gray-900 capitalize">{name.toUpperCase()}</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900 capitalize">{display.name.toUpperCase()}</h1>
                     <p className="mt-2 text-sm text-gray-700">
-                        A list of all entries registered in the system.
+                        {display.text}
                     </p>
                 </div>
-                {
-                    manage && (
-                        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                            <Link onClick={() => toggleAdd()} className="button-link">
-                                Add {name}
-                            </Link>
-                        </div>
-                    )
-                }
+                <div className="flex flex-row-reverse gap-3 mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                    {
+                        (actions?.map((action, index) => (
+                            <div key={index} className="">
+                                <Link onClick={action?.callback} className="button-link">
+                                    {action.label}
+                                </Link>
+                            </div>
+                        )))
+                    }
+                </div>
             </div>
             {children}
             {(isLoading && (<DataLoading loading={isLoading} />))}

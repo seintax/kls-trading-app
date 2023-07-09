@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 const DataNoRecord = ({ title, description, button }) => {
     return (
-        <div className="text-center mt-32 no-select">
+        <div className="flex flex-col items-center justify-center no-select w-full h-full">
             <svg
                 className="mx-auto h-12 w-12 text-gray-400"
                 fill="none"

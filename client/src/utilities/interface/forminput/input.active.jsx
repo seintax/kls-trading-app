@@ -29,7 +29,7 @@ import Radio from "./input.radio"
 import Select from "./input.select"
 import Text from "./input.text"
 
-const Active = {
+const FormEl = {
     Check,
     Currency,
     Date,
@@ -47,5 +47,5 @@ const Active = {
     Text
 }
 
-export default Active
+export default FormEl
 
