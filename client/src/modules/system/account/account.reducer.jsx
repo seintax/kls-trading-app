@@ -9,13 +9,15 @@ const initialState = {
     perpage: 150,
     display: {
         name: "Account",
-        text: "A list of all accounts registered in the system."
+        text: "A list of all accounts registered in the system.",
+        show: true
     },
     header: {
         items: [
             { name: 'Username', stack: true, sort: 'user' },
-            { name: 'Fullname', stack: false, sort: 'name', size: 250 },
-            { name: 'Confirmed', stack: true, sort: 'confirm', size: 250, position: "center" },
+            { name: 'Fullname', stack: false, sort: 'name', size: 350 },
+            { name: 'Branch Access', stack: false, sort: 'store', size: 180 },
+            { name: 'Confirmed', stack: true, sort: 'confirm', size: 150, position: "center" },
             { name: '', stack: false, screenreader: 'Action', size: 200 },
         ]
     }

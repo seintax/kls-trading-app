@@ -2,9 +2,13 @@ import React from 'react'
 import { Route, Routes } from "react-router-dom"
 import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
 import DashboardPanel from "./modules/feature/dashboard/dashboard.panel"
+import PurchaseIndex from "./modules/feature/purchase/purchase.index"
+import BranchIndex from "./modules/library/branch/branch.index"
 import CategoryIndex from "./modules/library/category/category.index"
+import CustomerIndex from "./modules/library/customer/customer.index"
 import MasterlistIndex from "./modules/library/masterlist/masterlist.index"
 import OptionIndex from "./modules/library/option/option.index"
+import SupplierIndex from "./modules/library/supplier/supplier.index"
 import VariantIndex from "./modules/library/variant/variant.index"
 import AccountIndex from "./modules/system/account/account.index"
 import AccountLogin from "./modules/system/account/account.login"
@@ -22,13 +26,18 @@ const AppRoute = () => {
             <Route path="" element={<PrivateRoute />}>
                 <Route element={<DashboardIndex />}>
                     <Route path="/dashboard" element={<DashboardPanel />} />
+                    <Route path="/purchase-order" element={<PurchaseIndex />} />
 
+                    <Route path="/supplier" element={<SupplierIndex />} />
+                    <Route path="/customer" element={<CustomerIndex />} />
                     <Route path="/category" element={<CategoryIndex />} />
                     <Route path="/masterlist">
                         <Route index element={<MasterlistIndex />} />
                         <Route path="variant" element={<VariantIndex />} />
                     </Route>
                     <Route path="/option" element={<OptionIndex />} />
+                    <Route path="/branch" element={<BranchIndex />} />
+
                     <Route path="/users" element={<AccountIndex />} />
                 </Route>
             </Route>

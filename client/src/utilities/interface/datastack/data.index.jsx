@@ -5,7 +5,7 @@ import DataError from "./data.error"
 import DataLoading from "./data.loading"
 import DataNoRecord from "./data.norecord"
 
-const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, children }) => {
+const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, children, plain = false }) => {
     const location = useLocation()
     const { handleTrail } = useClientContext()
 
@@ -13,7 +13,7 @@ const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, chil
         handleTrail(location?.pathname)
     }, [location])
 
-    if (data?.length === 0 && !isLoading) {
+    if (!plain && data?.length === 0 && !isLoading) {
         return (
             <DataNoRecord
                 title="No records"
@@ -25,14 +25,14 @@ const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, chil
 
     return (
         <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8 w-full h-full'>
-            <div className="sm:flex sm:items-center">
-                <div className="sm:flex-auto no-select">
+            <div className="sm:flex sm:items-center w-full">
+                <div className={display.show ? "sm:flex-auto no-select" : "hidden"}>
                     <h1 className="text-2xl font-semibold text-gray-900 capitalize">{display.name.toUpperCase()}</h1>
                     <p className="mt-2 text-sm text-gray-700">
                         {display.text}
                     </p>
                 </div>
-                <div className="flex flex-row-reverse gap-3 mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                <div className={`flex flex-row-reverse gap-3 mt-4 sm:mt-0 sm:flex-none ${display.show ? "sm:ml-16" : "ml-auto"}`}>
                     {
                         (actions?.map((action, index) => (
                             <div key={index} className="">

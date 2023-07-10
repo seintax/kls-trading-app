@@ -9,7 +9,8 @@ const initialState = {
     perpage: 150,
     display: {
         name: "Category",
-        text: "A list of all categories registered in the system."
+        text: "A list of all categories registered in the system.",
+        show: true
     },
     header: {
         items: [

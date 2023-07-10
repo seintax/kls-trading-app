@@ -9,7 +9,8 @@ const initialState = {
     perpage: 150,
     display: {
         name: "Option",
-        text: "A list of all options registered in the system."
+        text: "A list of all options registered in the system.",
+        show: true
     },
     header: {
         items: [

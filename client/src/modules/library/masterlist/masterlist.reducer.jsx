@@ -9,7 +9,8 @@ const initialState = {
     perpage: 150,
     display: {
         name: "Masterlist",
-        text: "A list of all masterlist registered in the system."
+        text: "A list of all masterlist registered in the system.",
+        show: true
     },
     header: {
         items: [

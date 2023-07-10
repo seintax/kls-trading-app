@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom"
 import SpinnerIcon from "../../../assets/SpinnerIcon"
 import { useClientContext } from "../../context/client.context"
 
-const DataInputs = ({ formData, fields, change, submit, closed }) => {
+const DataInputs = ({ formData, fields, change, submit, closed, segmented = false }) => {
     const location = useLocation()
     const { handleTrail } = useClientContext()
     const isEdit = !!formData.id
@@ -65,11 +65,11 @@ const DataInputs = ({ formData, fields, change, submit, closed }) => {
     }
 
     return (
-        <div className="w-full h-full py-2 px-4 sm:px-6 lg:px-8">
+        <div className="w-full h-full py-2 px-2">
             <div className={"h-full px-4 py-5 sm:p-6 shadow bg-white rounded"}>
                 <form
                     onSubmit={submit ? handleSubmit(doSubmit) : preventSubmit}
-                    className="w-full h-full space-y-8 flex flex-col justify-between"
+                    className={`w-full h-full space-y-8 flex flex-col ${segmented ? "" : "justify-between"}`}
                 >
                     <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
                         <div className="space-y-6 sm:space-y-5 w-full">
@@ -78,9 +78,11 @@ const DataInputs = ({ formData, fields, change, submit, closed }) => {
                                     {isEdit ? `Edit ${formData.name}` : `Add ${formData.name}`}
                                 </div>
                             </div>
+                            <div className="flex flex-col gap-3">
 
-                            {fields(errors, register, formData?.values, setValue)}
+                                {fields(errors, register, formData?.values, setValue)}
 
+                            </div>
                         </div>
                     </div>
                     <div className={`${submit ? "" : "hidden"}`}>
@@ -95,7 +97,7 @@ const DataInputs = ({ formData, fields, change, submit, closed }) => {
                             </button>
                             <button
                                 type="button"
-                                className="button-cancel"
+                                className="button-cancel ease-in duration-300"
                                 onClick={() => toggleCancel()}
                                 tabIndex={-1}
                             >

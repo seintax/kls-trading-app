@@ -5,6 +5,10 @@ export const isEmpty = (value) => {
     return value === undefined || value === "" || value === null || value === 0
 }
 
+export const isDev = (auth) => {
+    return auth?.store === "DEV TEAM"
+}
+
 const formatWithZeros = (str, maxcount) => {
     if (str) {
         let maxlen = Number(maxcount) - str?.toString().length

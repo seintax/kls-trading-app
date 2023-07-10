@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { isEmpty } from "../../../utilities/functions/string.functions"
+import { FormatOptionsWithEmptyLabel, FormatOptionsWithNewOption } from "../../../utilities/functions/array.functions"
+import { isDev, isEmpty } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInputs from "../../../utilities/interface/datastack/data.inputs"
 import FormEl from "../../../utilities/interface/forminput/input.active"
+import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { resetAccountManager, setAccountNotifier } from "./account.reducer"
 import { useCreateAccountMutation, useUpdateAccountMutation } from "./account.services"
 
 const AccountManage = () => {
+    const auth = useAuth()
     const dataSelector = useSelector(state => state.account)
     const dispatch = useDispatch()
     const [instantiated, setInstantiated] = useState(false)
@@ -18,6 +22,9 @@ const AccountManage = () => {
     const { yup } = useYup()
     const toast = useToast()
 
+    const [libBranches, setLibBranches] = useState()
+
+    const [allBranches] = useFetchAllBranchMutation()
     const [createAccount] = useCreateAccountMutation()
     const [updateAccount] = useUpdateAccountMutation()
 
@@ -25,6 +32,17 @@ const AccountManage = () => {
         const instantiate = async () => {
             setInstantiated(true)
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
+            await allBranches()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        let initial = FormatOptionsWithEmptyLabel(res?.arrayResult, "code", "name", "Select branch")
+                        let options = isDev(auth) ? FormatOptionsWithNewOption(initial, { value: auth.store, key: "Development Team", data: {} }) : initial
+                        setLibBranches(options)
+
+                    }
+                })
+                .catch(err => console.error(err))
         }
 
         instantiate()
@@ -46,6 +64,7 @@ const AccountManage = () => {
             setValues({
                 user: init(item.user),
                 name: init(item.name),
+                store: init(item.store),
                 pass: "",
                 confirm: ""
             })
@@ -69,6 +88,14 @@ const AccountManage = () => {
                     name='name'
                     errors={errors}
                     autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
+                <FormEl.Select
+                    label='Branch'
+                    register={register}
+                    name='store'
+                    errors={errors}
+                    options={libBranches}
                     wrapper='lg:w-1/2'
                 />
                 <FormEl.Password

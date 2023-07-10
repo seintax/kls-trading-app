@@ -58,6 +58,7 @@ const AccountRecords = () => {
         return [
             { value: item.user },
             { value: item.name || <span className="italic">Unnamed</span> },
+            { value: item.store },
             { value: item.confirm ? "YES" : "NO" },
             { value: <DataOperation actions={actions(item)} /> }
         ]

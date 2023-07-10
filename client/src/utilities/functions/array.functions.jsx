@@ -9,6 +9,10 @@ export function SelectOptionsWithEmptyLabel(stringArray, emptyLabel) {
     return [{ value: "", key: emptyLabel }, ...options]
 }
 
+export function FormatOptionsWithNewOption(dataArray, newOption) {
+    return [...dataArray, { value: newOption.value, key: newOption.key, data: newOption?.data || {} }]
+}
+
 export function FormatOptionsWithEmptyLabel(dataArray, valueProp, nameProp, emptyLabel) {
     let options = dataArray?.map(arr => {
         return { value: arr[valueProp], key: arr[nameProp], data: arr }
@@ -21,6 +25,18 @@ export function FormatOptionsNoLabel(dataArray, valueProp, nameProp) {
         return { value: arr[valueProp], key: arr[nameProp], data: arr }
     })
     return options
+}
+
+export function AttribDestruct(dataArray) {
+    return dataArray?.map(arr => {
+        if ("attributes" in arr) {
+            return {
+                ...arr,
+                ...arr.attributes
+            }
+        }
+        return arr
+    })
 }
 
 export const sortBy = (function () {
@@ -48,7 +64,8 @@ export const sortBy = (function () {
         let defaultParser = (t) => t?.toUpperCase()
         if (typeof config.parser !== "function") config.parser = parse || defaultParser
         config.desc = !!config.desc ? -1 : 1
-        return array.sort(function (a, b) {
+        let source = AttribDestruct(array)
+        return source.sort(function (a, b) {
             a = getItem.call(config, checkNaN(a))
             b = getItem.call(config, checkNaN(b))
             return config.desc * (a < b ? -1 : +(a > b))

@@ -9,11 +9,13 @@ const initialState = {
     perpage: 150,
     display: {
         name: "Variant",
-        text: "A list of all variants registered in the system."
+        text: "A list of all variants registered in the system.",
+        show: true
     },
     header: {
         items: [
-            { name: 'Serial No.', stack: true, sort: 'serial' },
+            { name: 'Product Name', stack: true },
+            { name: 'Serial No.', stack: false, sort: 'serial' },
             { name: 'Model/Make', stack: false, sort: 'model', size: 250 },
             { name: 'Brand/Specs', stack: false, sort: 'brand', size: 250 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }

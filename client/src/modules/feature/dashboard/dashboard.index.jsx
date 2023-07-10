@@ -28,9 +28,9 @@ const menulist = [
         icon: ShoppingCartIcon,
         cascade: false,
         children: [
-            { name: "Inventory", href: "/inventory" },
-            { name: "Purchase Order", href: "/pruchase-order" },
+            { name: "Purchase Order", href: "/purchase-order" },
             { name: "Deliveries", href: "/deliveries" },
+            { name: "Inventory", href: "/inventory" },
             { name: "Stock Transfer", href: "/stock-transfer" },
             { name: "Adjustments", href: "/adjustments" },
         ]
@@ -50,7 +50,8 @@ const menulist = [
         icon: NewspaperIcon,
         cascade: false,
         children: [
-            { name: "Suppliers", href: "/suppliers" },
+            { name: "Branches", href: "/branch" },
+            { name: "Suppliers", href: "/supplier" },
             { name: "Customers", href: "/customer" },
             { name: "Categories", href: "/category" },
             { name: "Masterlist", href: "/masterlist" },

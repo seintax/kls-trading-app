@@ -1,7 +1,15 @@
 import { HomeIcon } from "@heroicons/react/20/solid"
 import { Link } from "react-router-dom"
+import { StrFn } from "../../../functions/string.functions"
 
 const AppBreadcrumbs = ({ pages }) => {
+
+    const formatPageName = (name) => {
+        if (name.includes("-")) {
+            return name?.split("-")?.map(f => { return StrFn.properCase(f) })?.join(" ")
+        }
+        return name
+    }
 
     return (
         <nav
@@ -25,14 +33,14 @@ const AppBreadcrumbs = ({ pages }) => {
                         <div className="flex items-center">
                             <span className="mx-2 text-secondary-300">&#10095;</span>
                             {page.current ? (
-                                <span className="ml-2 text-md text-secondary-500 px-2 font-bold rounded-[5px] py-1">{page.name}</span>
+                                <span className="ml-2 text-md text-secondary-500 px-2 font-bold rounded-[5px] py-1">{formatPageName(page.name)}</span>
                             ) : (
                                 <Link
                                     to={page.href}
                                     className="ml-2 text-md text-secondary-400 px-2 font-medium rounded-[5px] py-1"
                                     aria-current={page.current ? "page" : undefined}
                                 >
-                                    {page.name}
+                                    {formatPageName(page.name)}
                                 </Link>
                             )}
                         </div>

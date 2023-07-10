@@ -108,7 +108,7 @@
 			"    }\r",
 			"\r",
 			"    const onSubmit = async (data) => {\r",
-			"        const { user, name, pass, confirm } = data\r",
+			"        const formData = data\r",
 			"        if (dataSelector.item.id) {\r",
 			"            await update${1/(.*)/${1:/capitalize}/}({ ...data, id: dataSelector.item.id })\r",
 			"                .unwrap()\r",

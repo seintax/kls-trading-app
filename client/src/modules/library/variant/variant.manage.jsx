@@ -22,6 +22,9 @@ const VariantManage = () => {
     const toast = useToast()
 
     const [libOptions, setLibOptions] = useState()
+    const [libOption1, setLibOption1] = useState()
+    const [libOption2, setLibOption2] = useState()
+    const [libOption3, setLibOption3] = useState()
 
     const [allOption] = useFetchAllOptionMutation()
     const [createVariant] = useCreateVariantMutation()
@@ -35,16 +38,23 @@ const VariantManage = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success)
-                        setLibOptions(FormatOptionsNoLabel(res?.arrayResult, "id", "name"))
+                        setLibOptions(FormatOptionsNoLabel(res?.arrayResult, "name", "name"))
                 })
                 .catch(err => console.error(err))
         }
 
         instantiate()
-        return () => {
-            setInstantiated(false)
-        }
     }, [])
+
+    useEffect(() => {
+        if (instantiated) {
+            return () => {
+                setInstantiated(false)
+                dispatch(resetVariantManager())
+            }
+        }
+    }, [instantiated])
+
 
     const init = (value, initial = "") => {
         if (!isEmpty(value)) {
@@ -53,36 +63,66 @@ const VariantManage = () => {
         return initial
     }
 
+    const listboxitem = (array, value) => {
+        if (!value || !value.length) return array
+        let arrvalue = JSON.parse(value)
+        return array?.map(arr => {
+            if (arrvalue?.includes(arr.value)) {
+                return { ...arr, selected: true }
+            }
+            return { ...arr, selected: false }
+        })
+    }
+
     useEffect(() => {
         if (instantiated) {
             let item = dataSelector.item
+            let option1 = JSON.stringify(item.option1?.split("/"))
+            let option2 = JSON.stringify(item.option2?.split("/"))
+            let option3 = JSON.stringify(item.option3?.split("/"))
             setValues({
                 serial: init(item.serial),
-                option1: init(item.option1),
+                option1: init(option1),
                 model: init(item.model),
-                option2: init(item.option2),
+                option2: init(option2),
                 brand: init(item.brand),
-                option3: init(item.option3),
+                option3: init(option3),
             })
+            if (libOptions) {
+                setLibOption1(listboxitem(libOptions, option1))
+                setLibOption2(listboxitem(libOptions, option2))
+                setLibOption3(listboxitem(libOptions, option3))
+            }
         }
-    }, [instantiated])
+    }, [instantiated, libOptions])
+
+    const cleanUpLabel = (label, defaults) => {
+        if (label === "[]" || isEmpty(label)) {
+            return `Option Label/${defaults}`
+        }
+        return label
+            .replace("[", "")
+            .replace("]", "")
+            .replaceAll("\"", "")
+            .replaceAll(",", "/")
+    }
 
     const onFields = (errors, register, values, setValue) => {
         return (
             <>
                 <FormEl.Listbox
-                    label='Option 1'
+                    label={"Option 1"}
                     register={register}
                     name='option1'
                     setter={setValue}
                     values={values}
-                    items={libOptions}
+                    items={libOption1}
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
                 <FormEl.Text
-                    label='Serial No.'
+                    label={cleanUpLabel(listener?.option1, "Serial No.")}
                     register={register}
                     name='serial'
                     errors={errors}
@@ -95,13 +135,13 @@ const VariantManage = () => {
                     name='option2'
                     setter={setValue}
                     values={values}
-                    items={libOptions}
+                    items={libOption2}
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
                 <FormEl.Text
-                    label='Model'
+                    label={cleanUpLabel(listener?.option2, "Model")}
                     register={register}
                     name='model'
                     errors={errors}
@@ -114,13 +154,13 @@ const VariantManage = () => {
                     name='option3'
                     setter={setValue}
                     values={values}
-                    items={libOptions}
+                    items={libOption3}
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
                 <FormEl.Text
-                    label='Brand'
+                    label={cleanUpLabel(listener?.option3, "Brand")}
                     register={register}
                     name='brand'
                     errors={errors}
@@ -164,8 +204,14 @@ const VariantManage = () => {
     }
 
     const onSubmit = async (data) => {
+        let formData = {
+            ...data,
+            option1: JSON.parse(data.option1)?.join("/"),
+            option2: JSON.parse(data.option2)?.join("/"),
+            option3: JSON.parse(data.option3)?.join("/")
+        }
         if (dataSelector.item.id) {
-            await updateVariant({ ...data, id: dataSelector.item.id })
+            await updateVariant({ ...formData, id: dataSelector.item.id })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
@@ -176,7 +222,7 @@ const VariantManage = () => {
                 .catch(err => console.error(err))
             return
         }
-        await createVariant({ ...data, product: masterlistSelector.item.id, category: masterlistSelector.item.category })
+        await createVariant({ ...formData, product: masterlistSelector.item.id, category: masterlistSelector.item.category })
             .unwrap()
             .then(res => {
                 if (res.success) {
@@ -195,19 +241,13 @@ const VariantManage = () => {
     }
 
     return (
-        <>
-            <div className="text-lg w-full py-6 px-8 sm:px-12 lg:px-14 flex flex-col gap-2 bg-gray-300 rounded-md">
-                <span className="text-xs no-select">Current Masterlist: </span>
-                <span className="font-bold">{masterlistSelector.item.name} | {masterlistSelector.item.category}</span>
-            </div>
-            <DataInputs
-                formData={inputFormData}
-                fields={onFields}
-                change={onChange}
-                submit={onSubmit}
-                closed={onClose}
-            />
-        </>
+        <DataInputs
+            formData={inputFormData}
+            fields={onFields}
+            change={onChange}
+            submit={onSubmit}
+            closed={onClose}
+        />
     )
 }
 

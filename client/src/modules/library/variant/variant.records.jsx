@@ -12,6 +12,7 @@ import { useDeleteVariantMutation } from "./variant.services"
 
 const VariantRecords = () => {
     const dataSelector = useSelector(state => state.variant)
+    const masterlistSelector = useSelector(state => state.masterlist)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -57,9 +58,10 @@ const VariantRecords = () => {
 
     const items = (item) => {
         return [
-            { value: <ItemView main={item.serial} subtext={item?.option1} /> },
-            { value: <ItemView main={item.model} subtext={item?.option2} /> },
-            { value: <ItemView main={item.brand} subtext={item?.option3} /> },
+            { value: <ItemView main={masterlistSelector.item.name} subtext={masterlistSelector.item.category} reverse={true} /> },
+            { value: <ItemView main={item.serial} subtext={item?.option1} reverse={true} /> },
+            { value: <ItemView main={item.model} subtext={item?.option2} reverse={true} /> },
+            { value: <ItemView main={item.brand} subtext={item?.option3} reverse={true} /> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

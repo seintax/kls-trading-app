@@ -33,13 +33,13 @@ CREATE TABLE sys_roles (
 
 CREATE TABLE lib_category (
     ctgy_id          int auto_increment primary key,
-    ctgy_name        varchar(75),
+    ctgy_name        varchar(75) unique,
     ctgy_status      varchar(1) DEFAULT "A"
 );
 
 CREATE TABLE lib_option (
     optn_id          int auto_increment primary key,
-    optn_name        varchar(75),
+    optn_name        varchar(75) unique,
     optn_status      varchar(1) DEFAULT "A"
 );
 
@@ -57,7 +57,7 @@ CREATE TABLE lib_variant (
 
 CREATE TABLE pos_archive_customer (
     cust_id          int auto_increment primary key,
-    cust_name        varchar(99),
+    cust_name        varchar(99) unique,
     cust_address     varchar(150),
     cust_contact     varchar(30),
     cust_email       varchar(99),
@@ -92,7 +92,7 @@ CREATE TABLE pos_archive_supplier (
 
 CREATE TABLE pos_stock_masterlist (
     prod_id          int auto_increment primary key,
-    prod_name        varchar(75),
+    prod_name        varchar(75) unique,
     prod_category    varchar(75),
     prod_status      varchar(1) DEFAULT "A"
 );
@@ -223,7 +223,20 @@ CREATE TABLE pos_transfer_receipt (
 );
 
 CREATE TABLE pos_acctg_accounts (
-    
+    acct_id          int auto_increment primary key,
+    acct_name        varchar(99),
+    acct_value       varchar(20),
+    acct_description varchar(150)
+);
+
+CREATE TABLE pos_acctg_entries (
+    entr_id          int auto_increment primary key,
+    entr_time        timestamp DEFAULT now(),
+    entr_account     int,
+    entr_credit      decimal(30,2),
+    entr_debit       decimal(30,2),
+    entr_particulars varchar(150),
+    entr_remarks     varchar(99)
 );
 
 CREATE TABLE pos_sales_transaction (
