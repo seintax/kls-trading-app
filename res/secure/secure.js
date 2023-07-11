@@ -22,7 +22,8 @@ const authorize = handler(async (param, callback) => {
 
 const secure = handler(async (req, res, next) => {
     let token
-    token = req.cookies.jwt ? req.cookies.jwt : req.headers.authorization.replace("Bearer ", "")
+    // token = req.cookies.jwt
+    token = req.headers.authorization.split(' ')[1]
     if (token) {
         try {
             let decoded = await jwt.verify(token, process.env.JWT_SECRET)
