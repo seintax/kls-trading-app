@@ -1,5 +1,8 @@
 import { apiSlice } from "../../../utilities/redux/slices/apiSlice"
-const ENDPOINT_URL = '/app/delivery'
+const BASE_URL = import.meta.env.MODE === "development" ?
+    import.meta.env.VITE_API_BASE_URL :
+    import.meta.env.VITE_API_BASE_URL_PROD
+const ENDPOINT_URL = `${BASE_URL}/app/delivery`
 
 export const deliveryApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({

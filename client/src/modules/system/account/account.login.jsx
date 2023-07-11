@@ -34,6 +34,7 @@ const AccountLogin = () => {
         const { user, pass } = login
         await authLogin({ user, pass }).unwrap()
             .then(res => {
+                localStorage.setItem("token", res.token)
                 toast.userNotify(user)
                 dispatch(setCredentials(res.data))
             })
