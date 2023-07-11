@@ -14,7 +14,8 @@ const sqlerror = (err) => {
     return process.env.NODE_ENV === "development" ? err : {
         message: `SQL_${err.code}`,
         errno: err.errno,
-        sqlState: err.sqlState
+        sqlState: err.sqlState,
+        details: err
     }
 }
 

@@ -58,9 +58,9 @@ const SupplierRecords = () => {
         return [
             { value: item.name },
             { value: item.address },
-            { value: item.telephone },
+            { value: item.telephone || "-" },
             { value: item.cellphone },
-            { value: item.email },
+            { value: item.email || "-" },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

@@ -143,8 +143,12 @@ const SupplierManage = () => {
     }
 
     const onSubmit = async (data) => {
+        let formData = {
+            ...data,
+            telephone: data?.telephone?.replaceAll(" ", "").replaceAll("-", "").replaceAll(",", ", ").replaceAll(";", ", ")
+        }
         if (dataSelector.item.id) {
-            await updateSupplier({ ...data, id: dataSelector.item.id })
+            await updateSupplier({ ...formData, id: dataSelector.item.id })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
@@ -155,7 +159,7 @@ const SupplierManage = () => {
                 .catch(err => console.error(err))
             return
         }
-        await createSupplier(data)
+        await createSupplier(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {

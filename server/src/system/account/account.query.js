@@ -14,6 +14,7 @@ function f(object) {
 
 const _create = handler(async (req, res) => {
     const builder = helper.insert(req.body)
+    console.log(builder)
     await poolinject(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))

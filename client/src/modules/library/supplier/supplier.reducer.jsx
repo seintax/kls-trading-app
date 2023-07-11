@@ -18,7 +18,7 @@ const initialState = {
             { name: 'Address', stack: false, sort: 'address', size: 250 },
             { name: 'Tel No.', stack: false, sort: 'telephone', size: 150 },
             { name: 'Cell No.', stack: false, sort: 'cellphone', size: 150 },
-            { name: 'Email Address', stack: false, sort: 'email', size: 150 },
+            { name: 'Email Address', stack: false, sort: 'email', size: 200 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

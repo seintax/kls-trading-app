@@ -75,7 +75,7 @@ const AccountManage = () => {
                 name: init(item.name),
                 store: init(item.store),
                 pass: "",
-                confirm: ""
+                repass: ""
             })
         }
     }, [instantiated])
@@ -118,7 +118,7 @@ const AccountManage = () => {
                 <FormEl.Password
                     label='Confirm Password'
                     register={register}
-                    name='confirm'
+                    name='repass'
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
@@ -146,7 +146,7 @@ const AccountManage = () => {
             .string()
             .required('Please enter your password.')
             .min(8, "Password must contain atleast 8 characters"),
-        confirm: yup
+        repass: yup
             .string()
             .required('Please confirm your password.')
             .min(8, "Password must contain atleast 8 characters")
@@ -164,7 +164,6 @@ const AccountManage = () => {
     }
 
     const onSubmit = async (data) => {
-        const { user, name, pass, confirm } = data
         if (dataSelector.item.id) {
             await updateAccount({ ...data, id: dataSelector.item.id })
                 .unwrap()

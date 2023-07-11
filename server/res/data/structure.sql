@@ -8,6 +8,8 @@ CREATE TABLE sys_account (
     acct_store       varchar(50)
 );
 
+INSERT INTO sys_account (acct_email,acct_password,acct_fullname,acct_store) VALUES ('SEINTAX','$2a$10$EwcQz1bHeYqo8fbgDMSBl.MWIgExkqECMh52ABA2.qrnFOv8gbt/m','DEVELOPER','DevOp');
+
 CREATE TABLE sys_user (
     user_id          int auto_increment primary key,
     user_account     int,
