@@ -19,8 +19,6 @@ const sqlCreateReceipt = handler(async (req, res) => {
                 })
             })
 
-            console.log(receipt)
-
             let delivery = await new Promise(async (resolve, reject) => {
                 let data = {
                     count: req.body.receiving,
@@ -75,8 +73,6 @@ const sqlCreateReceipt = handler(async (req, res) => {
                     price: req.body.pricing,
                     acquisition: "PROCUREMENT"
                 }
-                console.log(receipt.insertResult.id)
-                console.log(data)
                 const builder = getinventory.insert(data)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
