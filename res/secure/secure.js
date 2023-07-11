@@ -22,7 +22,7 @@ const authorize = handler(async (param, callback) => {
 
 const secure = handler(async (req, res, next) => {
     let token
-    token = req.cookies.jwt
+    token = req.cookies.jwt ? req.cookies.jwt : req.headers.authorization.replace("Bearer ", "")
     if (token) {
         try {
             let decoded = await jwt.verify(token, process.env.JWT_SECRET)
@@ -52,13 +52,13 @@ const tokenize = (res, payload) => {
         process.env.JWT_SECRET,
         { expiresIn: '2d' }
     )
-
-    res.cookie('jwt', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
-        sameSite: 'strict',
-        maxAge: 2 * 24 * 60 * 60 * 1000
-    })
+    // res.cookie('jwt', token, {
+    //     httpOnly: true,
+    //     secure: process.env.NODE_ENV !== 'development',
+    //     sameSite: 'strict',
+    //     maxAge: 2 * 24 * 60 * 60 * 1000
+    // })
+    return token
 }
 
 const hash = handler(async (req, res, next) => {

@@ -1,6 +1,9 @@
 import { apiSlice } from "../../../utilities/redux/slices/apiSlice"
-const ENDPOINT_ROOTURL = '/app'
-const ENDPOINT_URL = '/app/account'
+const BASE_URL = import.meta.env.MODE === "development" ?
+    import.meta.env.VITE_API_BASE_URL :
+    import.meta.env.VITE_API_BASE_URL_PROD
+const ENDPOINT_ROOTURL = `${BASE_URL}/app`
+const ENDPOINT_URL = `${BASE_URL}/app/account`
 
 export const accountApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
