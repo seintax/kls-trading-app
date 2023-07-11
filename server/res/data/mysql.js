@@ -8,7 +8,10 @@ const credentials = process.env.NODE_ENV === "development" ? {
     multipleStatements: true,
     connectionLimit: 10,
     queueLimit: 0
-} : ""
+} : 'mysql://5ec6b55hzkxra3qds94u:pscale_pw_wFVKhozWcPW3pfIT3jqO7sX5sMxuJ1jP2zGOPrn31oE@aws.connect.psdb.cloud/app-jat-tpos?ssl={"rejectUnauthorized":true}'
+
+var server = process.env.NODE_ENV === "development" ? process.env.MY_SERVER : "planetscale.com"
+var database = process.env.NODE_ENV === "development" ? process.env.MY_DATABASE : "app-jat-tpos"
 
 var pool = mysql.createPool(credentials)
 
@@ -29,7 +32,7 @@ pool.getConnection((err, con) => {
         }
     }
     else {
-        console.log(`\x1b[45m`, `MYSQL`, '\x1b[0m', `@ ${process.env.MY_SERVER}/${process.env.MY_DATABASE}\n`)
+        console.log(`\x1b[45m`, `MYSQL`, '\x1b[0m', `@ ${server}/${database}\n`)
     }
     if (con) con.release()
     return

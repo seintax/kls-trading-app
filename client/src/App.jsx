@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { QueryClient, QueryClientProvider } from "react-query"
+import { ReactQueryDevtools } from "react-query/devtools"
+import { Provider } from "react-redux"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import AppRoute from "./Route.jsx"
+import ClientProvider from "./utilities/context/client.context"
+import DataProvider from "./utilities/context/data.context.jsx"
+import ModalProvider from "./utilities/context/modal.context.jsx"
+import NotifyProvider from "./utilities/context/notify.context.jsx"
+import UserProvider from "./utilities/context/user.context.jsx"
+import AppDelete from "./utilities/interface/application/modalities/app.delete.jsx"
+import store from "./utilities/redux/store.js"
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+        },
+    },
+})
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <Provider store={store}>
+            <QueryClientProvider client={queryClient}>
+                <DataProvider>
+                    <ClientProvider>
+                        <ModalProvider>
+                            <UserProvider>
+                                <NotifyProvider>
+                                    <div className="h-screen text-black">
+                                        <AppRoute />
+                                    </div>
+                                    <AppDelete />
+                                </NotifyProvider>
+                            </UserProvider>
+                        </ModalProvider>
+                    </ClientProvider>
+                </DataProvider>
+                <ToastContainer />
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+        </Provider>
+    )
 }
 
 export default App

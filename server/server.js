@@ -25,7 +25,24 @@ app.use(cors(corsoptions))
 app.use('/', express.static(path.join(__dirname, '/public')))
 app.use('/', require('./res/routes/root'))
 
+app.use('/app', approutes.purchase)
+app.use('/app', approutes.receivable)
+app.use('/app', approutes.delivery)
+app.use('/app', approutes.receipt)
+app.use('/app', approutes.inventory)
+
+app.use('/app', approutes.category)
+app.use('/app', approutes.masterlist)
+app.use('/app', approutes.option)
+app.use('/app', approutes.variant)
+app.use('/app', approutes.supplier)
+app.use('/app', approutes.customer)
+app.use('/app', approutes.branch)
+
 app.use('/app', approutes.account)
+app.use('/app', approutes.schedule)
+
+app.use('/app', approutes.complex)
 
 app.all('*', (req, res) => {
     if (req.accepts('html')) {

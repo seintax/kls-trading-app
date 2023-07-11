@@ -1,52 +1,78 @@
-const my = require('../../../res/data/mysql')
 const handler = require("express-async-handler")
-const { proceed, poolwrap, poolarray } = require("../../utilities/callback.utility")
+const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
 const { match, tokenize } = require("../../../res/secure/secure")
 const helper = require('./account.helper')
+const { Param, Field } = require("../../utilities/builder.utility")
+
+function p(object) {
+    return new Param(object.alias, object.param)
+}
+
+function f(object) {
+    return new Field(object.alias, object.value)
+}
 
 const _create = handler(async (req, res) => {
     const builder = helper.insert(req.body)
-    await poolwrap(builder, (err, ans) => {
-        if (err) return res.status(401).json(err)
-        res.status(200).json(proceed({ result: ans }))
+    console.log(builder)
+    await poolinject(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
     })
 })
 
 const _update = handler(async (req, res) => {
     const builder = helper.update(req.body)
-    await poolwrap(builder, (err, ans) => {
-        if (err) return res.status(401).json(err)
-        res.status(200).json(proceed({ result: ans }))
+    await poolalter(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
     })
 })
 
 const _delete = handler(async (req, res) => {
     const builder = helper.delete(req.body)
-    await poolwrap(builder, (err, ans) => {
-        if (err) return res.status(401).json(err)
-        res.status(200).json(proceed({ result: ans }))
+    await poolremove(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
     })
 })
 
 const _record = handler(async (req, res) => {
-    // const builder = helper.inquiry(req.body)
-    // await poolwrap(builder, (err, ans) => {
-    //     if (err) return res.status(401).json(err)
-    //     res.status(200).json(proceed({ result: ans }))
-    // })
+    const builder = helper.records()
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
 })
 
 const _search = handler(async (req, res) => {
-    res.status(200).json(proceed({
-        message: "hi"
-    }))
+    const { search } = helper.parameters(req.query)
+    const { name, id } = helper.fields
+    let params = [p(search).Exactly()]
+    let clause = [f(name).IsEqual()]
+    let series = [f(id).Asc()]
+    let limits = undefined
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
 })
 
 const _findone = handler(async (req, res) => {
-    res.status(200).json(proceed({
-        message: sample.id,
-        data: sample - 2
-    }))
+    const builder = helper.findone(req.query)
+    await poolwrap(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
+const _specify = handler(async (req, res) => {
+    const builder = helper.specific(req.query)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
 })
 
 const authenticate = handler(async (req, res) => {
@@ -54,20 +80,22 @@ const authenticate = handler(async (req, res) => {
     const { user, pass } = req.body
     const builder = helper.findone({ user: user })
     await poolwrap(builder, handler(async (err, ans) => {
-        if (err) return res.status(401).json(err)
-        if (ans.single) {
-            let authentic = await match(pass, ans.data.pass)
-            if (authentic) {
-                const payload = { id: ans.data.id, access: ans.data.time }
+        if (err) return res.status(401).json(force(err))
+        if (ans.distinctResult.distinct) {
+            let isauthentic = await match(pass, ans.distinctResult.data.pass)
+            if (isauthentic) {
+                const payload = { id: ans.distinctResult.data.id, store: ans.distinctResult.data.store }
                 tokenize(res, payload)
-
                 return res.status(200).json(proceed({
                     message: "Authorized.",
                     data: {
-                        id: ans.data.id,
-                        user: ans.data.user
+                        id: ans.distinctResult.data.id,
+                        user: ans.distinctResult.data.user,
+                        name: ans.distinctResult.data.name,
+                        confirm: ans.distinctResult.data.confirm,
+                        store: ans.distinctResult.data.store
                     }
-                }))
+                }, req))
             }
         }
         res.status(401).json({
@@ -87,10 +115,11 @@ const logout = (req, res) => {
 module.exports = {
     authenticate,
     _create,
+    _record,
     _update,
     _delete,
-    _record,
     _search,
     _findone,
+    _specify,
     logout
 }

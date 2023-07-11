@@ -1,0 +1,23 @@
+{
+	"server-route": {
+		"prefix": "svRoute",
+		"body": [
+			"const router = require('express').Router()\r",
+			"const service = require('./${1:ModuleName}.query')\r",
+			"const { secure } = require('../../../res/secure/secure')\r",
+			"\r",
+			"router\r",
+			"    .route('/${1:ModuleName}')\r",
+			"    .post(service._create)\r",
+			"    .get(secure, service._record)\r",
+			"    .patch(secure, service._update)\r",
+			"    .delete(secure, service._delete)\r",
+			"router.get('/${1:ModuleName}/id', secure, service._findone)\r",
+			"router.get('/${1:ModuleName}/search', secure, service._search)\r",
+			"router.post('/${1:ModuleName}/specify', service._specify)\r",
+			"\r",
+			"module.exports = router"
+		],
+		"description": ""
+	}
+}

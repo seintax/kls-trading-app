@@ -1,0 +1,9 @@
+{
+	"server-service": {
+		"prefix": "svService",
+		"body": [
+			"const ${2:ModuleName} = require('./src/${1:Directory}/${2:ModuleName}/${2:ModuleName}.route')"
+		],
+		"description": ""
+	}
+}

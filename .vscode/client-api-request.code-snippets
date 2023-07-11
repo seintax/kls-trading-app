@@ -1,0 +1,14 @@
+{
+	"client-api-request": {
+		"prefix": "cnApi",
+		"body": [
+			"await ${1:ApiRequest}(${2:Parameters})\r",
+			"    .unwrap()\r",
+			"    .then(res => {\r",
+			"        ${3:Logic}\r",
+			"    })\r",
+			"    .catch(err => console.error(err))"
+		],
+		"description": ""
+	}
+}

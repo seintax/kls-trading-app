@@ -6,13 +6,14 @@ const { poolwrap } = require('../../src/utilities/callback.utility')
 
 const authorize = handler(async (param, callback) => {
     // check for authorization
-    const builder = helper.findone({ id: param.id })
+    const builder = helper.findone({ id: param.id, store: param.store })
     await poolwrap(builder, (err, ans) => {
         if (err) return callback(err)
-        if (ans.single) {
+        if (ans.distinctResult.distinct) {
             return callback(null, {
-                id: ans.data.id,
-                user: ans.data.user
+                id: ans.distinctResult.data.id,
+                user: ans.distinctResult.data.user,
+                store: ans.distinctResult.data.store
             })
         }
         return callback({ err: "Invalid credentials." })
@@ -29,11 +30,12 @@ const secure = handler(async (req, res, next) => {
                 if (err) return res.status(401).json({
                     err: "Unauthorized: Invalid token."
                 })
-                req.user = ans
+                req.auth = ans
+                next()
             })
-            next()
         }
         catch (err) {
+            console.error(err)
             res.status(401)
             throw new Error('Unauthorized: Token failed.')
         }

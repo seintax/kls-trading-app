@@ -10,7 +10,7 @@ const errhandler = (err, req, res, next) => {
 
     res.status(statusCode).json({
         message: message,
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+        stack: process.env.NODE_ENV === 'production' ? `Error with status code ${statusCode}.` : err.stack,
     })
 }
 

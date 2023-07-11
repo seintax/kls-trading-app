@@ -1,0 +1,292 @@
+:root {
+  --primary: #e4e4e4;
+  --secondary: #ef4444;
+}
+
+html,
+body {
+  background-color: #f3f4f6;
+}
+
+svg.fill-primary>path {
+  fill: var(--primary-color);
+}
+
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.linebreak {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+@keyframes propagate-1 {
+  25% {
+    transform: translateX(-1rem) scale(0.75)
+  }
+
+  50% {
+    transform: translateX(-3rem) scale(0.6)
+  }
+
+  75% {
+    transform: translateX(-5rem) scale(0.5)
+  }
+
+  95% {
+    transform: translateX(0rem) scale(1)
+  }
+}
+
+.anim-propagate-1 {
+  position: absolute;
+  font-size: 5px;
+  width: 15px;
+  height: 15px;
+  background: #0359f8;
+  border-radius: 50%;
+  animation-name: propagate-1;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+@keyframes propagate-2 {
+  25% {
+    transform: translateX(-1rem) scale(0.75)
+  }
+
+  50% {
+    transform: translateX(-3rem) scale(0.6)
+  }
+
+  75% {
+    transform: translateX(-3rem) scale(0.6)
+  }
+
+  95% {
+    transform: translateX(0rem) scale(1)
+  }
+}
+
+.anim-propagate-2 {
+  position: absolute;
+  font-size: 5px;
+  width: 15px;
+  height: 15px;
+  background: #033daa;
+  border-radius: 50%;
+  animation-name: propagate-2;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+@keyframes propagate-3 {
+  25% {
+    transform: translateX(-1rem) scale(0.75)
+  }
+
+  75% {
+    transform: translateX(-1rem) scale(0.75)
+  }
+
+  95% {
+    transform: translateX(0rem) scale(1)
+  }
+}
+
+.anim-propagate-3 {
+  position: absolute;
+  font-size: 5px;
+  width: 15px;
+  height: 15px;
+  background: #022a75;
+  border-radius: 50%;
+  animation-name: propagate-3;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+@keyframes propagate-4 {
+  25% {
+    transform: translateX(1rem) scale(0.75)
+  }
+
+  75% {
+    transform: translateX(1rem) scale(0.75)
+  }
+
+  95% {
+    transform: translateX(0rem) scale(1)
+  }
+}
+
+.anim-propagate-4 {
+  position: absolute;
+  font-size: 5px;
+  width: 15px;
+  height: 15px;
+  background: #022a75;
+  border-radius: 50%;
+  animation-name: propagate-4;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+@keyframes propagate-5 {
+  25% {
+    transform: translateX(1rem) scale(0.75)
+  }
+
+  50% {
+    transform: translateX(3rem) scale(0.6)
+  }
+
+  75% {
+    transform: translateX(3rem) scale(0.6)
+  }
+
+  95% {
+    transform: translateX(0rem) scale(1)
+  }
+}
+
+.anim-propagate-5 {
+  position: absolute;
+  font-size: 5px;
+  width: 15px;
+  height: 15px;
+  background: #033daa;
+  border-radius: 50%;
+  animation-name: propagate-5;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+@keyframes propagate-6 {
+  25% {
+    transform: translateX(1rem) scale(0.75)
+  }
+
+  50% {
+    transform: translateX(3rem) scale(0.6)
+  }
+
+  75% {
+    transform: translateX(5rem) scale(0.5)
+  }
+
+  95% {
+    transform: translateX(0rem) scale(1)
+  }
+}
+
+.anim-propagate-6 {
+  position: absolute;
+  font-size: 5px;
+  width: 15px;
+  height: 15px;
+  background: #0359f8;
+  border-radius: 50%;
+  animation-name: propagate-6;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+.glass-morphism {
+  background: rgba(49, 1, 1, 0.7);
+  background-image: linear-gradient(rgb(255, 0, 0, 0.7), rgb(255, 255, 0, 0.7));
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(10.5px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.border-shadow {
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(10.5px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.scroll-md {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+.scroll-md::-webkit-scrollbar {
+  width: 15px;
+}
+
+.scroll-md::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 5px;
+}
+
+.scroll-md::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 14px;
+  border: 3px solid var(--primary);
+}
+
+.scroll-sm {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+.scroll-sm::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scroll-sm::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 5px;
+}
+
+.scroll-sm::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 14px;
+  border: 3px solid var(--primary);
+}
+
+.scroll-xs {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+.scroll-xs::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scroll-xs::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 5px;
+}
+
+.scroll-xs::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 14px;
+  border: 3px solid var(--primary);
+}
+
+.toast-message {
+  display: flex;
+  align-items: flex-start;
+  justify-items: flex-start;
+}
+
+.set-drop-shadow {
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+}

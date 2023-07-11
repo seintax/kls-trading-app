@@ -1,0 +1,125 @@
+import React, { useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "react-redux"
+import { useModalContext } from "../../../utilities/context/modal.context"
+import useToast from "../../../utilities/hooks/useToast"
+import DataListing from "../../../utilities/interface/datastack/data.listing"
+import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
+import ReceivableInjoin from "./purchase.item.injoin"
+import { setReceivableData, setReceivableItem, setReceivableNotifier, showReceivableInjoiner } from "./purchase.item.reducer"
+import { useByPurchaseReceivableMutation, useDeleteReceivableMutation } from "./purchase.item.services"
+
+const ReceivableListing = () => {
+    const [purchaseReceivable] = useByPurchaseReceivableMutation()
+    const dataSelector = useSelector(state => state.receivable)
+    const purchaseSelector = useSelector(state => state.purchase)
+    const { assignDeleteCallback } = useModalContext()
+    const dispatch = useDispatch()
+    const [records, setrecords] = useState()
+    const toast = useToast()
+    const layout = dataSelector.listing.layout
+    const header = {
+        title: dataSelector.listing.title,
+        description: dataSelector.listing.description
+    }
+
+    const [deleteReceivable] = useDeleteReceivableMutation()
+
+    useEffect(() => {
+        const instantiate = async () => {
+            if (purchaseSelector.item.id) {
+                await purchaseReceivable({ purchase: purchaseSelector.item.id })
+                    .unwrap()
+                    .then(res => {
+                        if (res.success) {
+                            dispatch(setReceivableData(res?.arrayResult))
+                            dispatch(setReceivableNotifier(false))
+                        }
+                    })
+                    .catch(err => console.error(err))
+            }
+            return
+        }
+
+        instantiate()
+    }, [dataSelector.notifier, purchaseSelector.item.id])
+
+    const toggleEdit = (item) => {
+        dispatch(setReceivableItem(item))
+        dispatch(showReceivableInjoiner())
+    }
+
+    const toggleDelete = (item) => {
+        assignDeleteCallback({ item: item, callback: handleDelete })
+        dispatch(showDelete({ description: "Purchase Order Item", reference: `${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` }))
+    }
+
+    const handleDelete = async (item) => {
+        if (!item.id) {
+            toast.showError("Reference id does not exist.")
+            return
+        }
+        await deleteReceivable({ id: item.id })
+            .unwrap()
+            .then(res => {
+                if (res.success) {
+                    dispatch(setReceivableNotifier(true))
+                }
+            })
+            .catch(err => console.error(err))
+        return true
+    }
+
+    const controls = (item) => {
+        return [
+            { label: 'Edit', trigger: () => toggleEdit(item) },
+            { label: 'Delete', trigger: () => toggleDelete(item) },
+        ]
+    }
+
+    const items = (item) => {
+        return [
+            { value: `${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` },
+            { value: item.ordered, subtext: "Quantity" },
+            { value: item.received, subtext: "Received" },
+            { value: item.costing, subtext: "Costing" },
+        ]
+    }
+
+    useEffect(() => {
+        if (dataSelector?.data) {
+            let data = dataSelector?.data
+            setrecords(data?.map(item => {
+                return {
+                    key: item.id,
+                    items: items(item),
+                    controls: controls(item)
+                }
+            }))
+        }
+    }, [dataSelector?.data])
+
+    const appendList = useCallback(() => {
+        dispatch(showReceivableInjoiner())
+    }, [])
+
+    const saveList = useCallback(() => {
+        console.log("saving...")
+        toast.showWarning("Oh my god!!! What have you done!! \nThis button has no function.🤪😋")
+    }, [])
+
+    return (
+        <>
+            <DataListing
+                reference={purchaseSelector.item.id}
+                header={header}
+                layout={layout}
+                records={records}
+                appendcallback={appendList}
+                savecallback={saveList}
+            />
+            <ReceivableInjoin />
+        </>
+    )
+}
+
+export default ReceivableListing

@@ -4,12 +4,13 @@ const { secure, hash } = require('../../../res/secure/secure')
 
 router
     .route('/account')
-    .get(service._record)
     .post(hash, service._create)
-    .patch(secure, service._update)
-    .delete(service._delete)
-router.get('/account/id', service._findone)
-router.get('/account/search', service._search)
+    .get(secure, service._record)
+    .patch([hash, secure], service._update)
+    .delete(secure, service._delete)
+router.get('/account/id', secure, service._findone)
+router.get('/account/search', secure, service._search)
+router.get('/account/specify', secure, service._specify)
 router.post('/auth', service.authenticate)
 router.post('/logout', service.logout)
 
