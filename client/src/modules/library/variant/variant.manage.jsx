@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
@@ -32,7 +32,6 @@ const VariantManage = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            setInstantiated(true)
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
             await allOption()
                 .unwrap()
@@ -41,6 +40,7 @@ const VariantManage = () => {
                         setLibOptions(FormatOptionsNoLabel(res?.arrayResult, "name", "name"))
                 })
                 .catch(err => console.error(err))
+            setInstantiated(true)
         }
 
         instantiate()
@@ -128,6 +128,7 @@ const VariantManage = () => {
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                    style="uppercase"
                 />
                 <FormEl.Listbox
                     label='Option 2'
@@ -147,6 +148,7 @@ const VariantManage = () => {
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                    style="uppercase"
                 />
                 <FormEl.Listbox
                     label='Option 3'
@@ -166,6 +168,7 @@ const VariantManage = () => {
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                    style="uppercase"
                 />
             </>
         )
@@ -194,9 +197,9 @@ const VariantManage = () => {
             .required('Brand is required.')
     })
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         dispatch(resetVariantManager())
-    }
+    }, [])
 
     const onCompleted = () => {
         dispatch(setVariantNotifier(true))
@@ -207,8 +210,11 @@ const VariantManage = () => {
         let formData = {
             ...data,
             option1: JSON.parse(data.option1)?.join("/"),
+            serial: data.serial?.toUpperCase(),
             option2: JSON.parse(data.option2)?.join("/"),
-            option3: JSON.parse(data.option3)?.join("/")
+            model: data.model?.toUpperCase(),
+            option3: JSON.parse(data.option3)?.join("/"),
+            brand: data.brand?.toUpperCase(),
         }
         if (dataSelector.item.id) {
             await updateVariant({ ...formData, id: dataSelector.item.id })

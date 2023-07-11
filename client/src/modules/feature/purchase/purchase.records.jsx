@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
+import { longDate } from "../../../utilities/functions/datetime.functions"
 import { StrFn } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
@@ -57,9 +58,11 @@ const PurchaseRecords = () => {
 
     const items = (item) => {
         return [
+            { value: item.supplier_name },
             { value: StrFn.formatWithZeros(item.id, 6) },
-            { value: item.supplier },
+            { value: longDate(item.date) },
             { value: item.store },
+            { value: item.category },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

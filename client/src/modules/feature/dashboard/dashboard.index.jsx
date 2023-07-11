@@ -29,10 +29,10 @@ const menulist = [
         cascade: false,
         children: [
             { name: "Purchase Order", href: "/purchase-order" },
-            { name: "Deliveries", href: "/deliveries" },
+            { name: "Delivery", href: "/delivery" },
             { name: "Inventory", href: "/inventory" },
             { name: "Stock Transfer", href: "/stock-transfer" },
-            { name: "Adjustments", href: "/adjustments" },
+            { name: "Adjustment", href: "/adjustment" },
         ]
     },
     {
@@ -50,7 +50,7 @@ const menulist = [
         icon: NewspaperIcon,
         cascade: false,
         children: [
-            { name: "Branches", href: "/branch" },
+            { name: "Branches", href: "/branch", exclusive: "DevOp" },
             { name: "Suppliers", href: "/supplier" },
             { name: "Customers", href: "/customer" },
             { name: "Categories", href: "/category" },
@@ -78,8 +78,8 @@ const DashboardIndex = () => {
             <AppSidebar menulist={menulist} />
             <main className="flex flex-col md:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4]">
                 <AppBreadcrumbs pages={trail} />
-                <div className="p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto relative scroll-md">
-                    <div className="w-full flex flex-col bg-white border drop-shadow-md items-start p-5 text-xs min-h-full flex-none">
+                <div className="p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md">
+                    <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-5 text-xs min-h-full flex-none shadow-md">
                         <Outlet />
                     </div>
                 </div>

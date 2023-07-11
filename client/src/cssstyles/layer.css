@@ -55,6 +55,10 @@
         @apply block w-full rounded-md read-only:border-gray-300 shadow-sm focus:border-blue-500 focus:read-only:border-gray-300 focus:ring-blue-500 focus:read-only:ring-white disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm required:border-cyan-500;
     }
 
+    .item-field {
+        @apply block bg-transparent w-full border border-transparent shadow-sm focus:read-only:ring-0 focus:read-only:border-transparent;
+    }
+
     .select-field {
         @apply block w-full rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm required:border-cyan-500;
     }

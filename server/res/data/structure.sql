@@ -98,20 +98,20 @@ CREATE TABLE pos_stock_masterlist (
 );
 
 CREATE TABLE pos_purchase_order (
-    pord_id          int auto_increment primary key,
-    pord_time        timestamp DEFAULT now(),
-    pord_date        date,
-    pord_supplier    int,
-    pord_store       varchar(50),
-    pord_category    varchar(75),
-    pord_item_count  int,
-    pord_ordr_total  decimal(10,2),
-    pord_rqst_total  decimal(10,2),
-    pord_rcvd_total  decimal(10,2),
-    pord_progress    varchar(30),
-    pord_status      varchar(30) DEFAULT 'PENDING',
-    pord_expected    date,
-    pord_by          int
+    pord_id             int auto_increment primary key,
+    pord_time           timestamp DEFAULT now(),
+    pord_date           date,
+    pord_supplier       int,
+    pord_store          varchar(50),
+    pord_category       varchar(75),
+    pord_item_count     int DEFAULT 0,
+    pord_order_total    decimal(10,2) DEFAULT 0,
+    pord_request_total  decimal(10,2) DEFAULT 0,
+    pord_received_total decimal(10,2) DEFAULT 0,
+    pord_progress       varchar(30),
+    pord_status         varchar(30) DEFAULT 'PENDING',
+    pord_expected       date,
+    pord_by             int
 );
 
 CREATE TABLE pos_purchase_receivable (
@@ -121,7 +121,7 @@ CREATE TABLE pos_purchase_receivable (
     rcvb_variant     int,
     rcvb_costing     decimal(30,2),
     rcvb_ordered     decimal(10,2),
-    rcvb_balance     decimal(10,2),
+    rcvb_balance     decimal(10,2) DEFAULT 0,
     rcvb_received    decimal(10,2) DEFAULT 0
 );
 
@@ -159,6 +159,7 @@ CREATE TABLE pos_delivery_receipt (
     rcpt_product     int,
     rcpt_variant     int,
     rcpt_quantity    decimal(10,2),
+    rcpt_pricing     decimal(30,2)
 );
 
 CREATE TABLE pos_stock_inventory (
@@ -169,6 +170,7 @@ CREATE TABLE pos_stock_inventory (
     invt_category    varchar(75),
     invt_delivery    int DEFAULT 0,
     invt_purchase    int DEFAULT 0,
+    invt_receipt     int DEFAULT 0,
     invt_orderno     varchar(50),
     invt_supplier    int DEFAULT 0,
     invt_store       varchar(50),
@@ -179,10 +181,10 @@ CREATE TABLE pos_stock_inventory (
     invt_base        decimal(30,2),
     invt_price       decimal(30,2),
     invt_barcode     varchar(99),
-    invt_alert       decimal(10,2),
-    invt_acquisition varchar(10) DEFAULT 'PROCUREMENT',
-    invt_sold_total  decimal(10,2),
-    invt_trni_total  decimal(10,2)
+    invt_alert       decimal(10,2) DEFAULT 0,
+    invt_acquisition varchar(20) DEFAULT 'PROCUREMENT',
+    invt_sold_total  decimal(10,2) DEFAULT 0,
+    invt_trni_total  decimal(10,2) DEFAULT 0
 );
 
 CREATE TABLE pos_stock_price_adjust (

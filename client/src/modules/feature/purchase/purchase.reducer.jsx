@@ -6,6 +6,7 @@ const initialState = {
     item: {},
     manager: false,
     notifier: false,
+    selector: 0,
     perpage: 150,
     display: {
         name: "Purchase",
@@ -14,9 +15,11 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'PO No.', stack: true, sort: 'id' },
-            { name: 'Supplier', stack: false, sort: 'supplier', size: 250 },
-            { name: 'Branch', stack: false, sort: 'store', size: 250 },
+            { name: 'Supplier', stack: false, sort: 'supplier_name' },
+            { name: 'PO No.', stack: true, sort: 'id', size: 180 },
+            { name: 'PO Date', stack: true, sort: 'date', size: 200 },
+            { name: 'Branch', stack: false, sort: 'store', size: 180 },
+            { name: 'Category', stack: false, sort: 'category', size: 180 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }
@@ -28,6 +31,12 @@ const purchaseSlice = createSlice({
     reducers: {
         setPurchaseData: (state, action) => {
             state.data = action.payload
+        },
+        showPurchaseSelector: (state, action) => {
+            state.selector = action.payload
+        },
+        resetPurchaseSelector: (state) => {
+            state.selector = 0
         },
         setPurchaseItem: (state, action) => {
             state.item = action.payload
@@ -57,6 +66,8 @@ const purchaseReducer = purchaseSlice.reducer
 
 export const {
     setPurchaseData,
+    showPurchaseSelector,
+    resetPurchaseSelector,
     setPurchaseItem,
     resetPurchaseItem,
     setPurchaseNotifier,

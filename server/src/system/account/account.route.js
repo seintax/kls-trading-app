@@ -6,7 +6,7 @@ router
     .route('/account')
     .post(hash, service._create)
     .get(secure, service._record)
-    .patch(secure, service._update)
+    .patch([hash, secure], service._update)
     .delete(secure, service._delete)
 router.get('/account/id', secure, service._findone)
 router.get('/account/search', secure, service._search)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -117,9 +117,9 @@ const ReceivableManage = () => {
             .min(1, "Purchase cost is required")
     })
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         dispatch(resetReceivableManager())
-    }
+    }, [])
 
     const onCompleted = () => {
         dispatch(setReceivableNotifier(true))

@@ -143,16 +143,18 @@ class Param {
 }
 
 class Table {
-    constructor(name, fields) {
+    constructor(name, fields, foreign) {
         this.name = name
         this.associated = {
             items: {},
             assoc: {}
         }
+        this.foreign = foreign
         this.statements = {}
         let props_ = {}
         let alias_ = {}
         this.fields = {}
+        this.included = {}
         for (const prop in fields) {
             let field = new Field(prop, fields[prop])
             props_ = {
@@ -168,6 +170,16 @@ class Table {
                 [prop]: field
             }
         }
+        if (foreign?.length) {
+            foreign?.map(ref => {
+                for (const prop in ref?.include) {
+                    alias_ = {
+                        ...alias_,
+                        [ref?.include[prop]]: prop
+                    }
+                }
+            })
+        }
         this.fields = {
             ...this.fields,
             props_: props_,
@@ -182,6 +194,26 @@ class Table {
             associated: this.associated,
             statements: this.statements
         }
+    }
+
+    conjoin(clause = undefined, type = undefined) {
+        let strindex = "bcdefghijklmnopqrstuvwxyz".split("")
+        let table = this.name
+        let parameters = []
+        if (this.foreign?.length) {
+            table = `${table} a`
+            if (type === "JOIN") {
+                return `${table} WHERE `
+            }
+            this.foreign?.map((item, i) => {
+                table = `${table}, ${item.reference.table} ${strindex[i]}`
+                parameters.push(`a.${item.key} = ${strindex[i]}.${item.reference.key}`)
+            })
+            return `${table} WHERE ${parameters.join(" AND ")}${clause ? ` AND ${clause}` : ""}`
+        }
+        return clause
+            ? `${table} WHERE ${clause}`
+            : `${table} `
     }
 
     insert(request) {
@@ -276,7 +308,7 @@ class Table {
         let order = orderarray && orderarray.length ? ` ORDER BY ${orderarray.join(", ")}` : ""
         let limit = limitcount ? ` LIMIT ${limitcount}` : ""
         return {
-            sql: `SELECT * FROM ${this.name} ${order}${limit}`,
+            sql: `SELECT * FROM ${this.conjoin()}${order}${limit}`,
             aka: this.fields.alias_,
             fnc: this.maskall
         }
@@ -287,7 +319,7 @@ class Table {
         let order = orderarray && orderarray.length ? ` ORDER BY ${orderarray.join(", ")}` : ""
         let limit = limitcount ? ` LIMIT ${limitcount}` : ""
         return {
-            sql: `SELECT * FROM ${this.name} WHERE ${clause}${order}${limit}`,
+            sql: `SELECT * FROM ${this.conjoin(clause)}${order}${limit}`,
             arr: paramarray,
             aka: this.fields.alias_,
             fnc: this.maskall

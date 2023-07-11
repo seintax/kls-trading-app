@@ -9,7 +9,6 @@ const initialState = {
     perpage: 150,
     display: {
         name: "Product",
-        text: "",
         show: false
     },
     header: {
@@ -18,10 +17,28 @@ const initialState = {
             { name: 'Variant', stack: false, sort: 'variant', size: 250 },
             { name: 'Requested', stack: false, sort: 'ordered', size: 250 },
             { name: 'Received', stack: false, sort: 'received', size: 250 },
-            { name: 'Cost', stack: false, sort: 'consting', size: 250 },
+            { name: 'Cost', stack: false, sort: 'costing', size: 250 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
-    }
+    },
+    injoiner: {
+        show: false,
+        size: "w-[800px] min-h-[400px]",
+        title: "Purchase Order Item",
+    },
+    listing: {
+        title: "Purchase Order Items",
+        description: "List of items contained in a single purchase order",
+        layout: {
+            showsubtext: true,
+            sizes: [
+                { size: "w-full" },
+                { size: "w-[100px] flex-none" },
+                { size: "w-[100px] flex-none" },
+                { size: "w-[150px] flex-none" },
+            ]
+        },
+    },
 }
 
 const receivableSlice = createSlice({
@@ -42,6 +59,18 @@ const receivableSlice = createSlice({
         },
         resetReceivableManager: (state) => {
             state.manager = false
+        },
+        showReceivableInjoiner: (state) => {
+            state.injoiner = {
+                ...state.injoiner,
+                show: true
+            }
+        },
+        resetReceivableInjoiner: (state) => {
+            state.injoiner = {
+                ...state.injoiner,
+                show: false
+            }
         },
         setReceivableNotifier: (state, action) => {
             state.notifier = action.payload
@@ -64,6 +93,8 @@ export const {
     setReceivableNotifier,
     showReceivableManager,
     resetReceivableManager,
+    showReceivableInjoiner,
+    resetReceivableInjoiner,
     resetReceivable
 } = receivableSlice.actions
 

@@ -1,7 +1,6 @@
 import StaticContainer from "./static.container"
-import StaticError from "./static.error"
+import StaticInvalid from "./static.invalid"
 import StaticLabel from "./static.label"
-import StaticNotice from "./static.notice"
 import StaticWrapper from "./static.wrapper"
 
 export default function Number(props) {
@@ -29,9 +28,10 @@ export default function Number(props) {
                     {...register(name)}
                     {...rest}
                 />
-                <StaticError name={name} errors={errors} />
+                {/* <StaticError name={name} errors={errors} /> */}
             </StaticWrapper>
-            <StaticNotice name={name} errors={errors} />
+            {/* <StaticNotice name={name} errors={errors} /> */}
+            <StaticInvalid name={name} errors={errors} />
         </StaticContainer>
     )
 }

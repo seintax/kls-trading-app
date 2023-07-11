@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel, FormatOptionsWithNewOption } from "../../../utilities/functions/array.functions"
-import { isDev, isEmpty } from "../../../utilities/functions/string.functions"
+import { isAdmin, isDev, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
@@ -30,19 +30,28 @@ const AccountManage = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            setInstantiated(true)
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
             await allBranches()
                 .unwrap()
                 .then(res => {
                     if (res.success) {
                         let initial = FormatOptionsWithEmptyLabel(res?.arrayResult, "code", "name", "Select branch")
-                        let options = isDev(auth) ? FormatOptionsWithNewOption(initial, { value: auth.store, key: "Development Team", data: {} }) : initial
+                        let devteam = [
+                            { value: "SysAd", key: "System Administrator", data: {} },
+                            { value: auth.store, key: "Development Team", data: {} },
+                        ]
+                        let admin = [
+                            { value: "SysAd", key: "System Administrator", data: {} }
+                        ]
+                        let options = isDev(auth) || isAdmin(auth)
+                            ? FormatOptionsWithNewOption(initial, isDev(auth) ? devteam : admin)
+                            : initial
                         setLibBranches(options)
 
                     }
                 })
                 .catch(err => console.error(err))
+            setInstantiated(true)
         }
 
         instantiate()
@@ -145,9 +154,9 @@ const AccountManage = () => {
             .oneOf([yup.ref('pass'), null], "Passwords do not match."),
     })
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         dispatch(resetAccountManager())
-    }
+    }, [])
 
     const onCompleted = () => {
         dispatch(setAccountNotifier(true))

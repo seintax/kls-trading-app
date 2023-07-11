@@ -62,7 +62,6 @@ const AccountLogin = () => {
                                     id="user"
                                     name="user"
                                     type="text"
-                                    autoComplete="off"
                                     placeholder="Email Address"
                                     value={login.user}
                                     required

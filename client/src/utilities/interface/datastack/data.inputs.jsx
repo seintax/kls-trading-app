@@ -1,3 +1,4 @@
+import { SquaresPlusIcon } from "@heroicons/react/20/solid"
 import { yupResolver } from "@hookform/resolvers/yup"
 import React, { useEffect } from 'react'
 import { useForm } from "react-hook-form"
@@ -5,10 +6,11 @@ import { useLocation } from "react-router-dom"
 import SpinnerIcon from "../../../assets/SpinnerIcon"
 import { useClientContext } from "../../context/client.context"
 
-const DataInputs = ({ formData, fields, change, submit, closed, segmented = false }) => {
+const DataInputs = ({ formData, fields, change, submit, closed, listing, header = true }) => {
     const location = useLocation()
     const { handleTrail } = useClientContext()
     const isEdit = !!formData.id
+    const saveText = isEdit ? "Update" : "Save"
     const {
         register,
         setValue,
@@ -56,24 +58,20 @@ const DataInputs = ({ formData, fields, change, submit, closed, segmented = fals
         reset(formData?.values, { keepDefaultValues: true })
     }
 
-    const toggleCancel = () => {
-        closed()
-    }
-
     const preventSubmit = (e) => {
         e.preventDefault()
     }
 
     return (
         <div className="w-full h-full py-2 px-2">
-            <div className={"h-full px-4 py-5 sm:p-6 shadow bg-white rounded"}>
+            <div className="h-full px-6 py-4 shadow bg-white rounded">
                 <form
                     onSubmit={submit ? handleSubmit(doSubmit) : preventSubmit}
-                    className={`w-full h-full space-y-8 flex flex-col ${segmented ? "" : "justify-between"}`}
+                    className={`w-full h-full flex flex-col ${listing ? "" : "justify-between"}`}
                 >
-                    <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+                    <div className="space-y-4 divide-y divide-gray-200 sm:space-y-5">
                         <div className="space-y-6 sm:space-y-5 w-full">
-                            <div className="flex items-center justify-between pb-5">
+                            <div className={header ? "flex items-center justify-between pb-5" : "hidden"}>
                                 <div className="text-lg font-medium leading-6 text-[#010a3a] uppercase">
                                     {isEdit ? `Edit ${formData.name}` : `Add ${formData.name}`}
                                 </div>
@@ -95,21 +93,29 @@ const DataInputs = ({ formData, fields, change, submit, closed, segmented = fals
                             >
                                 Reset
                             </button>
+                            {
+                                (closed) ? (
+                                    <button
+                                        type="button"
+                                        className="button-cancel ease-in duration-300"
+                                        onClick={closed}
+                                        tabIndex={-1}
+                                    >
+                                        Cancel
+                                    </button>
+                                ) : null
+                            }
                             <button
-                                type="button"
-                                className="button-cancel ease-in duration-300"
-                                onClick={() => toggleCancel()}
-                                tabIndex={-1}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                disabled={isSubmitting}
                                 type="submit"
-                                className={`button-submit`}
+                                disabled={isSubmitting}
+                                className="button-submit flex gap-3 items-center"
                             >
-                                {isSubmitting && <SpinnerIcon />}
-                                {isSubmitting ? "Saving..." : "Save"}
+                                {isSubmitting
+                                    ? <SpinnerIcon />
+                                    : <SquaresPlusIcon className="w-4 h-4" />}
+                                {isSubmitting
+                                    ? "Saving..."
+                                    : saveText}
                             </button>
                         </div>
                     </div>

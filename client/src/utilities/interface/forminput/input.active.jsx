@@ -21,6 +21,7 @@ import Display from "./input.display"
 import Email from "./input.email"
 import File from "./input.file"
 import Group from "./input.group"
+import Item from "./input.item"
 import Listbox from "./input.listbox"
 import Number from "./input.number"
 import Password from "./input.password"
@@ -44,7 +45,8 @@ const FormEl = {
     Percent,
     Radio,
     Select,
-    Text
+    Text,
+    Item,
 }
 
 export default FormEl

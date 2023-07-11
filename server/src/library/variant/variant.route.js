@@ -13,5 +13,6 @@ router.get('/variant/search', secure, service._search)
 router.post('/variant/specify', service._specify)
 
 router.get('/variant/byproduct', service.byProduct)
+router.get('/variant/bycategory', service.byCategory)
 
 module.exports = router

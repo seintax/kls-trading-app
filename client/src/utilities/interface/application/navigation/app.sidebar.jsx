@@ -6,10 +6,13 @@ import {
 import { Fragment, useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { userNavigation } from "../../../../modules/feature/dashboard/dashboard.index.jsx"
+import { isEmpty } from "../../../functions/string.functions.jsx"
+import useAuth from "../../../hooks/useAuth.jsx"
 import AppLogo from "../aesthetics/app.logo.jsx"
 import AppNavigation from "./app.navigation.jsx"
 
 export default function AppSideBar({ menulist }) {
+    const auth = useAuth()
     const navigate = useNavigate()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [sidebarMenu, setSidebarMenu] = useState([])
@@ -63,6 +66,11 @@ export default function AppSideBar({ menulist }) {
         handleSidebarOpen(false)
     }
 
+    const isVisible = (exclusive) => {
+        if (isEmpty(exclusive) || exclusive === auth.store) return true
+        return false
+    }
+
     const activeLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-primary-200"
     const normalLink = "text-secondary-500 hover:bg-gradient-to-b hover:from-primary-300 hover:via-primary-300 hover:to-primary-400 hover:text-secondary-500 border border-transparent hover:border-secondary-400"
 
@@ -100,7 +108,7 @@ export default function AppSideBar({ menulist }) {
                             {item.cascade && item.children.map((subItem) => (
                                 <div
                                     key={subItem.name}
-                                    className={`${subItem.current ? activeLink : normalLink} group mt-1 flex items-center pl-[43px] pr-2 py-2 text-xs font-medium rounded-md cursor-pointer`}
+                                    className={`${subItem.current ? activeLink : normalLink} group mt-1 flex items-center pl-[43px] pr-2 py-2 text-xs font-medium rounded-md cursor-pointer ${isVisible(subItem?.exclusive) ? "" : "hidden"}`}
                                     onClick={() => handleSubMenuSelect(item, subItem)}
                                 >
                                     {subItem.name}

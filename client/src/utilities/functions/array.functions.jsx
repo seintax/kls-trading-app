@@ -9,8 +9,11 @@ export function SelectOptionsWithEmptyLabel(stringArray, emptyLabel) {
     return [{ value: "", key: emptyLabel }, ...options]
 }
 
-export function FormatOptionsWithNewOption(dataArray, newOption) {
-    return [...dataArray, { value: newOption.value, key: newOption.key, data: newOption?.data || {} }]
+export function FormatOptionsWithNewOption(dataArray, newOptions) {
+    let options = newOptions?.map(arr => {
+        return { value: arr.value, key: arr.key, data: arr?.data || {} }
+    })
+    return [...dataArray, ...options]
 }
 
 export function FormatOptionsWithEmptyLabel(dataArray, valueProp, nameProp, emptyLabel) {

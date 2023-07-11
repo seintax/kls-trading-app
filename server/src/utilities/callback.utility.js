@@ -54,6 +54,8 @@ const poolarray = handler(async (param, callback) => {
     })
 })
 
+const mysqlpool = my.pool
+
 module.exports = {
     force,
     proceed,
@@ -61,5 +63,6 @@ module.exports = {
     poolalter,
     poolremove,
     poolwrap,
-    poolarray
+    poolarray,
+    mysqlpool
 }

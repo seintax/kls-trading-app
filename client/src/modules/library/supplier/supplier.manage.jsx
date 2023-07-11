@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -23,8 +23,9 @@ const SupplierManage = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            setInstantiated(true)
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
+
+            setInstantiated(true)
         }
 
         instantiate()
@@ -132,9 +133,9 @@ const SupplierManage = () => {
             .required('Cellphone no. is required.')
     })
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         dispatch(resetSupplierManager())
-    }
+    }, [])
 
     const onCompleted = () => {
         dispatch(setSupplierNotifier(true))

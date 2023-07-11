@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
@@ -57,42 +57,29 @@ const VariantIndex = () => {
         dispatch(showVariantManager())
     }
 
-    const moveBack = () => {
-        dispatch(resetMasterlistItem())
-        navigate('/masterlist')
-    }
-
-    const showList = () => {
-        dispatch(resetVariantItem())
-        dispatch(resetVariantManager())
-    }
-
     const actions = () => {
         return [
             { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry }
         ]
     }
 
+    const moveBack = useCallback(() => {
+        dispatch(resetMasterlistItem())
+        navigate('/masterlist')
+    }, [])
+
+    const returnToList = useCallback(() => {
+        dispatch(resetVariantItem())
+        dispatch(resetVariantManager())
+    }, [])
+
     return (
         <>
-            {/* <div className="text-lg w-full py-2 px-8 sm:px-6 lg:px-8 flex gap-2 justify-between items-center bg-gray-300 rounded-md">
-                <div className="flex flex-col gap-2">
-                    <span className="text-xs no-select">Current Masterlist: </span>
-                    <span className="font-bold">{masterlistSelector.item.name} | {masterlistSelector.item.category}</span>
-                </div>
-                <button type="button" className="button-back h-10" onClick={() => moveBack()} tabIndex={-1} >
-                    Back to Masterlist
-                </button>
-            </div> */}
             <DataHeader
                 label="Masterlist"
                 name={`(${masterlistSelector.item.id}) ${masterlistSelector.item.name} | ${masterlistSelector.item.category}`}
-                callback={{
-                    fn: () => moveBack(),
-                    ls: dataSelector.manager
-                        ? () => showList()
-                        : undefined
-                }}
+                movecallback={moveBack}
+                returncallback={dataSelector.manager ? returnToList : undefined}
             />
             {
                 (dataSelector.manager) ? (

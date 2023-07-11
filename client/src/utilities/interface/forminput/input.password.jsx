@@ -1,9 +1,8 @@
 import { EyeIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
 import StaticContainer from "./static.container"
-import StaticError from "./static.error"
+import StaticInvalid from "./static.invalid"
 import StaticLabel from "./static.label"
-import StaticNotice from "./static.notice"
 import StaticWrapper from "./static.wrapper"
 
 export default function Password(props) {
@@ -35,9 +34,10 @@ export default function Password(props) {
                 <div className="absolute right-0 mr-1 cursor-pointer p-2" onMouseDown={() => setview("text")} onMouseUp={() => setview("password")} onMouseLeave={() => setview("password")}>
                     <EyeIcon className="w-4 h-4" />
                 </div>
-                <StaticError name={name} errors={errors} />
+                {/* <StaticError name={name} errors={errors} /> */}
             </StaticWrapper>
-            <StaticNotice name={name} errors={errors} />
+            {/* <StaticNotice name={name} errors={errors} /> */}
+            <StaticInvalid name={name} errors={errors} />
         </StaticContainer>
     )
 }

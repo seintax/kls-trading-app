@@ -11,5 +11,7 @@ router
 router.get('/receivable/id', secure, service._findone)
 router.get('/receivable/search', secure, service._search)
 router.post('/receivable/specify', service._specify)
+router.get('/receivable/bypurchase', service.byPurchase)
+router.get('/receivable/bybalance', service.byBalance)
 
 module.exports = router

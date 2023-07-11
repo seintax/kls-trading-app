@@ -6,7 +6,15 @@ export const isEmpty = (value) => {
 }
 
 export const isDev = (auth) => {
-    return auth?.store === "DEV TEAM"
+    return auth?.store === "DevOp"
+}
+
+export const isAdmin = (auth) => {
+    return auth?.store === "SysAd"
+}
+
+export const safeValue = (value) => {
+    return value || ""
 }
 
 const formatWithZeros = (str, maxcount) => {

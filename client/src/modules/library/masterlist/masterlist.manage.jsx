@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
@@ -28,7 +28,6 @@ const MasterlistManage = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            setInstantiated(true)
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
             await allCategory()
                 .unwrap()
@@ -37,6 +36,7 @@ const MasterlistManage = () => {
                         setLibCategories(FormatOptionsWithEmptyLabel(res?.arrayResult, "name", "name", "Select category"))
                 })
                 .catch(err => console.error(err))
+            setInstantiated(true)
         }
 
         instantiate()
@@ -106,9 +106,9 @@ const MasterlistManage = () => {
             .required('Category is required.')
     })
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         dispatch(resetMasterlistManager())
-    }
+    }, [])
 
     const onCompleted = () => {
         dispatch(setMasterlistNotifier(true))

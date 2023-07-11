@@ -1,7 +1,6 @@
 import StaticContainer from "./static.container"
-import StaticError from "./static.error"
+import StaticInvalid from "./static.invalid"
 import StaticLabel from "./static.label"
-import StaticNotice from "./static.notice"
 import StaticWrapper from "./static.wrapper"
 
 export default function Select(props) {
@@ -24,8 +23,8 @@ export default function Select(props) {
                 <>
                     {
                         options?.map((option, index) => (
-                            <option key={index} value={option.value || option}>
-                                {option.key || option}
+                            <option key={index} value={option.value}>
+                                {option.key}
                             </option>
                         ))
                     }
@@ -52,9 +51,10 @@ export default function Select(props) {
                 >
                     {renderOptions(options)}
                 </select>
-                <StaticError name={name} errors={errors} />
+                {/* <StaticError name={name} errors={errors} /> */}
             </StaticWrapper>
-            <StaticNotice name={name} errors={errors} />
+            {/* <StaticNotice name={name} errors={errors} /> */}
+            <StaticInvalid name={name} errors={errors} />
         </StaticContainer>
     )
 }

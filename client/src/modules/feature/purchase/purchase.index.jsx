@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import PurchaseManage from "./purchase.manage"
 import PurchaseRecords from "./purchase.records"
-import { resetPurchaseItem, setPurchaseData, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
+import { resetPurchaseItem, resetPurchaseSelector, setPurchaseData, setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
 import { useFetchAllPurchaseMutation } from "./purchase.services"
 
 const PurchaseIndex = () => {
@@ -19,15 +19,22 @@ const PurchaseIndex = () => {
                     if (res.success) {
                         dispatch(setPurchaseData(res?.arrayResult))
                         dispatch(setPurchaseNotifier(false))
+                        if (dataSelector.selector > 0) {
+                            let id = dataSelector.selector
+                            let items = res?.arrayResult?.filter(item => item.id === id)
+                            let item = items.length ? items[0] : {}
+                            dispatch(setPurchaseItem(item))
+                            dispatch(resetPurchaseSelector())
+                        }
                     }
                 })
                 .catch(err => console.error(err))
             return
         }
-        if (dataSelector.data.length === 0 || dataSelector.notifier) {
+        if (dataSelector.data.length === 0 || dataSelector.notifier || dataSelector.selector > 0) {
             instantiate()
         }
-    }, [dataSelector.notifier])
+    }, [dataSelector.notifier, dataSelector.selector])
 
     useEffect(() => {
         if (!isLoading && isSuccess) {

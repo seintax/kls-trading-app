@@ -60,12 +60,12 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
     return (
         <>
             <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg">
-                <table className="flex-col min-w-full divide-y border-separate divide-gray-300" style={{ borderSpacing: 0 }}>
+                <table className="flex-col w-full divide-y border-separate divide-gray-300" style={{ borderSpacing: 0 }}>
                     <thead className="">
                         <tr className={`${columns?.style}`}>
                             <th
                                 scope="col"
-                                className={`hidden lg:table-cell sticky top-0 z-10 bg-gray-200 backdrop-blur border-b border-gray-300 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top no-select shadow-sm`}
+                                className={`hidden lg:table-cell sticky top-0 z-5 bg-gray-200 backdrop-blur border-b border-gray-300 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top no-select shadow-sm`}
                             >
                                 #
                             </th>
@@ -76,7 +76,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             key={colindex}
                                             scope="col"
                                             width={col.size}
-                                            className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-10 backdrop-blur border-b border-gray-300 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 bg-gray-200 align-top shadow-sm ${col.style}`}
+                                            className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-5 backdrop-blur border-b border-gray-300 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 bg-gray-200 align-top shadow-sm ${col.style}`}
                                         >
                                             <div
                                                 className={`w-full flex items-center ${setPosition(col.position)} gap-[10px] group ${col.sort ? "cursor-pointer" : ""}`}

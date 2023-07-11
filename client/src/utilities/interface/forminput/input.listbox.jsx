@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
 import StaticContainer from "./static.container"
-import StaticError from "./static.error"
+import StaticInvalid from "./static.invalid"
 import StaticLabel from "./static.label"
-import StaticNotice from "./static.notice"
 import StaticWrapper from "./static.wrapper"
 
 export default function Listbox(props) {
@@ -68,7 +67,7 @@ export default function Listbox(props) {
     return (
         <StaticContainer style={wrapper}>
             {label && (<StaticLabel name={name} label={label} optional={optional} />)}
-            <StaticWrapper isblock={false}>
+            <StaticWrapper>
                 <div className="flex flex-col w-full gap-2">
                     <div className="w-full min-h-[100px] max-h-[200px] overflow-auto rounded-[5px] border border-1 border-gray-300 flex flex-col">
                         {
@@ -106,9 +105,10 @@ export default function Listbox(props) {
                         {...rest}
                     />
                 </div>
-                <StaticError name={name} errors={errors} />
+                {/* <StaticError name={name} errors={errors} /> */}
             </StaticWrapper>
-            <StaticNotice name={name} errors={errors} />
+            {/* <StaticNotice name={name} errors={errors} /> */}
+            <StaticInvalid name={name} errors={errors} />
         </StaticContainer>
     )
 }

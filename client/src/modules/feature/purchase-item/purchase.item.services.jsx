@@ -59,6 +59,22 @@ export const receivableApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['receivable']
         }),
+        byPurchaseReceivable: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bypurchase`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['receivable']
+        }),
+        byBalanceReceivable: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bybalance`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['receipt']
+        }),
     })
 })
 
@@ -70,4 +86,6 @@ export const {
     useFetchAllReceivableMutation,
     useSearchReceivableMutation,
     useSpecifyReceivableMutation,
+    useByPurchaseReceivableMutation,
+    useByBalanceReceivableMutation,
 } = receivableApiSlice

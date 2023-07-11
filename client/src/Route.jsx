@@ -2,6 +2,8 @@ import React from 'react'
 import { Route, Routes } from "react-router-dom"
 import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
 import DashboardPanel from "./modules/feature/dashboard/dashboard.panel"
+import DeliveryIndex from "./modules/feature/delivery/delivery.index"
+import InventoryIndex from "./modules/feature/inventory/inventory.index"
 import PurchaseIndex from "./modules/feature/purchase/purchase.index"
 import BranchIndex from "./modules/library/branch/branch.index"
 import CategoryIndex from "./modules/library/category/category.index"
@@ -27,6 +29,8 @@ const AppRoute = () => {
                 <Route element={<DashboardIndex />}>
                     <Route path="/dashboard" element={<DashboardPanel />} />
                     <Route path="/purchase-order" element={<PurchaseIndex />} />
+                    <Route path="/delivery" element={<DeliveryIndex />} />
+                    <Route path="/inventory" element={<InventoryIndex />} />
 
                     <Route path="/supplier" element={<SupplierIndex />} />
                     <Route path="/customer" element={<CustomerIndex />} />

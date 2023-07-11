@@ -27,6 +27,9 @@ app.use('/', require('./res/routes/root'))
 
 app.use('/app', approutes.purchase)
 app.use('/app', approutes.receivable)
+app.use('/app', approutes.delivery)
+app.use('/app', approutes.receipt)
+app.use('/app', approutes.inventory)
 
 app.use('/app', approutes.category)
 app.use('/app', approutes.masterlist)
@@ -38,6 +41,8 @@ app.use('/app', approutes.branch)
 
 app.use('/app', approutes.account)
 app.use('/app', approutes.schedule)
+
+app.use('/app', approutes.complex)
 
 app.all('*', (req, res) => {
     if (req.accepts('html')) {

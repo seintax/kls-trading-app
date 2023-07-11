@@ -80,7 +80,20 @@ const byProduct = handler(async (req, res) => {
     let clause = [f(product).IsEqual()]
     let series = [f(id).Asc()]
     let limits = undefined
-    console.log(param.product)
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
+const byCategory = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { category, id } = helper.fields
+    let params = [p(param.category).Exactly()]
+    let clause = [f(category).IsEqual()]
+    let series = [f(id).Asc()]
+    let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -96,5 +109,6 @@ module.exports = {
     _search,
     _specify,
     _findone,
-    byProduct
+    byProduct,
+    byCategory
 }

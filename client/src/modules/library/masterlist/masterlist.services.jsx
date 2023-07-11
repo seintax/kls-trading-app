@@ -59,6 +59,14 @@ export const masterlistApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['masterlist']
         }),
+        byCategoryMasterlist: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bycategory`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['variant']
+        }),
     })
 })
 
@@ -70,4 +78,5 @@ export const {
     useFetchAllMasterlistMutation,
     useSearchMasterlistMutation,
     useSpecifyMasterlistMutation,
+    useByCategoryMasterlistMutation,
 } = masterlistApiSlice

@@ -50,7 +50,7 @@ export default function useToast() {
                         <b>Error</b>:
                     </span>
                 </div>
-                <div className="pl-10 text-sm text-justify break-all">{message}</div>
+                <div className="pl-10 text-sm">{message}</div>
             </div>
         </>, options)
     }
@@ -75,7 +75,7 @@ export default function useToast() {
         toast(<>
             <div className="flex py-2 h-full items-start">
                 <span className="mr-3 text-xl">✅</span>
-                <span className="text-sm h-full flex items-center py-1 text-justify break-all">
+                <span className="text-sm h-full flex items-center py-1">
                     {message}
                 </span>
             </div>
@@ -101,7 +101,7 @@ export default function useToast() {
         toast(<>
             <div className="flex py-2 h-full items-start">
                 <span className="mr-3 text-xl">⚠️</span>
-                <span className="text-sm h-full flex items-center py-1 text-justify break-all">
+                <span className="text-sm h-full flex items-center py-1">
                     {message}
                 </span>
             </div>
@@ -131,7 +131,7 @@ export default function useToast() {
                         <b>Deletion</b>: {moment(new Date()).format("MM-DD-YYYY hh:mm:ss A")}
                     </span>
                 </div>
-                <div className="pl-10 text-sm text-justify break-all">{message}</div>
+                <div className="pl-10 text-sm">{message}</div>
             </div>
         </>, options)
     }
@@ -159,7 +159,7 @@ export default function useToast() {
                         <b>Modification</b>: {moment(new Date()).format("MM-DD-YYYY hh:mm:ss A")}
                     </span>
                 </div>
-                <div className="pl-10 text-sm text-justify break-all">{message}</div>
+                <div className="pl-10 text-sm">{message}</div>
             </div>
         </>, options)
     }
@@ -187,7 +187,7 @@ export default function useToast() {
                         <b>Creation</b>: {moment(new Date()).format("MM-DD-YYYY hh:mm:ss A")}
                     </span>
                 </div>
-                <div className="pl-10 text-sm text-justify break-all">{message}</div>
+                <div className="pl-10 text-sm">{message}</div>
             </div>
         </>, options)
     }
