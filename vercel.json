@@ -1,13 +1,13 @@
 {
     "rewrites": [
         {
-            "source": "/server/(.*)",
-            "destination": "/server/api"
+            "source": "/(.*)",
+            "destination": "/api"
         }
     ],
     "headers": [
         {
-            "source": "/server/(.*)",
+            "source": "/(.*)",
             "headers": [
                 {
                     "key": "Access-Control-Allow-Credentials",
