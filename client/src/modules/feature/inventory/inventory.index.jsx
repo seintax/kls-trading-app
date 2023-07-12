@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import InventoryRecords from "./inventory.records"
 import { resetInventoryItem, setInventoryData, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
-import { useFetchAllInventoryMutation } from "./inventory.services"
+import { useFetchAllInventoryBranchMutation } from "./inventory.services"
 
 const InventoryIndex = () => {
-    const [allInventory, { isLoading, isError, isSuccess }] = useFetchAllInventoryMutation()
+    const [allInventory, { isLoading, isError, isSuccess }] = useFetchAllInventoryBranchMutation()
     const dataSelector = useSelector(state => state.inventory)
     const dispatch = useDispatch()
 

@@ -46,6 +46,14 @@ export const inventoryApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['inventory']
         }),
+        fetchAllInventoryBranch: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/branch`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['inventory']
+        }),
         searchInventory: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/search`,
@@ -79,6 +87,7 @@ export const {
     useDeleteInventoryMutation,
     useDistinctInventoryMutation,
     useFetchAllInventoryMutation,
+    useFetchAllInventoryBranchMutation,
     useSearchInventoryMutation,
     useSpecifyInventoryMutation,
     useByStocksInventoryMutation,
