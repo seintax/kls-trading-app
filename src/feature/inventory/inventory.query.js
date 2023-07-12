@@ -1,6 +1,7 @@
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
 const helper = require('./inventory.helper')
+const branch = require('./inventory.branch')
 const { Param, Field } = require("../../utilities/builder.utility")
 
 function p(object) {
@@ -37,6 +38,14 @@ const _delete = handler(async (req, res) => {
 
 const _record = handler(async (req, res) => {
     const builder = helper.records()
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
+const _branch = handler(async (req, res) => {
+    const builder = branch.records()
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
@@ -90,6 +99,7 @@ const byStocks = handler(async (req, res) => {
 module.exports = {
     _create,
     _record,
+    _branch,
     _update,
     _delete,
     _search,
