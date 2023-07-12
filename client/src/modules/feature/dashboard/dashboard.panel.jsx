@@ -26,7 +26,7 @@ const DashboardPanel = ({ id }) => {
     return (
         <div className="h-[1500px] flex-none">
             <div className="flex flex-col gap-3">
-                <button className="button-link" onClick={() => toast.userNotify("watas")}>Welcome</button>
+                {/* <button className="button-link" onClick={() => toast.userNotify("watas")}>Welcome</button>
                 <button className="button-link" onClick={() => toast.showError("Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, nihil corrupti sit eius praesentium similique illo odit quibusdam doloremque eum repellat voluptate iusto! Voluptatum deleniti incidunt adipisci! Id, soluta omnis?")}>Error</button>
                 <button className="button-link" onClick={() => toast.showSuccess("Successful action")}>Success</button>
                 <button className="button-link" onClick={() => toast.showWarning("Lorem eawer awrawea weaw rawr aawdaw awe aw rawr awraw raweawe awe raw rawraweawe awe")}>Warning</button>
@@ -36,7 +36,7 @@ const DashboardPanel = ({ id }) => {
                 <button className="button-link" onClick={() => fetch()}>Pending</button>
                 <button className="button-link" onClick={() => setLoadId(toast.showLoading("Loading..."))}>Loading</button>
                 <button className="button-link" onClick={() => toast.updateLoading(loadId, "Updating id", true)}>Upadte Loading</button>
-                <button className="button-link" onClick={() => toast.updateLoading(loadId, "Finished id", false, "success")}>Finish Loading</button>
+                <button className="button-link" onClick={() => toast.updateLoading(loadId, "Finished id", false, "success")}>Finish Loading</button> */}
             </div>
         </div>
     )

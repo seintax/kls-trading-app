@@ -4,6 +4,8 @@ import deliveryReducer from "../../modules/feature/delivery/delivery.reducer"
 import inventoryReducer from "../../modules/feature/inventory/inventory.reducer"
 import receivableReducer from "../../modules/feature/purchase-item/purchase.item.reducer"
 import purchaseReducer from "../../modules/feature/purchase/purchase.reducer"
+import transmitReducer from "../../modules/feature/transfer-item/transfer.item.reducer"
+import transferReducer from "../../modules/feature/transfer/transfer.reducer"
 import branchReducer from "../../modules/library/branch/branch.reducer"
 import categoryReducer from "../../modules/library/category/category.reducer"
 import customerReducer from "../../modules/library/customer/customer.reducer"
@@ -34,6 +36,8 @@ const store = configureStore({
         delivery: deliveryReducer,
         receipt: receiptReducer,
         inventory: inventoryReducer,
+        transfer: transferReducer,
+        transmit: transmitReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

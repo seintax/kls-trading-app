@@ -23,6 +23,8 @@ const inventory = new Table("pos_stock_inventory", {
     acquisition: 'invt_acquisition',
     sold_total: 'invt_sold_total',
     trni_total: 'invt_trni_total',
+    trni_source: 'invt_trni_source',
+    trni_transfer: 'invt_trni_transfer',
 }, [
     {
         key: "invt_product",

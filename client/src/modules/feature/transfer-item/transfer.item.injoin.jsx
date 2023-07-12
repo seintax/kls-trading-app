@@ -7,13 +7,13 @@ import useYup from "../../../utilities/hooks/useYup"
 import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
-import { useByBalanceReceivableMutation } from "../purchase-item/purchase.item.services"
-import { resetReceiptInjoiner, setReceiptNotifier } from "./delivery.item.reducer"
-import { useCreateReceiptBySqlTransactionMutation, useUpdateReceiptMutation } from "./delivery.item.services"
+import { useByStocksInventoryMutation } from "../inventory/inventory.services"
+import { resetTransmitInjoiner, setTransmitNotifier } from "./transfer.item.reducer"
+import { useCreateTransmitBySqlTransactionMutation, useUpdateTransmitMutation } from "./transfer.item.services"
 
-const ReceiptInjoin = () => {
-    const dataSelector = useSelector(state => state.receipt)
-    const deliverySelector = useSelector(state => state.delivery)
+const TransmitInjoin = () => {
+    const dataSelector = useSelector(state => state.transmit)
+    const transferSelector = useSelector(state => state.transfer)
     const dispatch = useDispatch()
     const [instantiated, setInstantiated] = useState(false)
     const [listener, setListener] = useState()
@@ -22,28 +22,28 @@ const ReceiptInjoin = () => {
     const { yup } = useYup()
     const toast = useToast()
 
-    const [libReceivables, setLibReceivables] = useState()
+    const [libInventory, setLibInventory] = useState()
     const [libSuppliers, setLibSuppliers] = useState()
 
-    const [balancedReceivables] = useByBalanceReceivableMutation()
+    const [stockedInventory] = useByStocksInventoryMutation()
     const [allSuppliers] = useFetchAllSupplierMutation()
-    const [createReceipt] = useCreateReceiptBySqlTransactionMutation()
-    const [updateReceipt] = useUpdateReceiptMutation()
+    const [createTransmit] = useCreateTransmitBySqlTransactionMutation()
+    const [updateTransmit] = useUpdateTransmitMutation()
 
     useEffect(() => {
         const instantiate = async () => {
-            await balancedReceivables()
+            await stockedInventory()
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        let array = res?.arrayResult?.filter(arr => parseInt(arr.purchase_supplier) === parseInt(deliverySelector.item.supplier) && arr.purchase_store === deliverySelector.item.store)?.map(arr => {
+                        let array = res?.arrayResult?.filter(arr => arr.store === transferSelector.item.source && arr.category === transferSelector.item.category)?.map(arr => {
                             return {
                                 value: arr.id,
-                                key: `(PO#${StrFn.formatWithZeros(arr.purchase, 6)}) ${arr.product_name} | ${arr.variant_serial}/${arr.variant_model}/${arr.variant_brand}`,
+                                key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial}/${arr.variant_model}/${arr.variant_brand}`,
                                 data: arr
                             }
                         })
-                        setLibReceivables([{ value: "", key: "Select receivable", data: {} }, ...array])
+                        setLibInventory([{ value: "", key: "Select inventory item", data: {} }, ...array])
                     }
                 })
                 .catch(err => console.error(err))
@@ -57,10 +57,10 @@ const ReceiptInjoin = () => {
                 .catch(err => console.error(err))
             setInstantiated(true)
         }
-        if (dataSelector.injoiner.show && deliverySelector.item.id) {
+        if (dataSelector.injoiner.show && transferSelector.item.id) {
             instantiate()
         }
-    }, [deliverySelector.item.id, dataSelector.injoiner.show])
+    }, [transferSelector.item.id, dataSelector.injoiner.show])
 
     const init = (value, initial = "") => {
         if (!isEmpty(value)) {
@@ -85,117 +85,104 @@ const ReceiptInjoin = () => {
                 ? `${item.variant_serial}/${item.variant_model}/${item.variant_brand}`
                 : ""
             setValues({
-                receivable: init(item.receivable, ""),
+                item: init(item.item),
+                supplier: init(item.inventory_supplier),
                 supplier_name: init(item.supplier_name),
-                supplier: init(item.purchase_supplier),
-                purchase: init(item.purchase),
                 product: init(item.product),
-                variety_name: init(variant, ""),
+                variety_name: init(variant),
                 variety: init(item.variant),
-                ordered: init(item.receivable_ordered),
-                costing: init(item.receivable_costing),
-                balance: init(item.receivable_balance),
-                remaining: init(item.receivable_balance),
-                received: init(item.receivable_received),
-                receiving: init(item.receivable_received),
+                cost: init(item.inventory_cost),
+                base: init(item.inventory_base),
+                stocks: init(item.inventory_stocks),
+                remaining: init(item.inventory_stocks),
                 quantity: init(item.quantity),
-                pricing: init(item.pricing),
-                purchase_category: init(item.purchase_category),
-                purchase_receivedtotal: init(item.purchase_receivedtotal),
-                store: deliverySelector.item.store
+                category: init(item.inventory_category),
+                source: init(item.inventory_store),
+                destination: transferSelector.item.destination,
             })
         }
     }, [dataSelector.injoiner.show, instantiated])
 
     useEffect(() => {
         if (listener && dataSelector.injoiner.show) {
-            if (element === "receivable") {
-                let receivable = listener[element]
-                if (receivable) {
-                    let selection = libReceivables?.filter(f => parseInt(f.value) === parseInt(receivable))
+            if (element === "item") {
+                let item = listener[element]
+                if (item) {
+                    let selection = libInventory?.filter(f => parseInt(f.value) === parseInt(item))
                     let selected = selection?.length ? selection[0] : undefined
+                    console.log(selected)
                     if (selected?.data) {
                         console.log(selected?.data)
                         setValues({
-                            purchase: selected?.data?.purchase,
-                            supplier_name: provideValueFromLib(libSuppliers, selected?.data?.purchase_supplier),
-                            supplier: selected?.data?.purchase_supplier,
+                            supplier: selected?.data?.supplier,
+                            supplier_name: provideValueFromLib(libSuppliers, selected?.data?.supplier),
                             product: selected?.data?.product,
-                            costing: selected?.data?.costing,
                             variety_name: `${selected?.data?.variant_serial} / ${selected?.data?.variant_model} / ${selected?.data?.variant_brand}`,
                             variety: selected?.data?.variant,
-                            ordered: selected?.data?.ordered,
-                            balance: selected?.data?.balance,
-                            remaining: parseInt(selected?.data?.balance) - parseInt(listener["quantity"] || 0),
-                            received: selected?.data?.received,
-                            receiving: parseInt(selected?.data?.received) + parseInt(listener["quantity"] || 0),
-                            purchase_receivedtotal: selected?.data?.purchase_receivedtotal,
-                            receivedtotal: parseInt(selected?.data?.purchase_receivedtotal) + parseInt(listener["quantity"] || 0),
-                            purchase_category: selected?.data?.purchase_category,
+                            cost: selected?.data?.cost,
+                            base: selected?.data?.base,
+                            stocks: selected?.data?.stocks,
+                            balance: selected?.data?.stocks,
+                            remaining: parseInt(selected?.data?.stocks) - parseInt(listener["quantity"] || 0),
+                            category: selected?.data?.category,
+                            source: selected?.data?.store,
                         })
                         return
                     }
                 }
                 setValues({
-                    purchase: "",
-                    supplier_name: "",
                     supplier: "",
-                    product: "",
-                    costing: "",
+                    supplier_name: "",
                     variety_name: "",
                     variety: "",
-                    ordered: "",
+                    cost: "",
+                    base: "",
+                    stocks: "",
                     balance: "",
                     remaining: "",
-                    received: "",
-                    receiving: "",
-                    receivedtotal: "",
-                    purchase_category: "",
+                    category: "",
+                    source: "",
                 })
             }
             if (element === "quantity") {
                 setValues({
-                    remaining: parseInt(listener["balance"] || 0) - parseInt(listener["quantity"] || 0),
-                    receiving: parseInt(listener["received"] || 0) + parseInt(listener["quantity"] || 0),
-                    receivedtotal: parseInt(listener["purchase_receivedtotal"] || 0) + parseInt(listener["quantity"] || 0),
+                    remaining: parseInt(listener["stocks"] || 0) - parseInt(listener["quantity"] || 0),
                 })
             }
         }
     }, [listener, dataSelector.injoiner.show])
 
     const onFields = (errors, register, values, setValue) => {
-
         return (
             <>
                 <FormEl.Select
-                    label='Receivable'
+                    label='Item Name'
                     register={register}
-                    name='receivable'
+                    name='item'
                     errors={errors}
-                    options={libReceivables}
+                    options={libInventory}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
                 <FormEl.Display
-                    label='Supplier'
+                    label='Category'
                     register={register}
-                    name='supplier_name'
+                    name='category'
                 />
                 <FormEl.Display
-                    label='Variant'
+                    label='Item Source'
                     register={register}
-                    name='variety_name'
+                    name='source'
                 />
                 <FormEl.Display
-                    label='Requested'
+                    label='Price'
                     register={register}
-                    name='ordered'
-                    errors={errors}
+                    name='base'
                 />
                 <FormEl.Display
-                    label='Cost'
+                    label='Available Stocks'
                     register={register}
-                    name='costing'
+                    name='stocks'
                 />
                 <FormEl.Decimal
                     label='Received Qty.'
@@ -206,18 +193,10 @@ const ReceiptInjoin = () => {
                     wrapper='lg:w-1/2'
                 />
                 <FormEl.Display
-                    label='Balance'
+                    label='Remaining Balance'
                     register={register}
                     name='remaining'
                     errors={errors}
-                />
-                <FormEl.Currency
-                    label='Item Price'
-                    register={register}
-                    name='pricing'
-                    errors={errors}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
                 />
             </>
         )
@@ -229,10 +208,10 @@ const ReceiptInjoin = () => {
     }
 
     const onSchema = yup.object().shape({
-        receivable: yup
+        item: yup
             .number()
-            .typeError("Receivable is required")
-            .min(1, "Receivable is required"),
+            .typeError("Inventory item is required")
+            .min(1, "Inventory item is required"),
         quantity: yup
             .number()
             .typeError("Received qty is required")
@@ -241,42 +220,38 @@ const ReceiptInjoin = () => {
             .number()
             .typeError("Remaining balance is required")
             .min(0, "Exceed the number of allowed received qty."),
-        pricing: yup
-            .number()
-            .typeError("Item price is required")
-            .min(1, "Item price is required")
     })
 
     const onCompleted = () => {
-        dispatch(setReceiptNotifier(true))
-        dispatch(resetReceiptInjoiner())
+        dispatch(setTransmitNotifier(true))
+        dispatch(resetTransmitInjoiner())
     }
 
     const onSubmit = async (data) => {
-        if (!deliverySelector.item.id) return
+        if (!transferSelector.item.id) return
         let formData = {
             ...data,
-            delivery: deliverySelector.item.id,
+            transfer: transferSelector.item.id,
             variant: data.variety,
         }
         if (dataSelector.item.id) {
-            await updateReceipt({ ...formData, id: dataSelector.item.id })
+            await updateTransmit({ ...formData, id: dataSelector.item.id })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        toast.showUpdate("Receipt successfully updated.")
+                        toast.showUpdate("Transmit successfully updated.")
                         onCompleted()
                     }
                 })
                 .catch(err => console.error(err))
             return
         }
-        await createReceipt(formData)
+        await createTransmit(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {
                     console.log(res)
-                    toast.showCreate("Receipt successfully created.")
+                    toast.showCreate("Transmit successfully created.")
                     onCompleted()
                 }
             })
@@ -285,7 +260,7 @@ const ReceiptInjoin = () => {
 
     const closeAppender = useCallback(() => {
         console.log("closing appender...")
-        dispatch(resetReceiptInjoiner())
+        dispatch(resetTransmitInjoiner())
     }, [])
 
     const inputFormData = {
@@ -307,4 +282,4 @@ const ReceiptInjoin = () => {
     )
 }
 
-export default ReceiptInjoin
+export default TransmitInjoin
