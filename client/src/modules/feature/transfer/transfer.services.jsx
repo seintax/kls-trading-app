@@ -2,84 +2,75 @@ import { apiSlice } from "../../../utilities/redux/slices/apiSlice"
 const BASE_URL = import.meta.env.MODE === "development" ?
     import.meta.env.VITE_API_BASE_URL :
     import.meta.env.VITE_API_BASE_URL_PROD
-const ENDPOINT_URL = `${BASE_URL}/app/inventory`
+const ENDPOINT_URL = `${BASE_URL}/app/transfer`
 
-export const inventoryApiSlice = apiSlice.injectEndpoints({
+export const transferApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        createInventory: builder.mutation({
+        createTransfer: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}`,
                 method: 'POST',
                 body
             }),
-            invalidatesTags: ['inventory']
+            invalidatesTags: ['transfer']
         }),
-        updateInventory: builder.mutation({
+        updateTransfer: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}`,
                 method: 'PATCH',
                 body
             }),
-            invalidatesTags: ['inventory', 'inventory/id']
+            invalidatesTags: ['transfer', 'transfer/id']
         }),
-        deleteInventory: builder.mutation({
+        deleteTransfer: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}`,
                 method: 'DELETE',
                 body
             }),
-            invalidatesTags: ['inventory']
+            invalidatesTags: ['transfer']
         }),
-        distinctInventory: builder.mutation({
+        distinctTransfer: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/id`,
                 method: 'GET',
                 params
             }),
-            providesTags: ['inventory/id']
+            providesTags: ['transfer/id']
         }),
-        fetchAllInventory: builder.mutation({
+        fetchAllTransfer: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}`,
                 method: 'GET',
                 params
             }),
-            providesTags: ['inventory']
+            providesTags: ['transfer']
         }),
-        searchInventory: builder.mutation({
+        searchTransfer: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/search`,
                 method: 'GET',
                 params
             }),
-            providesTags: ['inventory']
+            providesTags: ['transfer']
         }),
-        specifyInventory: builder.mutation({
+        specifyTransfer: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/specify`,
                 method: 'GET',
                 params
             }),
-            providesTags: ['inventory']
-        }),
-        byStocksInventory: builder.mutation({
-            query: (params) => ({
-                url: `${ENDPOINT_URL}/bystocks`,
-                method: 'GET',
-                params
-            }),
-            providesTags: ['receipt']
+            providesTags: ['transfer']
         }),
     })
 })
 
 export const {
-    useCreateInventoryMutation,
-    useUpdateInventoryMutation,
-    useDeleteInventoryMutation,
-    useDistinctInventoryMutation,
-    useFetchAllInventoryMutation,
-    useSearchInventoryMutation,
-    useSpecifyInventoryMutation,
-    useByStocksInventoryMutation,
-} = inventoryApiSlice
+    useCreateTransferMutation,
+    useUpdateTransferMutation,
+    useDeleteTransferMutation,
+    useDistinctTransferMutation,
+    useFetchAllTransferMutation,
+    useSearchTransferMutation,
+    useSpecifyTransferMutation,
+} = transferApiSlice

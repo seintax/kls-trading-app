@@ -5,6 +5,7 @@ const getdelivery = require("../feature/delivery/delivery.helper")
 const getreceivable = require("../feature/receivable/receivable.helper")
 const getpurchase = require("../feature/purchase/purchase.helper")
 const getinventory = require("../feature/inventory/inventory.helper")
+const gettransmit = require("../feature/transmit/transmit.helper")
 
 const sqlCreateReceipt = handler(async (req, res) => {
     mysqlpool.getConnection((err, con) => {
@@ -92,6 +93,82 @@ const sqlCreateReceipt = handler(async (req, res) => {
     })
 })
 
+const sqlCreateTransmit = handler(async (req, res) => {
+    mysqlpool.getConnection((err, con) => {
+        if (err) return res.status(401).json(force(err))
+        con.beginTransaction(async (err) => {
+            if (err) return err
+            let transmit = await new Promise(async (resolve, reject) => {
+                const builder = gettransmit.insert(req.body)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "receipt", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                })
+            })
+
+            let transfer = await new Promise(async (resolve, reject) => {
+                let data = {
+                    count: req.body.remaining,
+                    id: req.body.transfer
+                }
+                const builder = getdelivery.update(data)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "delivery", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                })
+            })
+
+            let source_inventory = await new Promise(async (resolve, reject) => {
+                let data = {
+                    stocks: req.body.remaining,
+                    trni_total: req.body.quantity,
+                    id: req.body.item
+                }
+                const builder = getinventory.update(data)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "receivable", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                })
+            })
+
+            let destination_inventory = await new Promise(async (resolve, reject) => {
+                let data = {
+                    product: req.body.product,
+                    variant: req.body.variant,
+                    category: req.body.purchase_category,
+                    delivery: req.body.delivery,
+                    purchase: req.body.purchase,
+                    supplier: req.body.supplier,
+                    store: req.body.destination,
+                    received: req.body.quantity,
+                    stocks: req.body.quantity,
+                    cost: req.body.cost,
+                    base: req.body.base,
+                    price: req.body.base,
+                    acquisition: "TRANSFER",
+                    source: req.body.source,
+                    transfer: req.body.transfer
+                }
+                const builder = getinventory.insert(data)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "inventory", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                })
+            })
+            let result = { transmit, transfer, source_inventory, destination_inventory, data: req.body }
+            con.commit((err) => {
+                if (err) con.rollback(() => {
+                    con.release()
+                    return res.status(401).json(force(err))
+                })
+                con.release()
+                res.status(200).json(proceed(result, req))
+            })
+        })
+    })
+})
+
 module.exports = {
-    sqlCreateReceipt
+    sqlCreateReceipt,
+    sqlCreateTransmit
 }

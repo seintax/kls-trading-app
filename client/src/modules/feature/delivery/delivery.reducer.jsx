@@ -6,6 +6,7 @@ const initialState = {
     item: {},
     manager: false,
     notifier: false,
+    selector: 0,
     perpage: 150,
     display: {
         name: "Delivery",

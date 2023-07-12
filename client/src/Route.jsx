@@ -5,6 +5,7 @@ import DashboardPanel from "./modules/feature/dashboard/dashboard.panel"
 import DeliveryIndex from "./modules/feature/delivery/delivery.index"
 import InventoryIndex from "./modules/feature/inventory/inventory.index"
 import PurchaseIndex from "./modules/feature/purchase/purchase.index"
+import TransferIndex from "./modules/feature/transfer/transfer.index"
 import BranchIndex from "./modules/library/branch/branch.index"
 import CategoryIndex from "./modules/library/category/category.index"
 import CustomerIndex from "./modules/library/customer/customer.index"
@@ -31,6 +32,7 @@ const AppRoute = () => {
                     <Route path="/purchase-order" element={<PurchaseIndex />} />
                     <Route path="/delivery" element={<DeliveryIndex />} />
                     <Route path="/inventory" element={<InventoryIndex />} />
+                    <Route path="/stock-transfer" element={<TransferIndex />} />
 
                     <Route path="/supplier" element={<SupplierIndex />} />
                     <Route path="/customer" element={<CustomerIndex />} />

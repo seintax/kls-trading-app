@@ -4,6 +4,8 @@ const receivable = require('./src/feature/receivable/receivable.route')
 const delivery = require('./src/feature/delivery/delivery.route')
 const receipt = require('./src/feature/receipt/receipt.route')
 const inventory = require('./src/feature/inventory/inventory.route')
+const transfer = require('./src/feature/transfer/transfer.route')
+const transmit = require('./src/feature/transmit/transmit.route')
 
 const category = require('./src/library/category/category.route')
 const masterlist = require('./src/library/masterlist/masterlist.route')
@@ -24,6 +26,8 @@ module.exports = {
     delivery,
     receipt,
     inventory,
+    transfer,
+    transmit,
     category,
     masterlist,
     option,

@@ -1,6 +1,6 @@
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
-const helper = require('./inventory.helper')
+const helper = require('./transmit.helper')
 const { Param, Field } = require("../../utilities/builder.utility")
 
 function p(object) {
@@ -73,11 +73,11 @@ const _specify = handler(async (req, res) => {
     })
 })
 
-const byStocks = handler(async (req, res) => {
+const byTransfer = handler(async (req, res) => {
     const param = helper.parameters(req.query)
-    const { stocks, id } = helper.fields
-    let params = ["0"]
-    let clause = [f(stocks).Greater()]
+    const { transfer, id } = helper.fields
+    let params = [p(param.transfer).Exactly()]
+    let clause = [f(transfer).IsEqual()]
     let series = [f(id).Asc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
@@ -95,5 +95,5 @@ module.exports = {
     _search,
     _specify,
     _findone,
-    byStocks
+    byTransfer
 }

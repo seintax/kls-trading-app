@@ -19,6 +19,7 @@ const initialState = {
             { name: 'DR No.', stack: false, sort: 'delivery_refcode', size: 150 },
             { name: 'Stocks', stack: false, sort: 'stocks', size: 150, position: "center" },
             { name: 'Price', stack: false, sort: 'price', size: 150, position: "center" },
+            { name: 'Branch', stack: false, sort: 'store', size: 160, position: "center" },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

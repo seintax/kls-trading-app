@@ -185,9 +185,15 @@ CREATE TABLE pos_stock_inventory (
     invt_barcode     varchar(99),
     invt_alert       decimal(10,2) DEFAULT 0,
     invt_acquisition varchar(20) DEFAULT 'PROCUREMENT',
+    invt_source      varchar(50) DEFAULT 'SUPPLIER',
+    invt_transfer    int DEFAULT 0
     invt_sold_total  decimal(10,2) DEFAULT 0,
     invt_trni_total  decimal(10,2) DEFAULT 0
 );
+
+ALTER TABLE pos_stock_inventory
+    ADD COLUMN invt_source varchar(50) DEFAULT 'SUPPLIER',
+    ADD COLUMN invt_transfer int DEFAULT 0;
 
 CREATE TABLE pos_stock_price_adjust (
     prce_id          int auto_increment primary key,

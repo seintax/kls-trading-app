@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
-import { NumFn } from "../../../utilities/functions/number.funtions"
+import { longDate } from "../../../utilities/functions/datetime.functions"
+import { StrFn } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
-import { setInventoryItem, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
-import { useDeleteInventoryMutation } from "./inventory.services"
+import { setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
+import { useDeleteTransferMutation } from "./transfer.services"
 
-const InventoryRecords = () => {
-    const dataSelector = useSelector(state => state.inventory)
+const TransferRecords = () => {
+    const dataSelector = useSelector(state => state.transfer)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -20,16 +21,16 @@ const InventoryRecords = () => {
     const columns = dataSelector.header
     const toast = useToast()
 
-    const [deleteInventory] = useDeleteInventoryMutation()
+    const [deleteTransfer] = useDeleteTransferMutation()
 
     const toggleEdit = (item) => {
-        dispatch(setInventoryItem(item))
-        dispatch(showInventoryManager())
+        dispatch(setTransferItem(item))
+        dispatch(showTransferManager())
     }
 
     const toggleDelete = (item) => {
         assignDeleteCallback({ item: item, callback: handleDelete })
-        dispatch(showDelete({ description: "Product Name", reference: item.product_name }))
+        dispatch(showDelete({ description: "TR No.", reference: item.id }))
     }
 
     const handleDelete = async (item) => {
@@ -37,11 +38,11 @@ const InventoryRecords = () => {
             toast.showError("Reference id does not exist.")
             return
         }
-        await deleteInventory({ id: item.id })
+        await deleteTransfer({ id: item.id })
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    dispatch(setInventoryNotifier(true))
+                    dispatch(setTransferNotifier(true))
                 }
             })
             .catch(err => console.error(err))
@@ -50,6 +51,7 @@ const InventoryRecords = () => {
 
     const actions = (item) => {
         return [
+            { type: 'button', trigger: () => toggleEdit(item), label: 'View' },
             { type: 'button', trigger: () => toggleEdit(item), label: 'Edit' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
@@ -57,12 +59,12 @@ const InventoryRecords = () => {
 
     const items = (item) => {
         return [
-            { value: `${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}` },
-            { value: item.supplier_name },
-            { value: item.delivery_refcode },
-            { value: item.stocks },
-            { value: NumFn.currency(item.price) },
-            { value: item.store },
+            { value: item.source },
+            { value: item.destination },
+            { value: StrFn.formatWithZeros(item.id, 6) },
+            { value: item.category },
+            { value: longDate(item.date) },
+            { value: item.status },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }
@@ -93,4 +95,4 @@ const InventoryRecords = () => {
         </>
     )
 }
-export default InventoryRecords
+export default TransferRecords
