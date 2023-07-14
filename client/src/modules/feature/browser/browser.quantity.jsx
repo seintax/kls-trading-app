@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react"
 import { CalculatorIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -18,7 +18,7 @@ const BrowserQuantity = ({ qtyRef }) => {
             if (e.key === 'Escape') onClose()
     })
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         document.addEventListener('keydown', keydown)
         return () => { document.removeEventListener('keydown', keydown) }
     }, [keydown])
@@ -72,10 +72,10 @@ const BrowserQuantity = ({ qtyRef }) => {
             className={`fixed left-0 top-0 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-20 flex items-start justify-center`}
         >
             <Transition.Child
-                enter="transition ease-in-out duration-300 transform"
-                enterFrom="-translate-y-full"
-                enterTo="translate-y-full"
-                leave="transition ease-in-out duration-300 transform"
+                enter="transition ease-in-out duration-500 transform"
+                enterFrom="-translate-y-0"
+                enterTo="translate-y-full lg:translate-y-48"
+                leave="transition ease-in-out duration-500 transform"
                 leaveFrom="translate-y-0"
                 leaveTo="-translate-y-full"
                 className="flex flex-col gap-2 bg-white p-3 w-[80%] lg:w-[550px] h-fit text-sm mt-1"
