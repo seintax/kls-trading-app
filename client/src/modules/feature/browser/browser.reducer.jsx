@@ -11,7 +11,6 @@ const initialState = {
     header: {
         items: [
             { name: 'Product Name', stack: false, sort: 'product_name' },
-            { name: 'Supplier', stack: true, sort: 'supplier_name', size: 200 },
             { name: 'Stocks', stack: true, sort: 'stocks', size: 120, position: "center" },
             { name: 'Price', stack: true, sort: 'price', size: 120, position: "center" },
             { name: 'Branch', stack: true, sort: 'store', size: 150, position: "center" },

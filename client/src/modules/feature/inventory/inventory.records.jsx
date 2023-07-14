@@ -59,7 +59,7 @@ const InventoryRecords = () => {
         return [
             { value: `${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}` },
             { value: item.supplier_name },
-            { value: item.delivery_refcode },
+            { value: item.category },
             { value: item.stocks },
             { value: NumFn.currency(item.price) },
             { value: item.store },

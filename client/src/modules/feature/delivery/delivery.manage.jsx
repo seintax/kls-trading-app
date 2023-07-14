@@ -79,7 +79,7 @@ const DeliveryManage = () => {
                 remarks: init(item.remarks),
             })
         }
-    }, [instantiated])
+    }, [instantiated, dataSelector.item])
 
     const onFields = (errors, register, values, setValue) => {
         return (
@@ -161,7 +161,6 @@ const DeliveryManage = () => {
     const onCompleted = (id = undefined) => {
         dispatch(setDeliveryNotifier(true))
         if (id) dispatch(showDeliverySelector(id))
-        // dispatch(resetDeliveryManager())
         setEditMode(false)
     }
 
@@ -215,13 +214,6 @@ const DeliveryManage = () => {
     }
 
     return (
-        // <DataInputs
-        //     formData={inputFormData}
-        //     fields={onFields}
-        //     change={onChange}
-        //     submit={onSubmit}
-        //     closed={onClose}
-        // />
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
             <div className="w-full sticky -top-5 pt-5 lg:pt-0 z-10">
                 <DataHeader name="Delivery Request" returncallback={returnToList} />

@@ -76,7 +76,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             key={colindex}
                                             scope="col"
                                             className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left text-sm font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
-                                            width={col.size || "300px"}
+                                            style={{ width: `${col.size}px` || "300px" }}
                                         >
                                             <div
                                                 className={`w-full flex items-center ${setPosition(col.position)} gap-[10px] group ${col.sort ? "cursor-pointer" : ""}`}

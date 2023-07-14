@@ -94,6 +94,7 @@ const sqlCreateReceipt = handler(async (req, res) => {
 })
 
 const sqlCreateTransmit = handler(async (req, res) => {
+    console.log(req.body)
     mysqlpool.getConnection((err, con) => {
         if (err) return res.status(401).json(force(err))
         con.beginTransaction(async (err) => {
@@ -135,7 +136,7 @@ const sqlCreateTransmit = handler(async (req, res) => {
                 let data = {
                     product: req.body.product,
                     variant: req.body.variant,
-                    category: req.body.purchase_category,
+                    category: req.body.category,
                     delivery: req.body.delivery,
                     purchase: req.body.purchase,
                     supplier: req.body.supplier,

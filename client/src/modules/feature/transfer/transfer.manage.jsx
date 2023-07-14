@@ -13,7 +13,7 @@ import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
 import TransmitListing from "../transfer-item/transfer.item.listing"
-import { resetTransferManager, setTransferNotifier } from "./transfer.reducer"
+import { resetTransferManager, setTransferNotifier, showTransferSelector } from "./transfer.reducer"
 import { useCreateTransferMutation, useUpdateTransferMutation } from "./transfer.services"
 
 const TransferManage = () => {
@@ -153,7 +153,7 @@ const TransferManage = () => {
 
     const onCompleted = () => {
         dispatch(setTransferNotifier(true))
-        if (id) dispatch(showPurchaseSelector(id))
+        if (id) dispatch(showTransferSelector(id))
         setEditMode(false)
     }
 
