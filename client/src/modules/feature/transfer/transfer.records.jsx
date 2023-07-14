@@ -51,7 +51,7 @@ const TransferRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleEdit(item), label: 'View' },
+            // { type: 'button', trigger: () => toggleEdit(item), label: 'View' },
             { type: 'button', trigger: () => toggleEdit(item), label: 'Edit' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
@@ -59,9 +59,9 @@ const TransferRecords = () => {
 
     const items = (item) => {
         return [
+            { value: StrFn.formatWithZeros(item.id, 6) },
             { value: item.source },
             { value: item.destination },
-            { value: StrFn.formatWithZeros(item.id, 6) },
             { value: item.category },
             { value: longDate(item.date) },
             { value: item.status },

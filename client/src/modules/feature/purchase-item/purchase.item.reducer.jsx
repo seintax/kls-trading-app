@@ -23,7 +23,7 @@ const initialState = {
     },
     injoiner: {
         show: false,
-        size: "w-[800px] min-h-[400px]",
+        size: "w-screen lg:w-[800px] min-h-[400px]",
         title: "Purchase Order Item",
     },
     listing: {
@@ -33,9 +33,9 @@ const initialState = {
             showsubtext: true,
             sizes: [
                 { size: "w-full" },
-                { size: "w-[100px] flex-none" },
-                { size: "w-[100px] flex-none" },
-                { size: "w-[150px] flex-none" },
+                { size: "w-[150px]" },
+                { size: "w-[150px]" },
+                { size: "w-[150px]" },
             ]
         },
     },

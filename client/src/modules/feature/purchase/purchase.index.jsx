@@ -38,7 +38,7 @@ const PurchaseIndex = () => {
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
-            console.log("done")
+            console.info("done")
         }
     }, [isSuccess, isLoading])
 

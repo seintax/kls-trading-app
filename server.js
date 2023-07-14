@@ -13,7 +13,7 @@ const errors = require('./res/errors/errors')
 const corsoptions = require('./res/secure/options')
 const approutes = require('./routes')
 
-const port = process.env.API_PORT || 5200
+const port = process.env.API_PORT || 5201
 
 const app = express()
 

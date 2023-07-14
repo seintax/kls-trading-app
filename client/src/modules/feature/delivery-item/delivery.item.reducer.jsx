@@ -23,7 +23,7 @@ const initialState = {
     },
     injoiner: {
         show: false,
-        size: "w-[800px] min-h-[400px]",
+        size: "w-screen lg:w-[800px] min-h-[400px]",
         title: "Delivery Receipt Item",
     },
     listing: {

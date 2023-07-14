@@ -13,6 +13,27 @@ export const isAdmin = (auth) => {
     return auth?.store === "SysAd"
 }
 
+export const isBranch = (auth) => {
+    const notBranches = ["DevOp", "SysAd"]
+    return notBranches.includes(auth.store) ? false : true
+}
+
+export const getBranch = (auth) => {
+    if (auth?.store) {
+        const notBranches = ["DevOp", "SysAd", "JT-MAIN"]
+        return notBranches.includes(auth.store) ? "" : auth.store
+    }
+    throw new Error("Invalid branch.")
+}
+
+export const forBranch = (auth) => {
+    if (auth?.store) {
+        const notBranches = ["DevOp", "SysAd"]
+        return notBranches.includes(auth.store) ? "" : auth.store
+    }
+    throw new Error("Invalid branch.")
+}
+
 export const safeValue = (value) => {
     return value || ""
 }

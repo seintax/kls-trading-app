@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+import browserReducer from "../../modules/feature/browser/browser.reducer"
 import receiptReducer from "../../modules/feature/delivery-item/delivery.item.reducer"
 import deliveryReducer from "../../modules/feature/delivery/delivery.reducer"
 import inventoryReducer from "../../modules/feature/inventory/inventory.reducer"
@@ -38,6 +39,7 @@ const store = configureStore({
         inventory: inventoryReducer,
         transfer: transferReducer,
         transmit: transmitReducer,
+        browser: browserReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

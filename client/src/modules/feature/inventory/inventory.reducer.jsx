@@ -14,13 +14,13 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Product Name', stack: true, sort: 'product_name' },
-            { name: 'Supplier', stack: false, sort: 'supplier_name', size: 250 },
-            { name: 'DR No.', stack: false, sort: 'delivery_refcode', size: 150 },
-            { name: 'Stocks', stack: false, sort: 'stocks', size: 150, position: "center" },
-            { name: 'Price', stack: false, sort: 'price', size: 150, position: "center" },
-            { name: 'Branch', stack: false, sort: 'store', size: 160, position: "center" },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: 'Product Name', stack: false, sort: 'product_name' },
+            { name: 'Supplier', stack: true, sort: 'supplier_name', size: 250 },
+            { name: 'DR No.', stack: true, sort: 'delivery_refcode', size: 150 },
+            { name: 'Stocks', stack: true, sort: 'stocks', size: 150, position: "center" },
+            { name: 'Price', stack: true, sort: 'price', size: 150, position: "center" },
+            { name: 'Branch', stack: true, sort: 'store', size: 160, position: "center" },
+            { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     }
 }

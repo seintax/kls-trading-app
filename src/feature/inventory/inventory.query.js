@@ -1,7 +1,7 @@
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
 const helper = require('./inventory.helper')
-const branch = require('./inventory.branch')
+const getbranch = require('./inventory.branch')
 const { Param, Field } = require("../../utilities/builder.utility")
 
 function p(object) {
@@ -45,7 +45,13 @@ const _record = handler(async (req, res) => {
 })
 
 const _branch = handler(async (req, res) => {
-    const builder = branch.records()
+    const { branch } = getbranch.parameters(req.query)
+    const { store, stocks, id } = getbranch.fields
+    let params = [p(branch).Contains(), "0"]
+    let clause = [f(store).Like(), f(stocks).Greater()]
+    let series = [f(id).Asc()]
+    let limits = undefined
+    const builder = getbranch.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))

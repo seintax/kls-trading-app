@@ -17,10 +17,10 @@ const initialState = {
         items: [
             { name: 'Supplier', stack: false, sort: 'supplier_name' },
             { name: 'PO No.', stack: true, sort: 'id', size: 180 },
-            { name: 'PO Date', stack: true, sort: 'date', size: 200 },
-            { name: 'Branch', stack: false, sort: 'store', size: 180 },
-            { name: 'Category', stack: false, sort: 'category', size: 180 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: 'PO Date', stack: false, sort: 'date', size: 150 },
+            { name: 'Branch', stack: true, sort: 'store', size: 180 },
+            { name: 'Category', stack: true, sort: 'category', size: 180 },
+            { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     }
 }

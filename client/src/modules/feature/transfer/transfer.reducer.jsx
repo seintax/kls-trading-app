@@ -9,19 +9,19 @@ const initialState = {
     selector: 0,
     perpage: 150,
     display: {
-        name: "Transfer",
+        name: "Stock Transfer",
         text: "A list of all transfer requests registered in the system.",
         show: true
     },
     header: {
         items: [
-            { name: 'Source', stack: true, sort: 'source' },
-            { name: 'Destination', stack: false, sort: 'destination' },
-            { name: 'TR No.', stack: false, sort: 'id', size: 150 },
-            { name: 'Category', stack: false, sort: 'category', size: 180 },
-            { name: 'Date', stack: false, sort: 'date', size: 150 },
-            { name: 'Status', stack: false, sort: 'Status', size: 150 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: 'TR No.', stack: false, sort: 'id' },
+            { name: 'Source', stack: true, sort: 'source', size: 200 },
+            { name: 'Destination', stack: true, sort: 'destination', size: 200 },
+            { name: 'Category', stack: true, sort: 'category', size: 180 },
+            { name: 'TR Date', stack: false, sort: 'date', size: 150 },
+            { name: 'Status', stack: true, sort: 'Status', size: 150 },
+            { name: '', stack: false, screenreader: 'Action', size: 150 }
         ]
     }
 }
