@@ -30,7 +30,7 @@ const AppSideMenu = ({ sidebarSideMenu, setSidebarSideMenu, sideMenuItems }) => 
             leave="transition-opacity ease-linear duration-300"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            className={`flex lg:hidden fixed h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-2`}
+            className={`flex lg:hidden fixed h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10`}
         >
             <Transition.Child
                 enter="transition ease-in-out duration-300 transform"

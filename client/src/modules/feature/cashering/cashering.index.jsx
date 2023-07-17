@@ -6,7 +6,7 @@ import { isBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import { useDebounce } from "../../../utilities/hooks/useDebounce"
 import BrowserRecords from "../browser/browser.records"
-import { setBrowserSearch } from "../browser/browser.reducer"
+import { resetBrowserViewCart, setBrowserSearch, showBrowserCheckout, showBrowserViewCart } from "../browser/browser.reducer"
 
 const CasheringIndex = () => {
     const auth = useAuth()
@@ -30,6 +30,21 @@ const CasheringIndex = () => {
         }
     }, [browserSelector.cart])
 
+    const toggleViewCart = () => {
+        if (!browserSelector.checkout) {
+            if (browserSelector.viewcart) {
+                dispatch(resetBrowserViewCart())
+                return
+            }
+            dispatch(showBrowserViewCart())
+        }
+    }
+
+    const toggleCheckout = () => {
+        if (value > 0) {
+            dispatch(showBrowserCheckout())
+        }
+    }
 
     return (
         <>
@@ -55,7 +70,7 @@ const CasheringIndex = () => {
                                     </span>
                                 </div>
                             </div>
-                            <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7">Checkout</button>
+                            <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7" onClick={() => toggleCheckout()}>Checkout</button>
                         </div>
                     </div>
                 </div>
@@ -79,9 +94,9 @@ const CasheringIndex = () => {
                         <BrowserRecords />
                     </div>
                 </div>
-                <div className="fixed bottom-0 left-16 pr-20 lg:pr-60 lg:left-56 h-[5rem] w-full border border-t border-t-secondary-500 bg-white flex items-center justify-center pl-4">
+                <div className="fixed bottom-0 left-16 pr-20 lg:pr-60 lg:left-56 h-[5rem] w-full border border-t border-t-secondary-500 bg-white flex items-center justify-center pl-4 z-10">
                     <div className="flex justify-around gap-2 w-full">
-                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select">
+                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select" onClick={() => toggleViewCart()}>
                             <ShoppingCartIcon className="w-5 h-5" />
                             Cart
                         </button>

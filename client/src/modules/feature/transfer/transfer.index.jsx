@@ -32,7 +32,7 @@ const TransferIndex = () => {
                 .catch(err => console.error(err))
             return
         }
-        if (dataSelector.data.length === 0 || dataSelector.notifier) {
+        if (dataSelector.data.length === 0 || dataSelector.notifier || dataSelector.selector > 0) {
             instantiate()
         }
     }, [dataSelector.notifier, dataSelector.selector])

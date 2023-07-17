@@ -307,6 +307,20 @@ CREATE TABLE pos_sales_credit (
     cred_settledon   timestamp
 );
 
+CREATE TABLE pos_payment_collection (
+    paym_id          int auto_increment primary key,
+    paym_trans       varchar(99),
+    paym_time        timestamp DEFAULT now(),
+    paym_type        varchar(20) DEFAULT 'SALES',
+    paym_method      varchar(30),
+    paym_amount      decimal(30,2),
+    paym_refcode     varchar(50),
+    paym_refdate     date,
+    paym_refstat     varchar(30) DEFAULT 'NOT APPLICABLE',
+    paym_reimburse   int DEFAULT 0,
+    paym_shift       int
+);
+
 CREATE TABLE pos_return_transaction (
     rtrn_id          int auto_increment primary key,
     rtrn_trans       varchar(99),

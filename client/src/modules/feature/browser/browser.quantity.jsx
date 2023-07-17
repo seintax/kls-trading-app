@@ -51,7 +51,8 @@ const BrowserQuantity = ({ qtyRef }) => {
         }
         let newItem = {
             ...dataSelector.item,
-            quantity: quantity
+            quantity: quantity,
+            remaining: balance
         }
         setQuantity("")
         setBalance(0)
@@ -142,7 +143,7 @@ const BrowserQuantity = ({ qtyRef }) => {
                         </div>
                     </div>
                     <div className="flex justify-end mt-5">
-                        <button type="button" tabIndex={-1} className="button-cancel">Cancel</button>
+                        <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
                         <button type="submit" className="button-submit">Submit</button>
                     </div>
                 </form>

@@ -5,8 +5,15 @@ const initialState = {
     data: [],
     cart: [],
     item: {},
+    paid: [],
+    less: {},
+    settle: {},
     manager: false,
     notifier: false,
+    viewcart: false,
+    checkout: false,
+    payments: false,
+    discount: false,
     perpage: 150,
     header: {
         items: [
@@ -14,10 +21,12 @@ const initialState = {
             { name: 'Stocks', stack: true, sort: 'stocks', size: 120, position: "center" },
             { name: 'Price', stack: true, sort: 'price', size: 120, position: "center" },
             { name: 'Branch', stack: true, sort: 'store', size: 150, position: "center" },
+            { name: 'Remaining', stack: true, sort: 'remaining', size: 150, position: "center" },
             { name: 'Quantity', stack: false, sort: 'quantity', size: 100, position: "center" },
             { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     },
+    draft: localStorage.getItem('draft') ? JSON.parse(localStorage.getItem("draft")) : [],
     search: ""
 }
 
@@ -34,7 +43,8 @@ const browserSlice = createSlice({
                 if (data.id === action.payload.id)
                     return {
                         ...data,
-                        quantity: 0
+                        quantity: 0,
+                        remaining: data.stocks
                     }
                 return data
             })
@@ -44,7 +54,7 @@ const browserSlice = createSlice({
         },
         setBrowserData: (state, action) => {
             state.data = action.payload?.map(data => {
-                return { ...data, quantity: 0 }
+                return { ...data, quantity: 0, remaining: data.stocks }
             })
         },
         updateBrowserData: (state, action) => {
@@ -59,6 +69,51 @@ const browserSlice = createSlice({
         },
         resetBrowserItem: (state) => {
             state.item = {}
+        },
+        setBrowserPaid: (state, action) => {
+            state.paid = [...state.paid, action.payload]
+        },
+        removeBrowserPaid: (state, action) => {
+            state.paid = state.paid?.filter(f => f.id !== action.payload)
+        },
+        resetBrowserPaid: (state) => {
+            state.paid = []
+        },
+        setBrowserSettle: (state, action) => {
+            state.settle = action.payload
+        },
+        resetBrowserSettle: (state) => {
+            state.settle = {}
+        },
+        setBrowserLess: (state, action) => {
+            state.less = action.payload
+        },
+        resetBrowserLess: (state) => {
+            state.less = {}
+        },
+        showBrowserViewCart: (state) => {
+            state.viewcart = true
+        },
+        resetBrowserViewCart: (state) => {
+            state.viewcart = false
+        },
+        showBrowserCheckout: (state) => {
+            state.checkout = true
+        },
+        resetBrowserCheckout: (state) => {
+            state.checkout = false
+        },
+        showBrowserPayments: (state) => {
+            state.payments = true
+        },
+        resetBrowserPayments: (state) => {
+            state.payments = false
+        },
+        showBrowserDiscount: (state) => {
+            state.discount = true
+        },
+        resetBrowserDiscount: (state) => {
+            state.discount = false
         },
         showBrowserManager: (state) => {
             state.manager = true
@@ -75,11 +130,24 @@ const browserSlice = createSlice({
         setBrowserNotifier: (state, action) => {
             state.notifier = action.payload
         },
+        setBrowserDraft: (state, action) => {
+            state.draft = [...state.draft, action.payload]
+            localStorage.setItem('draft', JSON.stringify(state.draft))
+        },
+        removeBrowserDraft: (state, action) => {
+            state.draft = state.draft?.filter(f => f.id !== action.payload)
+            localStorage.setItem('draft', JSON.stringify(state.draft))
+        },
         resetBrowser: (state) => {
             state.data = []
             state.item = {}
+            state.less = {}
             state.manager = false
             state.notifier = false
+            state.viewcart = false
+            state.checkout = false
+            state.payments = false
+            state.discount = false
             state.search = ""
         }
     }
@@ -95,11 +163,28 @@ export const {
     updateBrowserData,
     setBrowserItem,
     resetBrowserItem,
+    setBrowserPaid,
+    removeBrowserPaid,
+    resetBrowserPaid,
+    setBrowserSettle,
+    resetBrowserSettle,
+    setBrowserLess,
+    resetBrowserLess,
     setBrowserNotifier,
+    showBrowserViewCart,
+    resetBrowserViewCart,
+    showBrowserCheckout,
+    resetBrowserCheckout,
+    showBrowserPayments,
+    resetBrowserPayments,
+    showBrowserDiscount,
+    resetBrowserDiscount,
     showBrowserManager,
     resetBrowserManager,
     setBrowserSearch,
     resetBrowserSearch,
+    setBrowserDraft,
+    removeBrowserDraft,
     resetBrowser
 } = browserSlice.actions
 

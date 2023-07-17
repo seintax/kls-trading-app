@@ -7,6 +7,10 @@ import { forBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from '../../../utilities/interface/datastack/data.records'
+import BrowserCheckout from "./browser.checkout"
+import BrowserDiscount from "./browser.discount"
+import BrowserPayment from "./browser.payment"
+import BrowserPurchase from "./browser.purchase"
 import BrowserQuantity from "./browser.quantity"
 import { removeBrowserCart, setBrowserData, setBrowserItem, setBrowserNotifier, showBrowserManager } from "./browser.reducer"
 import { useFetchAllBrowserByBranchMutation } from "./browser.services"
@@ -81,6 +85,7 @@ const BrowserRecords = () => {
             { value: item.stocks },
             { value: NumFn.currency(item.price) },
             { value: item.store },
+            { value: item.remaining || 0 },
             { value: item.quantity || "" },
             {
                 value:
@@ -139,6 +144,10 @@ const BrowserRecords = () => {
                 itemsperpage={dataSelector?.perpage}
                 loading={isLoading}
             />
+            <BrowserPurchase />
+            <BrowserCheckout />
+            <BrowserPayment />
+            <BrowserDiscount />
         </>
     )
 }
