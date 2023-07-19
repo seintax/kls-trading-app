@@ -115,7 +115,6 @@ const ReceiptInjoin = () => {
                     let selection = libReceivables?.filter(f => parseInt(f.value) === parseInt(receivable))
                     let selected = selection?.length ? selection[0] : undefined
                     if (selected?.data) {
-                        console.log(selected?.data)
                         setValues({
                             purchase: selected?.data?.purchase,
                             supplier_name: provideValueFromLib(libSuppliers, selected?.data?.purchase_supplier),
@@ -275,7 +274,6 @@ const ReceiptInjoin = () => {
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    console.log(res)
                     toast.showCreate("Receipt successfully created.")
                     onCompleted()
                 }
@@ -284,7 +282,6 @@ const ReceiptInjoin = () => {
     }
 
     const closeAppender = useCallback(() => {
-        console.log("closing appender...")
         dispatch(resetReceiptInjoiner())
     }, [])
 

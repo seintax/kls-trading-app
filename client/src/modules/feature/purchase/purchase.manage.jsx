@@ -206,7 +206,6 @@ const PurchaseManage = () => {
     }
 
     const returnToList = useCallback(() => {
-        console.log("closing appender...")
         dispatch(resetPurchaseManager())
     }, [])
 

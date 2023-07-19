@@ -379,7 +379,6 @@ const sqlCreateTransaction = handler(async (req, res) => {
 })
 
 const sqlCreateReturn = handler(async (req, res) => {
-    console.log("monitor")
     mysqlpool.getConnection((err, con) => {
         if (err) return res.status(401).json(force(err))
         con.beginTransaction(async (err) => {

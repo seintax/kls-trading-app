@@ -134,7 +134,6 @@ const AccountManage = () => {
 
     useEffect(() => {
         if (listener) {
-            // console.log(`${element}`, listener[element])
         }
     }, [listener])
 

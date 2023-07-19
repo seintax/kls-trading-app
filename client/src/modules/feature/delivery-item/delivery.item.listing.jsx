@@ -33,7 +33,6 @@ const ReceiptListing = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
-                            console.log(res)
                             dispatch(setReceiptData(res?.arrayResult))
                             dispatch(setReceiptNotifier(false))
                         }
@@ -108,7 +107,6 @@ const ReceiptListing = () => {
     }, [])
 
     const saveList = useCallback(() => {
-        console.log("saving...")
         toast.showWarning("Oh my god!!! What have you done!! \nThis button has no function.🤪😋")
     }, [])
 

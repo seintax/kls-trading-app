@@ -108,7 +108,6 @@ const BrowserPayment = () => {
                 amount: amount(dataSelector.balance) - amount(settlement.amount)
             }
         }
-        console.log(settlement)
         dispatch(setBrowserMethod(type))
         dispatch(setBrowserPaid(settlement))
         onReset()

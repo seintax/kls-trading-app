@@ -37,12 +37,6 @@ const DeliveryIndex = () => {
         }
     }, [dataSelector.notifier, dataSelector.selector])
 
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.log("done")
-        }
-    }, [isSuccess, isLoading])
-
     const toggleNewEntry = () => {
         dispatch(resetDeliveryItem())
         dispatch(showDeliveryManager())

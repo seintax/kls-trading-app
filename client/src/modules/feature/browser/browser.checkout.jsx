@@ -130,11 +130,6 @@ const BrowserCheckout = () => {
         }
     }, [dataSelector?.less, summary.total])
 
-    useEffect(() => {
-        console.log(dataSelector?.paid)
-    }, [dataSelector?.paid])
-
-
     const toggleOffCheckout = () => {
         dispatch(resetBrowserCheckout())
     }
@@ -172,7 +167,6 @@ const BrowserCheckout = () => {
     }
 
     const processTransaction = async () => {
-        console.log(auth)
         if (balance !== 0) {
             toast.showWarning("Please settle the checkout balance.")
             return
@@ -187,7 +181,6 @@ const BrowserCheckout = () => {
                         ? "000001"
                         : StrFn.formatWithZeros(destructCode(res.distinctResult?.data?.max), 6)
                     let code = `${datetag}-${usertag}-${codetag}`
-                    console.log(dataSelector.cart)
                     let data = {
                         transaction: {
                             code: code,
@@ -273,7 +266,6 @@ const BrowserCheckout = () => {
                         .unwrap()
                         .then(res => {
                             if (res.success) {
-                                console.log(res)
                                 toast.showCreate("Transaction successfully completed.")
                                 onCompleted()
                             }

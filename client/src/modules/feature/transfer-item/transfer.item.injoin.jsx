@@ -110,9 +110,7 @@ const TransmitInjoin = () => {
                 if (item) {
                     let selection = libInventory?.filter(f => parseInt(f.value) === parseInt(item))
                     let selected = selection?.length ? selection[0] : undefined
-                    console.log(selected)
                     if (selected?.data) {
-                        console.log(selected?.data)
                         setValues({
                             supplier: selected?.data?.supplier,
                             supplier_name: provideValueFromLib(libSuppliers, selected?.data?.supplier),
@@ -258,7 +256,6 @@ const TransmitInjoin = () => {
     }
 
     const closeAppender = useCallback(() => {
-        console.log("closing appender...")
         dispatch(resetTransmitInjoiner())
     }, [])
 
