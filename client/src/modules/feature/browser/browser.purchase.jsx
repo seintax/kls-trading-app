@@ -6,15 +6,20 @@ import { useDispatch, useSelector } from "react-redux"
 import { NumFn, amount, currency } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
-import { removeBrowserCart, resetBrowserViewCart, setBrowserDraft, showBrowserCheckout } from "./browser.reducer"
+import { removeBrowserCart, resetBrowserTransaction, resetBrowserViewCart, setBrowserDraft, setBrowserNotifier, showBrowserCheckout } from "./browser.reducer"
 
 const BrowserPurchase = () => {
     const dataSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
+    const [discard, setDiscard] = useState("")
     const columns = dataSelector.header
     const toast = useToast()
+
+    const onChange = (e) => {
+        setDiscard(e.target.value)
+    }
 
     const removeItem = (item) => {
         if (window.confirm("Do you wish to remove this from cart?")) {
@@ -82,6 +87,7 @@ const BrowserPurchase = () => {
     }, [dataSelector?.cart])
 
     const toggleOffViewCart = () => {
+        setDiscard("")
         dispatch(resetBrowserViewCart())
     }
 
@@ -93,6 +99,8 @@ const BrowserPurchase = () => {
                     cart: dataSelector?.cart
                 }
                 dispatch(setBrowserDraft(draft))
+                dispatch(setBrowserNotifier(true))
+                dispatch(resetBrowserTransaction())
                 toast.showSuccess("Cart entry has been successfully saved as draft.")
             }
         }
@@ -103,6 +111,18 @@ const BrowserPurchase = () => {
         if (value > 0) {
             dispatch(showBrowserCheckout())
             dispatch(resetBrowserViewCart())
+        }
+    }
+
+    const onDiscard = () => {
+        if (discard !== "discard") {
+            toast.showWarning("Please type the word 'discard'.")
+            return
+        }
+        if (window.confirm("Would you like to discard this cart and its contents?")) {
+            setDiscard("")
+            dispatch(setBrowserNotifier(true))
+            dispatch(resetBrowserTransaction())
         }
     }
 
@@ -127,7 +147,7 @@ const BrowserPurchase = () => {
                     leaveTo="translate-y-full"
                     className="flex flex-col gap-2 bg-white px-3 w-[90%] h-full text-sm mt-1 pr-20 lg:pr-60 pb-48"
                 >
-                    <div className="pl-3 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">
+                    <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffViewCart()} />
                         <span>My Cart</span>
                     </div>
@@ -139,7 +159,7 @@ const BrowserPurchase = () => {
                         itemsperpage={dataSelector?.perpage}
                     />
                     <div className="w-full flex">
-                        <div className="p-3 hover:text-blue-700 text-blue-500 cursor-pointer" onClick={() => saveAsDraft()}>
+                        <div className={`p-3 hover:text-blue-700 text-blue-500 cursor-pointer ${dataSelector.cart?.length ? "" : "hidden"}`} onClick={() => saveAsDraft()}>
                             Save cart as draft
                         </div>
                         <div className="flex gap-4 ml-auto py-3">
@@ -159,6 +179,16 @@ const BrowserPurchase = () => {
                             </div>
                             <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7" onClick={() => toggleCheckout()}>Checkout</button>
                         </div>
+                    </div>
+                    <div className={`${dataSelector.cart?.length ? "flex" : "hidden"} border border-blue-500 p-0.5 items-center mt-4`}>
+                        <input
+                            type="text"
+                            value={discard}
+                            onChange={onChange}
+                            placeholder="Type 'discard' here"
+                            className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                        />
+                        <button className="button-link ml-auto px-8 py-3 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onDiscard()}>Discard</button>
                     </div>
                 </Transition.Child>
             </Transition>

@@ -3,10 +3,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { forBranch } from "../../../utilities/functions/string.functions"
+import { exactSearch, forBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from '../../../utilities/interface/datastack/data.records'
+import CasheringLedger from "../cashering/cashering.ledger"
+import CasheringReceipts from "../cashering/cashering.receipts"
 import BrowserCheckout from "./browser.checkout"
 import BrowserDiscount from "./browser.discount"
 import BrowserPayment from "./browser.payment"
@@ -103,13 +105,6 @@ const BrowserRecords = () => {
         ]
     }
 
-    const exactSearch = (sought, value) => {
-        if (sought.startsWith("!")) {
-            return value?.toString()?.toLowerCase() === sought?.toLowerCase()?.replaceAll("!", "")
-        }
-        return false
-    }
-
     useEffect(() => {
         if (dataSelector?.data) {
             let sought = dataSelector?.search?.toLowerCase()
@@ -148,6 +143,8 @@ const BrowserRecords = () => {
             <BrowserCheckout />
             <BrowserPayment />
             <BrowserDiscount />
+            <CasheringReceipts />
+            <CasheringLedger />
         </>
     )
 }

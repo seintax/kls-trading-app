@@ -46,9 +46,9 @@ const _record = handler(async (req, res) => {
 
 const _branch = handler(async (req, res) => {
     const { branch } = getbranch.parameters(req.query)
-    const { store, stocks, id } = getbranch.fields
-    let params = [p(branch).Contains(), "0"]
-    let clause = [f(store).Like(), f(stocks).Greater()]
+    const { acquisition, store, stocks, id } = getbranch.fields
+    let params = [p(branch).Contains(), "0", "PROCUREMENT", "TRANSFER"]
+    let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", ""])]
     let series = [f(id).Asc()]
     let limits = undefined
     const builder = getbranch.inquiry(clause, params, series, limits)

@@ -59,7 +59,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
 
     return (
         <>
-            <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg">
+            <div ref={refList} className="flex flex-col justify-between mt-3 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg">
                 <table className="flex-col w-full divide-y border-separate divide-gray-300" style={{ borderSpacing: 0 }}>
                     <thead className="">
                         <tr className={`${columns?.style}`}>

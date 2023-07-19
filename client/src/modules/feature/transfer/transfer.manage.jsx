@@ -151,7 +151,7 @@ const TransferManage = () => {
         setEditMode(false)
     }, [])
 
-    const onCompleted = () => {
+    const onCompleted = (id = undefined) => {
         dispatch(setTransferNotifier(true))
         if (id) dispatch(showTransferSelector(id))
         setEditMode(false)
@@ -171,7 +171,7 @@ const TransferManage = () => {
                 .then(res => {
                     if (res.success) {
                         toast.showUpdate("Transfer successfully updated.")
-                        onCompleted()
+                        onCompleted(dataSelector.item.id)
                     }
                 })
                 .catch(err => console.error(err))
@@ -182,7 +182,7 @@ const TransferManage = () => {
             .then(res => {
                 if (res.success) {
                     toast.showCreate("Transfer successfully created.")
-                    onCompleted()
+                    onCompleted(res.insertResult.id)
                 }
             })
             .catch(err => console.error(err))

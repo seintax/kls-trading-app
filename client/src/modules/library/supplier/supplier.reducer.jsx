@@ -4,6 +4,7 @@ const initialState = {
     name: "supplier",
     data: [],
     item: {},
+    library: [],
     manager: false,
     notifier: false,
     perpage: 150,
@@ -30,6 +31,9 @@ const supplierSlice = createSlice({
     reducers: {
         setSupplierData: (state, action) => {
             state.data = action.payload
+        },
+        setSupplierLibrary: (state, action) => {
+            state.library = action.payload
         },
         setSupplierItem: (state, action) => {
             state.item = action.payload
@@ -59,6 +63,7 @@ const supplierReducer = supplierSlice.reducer
 
 export const {
     setSupplierData,
+    setSupplierLibrary,
     setSupplierItem,
     resetSupplierItem,
     setSupplierNotifier,

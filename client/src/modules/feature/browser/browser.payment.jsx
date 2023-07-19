@@ -4,9 +4,10 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { createInstance, sqlDate } from "../../../utilities/functions/datetime.functions"
+import { amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import { useFetchAllCustomerMutation } from "../../library/customer/customer.services"
-import { resetBrowserPayments, setBrowserPaid } from "./browser.reducer"
+import { resetBrowserPayments, setBrowserMethod, setBrowserPaid } from "./browser.reducer"
 
 const BrowserPayment = () => {
     const dataSelector = useSelector(state => state.browser)
@@ -16,10 +17,12 @@ const BrowserPayment = () => {
         type: "",
         method: "",
         amount: "",
+        partial: "",
         refcode: "",
         refdate: sqlDate(),
         refstat: "",
-        creditor: ""
+        creditor: "",
+        creditor_name: ""
     })
     const toast = useToast()
 
@@ -45,9 +48,19 @@ const BrowserPayment = () => {
 
     const onChange = (e) => {
         const { name, value } = e.target
+        if (name === "creditor") {
+            let customers = libCustomers?.filter(f => String(f.value) === String(value))
+            let customer = customers.length ? customers[0] : undefined
+            setSettle(prev => ({
+                ...prev,
+                [name]: value,
+                creditor_name: customer?.key
+            }))
+            return
+        }
         setSettle(prev => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }))
     }
 
@@ -60,10 +73,12 @@ const BrowserPayment = () => {
             type: "",
             method: "",
             amount: "",
+            partial: "",
             refcode: "",
             refdate: sqlDate(),
             refstat: "",
-            creditor: ""
+            creditor: "",
+            creditor_name: ""
         })
     }
 
@@ -75,12 +90,26 @@ const BrowserPayment = () => {
                 return
             }
         }
+        let hasCash = dataSelector.paid?.filter(f => f.method === "CASH").length > 0
+        if (hasCash) {
+            toast.showWarning("Cannot add another 'CASH' option.")
+            return
+        }
         let type = settle.method === "CREDIT" ? "CREDIT" : "SALES"
         let settlement = {
             ...settle,
             id: createInstance(),
             type: type
         }
+        if (settle.method === "CREDIT") {
+            settlement = {
+                ...settlement,
+                partial: settlement.amount,
+                amount: amount(dataSelector.balance) - amount(settlement.amount)
+            }
+        }
+        console.log(settlement)
+        dispatch(setBrowserMethod(type))
         dispatch(setBrowserPaid(settlement))
         onReset()
         dispatch(resetBrowserPayments())
@@ -121,6 +150,7 @@ const BrowserPayment = () => {
                                 onChange={onChange}
                                 tabIndex={0}
                                 autoFocus
+                                required
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1">
                                 <option value="" className="text-sm" disabled>Select payment method</option>
                                 <option value="CASH" className="text-sm">Cash</option>
@@ -132,9 +162,10 @@ const BrowserPayment = () => {
                         <div className={`${settle.method === "CREDIT" ? "flex" : "hidden"} border border-secondary-500 p-0.5 items-center`}>
                             <select
                                 name="creditor"
-                                value={settle.method}
+                                value={settle.creditor}
                                 onChange={onChange}
                                 autoFocus
+                                required={settle.method === "CREDIT"}
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1">
                                 {
                                     libCustomers?.map(lib => (

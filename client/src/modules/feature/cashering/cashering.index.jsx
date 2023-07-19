@@ -1,20 +1,44 @@
 import { CubeIcon, DocumentTextIcon, LockClosedIcon, MagnifyingGlassIcon, ReceiptPercentIcon, ShoppingCartIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
-import { isBranch } from "../../../utilities/functions/string.functions"
+import { StrFn, isBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import { useDebounce } from "../../../utilities/hooks/useDebounce"
 import BrowserRecords from "../browser/browser.records"
 import { resetBrowserViewCart, setBrowserSearch, showBrowserCheckout, showBrowserViewCart } from "../browser/browser.reducer"
+import { resetTransactionReceipts, showTransactionReceipts } from "./cashering.reducer"
+import { useByCountTransactionMutation } from "./cashering.services"
 
 const CasheringIndex = () => {
     const auth = useAuth()
+    const [instantiated, setInstantiated] = useState(false)
     const [value, setValue] = useState(0)
     const [search, setSearch] = useState("")
+    const [count, setCount] = useState(1)
     const debounceSearch = useDebounce(search, 500)
+    const dataSelector = useSelector(state => state.transaction)
     const browserSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
+
+    const [countTransaction] = useByCountTransactionMutation()
+
+    useEffect(() => {
+        const instantiate = async () => {
+            await countTransaction({ account: auth.id, date: sqlDate() })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setCount(amount(res.distinctResult.data.count) + 1 || 1)
+                    }
+                })
+                .catch(err => console.error(err))
+            setInstantiated(true)
+        }
+
+        instantiate()
+    }, [])
 
     const onChange = (e) => {
         setSearch(e.target.value)
@@ -40,6 +64,14 @@ const CasheringIndex = () => {
         }
     }
 
+    const toggleViewReceipts = () => {
+        if (dataSelector.receipts) {
+            dispatch(resetTransactionReceipts())
+            return
+        }
+        dispatch(showTransactionReceipts())
+    }
+
     const toggleCheckout = () => {
         if (value > 0) {
             dispatch(showBrowserCheckout())
@@ -53,7 +85,7 @@ const CasheringIndex = () => {
                     <div className="flex justify-between items-center">
                         <div className="text-sm flex gap-2">
                             <CubeIcon className="w-5 h-5" />
-                            <div>Cart No. <span className="font-bold text-secondary-500">0001</span></div>
+                            <div>Cart No. <span className="font-bold text-secondary-500">{StrFn.formatWithZeros(count, 4)}</span></div>
                         </div>
                         <div className="flex gap-4">
                             <div className="flex flex-col justify-end items-end">
@@ -108,7 +140,7 @@ const CasheringIndex = () => {
                             <LockClosedIcon className="w-5 h-5" />
                             Lock
                         </button>
-                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select">
+                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select" onClick={() => toggleViewReceipts()}>
                             <ReceiptPercentIcon className="w-5 h-5" />
                             Receipt
                         </button>

@@ -8,6 +8,8 @@ const initialState = {
     paid: [],
     less: {},
     settle: {},
+    method: "",
+    balance: 0,
     manager: false,
     notifier: false,
     viewcart: false,
@@ -138,10 +140,30 @@ const browserSlice = createSlice({
             state.draft = state.draft?.filter(f => f.id !== action.payload)
             localStorage.setItem('draft', JSON.stringify(state.draft))
         },
+        setBrowserMethod: (state, action) => {
+            state.method = action.payload
+        },
+        setBrowserBalance: (state, action) => {
+            state.balance = action.payload
+        },
+        resetBrowserTransaction: (state) => {
+            state.cart = []
+            state.paid = []
+            state.less = {}
+            state.settle = {}
+            state.method = ""
+            state.balance = 0
+            state.manager = false
+            state.viewcart = false
+            state.checkout = false
+            state.payments = false
+            state.discount = false
+        },
         resetBrowser: (state) => {
             state.data = []
             state.item = {}
             state.less = {}
+            state.balance = 0
             state.manager = false
             state.notifier = false
             state.viewcart = false
@@ -149,6 +171,7 @@ const browserSlice = createSlice({
             state.payments = false
             state.discount = false
             state.search = ""
+            state.method = ""
         }
     }
 })
@@ -185,6 +208,9 @@ export const {
     resetBrowserSearch,
     setBrowserDraft,
     removeBrowserDraft,
+    setBrowserMethod,
+    setBrowserBalance,
+    resetBrowserTransaction,
     resetBrowser
 } = browserSlice.actions
 

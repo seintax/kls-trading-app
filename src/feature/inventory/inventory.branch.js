@@ -59,4 +59,7 @@ const inventory = new Table("pos_stock_inventory", {
     },
 ])
 
+inventory.register("append_sold_total", "")
+inventory.register("remove_sold_total", "")
+
 module.exports = inventory

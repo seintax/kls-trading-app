@@ -97,3 +97,12 @@ export const encryptToken = (token) => {
     }
     return t
 }
+
+
+
+export const exactSearch = (sought, value) => {
+    if (sought.startsWith("!")) {
+        return value?.toString()?.toLowerCase() === sought?.toLowerCase()?.replaceAll("!", "")
+    }
+    return false
+}

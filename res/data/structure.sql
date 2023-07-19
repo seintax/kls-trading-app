@@ -65,8 +65,8 @@ CREATE TABLE pos_archive_customer (
     cust_email       varchar(99),
     cust_start       date,
     cust_recent      datetime,
-    cust_count       int DEFAULT 0,
-    cust_value       decimal(30,2) DEFAULT 0,
+    cust_count       int DEFAULT 0 COMMENT 'running count',
+    cust_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
     cust_waive       decimal(30,2) DEFAULT 0,
     cust_status      varchar(1) DEFAULT "A"
 );
@@ -109,7 +109,7 @@ CREATE TABLE pos_purchase_order (
     pord_item_count     int DEFAULT 0,
     pord_order_total    decimal(10,2) DEFAULT 0,
     pord_request_total  decimal(10,2) DEFAULT 0,
-    pord_received_total decimal(10,2) DEFAULT 0,
+    pord_received_total decimal(10,2) DEFAULT 0 COMMENT 'running total',
     pord_progress       varchar(30),
     pord_status         varchar(30) DEFAULT 'PENDING',
     pord_expected       date,
@@ -146,8 +146,8 @@ CREATE TABLE pos_delivery_request (
     dlvr_refcode     varchar(50),
     dlvr_date        date,
     dlvr_remarks     varchar(150),
-    dlvr_count       int DEFAULT 0,
-    dlvr_value       decimal(30,2) DEFAULT 0,
+    dlvr_count       int DEFAULT 0 COMMENT 'running count',
+    dlvr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
     dlvr_by          int,
     dlvr_store       varchar(50)
 );
@@ -187,8 +187,9 @@ CREATE TABLE pos_stock_inventory (
     invt_acquisition varchar(20) DEFAULT 'PROCUREMENT',
     invt_source      varchar(50) DEFAULT 'SUPPLIER',
     invt_transfer    int DEFAULT 0
-    invt_sold_total  decimal(10,2) DEFAULT 0,
-    invt_trni_total  decimal(10,2) DEFAULT 0
+    invt_transmit    int DEFAULT 0
+    invt_sold_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
+    invt_trni_total  decimal(10,2) DEFAULT 0 COMMENT 'running count'
 );
 
 ALTER TABLE pos_stock_inventory
@@ -216,9 +217,9 @@ CREATE TABLE pos_transfer_request (
     trnr_category    varchar(75),
     trnr_date        date,
     trnr_arrival     date,
-    trnr_status      varchar(30) DEFAULT 'ON-GOING',
-    trnr_count       int DEFAULT 0,
-    trnr_value       decimal(30,2) DEFAULT 0
+    trnr_status      varchar(30) DEFAULT 'ON-TRANSIT',
+    trnr_count       int DEFAULT 0 COMMENT 'running count',
+    trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value'
 );
 
 CREATE TABLE pos_transfer_receipt (
@@ -229,8 +230,11 @@ CREATE TABLE pos_transfer_receipt (
     trni_product     int,
     trni_variant     int,
     trni_quantity    decimal(10,2),
+    trni_pricing     decimal(30,2),
     trni_received    decimal(10,2)
 );
+
+ALTER TABLE pos_transfer_receipt ADD COLUMN trni_pricing decimal(30,2) AFTER trni_quantity;
 
 CREATE TABLE pos_acctg_accounts (
     acct_id          int auto_increment primary key,
@@ -252,22 +256,19 @@ CREATE TABLE pos_acctg_entries (
 CREATE TABLE pos_sales_transaction (
     trns_id          int auto_increment primary key,
     trns_code        varchar(99) unique,
-    trns_order       varchar(11),
     trns_time        timestamp DEFAULT now(),
     trns_vat         decimal(30,2),
     trns_total       decimal(30,2),
-    trns_less        decimal(30,2),
+    trns_less        decimal(30,2) DEFAULT 0,
     trns_net         decimal(30,2),
     trns_return      decimal(30,2) DEFAULT 0,
-    trns_discount    decimal(5,2) DEFAULT 0,
-    trns_tended      decimal(30,2),
-    trns_change      decimal(30,2),
+    trns_discount    decimal(20,15) DEFAULT 0,
+    trns_tended      decimal(30,2) DEFAULT 0,
+    trns_change      decimal(30,2) DEFAULT 0,
     trns_method      varchar(30),
-    trns_shift       int,
     trns_status      varchar(20) DEFAULT 'READY',
     trns_account     int,
-    trns_date        date,
-    UNIQUE KEY `uniq_order` (trns_order, trns_date)
+    trns_date        date
 );
 
 CREATE TABLE pos_sales_dispensing (
@@ -277,7 +278,8 @@ CREATE TABLE pos_sales_dispensing (
     sale_time        timestamp DEFAULT now(),
     sale_item        int,
     sale_product     int,
-    sale_conv        int DEFAULT 0,
+    sale_variant     int,
+    sale_supplier    int,
     sale_purchase    decimal(10,2),
     sale_dispense    decimal(10,2),
     sale_price       decimal(30,2),
@@ -285,7 +287,7 @@ CREATE TABLE pos_sales_dispensing (
     sale_total       decimal(30,2),
     sale_less        decimal(30,2) DEFAULT 0,
     sale_net         decimal(30,2),
-    sale_discount    decimal(5,2) DEFAULT 0,
+    sale_discount    decimal(20,15) DEFAULT 0,
     sale_taxrated    decimal(5,2) DEFAULT 0,
     sale_toreturn    decimal(10,2) DEFAULT 0,
     sale_returned    decimal(10,2) DEFAULT 0
@@ -297,12 +299,14 @@ CREATE TABLE pos_sales_credit (
     cred_trans       varchar(99),
     cred_time        timestamp DEFAULT now(),
     cred_total       decimal(30,2),
-    cred_partial     decimal(30,2),
+    cred_partial     decimal(30,2) DEFAULT 0,
     cred_balance     decimal(30,2),
-    cred_payment     decimal(30,2),
-    cred_tended      decimal(30,2),
-    cred_change      decimal(30,2),
-    cred_waived      decimal(30,2),
+    cred_payment     decimal(30,2) DEFAULT 0,
+    cred_returned    decimal(30,2) DEFAULT 0,
+    cred_waived      decimal(30,2) DEFAULT 0,
+    cred_outstand    decimal(30,2),
+    cred_tended      decimal(30,2) DEFAULT 0,
+    cred_change      decimal(30,2) DEFAULT 0,
     cred_status      varchar(30) DEFAULT "ON-GOING",
     cred_settledon   timestamp
 );
@@ -313,12 +317,14 @@ CREATE TABLE pos_payment_collection (
     paym_time        timestamp DEFAULT now(),
     paym_type        varchar(20) DEFAULT 'SALES',
     paym_method      varchar(30),
+    paym_total      decimal(30,2) COMMENT 'unaltered original amount',
     paym_amount      decimal(30,2),
     paym_refcode     varchar(50),
     paym_refdate     date,
     paym_refstat     varchar(30) DEFAULT 'NOT APPLICABLE',
-    paym_reimburse   int DEFAULT 0,
-    paym_shift       int
+    paym_returned    decimal(30,2) DEFAULT 0,  
+    paym_reimburse   int DEFAULT 0 COMMENT 'boolean value either 1 or 0',
+    paym_account     int
 );
 
 CREATE TABLE pos_return_transaction (
@@ -333,13 +339,9 @@ CREATE TABLE pos_return_transaction (
     rtrn_r_total     decimal(30,2),
     rtrn_r_less      decimal(30,2),
     rtrn_r_net       decimal(30,2),
-    rtrn_discount    decimal(5,2) DEFAULT 0,
-    rtrn_shift       int,
-    rtrn_requestedby int,
-    rtrn_requestedon timestamp DEFAULT now(),
-    rtrn_authorizeby int,
-    rtrn_authorizeon timestamp,
-    rtrn_status      varchar(20) DEFAULT 'REQUESTING'
+    rtrn_discount    decimal(20,15) DEFAULT 0,
+    rtrn_account     int,
+    rtrn_status      varchar(20) DEFAULT 'COMPLETED'
 );
 
 CREATE TABLE pos_return_dispensing (
@@ -348,15 +350,14 @@ CREATE TABLE pos_return_dispensing (
     rsal_time        timestamp DEFAULT now(),
     rsal_item        int,
     rsal_product     int,
-    rsal_conv        int,
-    rsal_request     int,
-    rsal_qty         decimal(10,2),
+    rsal_refund     int,
+    rsal_quantity    decimal(10,2),
     rsal_price       decimal(30,2),
     rsal_vat         decimal(30,2),
     rsal_total       decimal(30,2),
     rsal_less        decimal(30,2),
     rsal_net         decimal(30,2),
-    rsal_discount    decimal(5,2) DEFAULT 0,
+    rsal_discount    decimal(20,15) DEFAULT 0,
     rsal_taxrated    decimal(5,2) DEFAULT 0
 );
 
@@ -364,12 +365,11 @@ CREATE TABLE pos_return_reimbursement (
     reim_id          int auto_increment primary key,
     reim_trans       varchar(99),
     reim_time        timestamp DEFAULT now(),
-    reim_request     int,
+    reim_refund      int,
     reim_method      varchar(30),
     reim_amount      decimal(30,2),
     reim_refcode     varchar(50),
-    reim_account     int,
-    reim_shift       int
+    reim_account     int
 );
 
 CREATE TABLE pos_shift_schedule (

@@ -92,7 +92,7 @@ const TransmitInjoin = () => {
                 variety_name: init(variant),
                 variety: init(item.variant),
                 cost: init(item.inventory_cost),
-                base: init(item.inventory_base),
+                pricing: init(item.pricing),
                 stocks: init(item.inventory_stocks),
                 remaining: init(item.inventory_stocks),
                 quantity: init(item.quantity),
@@ -120,7 +120,7 @@ const TransmitInjoin = () => {
                             variety_name: `${selected?.data?.variant_serial} / ${selected?.data?.variant_model} / ${selected?.data?.variant_brand}`,
                             variety: selected?.data?.variant,
                             cost: selected?.data?.cost,
-                            base: selected?.data?.base,
+                            pricing: selected?.data?.base,
                             stocks: selected?.data?.stocks,
                             balance: selected?.data?.stocks,
                             remaining: parseInt(selected?.data?.stocks) - parseInt(listener["quantity"] || 0),
@@ -136,7 +136,7 @@ const TransmitInjoin = () => {
                     variety_name: "",
                     variety: "",
                     cost: "",
-                    base: "",
+                    pricing: "",
                     stocks: "",
                     balance: "",
                     remaining: "",
@@ -177,7 +177,7 @@ const TransmitInjoin = () => {
                 <FormEl.Display
                     label='Price'
                     register={register}
-                    name='base'
+                    name='pricing'
                 />
                 <FormEl.Display
                     label='Available Stocks'
@@ -250,7 +250,6 @@ const TransmitInjoin = () => {
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    console.log(res)
                     toast.showCreate("Transmit successfully created.")
                     onCompleted()
                 }

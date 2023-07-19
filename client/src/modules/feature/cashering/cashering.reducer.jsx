@@ -6,18 +6,24 @@ const initialState = {
     item: {},
     manager: false,
     notifier: false,
+    receipts: false,
+    ledger: false,
     perpage: 150,
     display: {
         name: "Transaction",
-        text: "A list of all transactions registered in the system."
+        text: "A list of all transactions processed in the system."
     },
     header: {
         items: [
-            { name: 'ColumnName', stack: true, sort: 'FieldName' },
-            { name: 'ColumnName', stack: false, sort: 'FieldName', size: 250 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: 'Transaction', stack: false, sort: 'code' },
+            { name: 'Time', stack: true, sort: 'time', size: 150 },
+            { name: 'Type', stack: true, sort: 'method', size: 150 },
+            { name: 'Status', stack: true, sort: 'status', size: 250 },
+            { name: 'Net Amount', stack: false, size: 200, position: 'right' },
+            { name: '', stack: false, screenreader: 'Action', size: 70 }
         ]
-    }
+    },
+    search: ""
 }
 
 const transactionSlice = createSlice({
@@ -38,6 +44,24 @@ const transactionSlice = createSlice({
         },
         resetTransactionManager: (state) => {
             state.manager = false
+        },
+        showTransactionReceipts: (state) => {
+            state.receipts = true
+        },
+        resetTransactionReceipts: (state) => {
+            state.receipts = false
+        },
+        showTransactionLedger: (state) => {
+            state.ledger = true
+        },
+        resetTransactionLedger: (state) => {
+            state.ledger = false
+        },
+        setTransactionSearch: (state, action) => {
+            state.search = action.payload
+        },
+        resetTransactionSearch: (state) => {
+            state.search = ""
         },
         setTransactionNotifier: (state, action) => {
             state.notifier = action.payload
@@ -60,6 +84,12 @@ export const {
     setTransactionNotifier,
     showTransactionManager,
     resetTransactionManager,
+    showTransactionReceipts,
+    resetTransactionReceipts,
+    showTransactionLedger,
+    resetTransactionLedger,
+    setTransactionSearch,
+    resetTransactionSearch,
     resetTransaction
 } = transactionSlice.actions
 

@@ -32,4 +32,9 @@ const purchase = new Table("pos_purchase_order", {
     }
 ])
 
+purchase.register("running_via_delivery_receipt",
+    `UPDATE pos_purchase_order SET 
+        receivedtotal=(SELECT IFNULL(SUM(rcpt_quantity),0) FROM pos_delivery_receipt WHERE rcpt_purchase=pord_id)
+            WHERE pord_id=@id`)
+
 module.exports = purchase

@@ -62,6 +62,30 @@ export const transactionApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['transaction']
         }),
+        byAccountTransaction: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byaccount`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['transaction']
+        }),
+        byMaxAccountTransaction: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bymaxaccount`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['transaction/max']
+        }),
+        byCountTransaction: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bycount`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['transaction/count']
+        }),
     })
 })
 
@@ -73,4 +97,7 @@ export const {
     useFetchAllTransactionMutation,
     useSearchTransactionMutation,
     useSpecifyTransactionMutation,
+    useByAccountTransactionMutation,
+    useByMaxAccountTransactionMutation,
+    useByCountTransactionMutation
 } = transactionApiSlice

@@ -56,7 +56,7 @@ const BrowserDiscount = () => {
         setSettle(prev => ({
             ...prev,
             option: value,
-            rate: amount(rate).toFixed(2),
+            rate: amount(rate),
             discount: discount
         }))
     }
