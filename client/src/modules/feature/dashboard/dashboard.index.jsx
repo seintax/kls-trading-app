@@ -43,8 +43,8 @@ const menulist = [
         cascade: false,
         children: [
             { name: "Credits", href: "/credit" },
-            { name: "Returns", href: "/return" },
             { name: "Cheque Monitor", href: "/cheque-monitor" },
+            { name: "Expenses", href: "/expense" },
         ]
     },
     {

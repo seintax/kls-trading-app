@@ -21,6 +21,7 @@ import optionReducer from "../../modules/library/option/option.reducer"
 import supplierReducer from "../../modules/library/supplier/supplier.reducer"
 import variantReducer from "../../modules/library/variant/variant.reducer"
 import accountReducer from "../../modules/system/account/account.reducer"
+import expensesReducer from "../../modules/system/expenses/expenses.reducer"
 import { apiSlice } from "./slices/apiSlice"
 import authReducer from './slices/authSlice'
 import deleteReducer from "./slices/deleteSlice"
@@ -52,6 +53,7 @@ const store = configureStore({
         credit: creditReducer,
         reimburse: reimburseReducer,
         payment: paymentReducer,
+        expenses: expensesReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

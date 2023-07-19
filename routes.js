@@ -25,6 +25,7 @@ const branch = require('./src/library/branch/branch.route')
 
 const account = require('./src/system/account/account.route')
 const schedule = require('./src/system/schedule/schedule.route')
+const expenses = require('./src/system/expenses/expenses.route')
 
 const complex = require('./src/complex/complex.route')
 
@@ -52,5 +53,6 @@ module.exports = {
     branch,
     account,
     schedule,
+    expenses,
     complex
 }

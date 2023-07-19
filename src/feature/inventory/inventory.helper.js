@@ -26,6 +26,7 @@ const inventory = new Table("pos_stock_inventory", {
     transmit: 'invt_transmit',
     sold_total: 'invt_sold_total',
     trni_total: 'invt_trni_total',
+    adjt_total: 'invt_adjt_total',
 }, [
     {
         key: "invt_product",
@@ -90,6 +91,12 @@ inventory.register("running_via_dispensing",
     `UPDATE pos_stock_inventory SET 
         invt_stocks=invt_stocks@operator@qty,
         invt_sold_total=(SELECT IFNULL(SUM(sale_dispense),0) FROM pos_sales_dispensing WHERE sale_item=invt_id)
+            WHERE invt_id=@id`)
+
+inventory.register("running_via_adjustment",
+    `UPDATE pos_stock_inventory SET 
+        invt_stocks=invt_stocks@operator@qty,
+        invt_adjt_total=(SELECT IFNULL(SUM(adjt_quantity),0) FROM pos_stock_adjustment WHERE adjt_time=invt_id)
             WHERE invt_id=@id`)
 
 module.exports = inventory

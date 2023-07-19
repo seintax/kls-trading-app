@@ -57,6 +57,7 @@ CREATE TABLE lib_variant (
     vrnt_brand       varchar(99)
 );
 
+DROP TABLE pos_archive_customer;
 CREATE TABLE pos_archive_customer (
     cust_id          int auto_increment primary key,
     cust_name        varchar(99) unique,
@@ -71,6 +72,7 @@ CREATE TABLE pos_archive_customer (
     cust_status      varchar(1) DEFAULT "A"
 );
 
+DROP TABLE pos_archive_store;
 CREATE TABLE pos_archive_store (
     stre_id          int auto_increment primary key,
     stre_code        varchar(50) unique,
@@ -99,6 +101,7 @@ CREATE TABLE pos_stock_masterlist (
     prod_status      varchar(1) DEFAULT "A"
 );
 
+DROP TABLE pos_purchase_order;
 CREATE TABLE pos_purchase_order (
     pord_id             int auto_increment primary key,
     pord_time           timestamp DEFAULT now(),
@@ -116,6 +119,7 @@ CREATE TABLE pos_purchase_order (
     pord_by             int
 );
 
+DROP TABLE pos_purchase_receivable;
 CREATE TABLE pos_purchase_receivable (
     rcvb_id          int auto_increment primary key,
     rcvb_purchase    int,
@@ -127,6 +131,7 @@ CREATE TABLE pos_purchase_receivable (
     rcvb_received    decimal(10,2) DEFAULT 0
 );
 
+DROP TABLE pos_purchase_billing;
 CREATE TABLE pos_purchase_billing (
     bill_id          int auto_increment primary key,
     bill_time        timestamp DEFAULT now(),
@@ -139,6 +144,7 @@ CREATE TABLE pos_purchase_billing (
     bill_store       varchar(50)
 );
 
+DROP TABLE pos_delivery_request;
 CREATE TABLE pos_delivery_request (
     dlvr_id          int auto_increment primary key,
     dlvr_time        timestamp DEFAULT now(),
@@ -152,6 +158,7 @@ CREATE TABLE pos_delivery_request (
     dlvr_store       varchar(50)
 );
 
+DROP TABLE pos_delivery_receipt;
 CREATE TABLE pos_delivery_receipt (
     rcpt_id          int auto_increment primary key,
     rcpt_time        timestamp DEFAULT now(),
@@ -164,6 +171,7 @@ CREATE TABLE pos_delivery_receipt (
     rcpt_pricing     decimal(30,2)
 );
 
+DROP TABLE pos_stock_inventory;
 CREATE TABLE pos_stock_inventory (
     invt_id          int auto_increment primary key,
     invt_time        timestamp DEFAULT now(),
@@ -186,10 +194,11 @@ CREATE TABLE pos_stock_inventory (
     invt_alert       decimal(10,2) DEFAULT 0,
     invt_acquisition varchar(20) DEFAULT 'PROCUREMENT',
     invt_source      varchar(50) DEFAULT 'SUPPLIER',
-    invt_transfer    int DEFAULT 0
-    invt_transmit    int DEFAULT 0
+    invt_transfer    int DEFAULT 0,
+    invt_transmit    int DEFAULT 0,
     invt_sold_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
-    invt_trni_total  decimal(10,2) DEFAULT 0 COMMENT 'running count'
+    invt_trni_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
+    invt_adjt_total  decimal(10,2) DEFAULT 0 COMMENT 'running count'
 );
 
 ALTER TABLE pos_stock_inventory
@@ -209,6 +218,21 @@ CREATE TABLE pos_stock_price_adjust (
     prce_store       varchar(50)
 );
 
+CREATE TABLE pos_stock_adjustment (
+    adjt_id          int auto_increment primary key,
+    adjt_time        timestamp DEFAULT now(),
+    adjt_item        int,
+    adjt_product     int,
+    adjt_variant     int,
+    adjt_quantity    decimal(10,2),
+    adjt_pricing     decimal(30,2),
+    adjt_operator    varchar(10) COMMENT 'value is either add or minus',
+    adjt_remarks     decimal(30,2),
+    adjt_by          decimal(30,2),
+    adjt_store       varchar(50)
+);
+
+DROP TABLE pos_transfer_request;
 CREATE TABLE pos_transfer_request (
     trnr_id          int auto_increment primary key,
     trnr_time        timestamp DEFAULT now(),
@@ -222,6 +246,7 @@ CREATE TABLE pos_transfer_request (
     trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value'
 );
 
+DROP TABLE pos_transfer_receipt;
 CREATE TABLE pos_transfer_receipt (
     trni_id          int auto_increment primary key,
     trni_time        timestamp DEFAULT now(),
@@ -253,6 +278,19 @@ CREATE TABLE pos_acctg_entries (
     entr_remarks     varchar(99)
 );
 
+CREATE TABLE pos_archive_expenses (
+    expn_id          int auto_increment primary key,
+    expn_time        timestamp DEFAULT now(),
+    expn_particulars varchar(150),
+    expn_purchase    decimal(30,2),
+    expn_cash        decimal(30,2),
+    expn_change      decimal(30,2),
+    expn_remarks     varchar(99),
+    expn_notes       varchar(150),
+    expn_account     int
+);
+
+DROP TABLE pos_sales_transaction;
 CREATE TABLE pos_sales_transaction (
     trns_id          int auto_increment primary key,
     trns_code        varchar(99) unique,
@@ -266,7 +304,7 @@ CREATE TABLE pos_sales_transaction (
     trns_tended      decimal(30,2) DEFAULT 0,
     trns_change      decimal(30,2) DEFAULT 0,
     trns_method      varchar(30),
-    trns_status      varchar(20) DEFAULT 'READY',
+    trns_status      varchar(20) DEFAULT 'COMPLETED',
     trns_account     int,
     trns_date        date
 );

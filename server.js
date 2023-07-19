@@ -51,6 +51,7 @@ app.use('/app', approutes.branch)
 
 app.use('/app', approutes.account)
 app.use('/app', approutes.schedule)
+app.use('/app', approutes.expenses)
 
 app.use('/app', approutes.complex)
 
