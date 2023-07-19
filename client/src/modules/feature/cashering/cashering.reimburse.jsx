@@ -104,7 +104,6 @@ const CasheringReimburse = () => {
     }
 
     const onApply = (item, index) => {
-        console.log(reimburse)
         let name = `amt${index}`
         let applied = payments?.reduce((prev, curr) => prev + amount(curr.applyamt || 0), 0) + amount(credit)
         let remain = total - applied
@@ -150,8 +149,6 @@ const CasheringReimburse = () => {
         }
         let hasReturn = dispensingSelector?.data?.filter(f => f.toreturn > 0).length > 0
         if (hasReturn) {
-            console.log(dispensingSelector?.data)
-            console.log(payments)
             let payment = payments?.filter(f => f.applyamt > 0)
             let returns = dispensingSelector?.data?.filter(f => f.toreturn > 0)
             let dispense = dispensingSelector?.data
@@ -254,7 +251,6 @@ const CasheringReimburse = () => {
                     })
                 }
             }
-            console.log(data)
             await createReturn(data)
                 .unwrap()
                 .then(res => {

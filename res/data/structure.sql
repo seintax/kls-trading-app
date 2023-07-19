@@ -309,6 +309,7 @@ CREATE TABLE pos_sales_transaction (
     trns_date        date
 );
 
+DROP TABLE pos_sales_dispensing;
 CREATE TABLE pos_sales_dispensing (
     sale_id          int auto_increment primary key,
     sale_trans       varchar(99),
@@ -331,6 +332,7 @@ CREATE TABLE pos_sales_dispensing (
     sale_returned    decimal(10,2) DEFAULT 0
 );
 
+DROP TABLE pos_sales_credit;
 CREATE TABLE pos_sales_credit (
     cred_id          int auto_increment primary key,
     cred_creditor    int,
@@ -349,6 +351,7 @@ CREATE TABLE pos_sales_credit (
     cred_settledon   timestamp
 );
 
+DROP TABLE pos_payment_collection;
 CREATE TABLE pos_payment_collection (
     paym_id          int auto_increment primary key,
     paym_trans       varchar(99),
@@ -365,6 +368,7 @@ CREATE TABLE pos_payment_collection (
     paym_account     int
 );
 
+DROP TABLE pos_return_transaction;
 CREATE TABLE pos_return_transaction (
     rtrn_id          int auto_increment primary key,
     rtrn_trans       varchar(99),
@@ -382,6 +386,7 @@ CREATE TABLE pos_return_transaction (
     rtrn_status      varchar(20) DEFAULT 'COMPLETED'
 );
 
+DROP TABLE pos_return_dispensing;
 CREATE TABLE pos_return_dispensing (
     rsal_id          int auto_increment primary key,
     rsal_trans       varchar(99),
@@ -399,6 +404,7 @@ CREATE TABLE pos_return_dispensing (
     rsal_taxrated    decimal(5,2) DEFAULT 0
 );
 
+DROP TABLE pos_return_reimbursement;
 CREATE TABLE pos_return_reimbursement (
     reim_id          int auto_increment primary key,
     reim_trans       varchar(99),

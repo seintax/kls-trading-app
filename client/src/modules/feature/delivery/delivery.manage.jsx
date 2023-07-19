@@ -196,7 +196,6 @@ const DeliveryManage = () => {
     }
 
     const returnToList = useCallback(() => {
-        console.log("closing appender...")
         dispatch(resetDeliveryManager())
     }, [])
 

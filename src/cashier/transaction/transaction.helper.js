@@ -27,8 +27,4 @@ const transaction = new Table("pos_sales_transaction", {
     }
 ])
 
-// transaction.register("test", "SELECT * FROM pos_sales_transaction WHERE @watas")
-
-// console.log(transaction.statement("test").inject([{ watas: "george" }]))
-
 module.exports = transaction
