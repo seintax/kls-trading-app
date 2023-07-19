@@ -11,7 +11,7 @@ const BrowserDiscount = () => {
     const dispatch = useDispatch()
     const [total, setTotal] = useState(0)
     const [settle, setSettle] = useState({
-        option: "",
+        option: "CUSTOM",
         discount: "",
         rate: "",
     })
@@ -120,14 +120,13 @@ const BrowserDiscount = () => {
                                 tabIndex={0}
                                 autoFocus
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1">
-                                <option value="" className="text-sm" disabled>Select discount</option>
+                                <option value="CUSTOM" className="text-sm">Custom</option>
                                 <option value="30%" className="text-sm">30%</option>
                                 <option value="25%" className="text-sm">25%</option>
                                 <option value="20%" className="text-sm">20%</option>
                                 <option value="15%" className="text-sm">15%</option>
                                 <option value="10%" className="text-sm">10%</option>
                                 <option value="5%" className="text-sm">5%</option>
-                                <option value="CUSTOM" className="text-sm">Custom</option>
                             </select>
                         </div>
                         <div className="flex border border-secondary-500 p-0.5 items-center">

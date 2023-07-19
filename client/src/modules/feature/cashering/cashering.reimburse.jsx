@@ -259,7 +259,6 @@ const CasheringReimburse = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        console.log(res)
                         toast.showCreate("Return successfully applied.")
                         onCompleted()
                     }

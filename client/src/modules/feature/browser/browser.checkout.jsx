@@ -269,7 +269,6 @@ const BrowserCheckout = () => {
                                 }
                             })
                     }
-                    console.log(data)
                     await createTransaction(data)
                         .unwrap()
                         .then(res => {
@@ -351,38 +350,40 @@ const BrowserCheckout = () => {
                             </div>
                             <div className={`${dataSelector.paid?.length ? "flex" : "hidden"} flex-col w-full gap-1 py-2`}>
                                 {
-                                    dataSelector.paid?.map(pay => (
-                                        <>
-                                            <div key={pay.id} className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(pay.id)}>
-                                                <span className="w-1/4 flex-none">
-                                                    {pay.method}
-                                                </span>
-                                                <span className={pay.type === "SALES" ? "" : "hidden"}>
-                                                    {pay.refcode ? ` #${pay.refcode}` : ""}
-                                                </span>
-                                                <span className={pay.type === "CREDIT" ? "flex gap-5" : "hidden"}>
-                                                    <span>{pay.creditor_name}</span>
-                                                </span>
-                                                <span className="ml-auto text-gray-800">
-                                                    {currency(pay.amount)}
-                                                </span>
-                                            </div>
-                                            <div key={pay.id + 0.1} className={`${pay.type === "CREDIT" ? "flex" : "hidden"} justify-between items-center pl-5 pr-3 py-1 text-xs`} onClick={() => removePayment(pay.id)}>
-                                                <span className="w-1/4 flex-none flex items-center gap-2">
-                                                    {pay.method}
-                                                    <span className="bg-gray-300 px-2 py-0.5 rounded-md">
-                                                        PARTIAL
-                                                    </span>
-                                                </span>
-                                                <span className="flex gap-5 ">
-                                                    <span>{pay.creditor_name}</span>
-                                                </span>
-                                                <span className="ml-auto text-gray-800">
-                                                    {currency(pay.partial)}
-                                                </span>
-                                            </div>
-                                        </>
+                                    dataSelector?.paid?.map((pay, index) => (
+                                        <div key={index} className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(pay.id)}>
+                                            <span className="w-1/4 flex-none">
+                                                {pay.method}
+                                            </span>
+                                            <span className={pay.type === "SALES" ? "" : "hidden"}>
+                                                {pay.refcode ? ` #${pay.refcode}` : ""}
+                                            </span>
+                                            <span className={pay.type === "CREDIT" ? "flex gap-5" : "hidden"}>
+                                                <span>{pay.creditor_name}</span>
+                                            </span>
+                                            <span className="ml-auto text-gray-800">
+                                                {currency(pay.amount)}
+                                            </span>
+                                        </div>
                                     ))
+                                }
+                                {
+                                    (dataSelector.method === "CREDIT") ? (
+                                        <div className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(dataSelector?.paid[0]?.id)}>
+                                            <span className="w-1/4 flex-none flex items-center gap-2">
+                                                {dataSelector?.paid[0]?.method}
+                                                <span className="bg-gray-300 px-2 py-0.5 rounded-md">
+                                                    PARTIAL
+                                                </span>
+                                            </span>
+                                            <span className="flex gap-5 ">
+                                                <span>{dataSelector?.paid[0]?.creditor_name}</span>
+                                            </span>
+                                            <span className="ml-auto text-gray-800">
+                                                {currency(dataSelector?.paid[0]?.partial)}
+                                            </span>
+                                        </div>
+                                    ) : null
                                 }
                                 <div className={`${payment > 0 ? "flex" : "hidden"} justify-between items-center pl-5 pr-3 py-1 text-xs font-bold`}>
                                     <span className="w-full pt-3">Total Payment</span>

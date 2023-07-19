@@ -91,7 +91,7 @@ const BrowserPayment = () => {
             }
         }
         let hasCash = dataSelector.paid?.filter(f => f.method === "CASH").length > 0
-        if (hasCash) {
+        if (hasCash.length > 0) {
             toast.showWarning("Cannot add another 'CASH' option.")
             return
         }

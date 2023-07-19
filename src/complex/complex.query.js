@@ -15,6 +15,7 @@ const getcredit = require("../cashier/credit/credit.helper")
 const getrefund = require("../cashier/refund/refund.helper")
 const getreturned = require("../cashier/returned/returned.helper")
 const getcustomer = require("../library/customer/customer.helper")
+const getreimburse = require("../cashier/reimburse/reimburse.helper")
 
 function q(object) {
     return new Query(object.alias, object.value)
@@ -332,7 +333,6 @@ const sqlCreateTransaction = handler(async (req, res) => {
                 ?.map(async (cred) => {
                     let result = await new Promise(async (resolve, reject) => {
                         const builder = getcredit.insert(cred)
-                        console.log(builder)
                         await con.query(builder.sql, builder.arr, async (err, ans) => {
                             if (err) con.rollback(() => reject(err))
                             resolve({ occurence: "credit", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
@@ -379,6 +379,7 @@ const sqlCreateTransaction = handler(async (req, res) => {
 })
 
 const sqlCreateReturn = handler(async (req, res) => {
+    console.log("monitor")
     mysqlpool.getConnection((err, con) => {
         if (err) return res.status(401).json(force(err))
         con.beginTransaction(async (err) => {
@@ -399,8 +400,6 @@ const sqlCreateReturn = handler(async (req, res) => {
                     resolve({ occurence: "refund", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
                 })
             })
-
-            console.log(refund)
 
             let dispensing = await Promise.all(req.body.dispensing
                 ?.map(async (dispense) => {
@@ -448,50 +447,54 @@ const sqlCreateReturn = handler(async (req, res) => {
                 })
             )
 
-            let credit = await new Promise(async (resolve, reject) => {
-                const builder = getcredit.update(req.body.credit)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "credit", updateResult: { id: req.body.credit.id } })
-                })
-            })
-
-            let running_customer = await new Promise(async (resolve, reject) => {
-                const sql = getcustomer
-                    .statement("running_via_credit")
-                    .inject({
-                        id: req.body.credit.creditor,
+            if (req.body.credit) {
+                var credit = await new Promise(async (resolve, reject) => {
+                    const builder = getcredit.update(req.body.credit)
+                    await con.query(builder.sql, builder.arr, async (err, ans) => {
+                        if (err) con.rollback(() => reject(err))
+                        resolve({ occurence: "credit", updateResult: { id: req.body.credit.id } })
                     })
-                await con.query(sql, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "running customer", updateResult: { id: req.body.credit.creditor, alterated: ans.affectedRows } })
                 })
-            })
+
+                var running_customer = await new Promise(async (resolve, reject) => {
+                    const sql = getcustomer
+                        .statement("running_via_credit")
+                        .inject({
+                            id: req.body.credit.creditor,
+                        })
+                    await con.query(sql, async (err, ans) => {
+                        if (err) con.rollback(() => reject(err))
+                        resolve({ occurence: "running customer", updateResult: { id: req.body.credit.creditor, alterated: ans.affectedRows } })
+                    })
+                })
+            }
 
             let reimburse = await new Promise(async (resolve, reject) => {
                 let data = {
                     ...req.body.reimburse,
                     refund: refund.insertResult.id
                 }
-                const builder = getrefund.insert(data)
+                const builder = getreimburse.insert(data)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
                     resolve({ occurence: "reimburse", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
                 })
             })
 
-            let payment = await Promise.all(req.body.payment
-                ?.map(async (pay) => {
-                    let result = await new Promise(async (resolve, reject) => {
-                        const builder = getpayment.update(pay)
-                        await con.query(builder.sql, builder.arr, async (err, ans) => {
-                            if (err) con.rollback(() => reject(err))
-                            resolve({ occurence: "payment", updateResult: { id: pay.id } })
+            if (req.body.payment) {
+                var payment = await Promise.all(req.body.payment
+                    ?.map(async (pay) => {
+                        let result = await new Promise(async (resolve, reject) => {
+                            const builder = getpayment.update(pay)
+                            await con.query(builder.sql, builder.arr, async (err, ans) => {
+                                if (err) con.rollback(() => reject(err))
+                                resolve({ occurence: "payment", updateResult: { id: pay.id } })
+                            })
                         })
+                        return result
                     })
-                    return result
-                })
-            )
+                )
+            }
 
             let result = { transaction, refund, dispensing, returned, credit, running_customer, reimburse, payment, data: req.body }
             con.commit((err) => {
