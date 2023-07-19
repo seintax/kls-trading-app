@@ -13,4 +13,10 @@ const transfer = new Table("pos_transfer_request", {
     value: 'trnr_value',
 })
 
+transfer.register("running_via_transfer_receipt",
+    `UPDATE pos_transfer_request SET 
+        trnr_count=(SELECT IFNULL(COUNT(*),0) FROM pos_transfer_receipt WHERE trni_transfer=trnr_id),
+        trnr_value=(SELECT IFNULL(SUM(trni_quantity * trni_pricing),0) FROM pos_transfer_receipt WHERE trni_transfer=trnr_id)
+            WHERE trnr_id=@id`)
+
 module.exports = transfer

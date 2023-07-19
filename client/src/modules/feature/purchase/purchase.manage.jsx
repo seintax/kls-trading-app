@@ -224,12 +224,12 @@ const PurchaseManage = () => {
     }
 
     return (
-        <div className="w-full flex flex-col gap-5">
-            <div className="w-full sticky -top-5 z-10">
+        <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
+            <div className="w-full sticky -top-5 pt-5 lg:pt-0 z-10">
                 <DataHeader name="Purchase Order" returncallback={returnToList} />
             </div>
 
-            <div className="w-full border border-b-1 border-b-gray-400 shadow-lg border-shadow">
+            <div className="w-full border border-b-1 border-b-gray-400">
                 {
                     (editMode) ? (
                         <DataInputs

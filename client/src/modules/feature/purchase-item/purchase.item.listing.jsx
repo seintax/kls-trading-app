@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
+import { NumFn } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataListing from "../../../utilities/interface/datastack/data.listing"
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
@@ -81,7 +82,7 @@ const ReceivableListing = () => {
             { value: `${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` },
             { value: item.ordered, subtext: "Quantity" },
             { value: item.received, subtext: "Received" },
-            { value: item.costing, subtext: "Costing" },
+            { value: NumFn.currency(item.costing), subtext: "Costing" },
         ]
     }
 

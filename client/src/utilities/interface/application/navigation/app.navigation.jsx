@@ -35,21 +35,21 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
     }
 
     return (
-        <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-gradient-to-b from-primary-300 via-primary-300 to-primary-500 border-b border-secondary-500 shadow-md border-shadow">
+        <div className="sticky top-0 z-20 flex h-16 flex-shrink-0 bg-gradient-to-b from-primary-300 via-primary-300 to-primary-500 border-b border-secondary-500 shadow-md border-shadow">
             <button
                 type="button"
-                className="border-r border-secondary-500 focus:bg-primary-500 px-4 text-secondary-500 focus:outline-none focus:ring-inset md:hidden"
+                className="border-r border-secondary-500 focus:bg-primary-500 px-5 -ml-0.5 text-secondary-500 focus:outline-none focus:ring-inset lg:hidden"
                 onClick={() => handleSidebarOpen(true)}
             >
                 <span className="sr-only">Open sidebar</span>
                 <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
-            <div className="w-full flex flex-1 pl-1 pr-3">
+            <div className="w-full flex flex-row-reverse lg:flex-row items-center flex-1 pl-1 pr-3 ml-2.5">
                 {auth ? (
-                    <div className="flex items-center relative isolate w-fit group cursor-pointer">
-                        <div className="flex items-center bg-primary-400 py-4 w-full pl-0 pr-5 rounded-br-[30px] absolute z-[-1] left-5 border border-secondary-500 group-hover:bg-primary-500">
+                    <div className="flex items-center relative isolate w-fit group cursor-pointer h-fit">
+                        <div className="hidden lg:flex items-center bg-primary-400 py-4 w-full pl-0 pr-5 rounded-br-[30px] absolute z-[-1] left-5 border border-secondary-500 group-hover:bg-primary-500">
                         </div>
-                        <Menu as="div" className="relative ml-2.5">
+                        <Menu as="div" className="relative">
                             <div>
                                 <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                                     <span className="sr-only">Open user menu</span>
@@ -67,7 +67,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
                                 leaveFrom="transform opacity-100 scale-100"
                                 leaveTo="transform opacity-0 scale-95"
                             >
-                                <Menu.Items className="absolute left-0 z-10 mt-2 w-48 origin-top-left rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border border-secondary-500">
+                                <Menu.Items className="absolute right-0 lg:left-0 mt-2 w-48 origin-top-right lg:origin-top-left rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border border-secondary-500">
                                     {userNavigation.map((item) => (
                                         <Menu.Item key={item.name}>
                                             {({ active }) => (
@@ -94,11 +94,13 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
                                 </Menu.Items>
                             </Transition>
                         </Menu>
-                        <span className="text-black text-xs ml-3">{auth?.name?.toLowerCase()}@gmail.com</span>
+                        <span className="hidden lg:flex text-black text-xs ml-2 font-bold uppercase">
+                            {auth?.name}
+                        </span>
                     </div>
                 ) : null}
-                <div className="ml-auto flex items-center">
-                    <div className="flex flex-1">
+                <div className="ml-auto flex items-center mr-3 lg:mr-0">
+                    <div className="hidden lg:flex flex-1">
                         <form className="flex items-center w-full md:ml-0" onSubmit={onSubmit} method="GET">
                             <label htmlFor="search-field" className="sr-only">
                                 Search

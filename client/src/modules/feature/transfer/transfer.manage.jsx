@@ -13,7 +13,7 @@ import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
 import TransmitListing from "../transfer-item/transfer.item.listing"
-import { resetTransferManager, setTransferNotifier } from "./transfer.reducer"
+import { resetTransferManager, setTransferNotifier, showTransferSelector } from "./transfer.reducer"
 import { useCreateTransferMutation, useUpdateTransferMutation } from "./transfer.services"
 
 const TransferManage = () => {
@@ -151,9 +151,9 @@ const TransferManage = () => {
         setEditMode(false)
     }, [])
 
-    const onCompleted = () => {
+    const onCompleted = (id = undefined) => {
         dispatch(setTransferNotifier(true))
-        if (id) dispatch(showPurchaseSelector(id))
+        if (id) dispatch(showTransferSelector(id))
         setEditMode(false)
     }
 
@@ -171,7 +171,7 @@ const TransferManage = () => {
                 .then(res => {
                     if (res.success) {
                         toast.showUpdate("Transfer successfully updated.")
-                        onCompleted()
+                        onCompleted(dataSelector.item.id)
                     }
                 })
                 .catch(err => console.error(err))
@@ -182,7 +182,7 @@ const TransferManage = () => {
             .then(res => {
                 if (res.success) {
                     toast.showCreate("Transfer successfully created.")
-                    onCompleted()
+                    onCompleted(res.insertResult.id)
                 }
             })
             .catch(err => console.error(err))
@@ -214,12 +214,12 @@ const TransferManage = () => {
     }
 
     return (
-        <div className="w-full flex flex-col gap-5">
-            <div className="w-full sticky -top-5 z-10">
+        <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
+            <div className="w-full sticky -top-5 mt-5 pt-5 lg:pt-0 z-10">
                 <DataHeader name="Stock Transfer" returncallback={returnToList} />
             </div>
 
-            <div className="w-full border border-b-1 border-b-gray-400 shadow-lg border-shadow">
+            <div className="w-full border border-b-1 border-b-gray-400">
                 {
                     (editMode) ? (
                         <DataInputs

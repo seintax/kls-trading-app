@@ -20,6 +20,12 @@ export function shortDate(datevalue) {
 
 export function longDate(datevalue) {
     if (datevalue) return moment(datevalue).format("MMMM DD, YYYY")
+    return moment(new Date()).format("MMMM DD, YYYY")
+}
+
+export function short12Time(datevalue) {
+    if (datevalue) return moment(datevalue).format("hh:mm:ss A")
+    return moment(new Date()).format("hh:mm:ss A")
 }
 
 export function shortDate24Time(datevalue) {

@@ -1,10 +1,13 @@
 import React from 'react'
 import { Route, Routes } from "react-router-dom"
+import CasheringIndex from "./modules/feature/cashering/cashering.index"
 import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
 import DashboardPanel from "./modules/feature/dashboard/dashboard.panel"
 import DeliveryIndex from "./modules/feature/delivery/delivery.index"
 import InventoryIndex from "./modules/feature/inventory/inventory.index"
 import PurchaseIndex from "./modules/feature/purchase/purchase.index"
+import ChequeIndex from "./modules/feature/transactions/cheque/cheque.index"
+import CreditIndex from "./modules/feature/transactions/credit/credit.index"
 import TransferIndex from "./modules/feature/transfer/transfer.index"
 import BranchIndex from "./modules/library/branch/branch.index"
 import CategoryIndex from "./modules/library/category/category.index"
@@ -15,6 +18,9 @@ import SupplierIndex from "./modules/library/supplier/supplier.index"
 import VariantIndex from "./modules/library/variant/variant.index"
 import AccountIndex from "./modules/system/account/account.index"
 import AccountLogin from "./modules/system/account/account.login"
+import ExpensesIndex from "./modules/system/expenses/expenses.index"
+import ReportsIndex from "./modules/system/reports/reports.index"
+import RolesIndex from "./modules/system/roles/roles.index"
 import usePrivate from "./utilities/hooks/usePrivate"
 import AppErrorFallback from "./utilities/interface/application/errormgmt/app.fallback"
 import AppPageNotFound from "./utilities/interface/application/errormgmt/app.notfound"
@@ -29,10 +35,14 @@ const AppRoute = () => {
             <Route path="" element={<PrivateRoute />}>
                 <Route element={<DashboardIndex />}>
                     <Route path="/dashboard" element={<DashboardPanel />} />
+                    <Route path="/cashering" element={<CasheringIndex />} />
                     <Route path="/purchase-order" element={<PurchaseIndex />} />
                     <Route path="/delivery" element={<DeliveryIndex />} />
                     <Route path="/inventory" element={<InventoryIndex />} />
                     <Route path="/stock-transfer" element={<TransferIndex />} />
+                    <Route path="/credit" element={<CreditIndex />} />
+                    <Route path="/cheque-monitor" element={<ChequeIndex />} />
+                    <Route path="/expense" element={<ExpensesIndex />} />
 
                     <Route path="/supplier" element={<SupplierIndex />} />
                     <Route path="/customer" element={<CustomerIndex />} />
@@ -45,6 +55,8 @@ const AppRoute = () => {
                     <Route path="/branch" element={<BranchIndex />} />
 
                     <Route path="/users" element={<AccountIndex />} />
+                    <Route path="/reports" element={<ReportsIndex />} />
+                    <Route path="/roles" element={<RolesIndex />} />
                 </Route>
             </Route>
 

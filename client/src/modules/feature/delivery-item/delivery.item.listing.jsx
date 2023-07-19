@@ -82,7 +82,7 @@ const ReceiptListing = () => {
     const items = (item) => {
         return [
             { value: `${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` },
-            { value: StrFn.formatWithZeros(item.purchase, 6), subtext: "Purchase Order" },
+            { value: StrFn.formatWithZeros(item.purchase, 6), subtext: "PO No." },
             { value: item.quantity, subtext: "Received" },
             { value: NumFn.currency(item.receivable_costing), subtext: "Costing" },
             { value: NumFn.currency(item.pricing), subtext: "Pricing" },

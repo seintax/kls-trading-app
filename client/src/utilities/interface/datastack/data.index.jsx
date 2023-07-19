@@ -24,7 +24,7 @@ const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, chil
     }
 
     return (
-        <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8 w-full h-full'>
+        <div className='flex flex-col w-full h-full'>
             <div className="sm:flex sm:items-center w-full">
                 <div className={display.show ? "sm:flex-auto no-select" : "hidden"}>
                     <h1 className="text-2xl font-semibold text-gray-900 capitalize">{display.name.toUpperCase()}</h1>

@@ -3,7 +3,10 @@
 		"prefix": "cnServices",
 		"body": [
 			"import { apiSlice } from \"../../../utilities/redux/slices/apiSlice\"\r",
-			"const ENDPOINT_URL = '/app/${1:Service}'\r",
+			"const BASE_URL = import.meta.env.MODE === \"development\" ?\r",
+			"    import.meta.env.VITE_API_BASE_URL :\r",
+			"    import.meta.env.VITE_API_BASE_URL_PROD\r",
+			"const ENDPOINT_URL = `\\${BASE_URL}/app/${1:Service}`\r",
 			"\r",
 			"export const ${1:Service}ApiSlice = apiSlice.injectEndpoints({\r",
 			"    endpoints: (builder) => ({\r",

@@ -1,11 +1,27 @@
 const handler = require("express-async-handler")
+const { Query } = require("../utilities/builder.utility")
 const { mysqlpool, proceed } = require("../../src/utilities/callback.utility")
 const getreceipt = require("../feature/receipt/receipt.helper")
 const getdelivery = require("../feature/delivery/delivery.helper")
 const getreceivable = require("../feature/receivable/receivable.helper")
 const getpurchase = require("../feature/purchase/purchase.helper")
 const getinventory = require("../feature/inventory/inventory.helper")
+const gettransfer = require("../feature/transfer/transfer.helper")
 const gettransmit = require("../feature/transmit/transmit.helper")
+const gettransaction = require("../cashier/transaction/transaction.helper")
+const getdispensing = require("../cashier/dispensing/dispensing.helper")
+const getpayment = require("../cashier/payment/payment.helper")
+const getcredit = require("../cashier/credit/credit.helper")
+const getrefund = require("../cashier/refund/refund.helper")
+const getreturned = require("../cashier/returned/returned.helper")
+const getcustomer = require("../library/customer/customer.helper")
+const getreimburse = require("../cashier/reimburse/reimburse.helper")
+
+function q(object) {
+    return new Query(object.alias, object.value)
+}
+
+const op = { add: "+", min: "-", mul: "*", div: "/" }
 
 const sqlCreateReceipt = handler(async (req, res) => {
     mysqlpool.getConnection((err, con) => {
@@ -20,13 +36,25 @@ const sqlCreateReceipt = handler(async (req, res) => {
                 })
             })
 
-            let delivery = await new Promise(async (resolve, reject) => {
-                let data = {
-                    count: req.body.receiving,
-                    id: req.body.delivery
-                }
-                const builder = getdelivery.update(data)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
+            // let delivery = await new Promise(async (resolve, reject) => {
+            //     let data = {
+            //         count: req.body.receiving,
+            //         id: req.body.delivery
+            //     }
+            //     const builder = getdelivery.update(data)
+            //     await con.query(builder.sql, builder.arr, async (err, ans) => {
+            //         if (err) con.rollback(() => reject(err))
+            //         resolve({ occurence: "delivery", updateResult: { id: data.id, alterated: ans.affectedRows } })
+            //     })
+            // })
+
+            let running_delivery = await new Promise(async (resolve, reject) => {
+                const sql = getdelivery
+                    .statement("running_via_delivery_receipt")
+                    .inject({
+                        id: req.body.delivery
+                    })
+                await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
                     resolve({ occurence: "delivery", updateResult: { id: data.id, alterated: ans.affectedRows } })
                 })
@@ -45,13 +73,25 @@ const sqlCreateReceipt = handler(async (req, res) => {
                 })
             })
 
-            let purchase = await new Promise(async (resolve, reject) => {
-                let data = {
-                    receivedtotal: req.body.receivedtotal,
-                    id: req.body.purchase
-                }
-                const builder = getpurchase.update(data)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
+            // let purchase = await new Promise(async (resolve, reject) => {
+            //     let data = {
+            //         receivedtotal: req.body.receivedtotal,
+            //         id: req.body.purchase
+            //     }
+            //     const builder = getpurchase.update(data)
+            //     await con.query(builder.sql, builder.arr, async (err, ans) => {
+            //         if (err) con.rollback(() => reject(err))
+            //         resolve({ occurence: "purchase", updateResult: { id: data.id, alterated: ans.affectedRows } })
+            //     })
+            // })
+
+            let running_purchase = await new Promise(async (resolve, reject) => {
+                const sql = getpurchase
+                    .statement("running_via_delivery_receipt")
+                    .inject({
+                        id: req.body.purchase
+                    })
+                await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
                     resolve({ occurence: "purchase", updateResult: { id: data.id, alterated: ans.affectedRows } })
                 })
@@ -80,7 +120,7 @@ const sqlCreateReceipt = handler(async (req, res) => {
                     resolve({ occurence: "inventory", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
                 })
             })
-            let result = { receipt, delivery, receivable, purchase, inventory }
+            let result = { receipt, running_delivery, receivable, running_purchase, inventory }
             con.commit((err) => {
                 if (err) con.rollback(() => {
                     con.release()
@@ -102,32 +142,33 @@ const sqlCreateTransmit = handler(async (req, res) => {
                 const builder = gettransmit.insert(req.body)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "receipt", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                    resolve({ occurence: "transmit", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
                 })
             })
 
-            let transfer = await new Promise(async (resolve, reject) => {
-                let data = {
-                    count: req.body.remaining,
-                    id: req.body.transfer
-                }
-                const builder = getdelivery.update(data)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
+            let running_transfer = await new Promise(async (resolve, reject) => {
+                const sql = gettransfer
+                    .statement("running_via_transfer_receipt")
+                    .inject({
+                        id: req.body.transfer
+                    })
+                await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "delivery", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                    resolve({ occurence: "running transfer", updateResult: { id: req.body.transfer, alterated: ans.affectedRows } })
                 })
             })
 
-            let source_inventory = await new Promise(async (resolve, reject) => {
-                let data = {
-                    stocks: req.body.remaining,
-                    trni_total: req.body.quantity,
-                    id: req.body.item
-                }
-                const builder = getinventory.update(data)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
+            let running_source = await new Promise(async (resolve, reject) => {
+                const sql = getinventory
+                    .statement("running_via_transfer_receipt")
+                    .inject({
+                        id: req.body.item,
+                        operator: op.min,
+                        qty: req.body.quantity
+                    })
+                await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "receivable", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                    resolve({ occurence: "running source", updateResult: { id: req.body.item, alterated: ans.affectedRows } })
                 })
             })
 
@@ -135,7 +176,7 @@ const sqlCreateTransmit = handler(async (req, res) => {
                 let data = {
                     product: req.body.product,
                     variant: req.body.variant,
-                    category: req.body.purchase_category,
+                    category: req.body.category,
                     delivery: req.body.delivery,
                     purchase: req.body.purchase,
                     supplier: req.body.supplier,
@@ -143,19 +184,319 @@ const sqlCreateTransmit = handler(async (req, res) => {
                     received: req.body.quantity,
                     stocks: req.body.quantity,
                     cost: req.body.cost,
-                    base: req.body.base,
-                    price: req.body.base,
-                    acquisition: "TRANSFER",
+                    base: req.body.pricing,
+                    price: req.body.pricing,
+                    acquisition: "TRANSMIT",
                     source: req.body.source,
-                    transfer: req.body.transfer
+                    transfer: req.body.transfer,
+                    transmit: transmit.insertResult.id
                 }
                 const builder = getinventory.insert(data)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "inventory", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                    resolve({ occurence: "destination inventory", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
                 })
             })
-            let result = { transmit, transfer, source_inventory, destination_inventory, data: req.body }
+
+            let result = { transmit, running_transfer, running_source, destination_inventory, data: req.body }
+            con.commit((err) => {
+                if (err) con.rollback(() => {
+                    con.release()
+                    return res.status(401).json(force(err))
+                })
+                con.release()
+                res.status(200).json(proceed(result, req))
+            })
+        })
+    })
+})
+
+const sqlDeleteTransmit = handler(async (req, res) => {
+    mysqlpool.getConnection((err, con) => {
+        if (err) return res.status(401).json(force(err))
+        con.beginTransaction(async (err) => {
+            if (err) return err
+
+            let destination_inventory = await new Promise(async (resolve, reject) => {
+                let data = { transmit: req.body.id }
+                const builder = getinventory.remove(data)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "destination inventory", deleteResult: { id: req.body.id } })
+                })
+            })
+
+            let transmit = await new Promise(async (resolve, reject) => {
+                let data = { id: req.body.id }
+                const builder = gettransmit.delete(data)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "transmit", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                })
+            })
+
+            let running_transfer = await new Promise(async (resolve, reject) => {
+                const sql = gettransfer
+                    .statement("running_via_transfer_receipt")
+                    .inject({
+                        id: req.body.transfer
+                    })
+                await con.query(sql, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "running transfer", updateResult: { id: req.body.transfer, alterated: ans.affectedRows } })
+                })
+            })
+
+            let running_source = await new Promise(async (resolve, reject) => {
+                const sql = getinventory
+                    .statement("running_via_transfer_receipt")
+                    .inject({
+                        id: req.body.item,
+                        operator: op.add,
+                        qty: req.body.quantity
+                    })
+                await con.query(sql, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "running source", updateResult: { id: req.body.item, alterated: ans.affectedRows } })
+                })
+            })
+
+            let result = { transmit, running_transfer, running_source, destination_inventory, data: req.body }
+            con.commit((err) => {
+                if (err) con.rollback(() => {
+                    con.release()
+                    return res.status(401).json(force(err))
+                })
+                con.release()
+                res.status(200).json(proceed(result, req))
+            })
+        })
+    })
+})
+
+const sqlCreateTransaction = handler(async (req, res) => {
+    mysqlpool.getConnection((err, con) => {
+        if (err) return res.status(401).json(force(err))
+        con.beginTransaction(async (err) => {
+            if (err) return err
+
+            let transaction = await new Promise(async (resolve, reject) => {
+                const builder = gettransaction.insert(req.body.transaction)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "transaction", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                })
+            })
+
+            let dispensing = await Promise.all(req.body.dispensing
+                ?.map(async (dispense) => {
+                    let result = await new Promise(async (resolve, reject) => {
+                        const builder = getdispensing.insert(dispense)
+                        await con.query(builder.sql, builder.arr, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "dispensing", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                        })
+                    })
+
+                    let running_inventory = await new Promise(async (resolve, reject) => {
+                        const sql = getinventory
+                            .statement("running_via_dispensing")
+                            .inject({
+                                id: dispense.item,
+                                operator: op.min,
+                                qty: dispense.purchase
+                            })
+                        await con.query(sql, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "running inventory", updateResult: { id: dispense.item, alterated: ans.affectedRows } })
+                        })
+                    })
+
+                    return { result, running_inventory }
+                })
+            )
+
+            let payment = await Promise.all(req.body.payment
+                ?.map(async (pay) => {
+                    let result = await new Promise(async (resolve, reject) => {
+                        const builder = getpayment.insert(pay)
+                        await con.query(builder.sql, builder.arr, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "sales payment", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                        })
+                    })
+                    return result
+                })
+            )
+
+            let credit = await Promise.all(req.body.credit
+                ?.map(async (cred) => {
+                    let result = await new Promise(async (resolve, reject) => {
+                        const builder = getcredit.insert(cred)
+                        await con.query(builder.sql, builder.arr, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "credit", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                        })
+                    })
+
+                    if (cred?.credit_payment?.code) {
+                        var credit_partial = await new Promise(async (resolve, reject) => {
+                            const builder = getpayment.insert(cred?.credit_payment)
+                            await con.query(builder.sql, builder.arr, async (err, ans) => {
+                                if (err) con.rollback(() => reject(err))
+                                resolve({ occurence: "credit payment", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                            })
+                        })
+                    }
+
+                    let running_customer = await new Promise(async (resolve, reject) => {
+                        const sql = getcustomer
+                            .statement("running_via_credit")
+                            .inject({
+                                id: cred.creditor,
+                            })
+                        await con.query(sql, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "running customer", updateResult: { id: cred.creditor, alterated: ans.affectedRows } })
+                        })
+                    })
+
+                    return { result, running_customer, credit_partial }
+                })
+            )
+
+            let result = { transaction, dispensing, payment, credit, data: req.body }
+            con.commit((err) => {
+                if (err) con.rollback(() => {
+                    con.release()
+                    return res.status(401).json(force(err))
+                })
+                con.release()
+                res.status(200).json(proceed(result, req))
+            })
+        })
+    })
+})
+
+const sqlCreateReturn = handler(async (req, res) => {
+    console.log("monitor")
+    mysqlpool.getConnection((err, con) => {
+        if (err) return res.status(401).json(force(err))
+        con.beginTransaction(async (err) => {
+            if (err) return err
+
+            let transaction = await new Promise(async (resolve, reject) => {
+                const builder = gettransaction.update(req.body.transaction)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "transaction", updateResult: { id: req.body.transaction.id } })
+                })
+            })
+
+            let refund = await new Promise(async (resolve, reject) => {
+                const builder = getrefund.insert(req.body.refund)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "refund", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                })
+            })
+
+            let dispensing = await Promise.all(req.body.dispensing
+                ?.map(async (dispense) => {
+                    let result = await new Promise(async (resolve, reject) => {
+                        const builder = getdispensing.update(dispense)
+                        await con.query(builder.sql, builder.arr, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "dispensing", updateResult: { id: dispense.id } })
+                        })
+                    })
+
+                    let running_inventory = await new Promise(async (resolve, reject) => {
+                        const sql = getinventory
+                            .statement("running_via_dispensing")
+                            .inject({
+                                id: dispense.item,
+                                operator: op.add,
+                                qty: dispense.qty
+                            })
+                        await con.query(sql, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "running inventory", updateResult: { id: dispense.item, alterated: ans.affectedRows } })
+                        })
+                    })
+
+                    return { result, running_inventory }
+                })
+            )
+
+            let returned = await Promise.all(req.body.returned
+                ?.map(async (returns) => {
+                    let result = await new Promise(async (resolve, reject) => {
+                        let data = {
+                            ...returns,
+                            refund: refund.insertResult.id
+                        }
+                        const builder = getreturned.insert(data)
+                        await con.query(builder.sql, builder.arr, async (err, ans) => {
+                            if (err) con.rollback(() => reject(err))
+                            resolve({ occurence: "returned", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                        })
+                    })
+
+                    return result
+                })
+            )
+
+            if (req.body.credit) {
+                var credit = await new Promise(async (resolve, reject) => {
+                    const builder = getcredit.update(req.body.credit)
+                    await con.query(builder.sql, builder.arr, async (err, ans) => {
+                        if (err) con.rollback(() => reject(err))
+                        resolve({ occurence: "credit", updateResult: { id: req.body.credit.id } })
+                    })
+                })
+
+                var running_customer = await new Promise(async (resolve, reject) => {
+                    const sql = getcustomer
+                        .statement("running_via_credit")
+                        .inject({
+                            id: req.body.credit.creditor,
+                        })
+                    await con.query(sql, async (err, ans) => {
+                        if (err) con.rollback(() => reject(err))
+                        resolve({ occurence: "running customer", updateResult: { id: req.body.credit.creditor, alterated: ans.affectedRows } })
+                    })
+                })
+            }
+
+            let reimburse = await new Promise(async (resolve, reject) => {
+                let data = {
+                    ...req.body.reimburse,
+                    refund: refund.insertResult.id
+                }
+                const builder = getreimburse.insert(data)
+                await con.query(builder.sql, builder.arr, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({ occurence: "reimburse", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                })
+            })
+
+            if (req.body.payment) {
+                var payment = await Promise.all(req.body.payment
+                    ?.map(async (pay) => {
+                        let result = await new Promise(async (resolve, reject) => {
+                            const builder = getpayment.update(pay)
+                            await con.query(builder.sql, builder.arr, async (err, ans) => {
+                                if (err) con.rollback(() => reject(err))
+                                resolve({ occurence: "payment", updateResult: { id: pay.id } })
+                            })
+                        })
+                        return result
+                    })
+                )
+            }
+
+            let result = { transaction, refund, dispensing, returned, credit, running_customer, reimburse, payment, data: req.body }
             con.commit((err) => {
                 if (err) con.rollback(() => {
                     con.release()
@@ -170,5 +511,7 @@ const sqlCreateTransmit = handler(async (req, res) => {
 
 module.exports = {
     sqlCreateReceipt,
-    sqlCreateTransmit
+    sqlCreateTransmit,
+    sqlCreateTransaction,
+    sqlCreateReturn,
 }

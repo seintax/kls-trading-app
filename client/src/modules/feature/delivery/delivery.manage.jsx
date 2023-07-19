@@ -79,7 +79,7 @@ const DeliveryManage = () => {
                 remarks: init(item.remarks),
             })
         }
-    }, [instantiated])
+    }, [instantiated, dataSelector.item])
 
     const onFields = (errors, register, values, setValue) => {
         return (
@@ -161,7 +161,6 @@ const DeliveryManage = () => {
     const onCompleted = (id = undefined) => {
         dispatch(setDeliveryNotifier(true))
         if (id) dispatch(showDeliverySelector(id))
-        // dispatch(resetDeliveryManager())
         setEditMode(false)
     }
 
@@ -215,19 +214,12 @@ const DeliveryManage = () => {
     }
 
     return (
-        // <DataInputs
-        //     formData={inputFormData}
-        //     fields={onFields}
-        //     change={onChange}
-        //     submit={onSubmit}
-        //     closed={onClose}
-        // />
-        <div className="w-full flex flex-col gap-5">
-            <div className="w-full sticky -top-5 z-10">
+        <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
+            <div className="w-full sticky -top-5 pt-5 lg:pt-0 z-10">
                 <DataHeader name="Delivery Request" returncallback={returnToList} />
             </div>
 
-            <div className="w-full border border-b-1 border-b-gray-400 shadow-lg border-shadow">
+            <div className="w-full border border-b-1 border-b-gray-400">
                 {
                     (editMode) ? (
                         <DataInputs
@@ -241,7 +233,7 @@ const DeliveryManage = () => {
                         />
                     ) : (
                         <div className="w-full h-full pt-2 pb-5 px-2">
-                            <div className="flex flex-col gap-3 h-full px-6 py-4 shadow bg-white rounded">
+                            <div className="flex flex-col gap-3 h-full px-6 py-4 bg-white rounded">
                                 <FormEl.Item
                                     label="Supplier"
                                     value={provideValueFromLib(libSuppliers, dataSelector?.item?.supplier)}

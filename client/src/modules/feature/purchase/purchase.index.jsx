@@ -20,11 +20,12 @@ const PurchaseIndex = () => {
                         dispatch(setPurchaseData(res?.arrayResult))
                         dispatch(setPurchaseNotifier(false))
                         if (dataSelector.selector > 0) {
-                            let id = dataSelector.selector
-                            let items = res?.arrayResult?.filter(item => item.id === id)
-                            let item = items.length ? items[0] : {}
-                            dispatch(setPurchaseItem(item))
-                            dispatch(resetPurchaseSelector())
+                            let selection = res?.arrayResult?.filter(item => item.id === dataSelector.selector)
+                            if (selection.length === 1) {
+                                let selected = selection[0]
+                                dispatch(setPurchaseItem(selected))
+                                dispatch(resetPurchaseSelector())
+                            }
                         }
                     }
                 })
@@ -38,7 +39,7 @@ const PurchaseIndex = () => {
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
-            console.log("done")
+            console.info("done")
         }
     }, [isSuccess, isLoading])
 

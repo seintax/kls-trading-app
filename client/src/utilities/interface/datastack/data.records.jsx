@@ -4,7 +4,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react'
 import DataPagination from "./data.pagination"
 
-const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination }) => {
+const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading }) => {
     const refList = useRef()
     const [data, setData] = useState()
     const [order, setOrder] = useState()
@@ -59,13 +59,13 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
 
     return (
         <>
-            <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg">
+            <div ref={refList} className="flex flex-col justify-between mt-3 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg">
                 <table className="flex-col w-full divide-y border-separate divide-gray-300" style={{ borderSpacing: 0 }}>
                     <thead className="">
                         <tr className={`${columns?.style}`}>
                             <th
                                 scope="col"
-                                className={`hidden lg:table-cell sticky top-0 z-5 bg-gray-200 backdrop-blur border-b border-gray-300 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top no-select shadow-sm`}
+                                className={`hidden lg:table-cell sticky top-0 z-5 bg-gray-200 border-b border-gray-300 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top no-select shadow-sm`}
                             >
                                 #
                             </th>
@@ -75,14 +75,15 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                         <th
                                             key={colindex}
                                             scope="col"
-                                            width={col.size}
-                                            className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-5 backdrop-blur border-b border-gray-300 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 bg-gray-200 align-top shadow-sm ${col.style}`}
+                                            className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left text-sm font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
+                                            style={{ width: `${col.size}px` || "300px" }}
                                         >
                                             <div
                                                 className={`w-full flex items-center ${setPosition(col.position)} gap-[10px] group ${col.sort ? "cursor-pointer" : ""}`}
                                                 onClick={() => sortcallback(colindex, col)}
                                             >
-                                                {col.name}
+                                                <span className="hidden lg:flex">{col.name}</span>
+                                                <span className={`flex lg:hidden ${col.name ? "" : "hidden"}`}>{col.name ? col.name : "Details"}</span>
                                                 {col.screenreader ? <span className="sr-only">{col.screenreader}</span> : ""}
                                                 {col.sort ? <ChevronUpDownIcon className="h-5 w-5 text-gray-200 group-hover:text-gray-700" /> : ""}
                                             </div>
@@ -109,7 +110,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             row.items?.map((item, itemindex) => (
                                                 <td
                                                     key={itemindex}
-                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 pl-4 pr-6 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6 lg:table-cell align-top ${order[itemindex]?.screenreader ? "flex justify-end gap-2" : ""} ${order[itemindex]?.stack ? "hidden" : ""} ${itemstyle} ${setPosition(order[itemindex]?.position, false)}`}
+                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order[itemindex]?.screenreader ? "flex justify-end gap-2" : ""} ${order[itemindex]?.stack ? "hidden" : ""} ${itemstyle} ${setPosition(order[itemindex]?.position, false)}`}
                                                     onClick={item?.onclick}
                                                     onDoubleClick={item?.ondoubleclick}
                                                 >
@@ -121,10 +122,10 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                                                     order?.map((col, colindex) => (
                                                                         <div
                                                                             key={colindex}
-                                                                            className={`${col.stack ? "" : "hidden"}`}
+                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "hidden") : "hidden"} flex items-start gap-3 text-xs mt-1`}
                                                                         >
-                                                                            <dt className="sr-only">{col.name}</dt>
-                                                                            <dd className="mt-1 truncate text-gray-400">
+                                                                            <dt className="text-gray-400">{col.name}: </dt>
+                                                                            <dd className="truncate text-gray-500">
                                                                                 {row.items[colindex]?.value}
                                                                             </dd>
                                                                         </div>
@@ -146,7 +147,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                 <tr>
                                     <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-sm text-gray-500 lg:table-cell"></td>
                                     <td colSpan={100} className="w-full max-w-0 py-4 border-b border-gray-200 pl-4 pr-6 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6">
-                                        No record listed.
+                                        {loading ? "Loading..." : "No record listed."}
                                     </td>
                                 </tr>
                             )

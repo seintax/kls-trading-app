@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import TransferManage from "./transfer.manage"
 import TransferRecords from "./transfer.records"
-import { resetTransferItem, setTransferData, setTransferNotifier, showTransferManager } from "./transfer.reducer"
+import { resetTransferItem, resetTransferSelector, setTransferData, setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
 import { useFetchAllTransferMutation } from "./transfer.services"
 
 const TransferIndex = () => {
@@ -19,15 +19,23 @@ const TransferIndex = () => {
                     if (res.success) {
                         dispatch(setTransferData(res?.arrayResult))
                         dispatch(setTransferNotifier(false))
+                        if (dataSelector.selector > 0) {
+                            let selection = res?.arrayResult.filter(f => f.id === dataSelector.selector)
+                            if (selection.length === 1) {
+                                let selected = selection[0]
+                                dispatch(setTransferItem(selected))
+                                dispatch(resetTransferSelector())
+                            }
+                        }
                     }
                 })
                 .catch(err => console.error(err))
             return
         }
-        if (dataSelector.data.length === 0 || dataSelector.notifier) {
+        if (dataSelector.data.length === 0 || dataSelector.notifier || dataSelector.selector > 0) {
             instantiate()
         }
-    }, [dataSelector.notifier])
+    }, [dataSelector.notifier, dataSelector.selector])
 
     useEffect(() => {
         if (!isLoading && isSuccess) {

@@ -15,12 +15,12 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Supplier', stack: true, sort: 'supplier_name' },
-            { name: 'DR No.', stack: false, sort: 'id', size: 150 },
-            { name: 'Reference', stack: false, sort: 'refcode', size: 150 },
-            { name: 'DR Date', stack: false, sort: 'date', size: 180 },
-            { name: 'Branch', stack: false, sort: 'store', size: 180 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: 'Supplier', stack: false, sort: 'supplier_name' },
+            { name: 'DR No.', stack: true, sort: 'id', size: 150 },
+            { name: 'Reference', stack: true, sort: 'refcode', size: 150 },
+            { name: 'DR Date', stack: false, sort: 'date', size: 150 },
+            { name: 'Branch', stack: true, sort: 'store', size: 180 },
+            { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     }
 }

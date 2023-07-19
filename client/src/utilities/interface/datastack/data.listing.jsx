@@ -4,7 +4,7 @@ const DataListing = ({ reference, header, layout, records, appendcallback, savec
     const refList = useRef()
     return (
         <>
-            <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg py-6 px-8 border border-b-1 border-b-gray-400 shadow-md rounded-md">
+            <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg py-3 px-2 border border-b-1 border-b-gray-400 shadow-md rounded-md">
                 <div className="flex flex-col no-select">
                     <div className="text-lg font-semibold uppercase flex flex-col md:flex-row justify-between items-center">
                         <span>{header.title}</span>
@@ -18,25 +18,28 @@ const DataListing = ({ reference, header, layout, records, appendcallback, savec
                     {
                         records?.map((data, index) => (
                             <div key={data.key} className="w-full flex gap-3 px-3 py-4 rounded-sm cursor-pointer hover:bg-gray-300 ease-in duration-100 flex-grow">
-                                <span className="no-select">{index + 1}.</span>
-                                <div className="flex flex-col grow">
-                                    <div className="flex flex-col md:flex-row w-full text-sm">
+                                <div className="no-select w-[50px]">{index + 1}.</div>
+                                <div className="flex flex-col w-full">
+                                    <div className="flex flex-col lg:flex-row text-sm gap-1 w-full">
                                         {
                                             data?.items?.map((item, index) => (
-                                                <span key={index} className={layout.sizes[index].size}>
+                                                <div key={index} className={`flex gap-2 ${layout.sizes[index].size}`}>
+                                                    <span className={`flex lg:hidden text-xs text-gray-400 ${item?.subtext ? "" : "hidden"}`}>
+                                                        {item?.subtext}:
+                                                    </span>
                                                     {item.value}
-                                                </span>
+                                                </div>
                                             ))
                                         }
                                     </div>
                                     {
                                         (layout.showsubtext) ? (
-                                            <div className="hidden md:flex w-full text-[11px] text-gray-400 mt-1">
+                                            <div className="hidden lg:flex flex-none gap-1 mt-1">
                                                 {
                                                     data?.items?.map((item, index) => (
-                                                        <span key={index} className={layout.sizes[index].size}>
-                                                            {item?.subtext}
-                                                        </span>
+                                                        <div key={index} className={`text-[11px] text-gray-400 ${layout.sizes[index].size}`}>
+                                                            {item?.subtext || ""}
+                                                        </div>
                                                     ))
                                                 }
                                             </div>
@@ -45,7 +48,7 @@ const DataListing = ({ reference, header, layout, records, appendcallback, savec
                                 </div>
                                 {
                                     (data?.controls?.length) ? (
-                                        <div className="flex gap-2 w-fit ml-auto text-secondary-600 flex-none no-select">
+                                        <div className="flex flex-none gap-2 w-[100px] ml-auto text-secondary-600 no-select">
                                             {
                                                 data?.controls?.map((control, index) => (
                                                     <span key={index} className={control?.style ? control?.style : "hover:underline"} onClick={() => control?.trigger()}>

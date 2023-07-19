@@ -13,7 +13,7 @@ const errors = require('./res/errors/errors')
 const corsoptions = require('./res/secure/options')
 const approutes = require('./routes')
 
-const port = process.env.API_PORT || 5200
+const port = process.env.API_PORT || 5201
 
 const app = express()
 
@@ -24,6 +24,14 @@ app.use(cookieParser())
 app.use(cors(corsoptions))
 app.use('/', express.static(path.join(__dirname, '/public')))
 app.use('/', require('./res/routes/root'))
+
+app.use('/app', approutes.transaction)
+app.use('/app', approutes.dispensing)
+app.use('/app', approutes.credit)
+app.use('/app', approutes.payment)
+app.use('/app', approutes.refund)
+app.use('/app', approutes.returned)
+app.use('/app', approutes.reimburse)
 
 app.use('/app', approutes.purchase)
 app.use('/app', approutes.receivable)
@@ -43,6 +51,7 @@ app.use('/app', approutes.branch)
 
 app.use('/app', approutes.account)
 app.use('/app', approutes.schedule)
+app.use('/app', approutes.expenses)
 
 app.use('/app', approutes.complex)
 

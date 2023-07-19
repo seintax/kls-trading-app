@@ -21,10 +21,12 @@ const inventory = new Table("pos_stock_inventory", {
     barcode: 'invt_barcode',
     alert: 'invt_alert',
     acquisition: 'invt_acquisition',
+    source: 'invt_trni_source',
+    transfer: 'invt_trni_transfer',
+    transmit: 'invt_transmit',
     sold_total: 'invt_sold_total',
     trni_total: 'invt_trni_total',
-    trni_source: 'invt_trni_source',
-    trni_transfer: 'invt_trni_transfer',
+    adjt_total: 'invt_adjt_total',
 }, [
     {
         key: "invt_product",
@@ -58,5 +60,8 @@ const inventory = new Table("pos_stock_inventory", {
         }
     },
 ])
+
+inventory.register("append_sold_total", "")
+inventory.register("remove_sold_total", "")
 
 module.exports = inventory

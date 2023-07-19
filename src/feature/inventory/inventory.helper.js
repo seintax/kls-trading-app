@@ -21,10 +21,12 @@ const inventory = new Table("pos_stock_inventory", {
     barcode: 'invt_barcode',
     alert: 'invt_alert',
     acquisition: 'invt_acquisition',
+    source: 'invt_source',
+    transfer: 'invt_transfer',
+    transmit: 'invt_transmit',
     sold_total: 'invt_sold_total',
     trni_total: 'invt_trni_total',
-    trni_source: 'invt_trni_source',
-    trni_transfer: 'invt_trni_transfer',
+    adjt_total: 'invt_adjt_total',
 }, [
     {
         key: "invt_product",
@@ -78,5 +80,23 @@ const inventory = new Table("pos_stock_inventory", {
         }
     },
 ])
+
+inventory.register("running_via_transfer_receipt",
+    `UPDATE pos_stock_inventory SET 
+        invt_stocks=invt_stocks@operator@qty,
+        invt_trni_total=(SELECT IFNULL(SUM(trni_quantity),0) FROM pos_transfer_receipt WHERE trni_item=invt_id)
+            WHERE invt_id=@id`)
+
+inventory.register("running_via_dispensing",
+    `UPDATE pos_stock_inventory SET 
+        invt_stocks=invt_stocks@operator@qty,
+        invt_sold_total=(SELECT IFNULL(SUM(sale_dispense),0) FROM pos_sales_dispensing WHERE sale_item=invt_id)
+            WHERE invt_id=@id`)
+
+inventory.register("running_via_adjustment",
+    `UPDATE pos_stock_inventory SET 
+        invt_stocks=invt_stocks@operator@qty,
+        invt_adjt_total=(SELECT IFNULL(SUM(adjt_quantity),0) FROM pos_stock_adjustment WHERE adjt_time=invt_id)
+            WHERE invt_id=@id`)
 
 module.exports = inventory

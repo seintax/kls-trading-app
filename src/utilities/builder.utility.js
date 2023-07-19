@@ -10,7 +10,7 @@ class Field {
         return this.alias
     }
 
-    value() {
+    parameter() {
         return this.value
     }
 
@@ -24,6 +24,13 @@ class Field {
 
     Desc() {
         return this.value ? `${this.value} DESC` : ""
+    }
+
+    Either(arr) {
+        let option = arr?.map(opt => {
+            return `${this.value} = ${opt ? `'${opt}'` : "?"}`
+        })
+        return `(${option.join(" OR ")})`
     }
 
     IsEqual(val = undefined) {
@@ -77,16 +84,20 @@ class Query {
         return this.alias
     }
 
-    query() {
+    statement() {
         return this.query
     }
 
+    aliased(alias) {
+        return this.alias === alias
+    }
+
     inject(request) {
-        var runquery = this.query
+        var sqlstmt = this.query
         for (const prop in request) {
-            runquery = runquery.replaceAll(`@${prop}`, request[prop])
+            sqlstmt = sqlstmt?.replaceAll(`@${prop}`, request[prop])
         }
-        return runquery
+        return sqlstmt
     }
 }
 
@@ -100,7 +111,7 @@ class Param {
         return this.alias
     }
 
-    param() {
+    parameter() {
         return this.param
     }
 
@@ -155,6 +166,7 @@ class Table {
         let alias_ = {}
         this.fields = {}
         this.included = {}
+        this.queries = []
         for (const prop in fields) {
             let field = new Field(prop, fields[prop])
             props_ = {
@@ -192,8 +204,30 @@ class Table {
             name: this.name,
             fields: this.fields,
             associated: this.associated,
-            statements: this.statements
+            statements: this.statements,
+            queries: this.queries
         }
+    }
+
+    /**
+     * Retrieves a query object that corresponds to a property name as parameter.
+     * @param {string} alias sought property name
+     * @returns if property exist, returns a Query object of property, or else a Query object of a 'none' property
+     */
+    statement(alias) {
+        let found = this.queries.filter(f => f.aliased(alias))
+        if (found.length) return found[0]
+        return new Query("none", undefined)
+    }
+
+    /**
+     * Appends a query with an assigned property name to a list of queries.
+     * @param {string} name assigned property name
+     * @param {string} query an sql statement that describes the assigned property name
+     */
+    register(name, query) {
+        let obj = new Query(name, query)
+        this.queries.push(obj)
     }
 
     conjoin(clause = undefined, type = undefined) {
@@ -269,6 +303,11 @@ class Table {
         }
     }
 
+    /**
+     * Creates a delete sql object that receives an 'id' object as a condition.
+     * @param {object} request an object containing field properties
+     * @returns an sql object with working sql statement and its corresponding parameters.
+     */
     delete(request) {
         if (!this.fields.props_.id) throw new Error("The 'id' property is missing.")
         if (!request.id) throw new Error("Parameter 'id' is not in request.")
@@ -276,6 +315,26 @@ class Table {
             id: request.id,
             sql: `DELETE FROM ${this.name} WHERE ${this.fields.props_.id}=?`,
             arr: [request.id]
+        }
+    }
+
+    /**
+     * Creates a delete sql object that receives an object parameter with user-specific conditions.
+     * @param {object} request an object containing field properties
+     * @returns an sql object with a working sql statement and its corresponding parameters.
+     */
+    remove(request) {
+        const parameters = []
+        const fields = []
+        for (const prop in request) {
+            if (this.fields.props_[prop]) {
+                fields.push(`${this.fields.props_[prop]}=?`)
+                parameters.push(request[prop])
+            }
+        }
+        return {
+            sql: `DELETE FROM ${this.name} WHERE ${fields.join(" AND ")}`,
+            arr: parameters,
         }
     }
 
@@ -323,6 +382,26 @@ class Table {
             arr: paramarray,
             aka: this.fields.alias_,
             fnc: this.maskall
+        }
+    }
+
+    max(field, clausearray, paramarray) {
+        let clause = clausearray?.filter(f => f !== undefined).join(" AND ")
+        return {
+            sql: `SELECT MAX(${field}) AS maxval FROM ${this.name} WHERE ${clause}`,
+            arr: paramarray,
+            aka: { maxval: 'max' },
+            fnc: this.maskone
+        }
+    }
+
+    count(clausearray, paramarray) {
+        let clause = clausearray?.filter(f => f !== undefined).join(" AND ")
+        return {
+            sql: `SELECT COUNT(*) AS countval FROM ${this.name} WHERE ${clause}`,
+            arr: paramarray,
+            aka: { countval: 'count' },
+            fnc: this.maskone
         }
     }
 

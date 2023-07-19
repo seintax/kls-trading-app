@@ -1,18 +1,21 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { getBranch } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import InventoryRecords from "./inventory.records"
 import { resetInventoryItem, setInventoryData, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
 import { useFetchAllInventoryBranchMutation } from "./inventory.services"
 
 const InventoryIndex = () => {
+    const auth = useAuth()
     const [allInventory, { isLoading, isError, isSuccess }] = useFetchAllInventoryBranchMutation()
     const dataSelector = useSelector(state => state.inventory)
     const dispatch = useDispatch()
 
     useEffect(() => {
         const instantiate = async () => {
-            await allInventory()
+            await allInventory({ branch: getBranch(auth) })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
@@ -23,10 +26,10 @@ const InventoryIndex = () => {
                 .catch(err => console.error(err))
             return
         }
-        if (dataSelector.data.length === 0 || dataSelector.notifier) {
+        if (dataSelector.data.length === 0 || dataSelector.notifier || auth?.store) {
             instantiate()
         }
-    }, [dataSelector.notifier])
+    }, [dataSelector.notifier, auth])
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
