@@ -54,6 +54,7 @@ app.use('/app', approutes.schedule)
 app.use('/app', approutes.expenses)
 
 app.use('/app', approutes.complex)
+app.use('/app', approutes.reports)
 
 app.all('*', (req, res) => {
     if (req.accepts('html')) {

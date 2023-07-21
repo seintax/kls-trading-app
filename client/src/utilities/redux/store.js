@@ -22,6 +22,7 @@ import supplierReducer from "../../modules/library/supplier/supplier.reducer"
 import variantReducer from "../../modules/library/variant/variant.reducer"
 import accountReducer from "../../modules/system/account/account.reducer"
 import expensesReducer from "../../modules/system/expenses/expenses.reducer"
+import reportsReducer from "../../modules/system/reports/reports.reducer"
 import { apiSlice } from "./slices/apiSlice"
 import authReducer from './slices/authSlice'
 import deleteReducer from "./slices/deleteSlice"
@@ -54,6 +55,7 @@ const store = configureStore({
         reimburse: reimburseReducer,
         payment: paymentReducer,
         expenses: expensesReducer,
+        reports: reportsReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

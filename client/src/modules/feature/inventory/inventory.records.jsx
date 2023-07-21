@@ -8,7 +8,7 @@ import DataOperation from '../../../utilities/interface/datastack/data.operation
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import { setInventoryItem, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
-import { useDeleteInventoryMutation } from "./inventory.services"
+import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
 
 const InventoryRecords = () => {
     const dataSelector = useSelector(state => state.inventory)
@@ -21,6 +21,19 @@ const InventoryRecords = () => {
     const toast = useToast()
 
     const [deleteInventory] = useDeleteInventoryMutation()
+    const [updateAcquisition] = useUpdateInventoryMutation()
+
+    const toggleAccept = async (item) => {
+        await updateAcquisition({ acquisition: "TRANSFER", id: item.id })
+            .unwrap()
+            .then(res => {
+                if (res.success) {
+                    toast.showUpdate("Item has been successfully acquired.")
+                    dispatch(setInventoryNotifier(true))
+                }
+            })
+            .catch(err => console.error(err))
+    }
 
     const toggleEdit = (item) => {
         dispatch(setInventoryItem(item))
@@ -50,8 +63,9 @@ const InventoryRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleEdit(item), label: 'Edit' },
-            { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
+            { type: 'button', trigger: () => toggleAccept(item), label: 'Accept', hidden: item.acquisition !== "TRANSMIT" },
+            { type: 'button', trigger: () => { }, label: 'Edit', hidden: item.acquisition === "TRANSMIT" },
+            { type: 'button', trigger: () => { }, label: 'Delete', hidden: item.acquisition === "TRANSMIT" }
         ]
     }
 

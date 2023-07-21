@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
-import { StrFn, isBranch } from "../../../utilities/functions/string.functions"
+import { StrFn, isBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import { useDebounce } from "../../../utilities/hooks/useDebounce"
 import BrowserRecords from "../browser/browser.records"
@@ -36,9 +36,10 @@ const CasheringIndex = () => {
                 .catch(err => console.error(err))
             setInstantiated(true)
         }
-
-        instantiate()
-    }, [])
+        if (isEmpty(browserSelector.cart.length)) {
+            instantiate()
+        }
+    }, [browserSelector.cart])
 
     const onChange = (e) => {
         setSearch(e.target.value)

@@ -28,6 +28,7 @@ const schedule = require('./src/system/schedule/schedule.route')
 const expenses = require('./src/system/expenses/expenses.route')
 
 const complex = require('./src/complex/complex.route')
+const reports = require('./src/system/reports/reports.route')
 
 module.exports = {
     transaction,
@@ -54,5 +55,6 @@ module.exports = {
     account,
     schedule,
     expenses,
-    complex
+    complex,
+    reports
 }

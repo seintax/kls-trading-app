@@ -197,50 +197,50 @@ const CasheringLedger = () => {
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffLedger()} />
                         <span>Transaction Ledger</span>
                     </div>
-                    <div className="px-1 flex flex-wrap mt-4 gap-3">
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                    <div className="px-1 flex flex-wrap justify-center my-4 gap-3">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Transaction No.
                             </span>
                             <div>{dataSelector.item.code}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Type
                             </span>
                             <div>{dataSelector.item.method}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Status
                             </span>
                             <div>{dataSelector.item.status}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Total
                             </span>
                             <div>{NumFn.currency(dataSelector.item.total)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Less
                             </span>
                             <div>{NumFn.currency(dataSelector.item.less)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Net
                             </span>
                             <div>{NumFn.currency(dataSelector.item.net)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Date
                             </span>
                             <div>{longDate(dataSelector.item.date)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-secondary-300 via-secondary-200 to-white border border-secondary-200 gap-1 rounded-md">
+                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
                             <span className="text-xs text-gray-500 no-select">
                                 Discount Rate
                             </span>
@@ -248,7 +248,7 @@ const CasheringLedger = () => {
                         </div>
                     </div>
                     <div className={`flex w-[100% - 40px] isolate relative no-select ${tab === "RETURN" ? "pt-5" : "pb-5"}`}>
-                        <div className={`flex w-full justify-between items-center px-3 py-4 border border-white bg-secondary-200 transition ease-in-out duration-300 ${tab === "RETURN" ? "absolute left-0 top-0 w-full z-2 hover:bg-secondary-300 bg-secondary-300 cursor-pointer" : "mx-5"}`} onClick={() => setTab("DISPENSE")}>
+                        <div className={`flex w-full justify-between items-center px-3 py-4 border border-secondary-500 bg-primary-400 transition ease-in-out duration-300 ${tab === "RETURN" ? "absolute left-0 top-0 w-full z-2 hover:bg-primary-300 bg-gradient-to-b from-white via-white to-primary-300 cursor-pointer" : "mx-5"}`} onClick={() => setTab("DISPENSE")}>
                             <div className="flex items-center gap-3">
                                 <ChevronRightIcon className="w-4 h-4 text-secondary-500" />
                                 <span>
@@ -259,7 +259,7 @@ const CasheringLedger = () => {
                                 {NumFn.currency(dataSelector.item.net)}
                             </span>
                         </div>
-                        <div className={`flex w-full justify-between items-center px-3 py-4 border border-white bg-secondary-200 transition ease-in-out duration-300 ${tab === "DISPENSE" ? "absolute left-0 bottom-0 w-full z-2 hover:bg-secondary-300 bg-secondary-300 cursor-pointer" : "mx-5"}`} onClick={() => setTab("RETURN")}>
+                        <div className={`flex w-full justify-between items-center px-3 py-4 border border-secondary-500 bg-primary-400 transition ease-in-out duration-300 ${tab === "DISPENSE" ? "absolute left-0 bottom-0 w-full z-2 hover:bg-primary-300 bg-gradient-to-b from-white via-white to-primary-300 cursor-pointer" : "mx-5"}`} onClick={() => setTab("RETURN")}>
                             <div className="flex items-center gap-3">
                                 <ChevronRightIcon className="w-4 h-4 text-secondary-500" />
                                 <span>
