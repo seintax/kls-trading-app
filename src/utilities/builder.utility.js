@@ -99,6 +99,10 @@ class Query {
         }
         return sqlstmt
     }
+
+    static q(obj) {
+        return new Query(obj.alias, obj.query)
+    }
 }
 
 class Param {

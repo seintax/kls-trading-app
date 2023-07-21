@@ -109,12 +109,13 @@ const BrowserRecords = () => {
         if (dataSelector?.data) {
             let sought = dataSelector?.search?.toLowerCase()
             let browsed = dataSelector?.data.filter(f =>
-                f.product_name?.toLowerCase()?.includes(sought) ||
-                `${f.variant_serial}/${f.variant_model}/${f.variant_brand}`?.toLowerCase()?.includes(sought) ||
-                f.supplier_name?.toLowerCase()?.includes(sought) ||
-                f.price?.toString()?.includes(sought) ||
-                f.stocks?.toString()?.includes(sought) ||
-                exactSearch(sought, f.price) || exactSearch(sought, f.stocks)
+                (f.product_name?.toLowerCase()?.includes(sought) ||
+                    `${f.variant_serial}/${f.variant_model}/${f.variant_brand}`?.toLowerCase()?.includes(sought) ||
+                    f.supplier_name?.toLowerCase()?.includes(sought) ||
+                    f.price?.toString()?.includes(sought) ||
+                    f.stocks?.toString()?.includes(sought) ||
+                    exactSearch(sought, f.price) || exactSearch(sought, f.stocks))
+                && f.acquisition !== "TRANSMIT"
             )
             let data = sorted ? sortBy(browsed, sorted) : browsed
             setrecords(data?.map((item, i) => {

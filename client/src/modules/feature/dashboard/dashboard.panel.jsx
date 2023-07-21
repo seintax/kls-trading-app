@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
 import useToast from "../../../utilities/hooks/useToast"
+import DashboardGraph from "./dashboard.graph"
 
 const DashboardPanel = ({ id }) => {
     const location = useLocation()
@@ -24,19 +25,37 @@ const DashboardPanel = ({ id }) => {
     }
 
     return (
-        <div className="h-[1500px] flex-none">
-            <div className="flex flex-col gap-3">
-                {/* <button className="button-link" onClick={() => toast.userNotify("watas")}>Welcome</button>
-                <button className="button-link" onClick={() => toast.showError("Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, nihil corrupti sit eius praesentium similique illo odit quibusdam doloremque eum repellat voluptate iusto! Voluptatum deleniti incidunt adipisci! Id, soluta omnis?")}>Error</button>
-                <button className="button-link" onClick={() => toast.showSuccess("Successful action")}>Success</button>
-                <button className="button-link" onClick={() => toast.showWarning("Lorem eawer awrawea weaw rawr aawdaw awe aw rawr awraw raweawe awe raw rawraweawe awe")}>Warning</button>
-                <button className="button-link" onClick={() => toast.showCreate("Lorem eawer aw31241231231 1231 2312 rawraweawe awe")}>Create</button>
-                <button className="button-link" onClick={() => toast.showDelete("Lorem eawer aw31241231231 1231 2312 rawraweawe awe")}>Delete</button>
-                <button className="button-link" onClick={() => toast.showUpdate("Lorem rawraweawe awe")}>Update</button>
-                <button className="button-link" onClick={() => fetch()}>Pending</button>
-                <button className="button-link" onClick={() => setLoadId(toast.showLoading("Loading..."))}>Loading</button>
-                <button className="button-link" onClick={() => toast.updateLoading(loadId, "Updating id", true)}>Upadte Loading</button>
-                <button className="button-link" onClick={() => toast.updateLoading(loadId, "Finished id", false, "success")}>Finish Loading</button> */}
+        <div className="h-full flex-none w-full">
+            <div className="flex flex-col gap-3 w-full h-full">
+                <div className="flex gap-5 text-sm">
+                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
+                        Gross Sales
+                        <div className="text-xl">1,000.00</div>
+                    </div>
+                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
+                        Refunds
+                        <div className="text-xl">1,000.00</div>
+                    </div>
+                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
+                        Discounts
+                        <div className="text-xl">1,000.00</div>
+                    </div>
+                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
+                        Net Sales
+                        <div className="text-xl">1,000.00</div>
+                    </div>
+                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
+                        Gross Profit
+                        <div className="text-xl">1,000.00</div>
+                    </div>
+                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
+                        Collectibles
+                        <div className="text-xl">1,000.00</div>
+                    </div>
+                </div>
+                <div className="w-full h-full p-5 border border-gray-300">
+                    <DashboardGraph />
+                </div>
             </div>
         </div>
     )
