@@ -38,6 +38,7 @@ app.use('/app', approutes.receivable)
 app.use('/app', approutes.delivery)
 app.use('/app', approutes.receipt)
 app.use('/app', approutes.inventory)
+app.use('/app', approutes.adjustment)
 app.use('/app', approutes.transfer)
 app.use('/app', approutes.transmit)
 

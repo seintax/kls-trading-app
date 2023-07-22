@@ -6,9 +6,9 @@ import CreditIndex from "./modules/feature/credit/credit.index"
 import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
 import DashboardPanel from "./modules/feature/dashboard/dashboard.panel"
 import DeliveryIndex from "./modules/feature/delivery/delivery.index"
+import AdjustmentIndex from "./modules/feature/inventory-item/inventory.item.index"
 import InventoryIndex from "./modules/feature/inventory/inventory.index"
 import ReceivingRecords from "./modules/feature/inventory/inventory.receiveing"
-import ModifyIndex from "./modules/feature/modify/modify.index"
 import PurchaseIndex from "./modules/feature/purchase/purchase.index"
 import TransferIndex from "./modules/feature/transfer/transfer.index"
 import BranchIndex from "./modules/library/branch/branch.index"
@@ -44,7 +44,7 @@ const AppRoute = () => {
                     <Route path="/inventory" element={<InventoryIndex />} />
                     <Route path="/stock-transfer" element={<TransferIndex />} />
                     <Route path="/receiving" element={<ReceivingRecords />} />
-                    <Route path="/adjustment" element={<ModifyIndex />} />
+                    <Route path="/stock-adjustment" element={<AdjustmentIndex />} />
                     <Route path="/credit" element={<CreditIndex />} />
                     <Route path="/cheque-monitor" element={<ChequeIndex />} />
                     <Route path="/expense" element={<ExpensesIndex />} />

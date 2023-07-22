@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
-import { NumFn } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
-import { setInventoryItem, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
-import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
+import { setInventoryNotifier } from "../inventory/inventory.reducer"
+import { setAdjustmentNotifier } from "./inventory.item.reducer"
+import { useSqlAdjustmentMutation } from "./inventory.item.services"
 
-const InventoryRecords = () => {
-    const dataSelector = useSelector(state => state.inventory)
+const AdjustmentRecords = () => {
+    const dataSelector = useSelector(state => state.adjustment)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -20,29 +20,11 @@ const InventoryRecords = () => {
     const columns = dataSelector.header
     const toast = useToast()
 
-    const [deleteInventory] = useDeleteInventoryMutation()
-    const [updateAcquisition] = useUpdateInventoryMutation()
-
-    const toggleAccept = async (item) => {
-        await updateAcquisition({ acquisition: "TRANSFER", id: item.id })
-            .unwrap()
-            .then(res => {
-                if (res.success) {
-                    toast.showUpdate("Item has been successfully acquired.")
-                    dispatch(setInventoryNotifier(true))
-                }
-            })
-            .catch(err => console.error(err))
-    }
-
-    const toggleView = (item) => {
-        dispatch(setInventoryItem(item))
-        dispatch(showInventoryManager())
-    }
+    const [sqlAdjustment] = useSqlAdjustmentMutation()
 
     const toggleDelete = (item) => {
         assignDeleteCallback({ item: item, callback: handleDelete })
-        dispatch(showDelete({ description: "Product Name", reference: item.product_name }))
+        dispatch(showDelete({ description: "Email address", reference: item.name }))
     }
 
     const handleDelete = async (item) => {
@@ -50,10 +32,22 @@ const InventoryRecords = () => {
             toast.showError("Reference id does not exist.")
             return
         }
-        await deleteInventory({ id: item.id })
+        let formData = {
+            adjustment: {
+                delete: true,
+                id: item.id
+            },
+            inventory: {
+                id: item.item,
+                operator: item.operator === "DEDUCTION" ? "+" : "-",
+                quantity: item.quantity,
+            }
+        }
+        await sqlAdjustment(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {
+                    dispatch(setAdjustmentNotifier(true))
                     dispatch(setInventoryNotifier(true))
                 }
             })
@@ -63,17 +57,17 @@ const InventoryRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleView(item), label: 'View' }
+            { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
     }
 
     const items = (item) => {
         return [
-            { value: `${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}` },
-            { value: item.supplier_name },
-            { value: item.category },
-            { value: item.stocks },
-            { value: NumFn.currency(item.price) },
+            { value: item.details },
+            { value: item.operator },
+            { value: item.quantity },
+            { value: item.remarks },
+            { value: item.by },
             { value: item.store },
             { value: <DataOperation actions={actions(item)} /> }
         ]
@@ -105,4 +99,4 @@ const InventoryRecords = () => {
         </>
     )
 }
-export default InventoryRecords
+export default AdjustmentRecords

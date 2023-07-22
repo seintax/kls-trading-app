@@ -12,6 +12,7 @@ const receivable = require('./src/feature/receivable/receivable.route')
 const delivery = require('./src/feature/delivery/delivery.route')
 const receipt = require('./src/feature/receipt/receipt.route')
 const inventory = require('./src/feature/inventory/inventory.route')
+const adjustment = require('./src/feature/adjustment/adjustment.route')
 const transfer = require('./src/feature/transfer/transfer.route')
 const transmit = require('./src/feature/transmit/transmit.route')
 
@@ -44,6 +45,7 @@ module.exports = {
     delivery,
     receipt,
     inventory,
+    adjustment,
     transfer,
     transmit,
     category,

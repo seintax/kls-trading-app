@@ -9,6 +9,7 @@ import chequeReducer from "../../modules/feature/cheque/cheque.reducer"
 import creditReducer from "../../modules/feature/credit/credit.reducer"
 import receiptReducer from "../../modules/feature/delivery-item/delivery.item.reducer"
 import deliveryReducer from "../../modules/feature/delivery/delivery.reducer"
+import adjustmentReducer from "../../modules/feature/inventory-item/inventory.item.reducer"
 import inventoryReducer from "../../modules/feature/inventory/inventory.reducer"
 import paymentReducer from "../../modules/feature/payment/payment.reducer"
 import receivableReducer from "../../modules/feature/purchase-item/purchase.item.reducer"
@@ -49,6 +50,7 @@ const store = configureStore({
         delivery: deliveryReducer,
         receipt: receiptReducer,
         inventory: inventoryReducer,
+        adjustment: adjustmentReducer,
         transfer: transferReducer,
         transmit: transmitReducer,
         browser: browserReducer,

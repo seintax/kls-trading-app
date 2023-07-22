@@ -33,9 +33,9 @@ const menulist = [
             { name: "Purchase Order", href: "/purchase-order" },
             { name: "Delivery", href: "/delivery" },
             { name: "Inventory", href: "/inventory" },
+            // { name: "Adjustment", href: "/stock-adjustment" },
             { name: "Stock Transfer", href: "/stock-transfer" },
             { name: "Receiving", href: "/receiving" },
-            { name: "Adjustment", href: "/adjustment" },
         ]
     },
     {

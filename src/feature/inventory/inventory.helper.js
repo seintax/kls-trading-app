@@ -24,9 +24,10 @@ const inventory = new Table("pos_stock_inventory", {
     source: 'invt_source',
     transfer: 'invt_transfer',
     transmit: 'invt_transmit',
-    sold_total: 'invt_sold_total',
-    trni_total: 'invt_trni_total',
-    adjt_total: 'invt_adjt_total',
+    dispensedtotal: 'invt_sold_total',
+    transferredtotal: 'invt_trni_total',
+    adjustmenttotal: 'invt_adjt_total',
+    additionaltotal: 'invt_apnd_total',
 }, [
     {
         key: "invt_product",
@@ -101,13 +102,25 @@ inventory.register("inventory_update_dispensing",
             )
         WHERE invt_id=@id`)
 
-inventory.register("inventory_update_adjustment",
+inventory.register("inventory_update_deduction_adjustment",
     `UPDATE pos_stock_inventory SET 
-        invt_stocks=invt_stocks@operator@qty,
+        invt_stocks=invt_stocks-@qty,
         invt_adjt_total=(
                 SELECT IFNULL(SUM(adjt_quantity),0) 
                 FROM pos_stock_adjustment 
-                WHERE adjt_time=invt_id
+                WHERE adjt_item=invt_id 
+                    AND adjt_operator='DEDUCTION'
+            )
+        WHERE invt_id=@id`)
+
+inventory.register("inventory_update_addition_adjustment",
+    `UPDATE pos_stock_inventory SET 
+        invt_stocks=invt_stocks+@qty,
+        invt_apnd_total=(
+                SELECT IFNULL(SUM(adjt_quantity),0) 
+                FROM pos_stock_adjustment 
+                WHERE adjt_item=invt_id 
+                    AND adjt_operator='ADDITION'
             )
         WHERE invt_id=@id`)
 

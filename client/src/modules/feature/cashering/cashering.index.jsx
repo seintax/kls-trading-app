@@ -1,6 +1,8 @@
 import { CubeIcon, DocumentTextIcon, LockClosedIcon, MagnifyingGlassIcon, ReceiptPercentIcon, ShoppingCartIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useLocation } from "react-router-dom"
+import { useClientContext } from "../../../utilities/context/client.context"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import { StrFn, isBranch, isEmpty } from "../../../utilities/functions/string.functions"
@@ -13,6 +15,8 @@ import { useByCountTransactionMutation } from "./cashering.services"
 
 const CasheringIndex = () => {
     const auth = useAuth()
+    const location = useLocation()
+    const { handleTrail } = useClientContext()
     const [instantiated, setInstantiated] = useState(false)
     const [value, setValue] = useState(0)
     const [search, setSearch] = useState("")
@@ -21,6 +25,10 @@ const CasheringIndex = () => {
     const dataSelector = useSelector(state => state.transaction)
     const browserSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        handleTrail(location?.pathname)
+    }, [location])
 
     const [countTransaction] = useByCountTransactionMutation()
 

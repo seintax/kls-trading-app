@@ -204,8 +204,11 @@ CREATE TABLE pos_stock_inventory (
     invt_transmit    int DEFAULT 0,
     invt_sold_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
     invt_trni_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
-    invt_adjt_total  decimal(10,2) DEFAULT 0 COMMENT 'running count'
+    invt_adjt_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment deductions'
+    invt_apnd_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment additions'
 );
+
+ALTER TABLE pos_stock_inventory ADD COLUMN invt_apnd_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment additions';
 
 ALTER TABLE pos_stock_inventory
     ADD COLUMN invt_source varchar(50) DEFAULT 'SUPPLIER',
@@ -233,7 +236,8 @@ CREATE TABLE pos_stock_adjustment (
     adjt_quantity    decimal(10,2),
     adjt_pricing     decimal(30,2),
     adjt_operator    varchar(10) COMMENT 'value is either add or minus',
-    adjt_remarks     decimal(30,2),
+    adjt_details     varchar(99),
+    adjt_remarks     varchar(99),
     adjt_by          decimal(30,2),
     adjt_store       varchar(50)
 );
