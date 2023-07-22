@@ -76,7 +76,7 @@ const AdjustmentIndex = () => {
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
             <div className="w-full sticky -top-5 pt-5 lg:pt-0 z-10">
                 <DataHeader
-                    name={`Inventory for: ${product}`}
+                    name={`Inventory Adjustment for: ${product}`}
                     returncallback={returnToList}
                 />
             </div>
