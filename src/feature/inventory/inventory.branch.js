@@ -21,12 +21,13 @@ const inventory = new Table("pos_stock_inventory", {
     barcode: 'invt_barcode',
     alert: 'invt_alert',
     acquisition: 'invt_acquisition',
-    source: 'invt_trni_source',
-    transfer: 'invt_trni_transfer',
+    source: 'invt_source',
+    transfer: 'invt_transfer',
     transmit: 'invt_transmit',
-    sold_total: 'invt_sold_total',
-    trni_total: 'invt_trni_total',
-    adjt_total: 'invt_adjt_total',
+    dispensedtotal: 'invt_sold_total',
+    transferredtotal: 'invt_trni_total',
+    adjustmenttotal: 'invt_adjt_total',
+    additionaltotal: 'invt_apnd_total',
 }, [
     {
         key: "invt_product",

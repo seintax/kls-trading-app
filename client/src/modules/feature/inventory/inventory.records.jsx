@@ -35,7 +35,7 @@ const InventoryRecords = () => {
             .catch(err => console.error(err))
     }
 
-    const toggleEdit = (item) => {
+    const toggleView = (item) => {
         dispatch(setInventoryItem(item))
         dispatch(showInventoryManager())
     }
@@ -63,9 +63,7 @@ const InventoryRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleAccept(item), label: 'Accept', hidden: item.acquisition !== "TRANSMIT" },
-            { type: 'button', trigger: () => { }, label: 'Edit', hidden: item.acquisition === "TRANSMIT" },
-            { type: 'button', trigger: () => { }, label: 'Delete', hidden: item.acquisition === "TRANSMIT" }
+            { type: 'button', trigger: () => toggleView(item), label: 'View' }
         ]
     }
 

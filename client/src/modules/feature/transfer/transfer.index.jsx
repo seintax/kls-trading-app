@@ -1,15 +1,26 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import TransferManage from "./transfer.manage"
 import TransferRecords from "./transfer.records"
-import { resetTransferItem, resetTransferSelector, setTransferData, setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
+import { resetTransferItem, resetTransferManager, resetTransferSelector, setTransferData, setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
 import { useFetchAllTransferMutation } from "./transfer.services"
 
 const TransferIndex = () => {
     const [allTransfer, { isLoading, isError, isSuccess }] = useFetchAllTransferMutation()
     const dataSelector = useSelector(state => state.transfer)
     const dispatch = useDispatch()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+                dispatch(resetTransferManager())
+            }
+        }
+    }, [mounted])
 
     useEffect(() => {
         const instantiate = async () => {

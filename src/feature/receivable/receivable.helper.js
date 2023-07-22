@@ -51,4 +51,14 @@ const receivable = new Table("pos_purchase_receivable", {
     },
 ])
 
+receivable.register("receivable_update_delivery",
+    `UPDATE pos_purchase_receivable SET 
+        rcvb_received=(
+                SELECT IFNULL(SUM(rcpt_quantity),0) 
+                FROM pos_delivery_receipt 
+                WHERE rcpt_receivable=rcvb_id 
+            ), 
+        rcvb_balance=@remaining 
+        WHERE rcvb_id=@id`)
+
 module.exports = receivable

@@ -58,6 +58,7 @@ const ExpensesRecords = () => {
     const items = (item) => {
         return [
             { value: item.particulars },
+            { value: item.inclusion },
             { value: NumFn.currency(item.purchase) },
             { value: NumFn.currency(item.cash) },
             { value: NumFn.currency(item.change) },

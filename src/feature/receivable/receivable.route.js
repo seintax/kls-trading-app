@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const service = require('./receivable.query')
+const complex = require('./receivable.logic')
 const { secure } = require('../../../res/secure/secure')
 
 router
@@ -13,5 +14,7 @@ router.get('/receivable/search', secure, service._search)
 router.post('/receivable/specify', service._specify)
 router.get('/receivable/bypurchase', service.byPurchase)
 router.get('/receivable/bybalance', service.byBalance)
+
+router.post('/receivable/sqlreceivable', complex.sqlReceivable)
 
 module.exports = router

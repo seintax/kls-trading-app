@@ -32,9 +32,40 @@ const purchase = new Table("pos_purchase_order", {
     }
 ])
 
-purchase.register("running_via_delivery_receipt",
+purchase.register("purchase_update_receivable",
     `UPDATE pos_purchase_order SET 
-        receivedtotal=(SELECT IFNULL(SUM(rcpt_quantity),0) FROM pos_delivery_receipt WHERE rcpt_purchase=pord_id)
-            WHERE pord_id=@id`)
+        pord_item_count=(
+                SELECT IFNULL(COUNT(*),0) 
+                FROM pos_purchase_receivable 
+                WHERE rcvb_purchase=pord_id 
+            ),
+        pord_order_total=(
+                SELECT IFNULL(SUM(rcvb_ordered),0) 
+                FROM pos_purchase_receivable 
+                WHERE rcvb_purchase=pord_id 
+            ),
+        pord_received_total=(
+                SELECT IFNULL(SUM(rcvb_received),0) 
+                FROM pos_purchase_receivable 
+                WHERE rcvb_purchase=pord_id 
+            )  
+        WHERE pord_id=@id`)
+
+purchase.register("purchase_update_status",
+    `UPDATE pos_purchase_order SET 
+        pord_request_total=(
+                pord_order_total-pord_received_total
+            ),
+        pord_progress=CONCAT(
+                pord_received_total, 
+                '/', 
+                pord_order_total
+            ),
+        pord_status=IF(
+                pord_order_total=pord_received_total, 
+                'CLOSED', 
+                'PENDING'
+            )    
+        WHERE pord_id=@id`)
 
 module.exports = purchase

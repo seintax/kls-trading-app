@@ -30,6 +30,15 @@ export function FormatOptionsNoLabel(dataArray, valueProp, nameProp) {
     return options
 }
 
+export const provideValueFromLibrary = (arrayData, valueSought) => {
+    if (valueSought && arrayData.length) {
+        let array = arrayData?.filter(arr => arr.value === valueSought)
+        let value = array?.length ? array[0] : undefined
+        return value
+    }
+    return undefined
+}
+
 export function AttribDestruct(dataArray) {
     return dataArray?.map(arr => {
         if ("attributes" in arr) {

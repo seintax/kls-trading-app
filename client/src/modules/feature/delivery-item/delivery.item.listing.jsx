@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
-import { NumFn } from "../../../utilities/functions/number.funtions"
+import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import { StrFn } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataListing from "../../../utilities/interface/datastack/data.listing"
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import ReceiptInjoin from "./delivery.item.injoin"
 import { resetReceiptItem, setReceiptData, setReceiptItem, setReceiptNotifier, showReceiptInjoiner } from "./delivery.item.reducer"
-import { useByDeliveryReceiptMutation, useDeleteReceiptMutation } from "./delivery.item.services"
+import { useByDeliveryReceiptMutation, useSqlReceiptMutation } from "./delivery.item.services"
 
 const ReceiptListing = () => {
     const [deliveryReceipt] = useByDeliveryReceiptMutation()
@@ -24,7 +24,7 @@ const ReceiptListing = () => {
         description: dataSelector.listing.description
     }
 
-    const [deleteReceipt] = useDeleteReceiptMutation()
+    const [sqlReceipt] = useSqlReceiptMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -51,6 +51,7 @@ const ReceiptListing = () => {
     }
 
     const toggleDelete = (item) => {
+        console.log(item)
         assignDeleteCallback({ item: item, callback: handleDelete })
         dispatch(showDelete({ description: "Delivery Receipt Item", reference: `(PO#${StrFn.formatWithZeros(item.purchase, 6)}) ${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` }))
     }
@@ -60,7 +61,27 @@ const ReceiptListing = () => {
             toast.showError("Reference id does not exist.")
             return
         }
-        await deleteReceipt({ id: item.id })
+        let formData = {
+            receipt: {
+                delete: true,
+                id: item.id
+            },
+            delivery: {
+                id: item.delivery
+            },
+            receivable: {
+                remaining: amount(item.receivable_balance) + amount(item.quantity),
+                id: item.receivable
+            },
+            purchase: {
+                id: item.purchase
+            },
+            inventory: {
+                delete: true,
+                id: item.inventory_id
+            }
+        }
+        await sqlReceipt(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {

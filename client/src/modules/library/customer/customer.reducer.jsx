@@ -16,8 +16,10 @@ const initialState = {
         items: [
             { name: 'Customer Name', stack: true, sort: 'name' },
             { name: 'Address', stack: false, sort: 'address', size: 250 },
-            { name: 'Contact No.', stack: false, sort: 'contact', size: 250 },
-            { name: 'Email', stack: false, sort: 'email', size: 250 },
+            { name: 'Contact No.', stack: false, sort: 'contact', size: 200 },
+            { name: 'Email', stack: false, sort: 'email', size: 200 },
+            { name: 'Credit Count', stack: false, sort: 'count', size: 150 },
+            { name: 'Credit Value', stack: false, sort: 'value', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

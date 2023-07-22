@@ -9,9 +9,9 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import CasheringLedger from "../cashering/cashering.ledger"
 import CasheringReceipts from "../cashering/cashering.receipts"
+import PaymentBrowser from "../payment/payment.browser"
+import PaymentDiscount from "../payment/payment.discount"
 import BrowserCheckout from "./browser.checkout"
-import BrowserDiscount from "./browser.discount"
-import BrowserPayment from "./browser.payment"
 import BrowserPurchase from "./browser.purchase"
 import BrowserQuantity from "./browser.quantity"
 import { removeBrowserCart, setBrowserData, setBrowserItem, setBrowserNotifier, showBrowserManager } from "./browser.reducer"
@@ -142,8 +142,8 @@ const BrowserRecords = () => {
             />
             <BrowserPurchase />
             <BrowserCheckout />
-            <BrowserPayment />
-            <BrowserDiscount />
+            <PaymentBrowser />
+            <PaymentDiscount />
             <CasheringReceipts />
             <CasheringLedger />
         </>

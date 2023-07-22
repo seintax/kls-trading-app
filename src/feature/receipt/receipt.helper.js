@@ -70,6 +70,21 @@ const receipt = new Table("pos_delivery_receipt", {
             variant_option3: 'vrnt_option3',
         }
     },
+    {
+        key: "rcpt_id",
+        reference: { table: "pos_stock_inventory", key: "invt_receipt" },
+        include: {
+            inventory_id: 'invt_id',
+            inventory_time: 'invt_time',
+            inventory_store: 'invt_store',
+            inventory_sku: 'invt_sku',
+            inventory_received: 'invt_received',
+            inventory_stocks: 'invt_stocks',
+            inventory_cost: 'invt_cost',
+            inventory_base: 'invt_base',
+            inventory_price: 'invt_price',
+        }
+    },
 ])
 
 module.exports = receipt

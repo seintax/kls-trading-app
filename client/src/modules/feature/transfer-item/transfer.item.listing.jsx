@@ -7,8 +7,8 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataListing from "../../../utilities/interface/datastack/data.listing"
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import TransmitInjoin from "./transfer.item.injoin"
-import { setTransmitData, setTransmitNotifier, showTransmitInjoiner } from "./transfer.item.reducer"
-import { useByTransferTransmitMutation, useDeleteTransmitMutation } from "./transfer.item.services"
+import { setTransmitData, setTransmitItem, setTransmitNotifier, showTransmitInjoiner } from "./transfer.item.reducer"
+import { useByTransferTransmitMutation, useDeleteTransmitMutation, useSqlTransmitMutation } from "./transfer.item.services"
 
 const TransmitListing = () => {
     const [transferTransmit] = useByTransferTransmitMutation()
@@ -25,6 +25,7 @@ const TransmitListing = () => {
     }
 
     const [deleteTransmit] = useDeleteTransmitMutation()
+    const [sqlTransmit] = useSqlTransmitMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -33,6 +34,7 @@ const TransmitListing = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
+                            console.log(res)
                             dispatch(setTransmitData(res?.arrayResult))
                             dispatch(setTransmitNotifier(false))
                         }
@@ -60,14 +62,42 @@ const TransmitListing = () => {
             toast.showError("Reference id does not exist.")
             return
         }
-        await deleteTransmit({ id: item.id })
+        console.log(item)
+        let formData = {
+            transmit: {
+                delete: true,
+                id: item.id
+            },
+            transfer: {
+                id: item.transfer
+            },
+            source: {
+                id: item.item,
+                operator: "+",
+                quantity: item.quantity
+            },
+            destination: {
+                delete: true,
+                id: item.destination_id
+            }
+        }
+        await sqlTransmit(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {
+                    toast.showUpdate("Purchase Order successfully updated.")
                     dispatch(setTransmitNotifier(true))
                 }
             })
             .catch(err => console.error(err))
+        // await deleteTransmit({ id: item.id })
+        //     .unwrap()
+        //     .then(res => {
+        //         if (res.success) {
+        //             dispatch(setTransmitNotifier(true))
+        //         }
+        //     })
+        //     .catch(err => console.error(err))
         return true
     }
 
@@ -82,7 +112,7 @@ const TransmitListing = () => {
         return [
             { value: `${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` },
             { value: `ITEM#${StrFn.formatWithZeros(item.item, 6)}`, subtext: "Inventory" },
-            { value: NumFn.currency(item.inventory_base), subtext: "Base Price" },
+            { value: NumFn.currency(item.source_base), subtext: "Base Price" },
             { value: item.quantity, subtext: "Quantity" },
             { value: item.received || 0, subtext: "Received" },
         ]

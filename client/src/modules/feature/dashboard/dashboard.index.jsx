@@ -33,8 +33,9 @@ const menulist = [
             { name: "Purchase Order", href: "/purchase-order" },
             { name: "Delivery", href: "/delivery" },
             { name: "Inventory", href: "/inventory" },
+            // { name: "Adjustment", href: "/stock-adjustment" },
             { name: "Stock Transfer", href: "/stock-transfer" },
-            { name: "Adjustment", href: "/adjustment" },
+            { name: "Receiving", href: "/receiving" },
         ]
     },
     {
@@ -58,6 +59,7 @@ const menulist = [
             { name: "Categories", href: "/category" },
             { name: "Masterlist", href: "/masterlist" },
             { name: "Options", href: "/option" },
+            { name: "Inclusions", href: "/inclusion" },
         ]
     },
     { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },

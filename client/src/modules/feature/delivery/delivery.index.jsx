@@ -1,15 +1,26 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import DeliveryManage from "./delivery.manage"
 import DeliveryRecords from "./delivery.records"
-import { resetDeliveryItem, resetDeliverySelector, setDeliveryData, setDeliveryItem, setDeliveryNotifier, showDeliveryManager } from "./delivery.reducer"
+import { resetDeliveryItem, resetDeliveryManager, resetDeliverySelector, setDeliveryData, setDeliveryItem, setDeliveryNotifier, showDeliveryManager } from "./delivery.reducer"
 import { useFetchAllDeliveryMutation } from "./delivery.services"
 
 const DeliveryIndex = () => {
-    const [allDelivery, { isLoading, isError, isSuccess }] = useFetchAllDeliveryMutation()
+    const [allDelivery, { isLoading, isError }] = useFetchAllDeliveryMutation()
     const dataSelector = useSelector(state => state.delivery)
     const dispatch = useDispatch()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+                dispatch(resetDeliveryManager())
+            }
+        }
+    }, [mounted])
 
     useEffect(() => {
         const instantiate = async () => {

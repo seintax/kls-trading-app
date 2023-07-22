@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
+import { amount } from "../../../utilities/functions/number.funtions"
 import { StrFn, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
@@ -8,8 +9,8 @@ import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
 import { useByStocksInventoryMutation } from "../inventory/inventory.services"
-import { resetTransmitInjoiner, setTransmitNotifier } from "./transfer.item.reducer"
-import { useCreateTransmitBySqlTransactionMutation, useUpdateTransmitMutation } from "./transfer.item.services"
+import { resetTransmitInjoiner, resetTransmitItem, setTransmitNotifier } from "./transfer.item.reducer"
+import { useSqlTransmitMutation } from "./transfer.item.services"
 
 const TransmitInjoin = () => {
     const dataSelector = useSelector(state => state.transmit)
@@ -27,8 +28,9 @@ const TransmitInjoin = () => {
 
     const [stockedInventory] = useByStocksInventoryMutation()
     const [allSuppliers] = useFetchAllSupplierMutation()
-    const [createTransmit] = useCreateTransmitBySqlTransactionMutation()
-    const [updateTransmit] = useUpdateTransmitMutation()
+    // const [createTransmit] = useCreateTransmitBySqlTransactionMutation()
+    // const [updateTransmit] = useUpdateTransmitMutation()
+    const [sqlTransmit] = useSqlTransmitMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -79,11 +81,14 @@ const TransmitInjoin = () => {
     }
 
     useEffect(() => {
-        if (dataSelector.injoiner.show && instantiated) {
+        if (dataSelector.injoiner.show && instantiated && libInventory.length) {
             let item = dataSelector.item
             let variant = item.variant
                 ? `${item.variant_serial}/${item.variant_model}/${item.variant_brand}`
                 : ""
+            let selection = libInventory?.filter(f => parseInt(f.value) === parseInt(item.item))
+            let selected = selection?.length ? selection[0] : undefined
+            let source = selected?.data
             setValues({
                 item: init(item.item),
                 supplier: init(item.inventory_supplier),
@@ -93,15 +98,15 @@ const TransmitInjoin = () => {
                 variety: init(item.variant),
                 cost: init(item.inventory_cost),
                 pricing: init(item.pricing),
-                stocks: init(item.inventory_stocks),
-                remaining: init(item.inventory_stocks),
+                stocks: init(amount(source?.stocks) + amount(item.quantity)),
+                remaining: init(source?.stocks),
                 quantity: init(item.quantity),
-                category: init(item.inventory_category),
-                source: init(item.inventory_store),
+                category: init(source?.category),
+                source: init(item.destination_source),
                 destination: transferSelector.item.destination,
             })
         }
-    }, [dataSelector.injoiner.show, instantiated])
+    }, [dataSelector.injoiner.show, instantiated, libInventory])
 
     useEffect(() => {
         if (listener && dataSelector.injoiner.show) {
@@ -222,37 +227,102 @@ const TransmitInjoin = () => {
 
     const onCompleted = () => {
         dispatch(setTransmitNotifier(true))
+        dispatch(resetTransmitItem())
         dispatch(resetTransmitInjoiner())
+    }
+
+    const getQtyDifference = (quantity) => {
+        if (dataSelector.item.id) {
+            return Math.abs(amount(quantity) - amount(dataSelector.item.quantity))
+        }
+        return 0
+    }
+
+    const getSymbolDifference = (quantity) => {
+        if (dataSelector.item.id) {
+            let difference = amount(quantity) - amount(dataSelector.item.quantity)
+            return difference < 0 ? "+" : "-"
+        }
+        return "-"
     }
 
     const onSubmit = async (data) => {
         if (!transferSelector.item.id) return
         let formData = {
-            ...data,
-            transfer: transferSelector.item.id,
-            variant: data.variety,
+            transmit: {
+                transfer: transferSelector.item.id,
+                item: data.item,
+                product: data.product,
+                variant: data.variety,
+                quantity: data.quantity,
+                pricing: data.pricing,
+                id: dataSelector.item.id
+            },
+            transfer: {
+                id: transferSelector.item.id
+            },
+            source: {
+                id: data.item,
+                operator: getSymbolDifference(data.quantity),
+                quantity: dataSelector.item.id
+                    ? getQtyDifference(data.quantity)
+                    : data.quantity
+            },
+            destination: {
+                product: data.product,
+                variant: data.variety,
+                category: data.category,
+                supplier: data.supplier,
+                store: data.destination,
+                received: data.quantity,
+                stocks: data.quantity,
+                cost: data.cost,
+                base: data.pricing,
+                price: data.pricing,
+                acquisition: "TRANSMIT",
+                source: data.source,
+                transfer: transferSelector.item.id,
+                id: dataSelector.item.id
+                    ? dataSelector.item.destination_id
+                    : undefined
+            }
         }
-        if (dataSelector.item.id) {
-            await updateTransmit({ ...formData, id: dataSelector.item.id })
-                .unwrap()
-                .then(res => {
-                    if (res.success) {
-                        toast.showUpdate("Transmit successfully updated.")
-                        onCompleted()
-                    }
-                })
-                .catch(err => console.error(err))
-            return
-        }
-        await createTransmit(formData)
+        await sqlTransmit(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    toast.showCreate("Transmit successfully created.")
+                    console.log(res)
+                    toast.showUpdate("Purchase Order successfully updated.")
                     onCompleted()
                 }
             })
             .catch(err => console.error(err))
+        // let formData = {
+        //     ...data,
+        //     transfer: transferSelector.item.id,
+        //     variant: data.variety,
+        // }
+        // if (dataSelector.item.id) {
+        //     await updateTransmit({ ...formData, id: dataSelector.item.id })
+        //         .unwrap()
+        //         .then(res => {
+        //             if (res.success) {
+        //                 toast.showUpdate("Transmit successfully updated.")
+        //                 onCompleted()
+        //             }
+        //         })
+        //         .catch(err => console.error(err))
+        //     return
+        // }
+        // await createTransmit(formData)
+        //     .unwrap()
+        //     .then(res => {
+        //         if (res.success) {
+        //             toast.showCreate("Transmit successfully created.")
+        //             onCompleted()
+        //         }
+        //     })
+        //     .catch(err => console.error(err))
     }
 
     const closeAppender = useCallback(() => {

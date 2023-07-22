@@ -71,6 +71,14 @@ export const transmitApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['transmit']
         }),
+        sqlTransmit: builder.mutation({
+            query: (body) => ({
+                url: `${ENDPOINT_URL}/sqltransmit`,
+                method: 'POST',
+                body
+            }),
+            providesTags: ['transmit']
+        }),
         createTransmitBySqlTransaction: builder.mutation({
             query: (body) => ({
                 url: `${COMPLEX_SQL_URL}/sqlcreatetransmit`,
@@ -92,4 +100,5 @@ export const {
     useSpecifyTransmitMutation,
     useByTransferTransmitMutation,
     useCreateTransmitBySqlTransactionMutation,
+    useSqlTransmitMutation,
 } = transmitApiSlice

@@ -57,6 +57,12 @@ CREATE TABLE lib_variant (
     vrnt_brand       varchar(99)
 );
 
+CREATE TABLE lib_inclusion (
+    incl_id          int auto_increment primary key,
+    incl_name        varchar(75) unique,
+    incl_status      varchar(1) DEFAULT "A"
+);
+
 DROP TABLE pos_archive_customer;
 CREATE TABLE pos_archive_customer (
     cust_id          int auto_increment primary key,
@@ -198,14 +204,17 @@ CREATE TABLE pos_stock_inventory (
     invt_transmit    int DEFAULT 0,
     invt_sold_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
     invt_trni_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
-    invt_adjt_total  decimal(10,2) DEFAULT 0 COMMENT 'running count'
+    invt_adjt_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment deductions',
+    invt_apnd_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment additions'
 );
+
+ALTER TABLE pos_stock_inventory ADD COLUMN invt_apnd_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment additions';
 
 ALTER TABLE pos_stock_inventory
     ADD COLUMN invt_source varchar(50) DEFAULT 'SUPPLIER',
     ADD COLUMN invt_transfer int DEFAULT 0;
 
-CREATE TABLE pos_stock_price_adjust (
+CREATE TABLE pos_stock_price (
     prce_id          int auto_increment primary key,
     prce_time        timestamp DEFAULT now(),
     prce_item        int,
@@ -214,10 +223,12 @@ CREATE TABLE pos_stock_price_adjust (
     prce_stocks      decimal(10,2),
     prce_old_price   decimal(30,2),
     prce_new_price   decimal(30,2),
-    prce_by          int,
+    prce_details     varchar(30) DEFAULT 'PRICE ADJUSTMENT',
+    prce_account     int,
     prce_store       varchar(50)
 );
 
+DROP TABLE pos_stock_adjustment;
 CREATE TABLE pos_stock_adjustment (
     adjt_id          int auto_increment primary key,
     adjt_time        timestamp DEFAULT now(),
@@ -227,7 +238,8 @@ CREATE TABLE pos_stock_adjustment (
     adjt_quantity    decimal(10,2),
     adjt_pricing     decimal(30,2),
     adjt_operator    varchar(10) COMMENT 'value is either add or minus',
-    adjt_remarks     decimal(30,2),
+    adjt_details     varchar(99),
+    adjt_remarks     varchar(99),
     adjt_by          decimal(30,2),
     adjt_store       varchar(50)
 );
@@ -240,11 +252,13 @@ CREATE TABLE pos_transfer_request (
     trnr_store       varchar(50),
     trnr_category    varchar(75),
     trnr_date        date,
-    trnr_arrival     date,
-    trnr_status      varchar(30) DEFAULT 'ON-TRANSIT',
+    trnr_status      varchar(30) DEFAULT 'ON-GOING',
     trnr_count       int DEFAULT 0 COMMENT 'running count',
-    trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value'
+    trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
+    trnr_arrive      int DEFAULT 0
 );
+
+ALTER TABLE pos_transfer_request ADD COLUMN trnr_arrive int DEFAULT 0;
 
 DROP TABLE pos_transfer_receipt;
 CREATE TABLE pos_transfer_receipt (
@@ -256,10 +270,12 @@ CREATE TABLE pos_transfer_receipt (
     trni_variant     int,
     trni_quantity    decimal(10,2),
     trni_pricing     decimal(30,2),
-    trni_received    decimal(10,2)
+    trni_received    decimal(10,2),
+    trni_arrival     date
 );
 
 ALTER TABLE pos_transfer_receipt ADD COLUMN trni_pricing decimal(30,2) AFTER trni_quantity;
+ALTER TABLE pos_transfer_receipt ADD COLUMN trni_arrival date;
 
 CREATE TABLE pos_acctg_accounts (
     acct_id          int auto_increment primary key,
@@ -278,9 +294,11 @@ CREATE TABLE pos_acctg_entries (
     entr_remarks     varchar(99)
 );
 
+DROP TABLE pos_archive_expenses;
 CREATE TABLE pos_archive_expenses (
     expn_id          int auto_increment primary key,
     expn_time        timestamp DEFAULT now(),
+    expn_inclusion   varchar(75),
     expn_particulars varchar(150),
     expn_purchase    decimal(30,2),
     expn_cash        decimal(30,2),
@@ -289,6 +307,8 @@ CREATE TABLE pos_archive_expenses (
     expn_notes       varchar(150),
     expn_account     int
 );
+
+ALTER TABLE pos_archive_expenses ADD COLUMN expn_inclusion   varchar(75) AFTER expn_time;
 
 DROP TABLE pos_sales_transaction;
 CREATE TABLE pos_sales_transaction (
@@ -347,9 +367,12 @@ CREATE TABLE pos_sales_credit (
     cred_outstand    decimal(30,2),
     cred_tended      decimal(30,2) DEFAULT 0,
     cred_change      decimal(30,2) DEFAULT 0,
+    cred_reimburse   decimal(30,2) DEFAULT 0,
     cred_status      varchar(30) DEFAULT "ON-GOING",
     cred_settledon   timestamp
 );
+
+ALTER TABLE pos_sales_credit ADD COLUMN cred_reimburse   decimal(30,2) DEFAULT 0 AFTER cred_change;
 
 DROP TABLE pos_payment_collection;
 CREATE TABLE pos_payment_collection (
@@ -358,7 +381,7 @@ CREATE TABLE pos_payment_collection (
     paym_time        timestamp DEFAULT now(),
     paym_type        varchar(20) DEFAULT 'SALES',
     paym_method      varchar(30),
-    paym_total      decimal(30,2) COMMENT 'unaltered original amount',
+    paym_total       decimal(30,2) COMMENT 'unaltered original amount',
     paym_amount      decimal(30,2),
     paym_refcode     varchar(50),
     paym_refdate     date,
@@ -366,6 +389,18 @@ CREATE TABLE pos_payment_collection (
     paym_returned    decimal(30,2) DEFAULT 0,  
     paym_reimburse   int DEFAULT 0 COMMENT 'boolean value either 1 or 0',
     paym_account     int
+);
+
+CREATE TABLE pos_payment_cheque (
+    chqe_id          int auto_increment primary key,
+    chqe_payment     int,
+    chqe_amount      decimal(30,2),
+    chqe_oldcode     varchar(50),
+    chqe_olddate     date,
+    chqe_refcode     varchar(50),
+    chqe_refdate     date,
+    chqe_details     varchar(30) DEFAULT 'CHEQUE REPLACEMENT',
+    chqe_account     int
 );
 
 DROP TABLE pos_return_transaction;

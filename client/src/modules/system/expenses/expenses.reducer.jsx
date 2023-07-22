@@ -15,9 +15,10 @@ const initialState = {
     header: {
         items: [
             { name: 'Particulars', stack: true, sort: 'particulars' },
-            { name: 'Cash-on-Hand', stack: false, sort: 'cash', size: 250 },
-            { name: 'Expense', stack: false, sort: 'purchase', size: 250 },
-            { name: 'Supplimentary', stack: false, sort: 'change', size: 250 },
+            { name: 'Inclusion', stack: false, sort: 'inclusion', size: 250 },
+            { name: 'Cash-on-Hand', stack: false, sort: 'cash', size: 150 },
+            { name: 'Expense', stack: false, sort: 'purchase', size: 150 },
+            { name: 'Supplimentary', stack: false, sort: 'change', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

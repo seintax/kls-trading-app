@@ -2,12 +2,13 @@ import { Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { amount } from "../../../utilities/functions/number.funtions"
+import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
-import { resetBrowserDiscount, setBrowserLess } from "./browser.reducer"
+import { resetPaymentDiscount, setPaymentLess } from "../payment/payment.reducer"
 
 const BrowserDiscount = () => {
-    const dataSelector = useSelector(state => state.browser)
+    const dataSelector = useSelector(state => state.payment)
+    const browserSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
     const [total, setTotal] = useState(0)
     const [settle, setSettle] = useState({
@@ -18,15 +19,13 @@ const BrowserDiscount = () => {
     const toast = useToast()
 
     useEffect(() => {
-        if (dataSelector.discount && dataSelector?.cart?.length) {
-            let total = dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0)
-            setTotal(total)
+        if (dataSelector.discount && dataSelector.total > 0) {
+            setTotal(dataSelector.total)
             if (dataSelector?.less?.option) {
                 setSettle(dataSelector?.less)
             }
         }
-    }, [dataSelector.discount, dataSelector?.cart])
-
+    }, [dataSelector.discount, dataSelector.total])
 
     const onDiscountChange = (e) => {
         const value = e.target.value
@@ -62,7 +61,7 @@ const BrowserDiscount = () => {
     }
 
     const onClose = () => {
-        dispatch(resetBrowserDiscount())
+        dispatch(resetPaymentDiscount())
     }
 
     const onReset = () => {
@@ -79,9 +78,9 @@ const BrowserDiscount = () => {
             toast.showWarning("Cannot apply discount which exceeds the available total.")
             return
         }
-        dispatch(setBrowserLess(settle))
+        dispatch(setPaymentLess(settle))
         onReset()
-        dispatch(resetBrowserDiscount())
+        dispatch(resetPaymentDiscount())
     }
 
     return (
@@ -113,6 +112,12 @@ const BrowserDiscount = () => {
                     </div>
                     <form onSubmit={onSubmit} className="flex flex-col gap-3 mt-2 p-5">
                         <div className="flex border border-secondary-500 p-0.5 items-center">
+                            <div className="py-2.5 px-3 text-[15px] flex justify-between w-full">
+                                Transaction Total:
+                                <span>{NumFn.currency(dataSelector.total)}</span>
+                            </div>
+                        </div>
+                        <div className="flex border border-secondary-500 p-0.5 items-center">
                             <select
                                 name="option"
                                 value={settle.option}
@@ -137,6 +142,7 @@ const BrowserDiscount = () => {
                                 onChange={onDiscountChange}
                                 autoComplete="off"
                                 required
+                                placeholder="Enter discount amount"
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                             />
                         </div>
@@ -147,6 +153,7 @@ const BrowserDiscount = () => {
                                 value={settle.rate}
                                 readOnly
                                 required
+                                placeholder="Discount Rate (%) (auto-computed)"
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                             />
                         </div>

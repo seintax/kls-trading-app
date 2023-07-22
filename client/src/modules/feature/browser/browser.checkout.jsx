@@ -11,12 +11,14 @@ import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useByMaxAccountTransactionMutation } from "../cashering/cashering.services"
-import { removeBrowserPaid, resetBrowserCheckout, resetBrowserTransaction, setBrowserBalance, setBrowserNotifier, showBrowserDiscount, showBrowserPayments } from "./browser.reducer"
+import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, setPaymentTotal, showPaymentDiscount, showPaymentManager } from "../payment/payment.reducer"
+import { resetBrowserCheckout, resetBrowserTransaction, setBrowserNotifier } from "./browser.reducer"
 import { useCreateBrowserBySqlTransactionMutation } from "./browser.services"
 
 const BrowserCheckout = () => {
     const auth = useAuth()
     const dataSelector = useSelector(state => state.browser)
+    const paymentSelector = useSelector(state => state.payment)
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
@@ -93,10 +95,10 @@ const BrowserCheckout = () => {
 
     useEffect(() => {
         if (summary.total > 0) {
-            let totalpaid = dataSelector?.paid?.reduce((prev, curr) => prev + amount(curr.amount), 0)
-            let totalnoncash = dataSelector?.paid?.reduce((prev, curr) => prev + (curr.method !== "CASH" ? amount(curr.amount) : 0), 0)
-            let totalcash = dataSelector?.paid?.reduce((prev, curr) => prev + (curr.method === "CASH" ? amount(curr.amount) : 0), 0)
-            let totalpartial = dataSelector?.paid?.reduce((prev, curr) => prev + (curr.method === "CREDIT" ? amount(curr.partial) : 0), 0)
+            let totalpaid = paymentSelector?.paid?.reduce((prev, curr) => prev + amount(curr.amount), 0)
+            let totalnoncash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method !== "CASH" ? amount(curr.amount) : 0), 0)
+            let totalcash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method === "CASH" ? amount(curr.amount) : 0), 0)
+            let totalpartial = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.type === "CREDIT" ? amount(curr.partial) : 0), 0)
             let total = amount(summary.total) - amount(summary.discount)
             let settled = amount(total) - amount(totalnoncash)
             let change = totalcash - settled
@@ -107,28 +109,28 @@ const BrowserCheckout = () => {
             setBalance(balance < 0 ? 0 : balance)
             setPayment(totalpayment)
         }
-    }, [dataSelector?.paid, summary.total, summary.discount, dataSelector?.less])
+    }, [paymentSelector?.paid, summary.total, summary.discount, paymentSelector?.less])
 
     useEffect(() => {
-        if (dataSelector?.less?.discount) {
-            if (dataSelector?.less?.option === "CUSTOM") {
+        if (paymentSelector?.less?.discount) {
+            if (paymentSelector?.less?.option === "CUSTOM") {
                 setsummary(prev => ({
                     ...prev,
-                    rate: (amount(dataSelector?.less?.discount) / amount(summary.total)),
-                    discount: dataSelector?.less?.discount,
-                    net: amount(summary.total) - amount(dataSelector?.less?.discount)
+                    rate: (amount(paymentSelector?.less?.discount) / amount(summary.total)),
+                    discount: paymentSelector?.less?.discount,
+                    net: amount(summary.total) - amount(paymentSelector?.less?.discount)
                 }))
                 return
             }
-            let discount = amount(summary.total) * amount(dataSelector?.less?.rate)
+            let discount = amount(summary.total) * amount(paymentSelector?.less?.rate)
             setsummary(prev => ({
                 ...prev,
                 discount: discount,
-                rate: dataSelector?.less?.rate,
+                rate: paymentSelector?.less?.rate,
                 net: amount(total) - discount
             }))
         }
-    }, [dataSelector?.less, summary.total])
+    }, [paymentSelector?.less, summary.total])
 
     const toggleOffCheckout = () => {
         dispatch(resetBrowserCheckout())
@@ -136,15 +138,19 @@ const BrowserCheckout = () => {
 
     const toggleDiscount = () => {
         if (summary.total > 0) {
-            dispatch(showBrowserDiscount())
+            let total = dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0)
+            dispatch(setPaymentTotal(total))
+            dispatch(showPaymentDiscount())
             return
         }
     }
 
     const togglePayments = () => {
         if (balance > 0) {
-            dispatch(setBrowserBalance(balance))
-            dispatch(showBrowserPayments())
+            dispatch(setPaymentBalance(balance))
+            dispatch(setPaymentSettlement(false))
+            dispatch(setPaymentEnableCredit(true))
+            dispatch(showPaymentManager())
             return
         }
         toast.showWarning("Cannot add payment option when balance is zero.")
@@ -152,13 +158,14 @@ const BrowserCheckout = () => {
 
     const removePayment = (id) => {
         if (window.confirm("Do you wish to delete this payment option?")) {
-            dispatch(removeBrowserPaid(id))
+            dispatch(removePaymentPaid(id))
         }
     }
 
     const onCompleted = () => {
         dispatch(setBrowserNotifier(true))
         dispatch(resetBrowserTransaction())
+        dispatch(resetPaymentTransaction())
     }
 
     const destructCode = (maxcode) => {
@@ -219,12 +226,12 @@ const BrowserCheckout = () => {
                                 taxrated: 0.12
                             }
                         }),
-                        payment: dataSelector.paid
+                        payment: paymentSelector.paid
                             ?.filter(f => f.type === "SALES")
                             ?.map(pay => {
                                 return {
                                     code: code,
-                                    type: "SALES",
+                                    type: pay.type,
                                     method: pay.method,
                                     total: amount(pay.amount),
                                     amount: amount(pay.amount),
@@ -234,13 +241,13 @@ const BrowserCheckout = () => {
                                     account: auth.id
                                 }
                             }),
-                        credit: dataSelector.paid
+                        credit: paymentSelector.paid
                             ?.filter(f => f.type === "CREDIT")
                             ?.map(cred => {
                                 let payment = {
                                     code: code,
-                                    type: "CREDIT",
-                                    method: "CASH",
+                                    type: pay.type,
+                                    method: pay.method,
                                     total: amount(cred.partial),
                                     amount: amount(cred.partial),
                                     refcode: cred.refcode,
@@ -340,12 +347,16 @@ const BrowserCheckout = () => {
                                     <ChevronRightIcon className="w-5 h-5" />
                                 </span>
                             </div>
-                            <div className={`${dataSelector.paid?.length ? "flex" : "hidden"} flex-col w-full gap-1 py-2`}>
+                            <div className={`${paymentSelector.paid?.length ? "flex" : "hidden"} flex-col w-full gap-1 py-2`}>
                                 {
-                                    dataSelector?.paid?.map((pay, index) => (
+                                    paymentSelector?.paid?.map((pay, index) => (
                                         <div key={index} className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(pay.id)}>
                                             <span className="w-1/4 flex-none">
-                                                {pay.method}
+                                                {
+                                                    pay.type === "SALES"
+                                                        ? pay.method
+                                                        : pay.type
+                                                }
                                             </span>
                                             <span className={pay.type === "SALES" ? "" : "hidden"}>
                                                 {pay.refcode ? ` #${pay.refcode}` : ""}
@@ -360,19 +371,19 @@ const BrowserCheckout = () => {
                                     ))
                                 }
                                 {
-                                    (dataSelector.method === "CREDIT") ? (
-                                        <div className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(dataSelector?.paid[0]?.id)}>
+                                    (paymentSelector.method === "CREDIT") ? (
+                                        <div className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(paymentSelector?.paid[0]?.id)}>
                                             <span className="w-1/4 flex-none flex items-center gap-2">
-                                                {dataSelector?.paid[0]?.method}
+                                                {paymentSelector?.paid[0]?.method}
                                                 <span className="bg-gray-300 px-2 py-0.5 rounded-md">
                                                     PARTIAL
                                                 </span>
                                             </span>
                                             <span className="flex gap-5 ">
-                                                <span>{dataSelector?.paid[0]?.creditor_name}</span>
+                                                <span>{paymentSelector?.paid[0]?.creditor_name}</span>
                                             </span>
                                             <span className="ml-auto text-gray-800">
-                                                {currency(dataSelector?.paid[0]?.partial)}
+                                                {currency(paymentSelector?.paid[0]?.partial)}
                                             </span>
                                         </div>
                                     ) : null

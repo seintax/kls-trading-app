@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { getBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import AdjustmentIndex from "../inventory-item/inventory.item.index"
 import InventoryRecords from "./inventory.records"
-import { resetInventoryItem, setInventoryData, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
+import { resetInventoryItem, resetInventoryManager, setInventoryData, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
 import { useFetchAllInventoryBranchMutation } from "./inventory.services"
 
 const InventoryIndex = () => {
@@ -12,6 +13,17 @@ const InventoryIndex = () => {
     const [allInventory, { isLoading, isError, isSuccess }] = useFetchAllInventoryBranchMutation()
     const dataSelector = useSelector(state => state.inventory)
     const dispatch = useDispatch()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+                dispatch(resetInventoryManager())
+            }
+        }
+    }, [mounted])
 
     useEffect(() => {
         const instantiate = async () => {
@@ -50,8 +62,7 @@ const InventoryIndex = () => {
 
     return (
         (dataSelector.manager) ? (
-            // <InventoryManage name={dataSelector.display.name} />
-            <div></div>
+            <AdjustmentIndex />
         ) : (
             <DataIndex
                 display={dataSelector.display}

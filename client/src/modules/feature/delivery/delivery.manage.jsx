@@ -77,6 +77,7 @@ const DeliveryManage = () => {
                 store: init(item.store),
                 date: init(sqlDate(item.date)),
                 remarks: init(item.remarks),
+                by: auth.id
             })
         }
     }, [instantiated, dataSelector.item])

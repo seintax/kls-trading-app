@@ -8,8 +8,8 @@ import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useByCategoryMasterlistMutation } from "../../library/masterlist/masterlist.services"
 import { useByCategoryVariantMutation } from "../../library/variant/variant.services"
-import { resetReceivableInjoiner, setReceivableNotifier } from "./purchase.item.reducer"
-import { useCreateReceivableMutation, useUpdateReceivableMutation } from "./purchase.item.services"
+import { resetReceivableInjoiner, resetReceivableItem, setReceivableNotifier } from "./purchase.item.reducer"
+import { useCreateReceivableMutation, useSqlReceivableMutation, useUpdateReceivableMutation } from "./purchase.item.services"
 
 const ReceivableInjoin = () => {
     const dataSelector = useSelector(state => state.receivable)
@@ -30,6 +30,7 @@ const ReceivableInjoin = () => {
     const [categoryVariants] = useByCategoryVariantMutation()
     const [createReceivable] = useCreateReceivableMutation()
     const [updateReceivable] = useUpdateReceivableMutation()
+    const [sqlReceivable] = useSqlReceivableMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -65,8 +66,20 @@ const ReceivableInjoin = () => {
     }
 
     useEffect(() => {
-        if (dataSelector.injoiner.show && instantiated) {
+        if (dataSelector.injoiner.show && instantiated && cacheVariants.length) {
             let item = dataSelector.item
+            if (item.product) {
+                let array = cacheVariants
+                    ?.filter(arr => parseInt(arr.product) === parseInt(item.product))
+                    ?.map(arr => {
+                        return {
+                            value: arr.id,
+                            key: `${arr.serial}/${arr.model}/${arr.brand}`,
+                            data: arr
+                        }
+                    })
+                setLibVariants([{ value: "", key: "Select variant", data: {} }, ...array])
+            }
             setValues({
                 category: init(item.category, purchaseSelector?.item?.category),
                 product: init(item.product),
@@ -75,7 +88,7 @@ const ReceivableInjoin = () => {
                 costing: init(item.costing, 0),
             })
         }
-    }, [dataSelector.injoiner.show, instantiated])
+    }, [dataSelector.injoiner.show, instantiated, cacheVariants])
 
     useEffect(() => {
         if (listener) {
@@ -161,38 +174,56 @@ const ReceivableInjoin = () => {
 
     const onCompleted = () => {
         dispatch(setReceivableNotifier(true))
+        dispatch(resetReceivableItem())
         dispatch(resetReceivableInjoiner())
     }
 
     const onSubmit = async (data) => {
         if (!purchaseSelector.item.id) return
         let formData = {
-            ...data,
-            purchase: purchaseSelector.item.id,
-            variant: data.variety,
-            balance: data.ordered,
+            receivable: {
+                purchase: purchaseSelector.item.id,
+                product: data.product,
+                variant: data.variety,
+                costing: data.costing,
+                ordered: data.ordered,
+                balance: data.ordered,
+                id: dataSelector.item.id
+            },
+            purchase: {
+                id: purchaseSelector.item.id
+            }
         }
-        if (dataSelector.item.id) {
-            await updateReceivable({ ...formData, id: dataSelector.item.id })
-                .unwrap()
-                .then(res => {
-                    if (res.success) {
-                        toast.showUpdate("Purchase Order Item successfully updated.")
-                        onCompleted()
-                    }
-                })
-                .catch(err => console.error(err))
-            return
-        }
-        await createReceivable(formData)
+        await sqlReceivable(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    toast.showCreate("Purchase Order Item successfully added.")
+                    toast.showUpdate("Purchase Order successfully updated.")
                     onCompleted()
                 }
             })
             .catch(err => console.error(err))
+        // if (dataSelector.item.id) {
+        //     await updateReceivable({ ...formData, id: dataSelector.item.id })
+        //         .unwrap()
+        //         .then(res => {
+        //             if (res.success) {
+        //                 toast.showUpdate("Purchase Order Item successfully updated.")
+        //                 onCompleted()
+        //             }
+        //         })
+        //         .catch(err => console.error(err))
+        //     return
+        // }
+        // await createReceivable(formData)
+        //     .unwrap()
+        //     .then(res => {
+        //         if (res.success) {
+        //             toast.showCreate("Purchase Order Item successfully added.")
+        //             onCompleted()
+        //         }
+        //     })
+        //     .catch(err => console.error(err))
     }
 
     const closeAppender = useCallback(() => {

@@ -6,11 +6,11 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
-import { setReceivableItem, setReceivableNotifier, showReceivableManager } from "./purchase.item.reducer"
-import { useDeleteReceivableMutation } from "./purchase.item.services"
+import { setInclusionItem, setInclusionNotifier, showInclusionManager } from "./inclusion.reducer"
+import { useDeleteInclusionMutation } from "./inclusion.services"
 
-const ReceivableRecords = () => {
-    const dataSelector = useSelector(state => state.receivable)
+const InclusionRecords = () => {
+    const dataSelector = useSelector(state => state.inclusion)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -19,16 +19,16 @@ const ReceivableRecords = () => {
     const columns = dataSelector.header
     const toast = useToast()
 
-    const [deleteReceivable] = useDeleteReceivableMutation()
+    const [deleteInclusion] = useDeleteInclusionMutation()
 
     const toggleEdit = (item) => {
-        dispatch(setReceivableItem(item))
-        dispatch(showReceivableManager())
+        dispatch(setInclusionItem(item))
+        dispatch(showInclusionManager())
     }
 
     const toggleDelete = (item) => {
         assignDeleteCallback({ item: item, callback: handleDelete })
-        dispatch(showDelete({ description: "Product", reference: item.variant }))
+        dispatch(showDelete({ description: "Account name", reference: item.name }))
     }
 
     const handleDelete = async (item) => {
@@ -36,11 +36,11 @@ const ReceivableRecords = () => {
             toast.showError("Reference id does not exist.")
             return
         }
-        await deleteReceivable({ id: item.id })
+        await deleteInclusion({ id: item.id })
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    dispatch(setReceivableNotifier(true))
+                    dispatch(setInclusionNotifier(true))
                 }
             })
             .catch(err => console.error(err))
@@ -56,11 +56,7 @@ const ReceivableRecords = () => {
 
     const items = (item) => {
         return [
-            { value: item.product },
-            { value: item.variant },
-            { value: item.ordered },
-            { value: item.received },
-            { value: item.costing },
+            { value: item.name },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }
@@ -91,4 +87,4 @@ const ReceivableRecords = () => {
         </>
     )
 }
-export default ReceivableRecords
+export default InclusionRecords

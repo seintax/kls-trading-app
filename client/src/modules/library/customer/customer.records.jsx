@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
+import { NumFn } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
@@ -60,6 +61,8 @@ const CustomerRecords = () => {
             { value: item.address },
             { value: item.cellphone },
             { value: item.email },
+            { value: item.count },
+            { value: NumFn.currency(item.value) },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }
