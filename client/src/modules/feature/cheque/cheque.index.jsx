@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import { useByChequePaymentMutation } from "../payment/payment.services"
 import ChequeManage from "./cheque.manage"
 import ChequeRecords from "./cheque.records"
 import { resetChequeItem, setChequeData, setChequeNotifier, showChequeManager } from "./cheque.reducer"
-import { useByChequePaymentMutation } from "./cheque.services"
 
 const ChequeIndex = () => {
     const [allCheque, { isLoading, isError, isSuccess }] = useByChequePaymentMutation()

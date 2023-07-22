@@ -3,6 +3,7 @@ const transaction = require('./src/cashier/transaction/transaction.route')
 const dispensing = require('./src/cashier/dispensing/dispensing.route')
 const credit = require('./src/cashier/credit/credit.route')
 const payment = require('./src/cashier/payment/payment.route')
+const cheque = require('./src/cashier/cheque/cheque.route')
 const refund = require('./src/cashier/refund/refund.route')
 const returned = require('./src/cashier/returned/returned.route')
 const reimburse = require('./src/cashier/reimburse/reimburse.route')
@@ -37,6 +38,7 @@ module.exports = {
     dispensing,
     credit,
     payment,
+    cheque,
     refund,
     returned,
     reimburse,

@@ -204,7 +204,7 @@ CREATE TABLE pos_stock_inventory (
     invt_transmit    int DEFAULT 0,
     invt_sold_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
     invt_trni_total  decimal(10,2) DEFAULT 0 COMMENT 'running count',
-    invt_adjt_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment deductions'
+    invt_adjt_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment deductions',
     invt_apnd_total  decimal(10,2) DEFAULT 0 COMMENT 'running count for adjustment additions'
 );
 
@@ -214,7 +214,7 @@ ALTER TABLE pos_stock_inventory
     ADD COLUMN invt_source varchar(50) DEFAULT 'SUPPLIER',
     ADD COLUMN invt_transfer int DEFAULT 0;
 
-CREATE TABLE pos_stock_price_adjust (
+CREATE TABLE pos_stock_price (
     prce_id          int auto_increment primary key,
     prce_time        timestamp DEFAULT now(),
     prce_item        int,
@@ -223,10 +223,12 @@ CREATE TABLE pos_stock_price_adjust (
     prce_stocks      decimal(10,2),
     prce_old_price   decimal(30,2),
     prce_new_price   decimal(30,2),
-    prce_by          int,
+    prce_details     varchar(30) DEFAULT 'PRICE ADJUSTMENT',
+    prce_account     int,
     prce_store       varchar(50)
 );
 
+DROP TABLE pos_stock_adjustment;
 CREATE TABLE pos_stock_adjustment (
     adjt_id          int auto_increment primary key,
     adjt_time        timestamp DEFAULT now(),
@@ -292,6 +294,7 @@ CREATE TABLE pos_acctg_entries (
     entr_remarks     varchar(99)
 );
 
+DROP TABLE pos_archive_expenses;
 CREATE TABLE pos_archive_expenses (
     expn_id          int auto_increment primary key,
     expn_time        timestamp DEFAULT now(),
@@ -378,7 +381,7 @@ CREATE TABLE pos_payment_collection (
     paym_time        timestamp DEFAULT now(),
     paym_type        varchar(20) DEFAULT 'SALES',
     paym_method      varchar(30),
-    paym_total      decimal(30,2) COMMENT 'unaltered original amount',
+    paym_total       decimal(30,2) COMMENT 'unaltered original amount',
     paym_amount      decimal(30,2),
     paym_refcode     varchar(50),
     paym_refdate     date,
@@ -386,6 +389,18 @@ CREATE TABLE pos_payment_collection (
     paym_returned    decimal(30,2) DEFAULT 0,  
     paym_reimburse   int DEFAULT 0 COMMENT 'boolean value either 1 or 0',
     paym_account     int
+);
+
+CREATE TABLE pos_payment_cheque (
+    chqe_id          int auto_increment primary key,
+    chqe_payment     int,
+    chqe_amount      decimal(30,2),
+    chqe_oldcode     varchar(50),
+    chqe_olddate     date,
+    chqe_refcode     varchar(50),
+    chqe_refdate     date,
+    chqe_details     varchar(30) DEFAULT 'CHEQUE REPLACEMENT',
+    chqe_account     int
 );
 
 DROP TABLE pos_return_transaction;
