@@ -232,7 +232,8 @@ const CasheringReimburse = () => {
                     credit: {
                         creditor: creditSelector.item.creditor,
                         returned: returned,
-                        outstand: outstand,
+                        outstand: outstand < 0 ? 0 : outstand,
+                        reimburse: outstand < 0 ? Math.abs(outstand) : 0,
                         status: outstand > 0 ? "ON-GOING" : "PAID",
                         id: creditSelector.item.id
                     }

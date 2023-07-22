@@ -14,6 +14,7 @@ const credit = new Table("pos_sales_credit", {
     outstand: 'cred_outstand',
     tended: 'cred_tended',
     change: 'cred_change',
+    reimburse: 'cred_reimburse',
     status: 'cred_status',
     settledon: 'cred_settledon',
 }, [

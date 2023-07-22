@@ -360,9 +360,12 @@ CREATE TABLE pos_sales_credit (
     cred_outstand    decimal(30,2),
     cred_tended      decimal(30,2) DEFAULT 0,
     cred_change      decimal(30,2) DEFAULT 0,
+    cred_reimburse   decimal(30,2) DEFAULT 0,
     cred_status      varchar(30) DEFAULT "ON-GOING",
     cred_settledon   timestamp
 );
+
+ALTER TABLE pos_sales_credit ADD COLUMN cred_reimburse   decimal(30,2) DEFAULT 0 AFTER cred_change;
 
 DROP TABLE pos_payment_collection;
 CREATE TABLE pos_payment_collection (

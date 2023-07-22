@@ -26,6 +26,20 @@ export const getBranch = (auth) => {
     throw new Error("Invalid branch.")
 }
 
+export const eitherIs = (value, arr) => {
+    if (isEmpty(value) || !arr.length) return false
+    return arr?.includes(value)
+}
+
+export const eitherNot = (value, arr) => {
+    if (isEmpty(value) || !arr.length) return false
+    return !arr?.includes(value)
+}
+
+export const valuesIf = (value, trueval, falseval) => {
+    return value ? trueval : falseval
+}
+
 export const forBranch = (auth) => {
     if (auth?.store) {
         const notBranches = ["DevOp", "SysAd"]

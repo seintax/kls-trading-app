@@ -6,7 +6,7 @@ import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import { resetPaymentDiscount, setPaymentLess } from "../payment/payment.reducer"
 
-const BrowserDiscount = () => {
+const PaymentDiscount = () => {
     const dataSelector = useSelector(state => state.payment)
     const browserSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
@@ -168,4 +168,4 @@ const BrowserDiscount = () => {
     )
 }
 
-export default BrowserDiscount
+export default PaymentDiscount

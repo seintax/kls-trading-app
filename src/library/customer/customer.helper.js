@@ -14,10 +14,20 @@ const customer = new Table("pos_archive_customer", {
     status: 'cust_status',
 })
 
-customer.register("running_via_credit",
+customer.register("customer_update_credit",
     `UPDATE pos_archive_customer SET 
-        cust_count=(SELECT IFNULL(COUNT(*),0) FROM pos_sales_credit WHERE cred_creditor=cust_id AND cred_status='ON-GOING'),
-        cust_value=(SELECT IFNULL(SUM(cred_outstand),0) FROM pos_sales_credit WHERE cred_creditor=cust_id AND cred_status='ON-GOING')
-            WHERE cust_id=@id`)
+        cust_count=(
+                SELECT IFNULL(COUNT(*),0) 
+                FROM pos_sales_credit 
+                WHERE cred_creditor=cust_id 
+                    AND cred_status='ON-GOING'
+            ),
+        cust_value=(
+                SELECT IFNULL(SUM(cred_outstand),0) 
+                FROM pos_sales_credit 
+                WHERE cred_creditor=cust_id 
+                    AND cred_status='ON-GOING'
+            )
+        WHERE cust_id=@id`)
 
 module.exports = customer

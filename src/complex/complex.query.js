@@ -237,69 +237,6 @@ const sqlCreateTransmit = handler(async (req, res) => {
     })
 })
 
-const sqlDeleteTransmit = handler(async (req, res) => {
-    mysqlpool.getConnection((err, con) => {
-        if (err) return res.status(401).json(force(err))
-        con.beginTransaction(async (err) => {
-            if (err) return err
-
-            let destination_inventory = await new Promise(async (resolve, reject) => {
-                let data = { transmit: req.body.id }
-                const builder = getinventory.remove(data)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "destination inventory", deleteResult: { id: req.body.id } })
-                })
-            })
-
-            let transmit = await new Promise(async (resolve, reject) => {
-                let data = { id: req.body.id }
-                const builder = gettransmit.delete(data)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "transmit", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
-                })
-            })
-
-            let running_transfer = await new Promise(async (resolve, reject) => {
-                const sql = gettransfer
-                    .statement("transfer_update_transmit")
-                    .inject({
-                        id: req.body.transfer
-                    })
-                await con.query(sql, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "running transfer", updateResult: { id: req.body.transfer, alterated: ans.affectedRows } })
-                })
-            })
-
-            let running_source = await new Promise(async (resolve, reject) => {
-                const sql = getinventory
-                    .statement("inventory_update_transfer")
-                    .inject({
-                        id: req.body.item,
-                        operator: op.add,
-                        qty: req.body.quantity
-                    })
-                await con.query(sql, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "running source", updateResult: { id: req.body.item, alterated: ans.affectedRows } })
-                })
-            })
-
-            let result = { transmit, running_transfer, running_source, destination_inventory, data: req.body }
-            con.commit((err) => {
-                if (err) con.rollback(() => {
-                    con.release()
-                    return res.status(401).json(force(err))
-                })
-                con.release()
-                res.status(200).json(proceed(result, req))
-            })
-        })
-    })
-})
-
 const sqlCreateTransaction = handler(async (req, res) => {
     mysqlpool.getConnection((err, con) => {
         if (err) return res.status(401).json(force(err))
@@ -377,7 +314,7 @@ const sqlCreateTransaction = handler(async (req, res) => {
 
                     let running_customer = await new Promise(async (resolve, reject) => {
                         const sql = getcustomer
-                            .statement("running_via_credit")
+                            .statement("customer_update_credit")
                             .inject({
                                 id: cred.creditor,
                             })
@@ -483,7 +420,7 @@ const sqlCreateReturn = handler(async (req, res) => {
 
                 var running_customer = await new Promise(async (resolve, reject) => {
                     const sql = getcustomer
-                        .statement("running_via_credit")
+                        .statement("customer_update_credit")
                         .inject({
                             id: req.body.credit.creditor,
                         })

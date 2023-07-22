@@ -57,6 +57,7 @@ const CreditRecords = () => {
     const items = (item) => {
         return [
             { value: item.customer_name },
+            { value: NumFn.currency(item.customer_value) },
             { value: item.code },
             { value: NumFn.currency(item.total) },
             { value: NumFn.currency(item.partial) },

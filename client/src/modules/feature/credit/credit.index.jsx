@@ -5,10 +5,10 @@ import { resetBrowserPayments } from "../browser/browser.reducer"
 import CreditManage from "./credit.manage"
 import CreditRecords from "./credit.records"
 import { resetCreditItem, resetCreditManager, setCreditData, setCreditNotifier, showCreditManager } from "./credit.reducer"
-import { useFetchAllCreditMutation } from "./credit.services"
+import { useByAllOngoingCreditMutation } from "./credit.services"
 
 const CreditIndex = () => {
-    const [allCredit, { isLoading, isError, isSuccess }] = useFetchAllCreditMutation()
+    const [allCredit, { isLoading, isError, isSuccess }] = useByAllOngoingCreditMutation()
     const dataSelector = useSelector(state => state.credit)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)

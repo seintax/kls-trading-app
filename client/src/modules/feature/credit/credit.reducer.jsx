@@ -15,6 +15,7 @@ const initialState = {
     header: {
         items: [
             { name: 'Customer', stack: false, sort: 'customer_name' },
+            { name: 'Value', stack: true, sort: 'customer_value', size: 120 },
             { name: 'Transaction', stack: true, sort: 'code', size: 250 },
             { name: 'Total Purchase', stack: true, sort: 'total', size: 150 },
             { name: 'Partial', stack: true, sort: 'partial', size: 130 },

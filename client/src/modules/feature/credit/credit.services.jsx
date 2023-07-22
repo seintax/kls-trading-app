@@ -70,6 +70,22 @@ export const creditApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['credit']
         }),
+        byAllOngoingCredit: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byallongoing`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['credit']
+        }),
+        sqlSettleCredit: builder.mutation({
+            query: (body) => ({
+                url: `${ENDPOINT_URL}/sqlsettlecredit`,
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['credit']
+        }),
     })
 })
 
@@ -82,4 +98,6 @@ export const {
     useSearchCreditMutation,
     useSpecifyCreditMutation,
     useByOngoingCreditMutation,
+    useByAllOngoingCreditMutation,
+    useSqlSettleCreditMutation,
 } = creditApiSlice
