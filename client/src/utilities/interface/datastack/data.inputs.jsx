@@ -73,7 +73,13 @@ const DataInputs = ({ formData, fields, change, submit, closed, listing, header 
                         <div className="space-y-6 sm:space-y-5 w-full">
                             <div className={header ? "flex items-center justify-between pb-5" : "hidden"}>
                                 <div className="text-lg font-medium leading-6 text-[#010a3a] uppercase">
-                                    {isEdit ? `Edit ${formData.name}` : `Add ${formData.name}`}
+                                    {
+                                        formData.name.startsWith("!")
+                                            ? formData.name.replaceAll("!", "")
+                                            : (isEdit
+                                                ? `Edit ${formData.name}`
+                                                : `Add ${formData.name}`)
+                                    }
                                 </div>
                             </div>
                             <div className="flex flex-col gap-3">

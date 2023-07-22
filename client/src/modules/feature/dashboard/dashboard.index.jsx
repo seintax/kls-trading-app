@@ -34,6 +34,7 @@ const menulist = [
             { name: "Delivery", href: "/delivery" },
             { name: "Inventory", href: "/inventory" },
             { name: "Stock Transfer", href: "/stock-transfer" },
+            { name: "Receiving", href: "/receiving" },
             { name: "Adjustment", href: "/adjustment" },
         ]
     },
@@ -58,6 +59,7 @@ const menulist = [
             { name: "Categories", href: "/category" },
             { name: "Masterlist", href: "/masterlist" },
             { name: "Options", href: "/option" },
+            { name: "Inclusions", href: "/inclusion" },
         ]
     },
     { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },

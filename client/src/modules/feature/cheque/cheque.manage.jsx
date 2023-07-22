@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInputs from "../../../utilities/interface/datastack/data.inputs"
 import FormEl from "../../../utilities/interface/forminput/input.active"
-import { resetReceivableManager, setReceivableNotifier } from "./purchase.item.reducer"
-import { useCreateReceivableMutation, useUpdateReceivableMutation } from "./purchase.item.services"
+import { resetChequeManager, setChequeNotifier } from "./cheque.reducer"
 
-const ReceivableManage = () => {
-    const dataSelector = useSelector(state => state.receivable)
+const ChequeManage = () => {
+    const dataSelector = useSelector(state => state.cheque)
     const dispatch = useDispatch()
     const [instantiated, setInstantiated] = useState(false)
     const [listener, setListener] = useState()
@@ -18,13 +17,13 @@ const ReceivableManage = () => {
     const { yup } = useYup()
     const toast = useToast()
 
-    const [createReceivable] = useCreateReceivableMutation()
-    const [updateReceivable] = useUpdateReceivableMutation()
+    // const [createCheque] = useCreateChequeMutation()
+    // const [updateCheque] = useUpdateChequeMutation()
 
     useEffect(() => {
         const instantiate = async () => {
-            setInstantiated(true)
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
+            setInstantiated(true)
         }
 
         instantiate()
@@ -44,10 +43,7 @@ const ReceivableManage = () => {
         if (instantiated) {
             let item = dataSelector.item
             setValues({
-                product: init(item.product),
-                variant: init(item.variant),
-                ordered: init(item.ordered),
-                costing: init(item.costing),
+                name: init(item.name),
             })
         }
     }, [instantiated])
@@ -55,34 +51,10 @@ const ReceivableManage = () => {
     const onFields = (errors, register, values, setValue) => {
         return (
             <>
-                <FormEl.Select
-                    label='Product Name'
+                <FormEl.Text
+                    label='Name'
                     register={register}
-                    name='product'
-                    errors={errors}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                />
-                <FormEl.Select
-                    label='Variant'
-                    register={register}
-                    name='variant'
-                    errors={errors}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                />
-                <FormEl.Decimal
-                    label='Quantity'
-                    register={register}
-                    name='variant'
-                    errors={errors}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                />
-                <FormEl.Currency
-                    label='Purchase Cost'
-                    register={register}
-                    name='costing'
+                    name='name'
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
@@ -103,47 +75,39 @@ const ReceivableManage = () => {
     }, [listener])
 
     const onSchema = yup.object().shape({
-        product: yup
+        name: yup
             .string()
-            .required('Product name is required.'),
-        variant: yup
-            .string()
-            .required('Product variant is required.'),
-        ordered: yup
-            .number()
-            .min(1, "Quantity is required"),
-        costing: yup
-            .number()
-            .min(1, "Purchase cost is required")
+            .required('Field is required.'),
     })
 
-    const onClose = useCallback(() => {
-        dispatch(resetReceivableManager())
-    }, [])
+    const onClose = () => {
+        dispatch(resetChequeManager())
+    }
 
     const onCompleted = () => {
-        dispatch(setReceivableNotifier(true))
-        dispatch(resetReceivableManager())
+        dispatch(setChequeNotifier(true))
+        dispatch(resetChequeManager())
     }
 
     const onSubmit = async (data) => {
+        const formData = data
         if (dataSelector.item.id) {
-            await updateReceivable({ ...data, id: dataSelector.item.id })
+            await updateCheque({ ...data, id: dataSelector.item.id })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        toast.showUpdate("Receivable successfully updated.")
+                        toast.showUpdate("Cheque successfully updated.")
                         onCompleted()
                     }
                 })
                 .catch(err => console.error(err))
             return
         }
-        await createReceivable(data)
+        await createCheque(data)
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    toast.showCreate("Receivable successfully created.")
+                    toast.showCreate("Cheque successfully created.")
                     onCompleted()
                 }
             })
@@ -168,4 +132,4 @@ const ReceivableManage = () => {
     )
 }
 
-export default ReceivableManage
+export default ChequeManage

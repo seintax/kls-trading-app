@@ -47,8 +47,8 @@ const _record = handler(async (req, res) => {
 const _branch = handler(async (req, res) => {
     const { branch } = getbranch.parameters(req.query)
     const { acquisition, store, stocks, id } = getbranch.fields
-    let params = [p(branch).Contains(), "0", "PROCUREMENT", "TRANSFER", "TRANSMIT"]
-    let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", "", ""])]
+    let params = [p(branch).Contains(), "0", "PROCUREMENT", "TRANSFER"]
+    let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", ""])]
     let series = [f(id).Asc()]
     let limits = undefined
     const builder = getbranch.inquiry(clause, params, series, limits)
@@ -102,6 +102,20 @@ const byStocks = handler(async (req, res) => {
     })
 })
 
+const byTransmit = handler(async (req, res) => {
+    const { branch } = getbranch.parameters(req.query)
+    const { acquisition, store, stocks, id } = getbranch.fields
+    let params = [p(branch).Contains(), "0", "TRANSMIT"]
+    let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).IsEqual()]
+    let series = [f(id).Asc()]
+    let limits = undefined
+    const builder = getbranch.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -111,5 +125,6 @@ module.exports = {
     _search,
     _specify,
     _findone,
-    byStocks
+    byStocks,
+    byTransmit
 }

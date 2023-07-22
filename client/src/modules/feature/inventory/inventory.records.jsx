@@ -63,9 +63,7 @@ const InventoryRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleAccept(item), label: 'Accept', hidden: item.acquisition !== "TRANSMIT" },
-            { type: 'button', trigger: () => { }, label: 'Edit', hidden: item.acquisition === "TRANSMIT" },
-            { type: 'button', trigger: () => { }, label: 'Delete', hidden: item.acquisition === "TRANSMIT" }
+            { type: 'button', trigger: () => { }, label: 'View' }
         ]
     }
 

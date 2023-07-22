@@ -99,7 +99,8 @@ const BrowserPayment = () => {
         let settlement = {
             ...settle,
             id: createInstance(),
-            type: type
+            type: type,
+            refstat: settle.method === "CHEQUE" ? "UNCLAIMED" : ""
         }
         if (settle.method === "CREDIT") {
             settlement = {

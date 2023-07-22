@@ -9,13 +9,21 @@ const initialState = {
     perpage: 150,
     display: {
         name: "Credit",
-        text: "A list of all credits registered in the system."
+        text: "A list of all credits registered in the system.",
+        show: true
     },
     header: {
         items: [
-            { name: 'ColumnName', stack: true, sort: 'FieldName' },
-            { name: 'ColumnName', stack: false, sort: 'FieldName', size: 250 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: 'Customer', stack: false, sort: 'customer_name' },
+            { name: 'Transaction', stack: true, sort: 'code', size: 250 },
+            { name: 'Total Purchase', stack: true, sort: 'total', size: 150 },
+            { name: 'Partial', stack: true, sort: 'partial', size: 130 },
+            { name: 'Payment', stack: true, sort: 'payment', size: 130 },
+            { name: 'Waived', stack: true, sort: 'waived', size: 120 },
+            { name: 'Returned', stack: false, sort: 'returned', size: 120 },
+            { name: 'Balance', stack: false, sort: 'outstand', size: 120 },
+            { name: 'Status', stack: true, sort: 'status', size: 100 },
+            { name: '', stack: false, screenreader: 'Action', size: 80 }
         ]
     }
 }

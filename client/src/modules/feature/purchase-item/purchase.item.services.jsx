@@ -76,7 +76,15 @@ export const receivableApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
                 params
             }),
-            providesTags: ['receipt']
+            providesTags: ['receivable']
+        }),
+        sqlReceivable: builder.mutation({
+            query: (body) => ({
+                url: `${ENDPOINT_URL}/sqlreceivable`,
+                method: 'POST',
+                body
+            }),
+            providesTags: ['receivable']
         }),
     })
 })
@@ -91,4 +99,5 @@ export const {
     useSpecifyReceivableMutation,
     useByPurchaseReceivableMutation,
     useByBalanceReceivableMutation,
+    useSqlReceivableMutation,
 } = receivableApiSlice

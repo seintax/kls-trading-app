@@ -1,17 +1,20 @@
 import React from 'react'
 import { Route, Routes } from "react-router-dom"
 import CasheringIndex from "./modules/feature/cashering/cashering.index"
+import ChequeIndex from "./modules/feature/cheque/cheque.index"
+import CreditIndex from "./modules/feature/credit/credit.index"
 import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
 import DashboardPanel from "./modules/feature/dashboard/dashboard.panel"
 import DeliveryIndex from "./modules/feature/delivery/delivery.index"
 import InventoryIndex from "./modules/feature/inventory/inventory.index"
+import ReceivingRecords from "./modules/feature/inventory/inventory.receiveing"
+import ModifyIndex from "./modules/feature/modify/modify.index"
 import PurchaseIndex from "./modules/feature/purchase/purchase.index"
-import ChequeIndex from "./modules/feature/transactions/cheque/cheque.index"
-import CreditIndex from "./modules/feature/transactions/credit/credit.index"
 import TransferIndex from "./modules/feature/transfer/transfer.index"
 import BranchIndex from "./modules/library/branch/branch.index"
 import CategoryIndex from "./modules/library/category/category.index"
 import CustomerIndex from "./modules/library/customer/customer.index"
+import InclusionIndex from "./modules/library/inclusion/inclusion.index"
 import MasterlistIndex from "./modules/library/masterlist/masterlist.index"
 import OptionIndex from "./modules/library/option/option.index"
 import SupplierIndex from "./modules/library/supplier/supplier.index"
@@ -40,6 +43,8 @@ const AppRoute = () => {
                     <Route path="/delivery" element={<DeliveryIndex />} />
                     <Route path="/inventory" element={<InventoryIndex />} />
                     <Route path="/stock-transfer" element={<TransferIndex />} />
+                    <Route path="/receiving" element={<ReceivingRecords />} />
+                    <Route path="/adjustment" element={<ModifyIndex />} />
                     <Route path="/credit" element={<CreditIndex />} />
                     <Route path="/cheque-monitor" element={<ChequeIndex />} />
                     <Route path="/expense" element={<ExpensesIndex />} />
@@ -52,6 +57,7 @@ const AppRoute = () => {
                         <Route path="variant" element={<VariantIndex />} />
                     </Route>
                     <Route path="/option" element={<OptionIndex />} />
+                    <Route path="/inclusion" element={<InclusionIndex />} />
                     <Route path="/branch" element={<BranchIndex />} />
 
                     <Route path="/users" element={<AccountIndex />} />

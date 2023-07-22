@@ -23,7 +23,7 @@ const PurchaseRecords = () => {
 
     const [deletePurchase] = useDeletePurchaseMutation()
 
-    const toggleEdit = (item) => {
+    const toggleView = (item) => {
         dispatch(setPurchaseItem(item))
         dispatch(showPurchaseManager())
     }
@@ -51,7 +51,7 @@ const PurchaseRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleEdit(item), label: 'Edit' },
+            { type: 'button', trigger: () => toggleView(item), label: 'View' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
     }
@@ -63,6 +63,7 @@ const PurchaseRecords = () => {
             { value: longDate(item.date) },
             { value: item.store },
             { value: item.category },
+            { value: item.status },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

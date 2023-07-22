@@ -49,20 +49,15 @@ const InventoryIndex = () => {
     }
 
     return (
-        (dataSelector.manager) ? (
-            // <InventoryManage name={dataSelector.display.name} />
-            <div></div>
-        ) : (
-            <DataIndex
-                display={dataSelector.display}
-                actions={actions()}
-                data={dataSelector.data}
-                isError={isError}
-                isLoading={isLoading}
-            >
-                <InventoryRecords />
-            </DataIndex >
-        )
+        <DataIndex
+            display={dataSelector.display}
+            actions={actions()}
+            data={dataSelector.data}
+            isError={isError}
+            isLoading={isLoading}
+        >
+            <InventoryRecords />
+        </DataIndex >
     )
 }
 

@@ -19,6 +19,7 @@ const category = require('./src/library/category/category.route')
 const masterlist = require('./src/library/masterlist/masterlist.route')
 const option = require('./src/library/option/option.route')
 const variant = require('./src/library/variant/variant.route')
+const inclusion = require('./src/library/inclusion/inclusion.route')
 const supplier = require('./src/library/supplier/supplier.route')
 const customer = require('./src/library/customer/customer.route')
 const branch = require('./src/library/branch/branch.route')
@@ -49,6 +50,7 @@ module.exports = {
     masterlist,
     option,
     variant,
+    inclusion,
     supplier,
     customer,
     branch,

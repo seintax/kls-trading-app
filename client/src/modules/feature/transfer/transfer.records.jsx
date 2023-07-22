@@ -23,7 +23,7 @@ const TransferRecords = () => {
 
     const [deleteTransfer] = useDeleteTransferMutation()
 
-    const toggleEdit = (item) => {
+    const toggleView = (item) => {
         dispatch(setTransferItem(item))
         dispatch(showTransferManager())
     }
@@ -52,7 +52,7 @@ const TransferRecords = () => {
     const actions = (item) => {
         return [
             // { type: 'button', trigger: () => toggleEdit(item), label: 'View' },
-            { type: 'button', trigger: () => toggleEdit(item), label: 'Edit' },
+            { type: 'button', trigger: () => toggleView(item), label: 'View' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
     }

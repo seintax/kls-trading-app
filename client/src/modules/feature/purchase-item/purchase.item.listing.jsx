@@ -7,10 +7,9 @@ import DataListing from "../../../utilities/interface/datastack/data.listing"
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import ReceivableInjoin from "./purchase.item.injoin"
 import { setReceivableData, setReceivableItem, setReceivableNotifier, showReceivableInjoiner } from "./purchase.item.reducer"
-import { useByPurchaseReceivableMutation, useDeleteReceivableMutation } from "./purchase.item.services"
+import { useByPurchaseReceivableMutation, useSqlReceivableMutation } from "./purchase.item.services"
 
 const ReceivableListing = () => {
-    const [purchaseReceivable] = useByPurchaseReceivableMutation()
     const dataSelector = useSelector(state => state.receivable)
     const purchaseSelector = useSelector(state => state.purchase)
     const { assignDeleteCallback } = useModalContext()
@@ -23,7 +22,8 @@ const ReceivableListing = () => {
         description: dataSelector.listing.description
     }
 
-    const [deleteReceivable] = useDeleteReceivableMutation()
+    const [purchaseReceivable] = useByPurchaseReceivableMutation()
+    const [sqlReceivable] = useSqlReceivableMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -59,7 +59,16 @@ const ReceivableListing = () => {
             toast.showError("Reference id does not exist.")
             return
         }
-        await deleteReceivable({ id: item.id })
+        let formData = {
+            receivable: {
+                delete: true,
+                id: item.id
+            },
+            purchase: {
+                id: purchaseSelector.item.id
+            }
+        }
+        await sqlReceivable(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {
@@ -72,8 +81,16 @@ const ReceivableListing = () => {
 
     const controls = (item) => {
         return [
-            { label: 'Edit', trigger: () => toggleEdit(item) },
-            { label: 'Delete', trigger: () => toggleDelete(item) },
+            {
+                label: 'Edit',
+                trigger: () => toggleEdit(item),
+                style: `${purchaseSelector.item.status === "CLOSED" ? "hidden" : ""}`
+            },
+            {
+                label: 'Delete',
+                trigger: () => toggleDelete(item),
+                style: `${purchaseSelector.item.status === "CLOSED" ? "hidden" : ""}`
+            },
         ]
     }
 

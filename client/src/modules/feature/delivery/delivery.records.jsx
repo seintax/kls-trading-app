@@ -23,7 +23,7 @@ const DeliveryRecords = () => {
 
     const [deleteDelivery] = useDeleteDeliveryMutation()
 
-    const toggleEdit = (item) => {
+    const toggleView = (item) => {
         dispatch(setDeliveryItem(item))
         dispatch(showDeliveryManager())
     }
@@ -51,7 +51,7 @@ const DeliveryRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleEdit(item), label: 'Edit' },
+            { type: 'button', trigger: () => toggleView(item), label: 'View' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
     }

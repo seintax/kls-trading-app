@@ -8,8 +8,8 @@ import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
 import { useByBalanceReceivableMutation } from "../purchase-item/purchase.item.services"
-import { resetReceiptInjoiner, setReceiptNotifier } from "./delivery.item.reducer"
-import { useCreateReceiptBySqlTransactionMutation, useUpdateReceiptMutation } from "./delivery.item.services"
+import { resetReceiptInjoiner, resetReceiptItem, setReceiptNotifier } from "./delivery.item.reducer"
+import { useSqlReceiptMutation } from "./delivery.item.services"
 
 const ReceiptInjoin = () => {
     const dataSelector = useSelector(state => state.receipt)
@@ -27,8 +27,7 @@ const ReceiptInjoin = () => {
 
     const [balancedReceivables] = useByBalanceReceivableMutation()
     const [allSuppliers] = useFetchAllSupplierMutation()
-    const [createReceipt] = useCreateReceiptBySqlTransactionMutation()
-    const [updateReceipt] = useUpdateReceiptMutation()
+    const [sqlReceipt] = useSqlReceiptMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -86,7 +85,7 @@ const ReceiptInjoin = () => {
                 : ""
             setValues({
                 receivable: init(item.receivable, ""),
-                supplier_name: init(item.supplier_name),
+                supplier_name: init(provideValueFromLib(libSuppliers, item.delivery_supplier)),
                 supplier: init(item.purchase_supplier),
                 purchase: init(item.purchase),
                 product: init(item.product),
@@ -94,7 +93,7 @@ const ReceiptInjoin = () => {
                 variety: init(item.variant),
                 ordered: init(item.receivable_ordered),
                 costing: init(item.receivable_costing),
-                balance: init(item.receivable_balance),
+                balance: init(item.receivable_ordered),
                 remaining: init(item.receivable_balance),
                 received: init(item.receivable_received),
                 receiving: init(item.receivable_received),
@@ -196,6 +195,12 @@ const ReceiptInjoin = () => {
                     register={register}
                     name='costing'
                 />
+                <FormEl.Display
+                    label='Balance'
+                    register={register}
+                    name='remaining'
+                    errors={errors}
+                />
                 <FormEl.Decimal
                     label='Received Qty.'
                     register={register}
@@ -203,12 +208,6 @@ const ReceiptInjoin = () => {
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
-                />
-                <FormEl.Display
-                    label='Balance'
-                    register={register}
-                    name='remaining'
-                    errors={errors}
                 />
                 <FormEl.Currency
                     label='Item Price'
@@ -248,33 +247,57 @@ const ReceiptInjoin = () => {
 
     const onCompleted = () => {
         dispatch(setReceiptNotifier(true))
+        dispatch(resetReceiptItem())
         dispatch(resetReceiptInjoiner())
     }
 
     const onSubmit = async (data) => {
         if (!deliverySelector.item.id) return
         let formData = {
-            ...data,
-            delivery: deliverySelector.item.id,
-            variant: data.variety,
+            receipt: {
+                delivery: deliverySelector.item.id,
+                receivable: data.receivable,
+                purchase: data.purchase,
+                product: data.product,
+                variant: data.variety,
+                quantity: data.quantity,
+                pricing: data.pricing,
+                id: dataSelector.item.id
+            },
+            delivery: {
+                id: deliverySelector.item.id
+            },
+            receivable: {
+                remaining: data.remaining,
+                id: data.receivable
+            },
+            purchase: {
+                id: data.purchase
+            },
+            inventory: {
+                product: data.product,
+                variant: data.variety,
+                category: data.purchase_category,
+                delivery: deliverySelector.item.id,
+                purchase: data.purchase,
+                supplier: data.supplier,
+                store: data.store,
+                received: data.quantity,
+                stocks: data.quantity,
+                cost: data.costing,
+                base: data.pricing,
+                price: data.pricing,
+                acquisition: "PROCUREMENT",
+                id: dataSelector.item.id
+                    ? dataSelector.item.inventory_id
+                    : undefined
+            }
         }
-        if (dataSelector.item.id) {
-            await updateReceipt({ ...formData, id: dataSelector.item.id })
-                .unwrap()
-                .then(res => {
-                    if (res.success) {
-                        toast.showUpdate("Receipt successfully updated.")
-                        onCompleted()
-                    }
-                })
-                .catch(err => console.error(err))
-            return
-        }
-        await createReceipt(formData)
+        await sqlReceipt(formData)
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    toast.showCreate("Receipt successfully created.")
+                    toast.showUpdate("Delivery receipt successfully updated.")
                     onCompleted()
                 }
             })

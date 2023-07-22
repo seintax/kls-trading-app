@@ -28,76 +28,91 @@ const sqlCreateReceipt = handler(async (req, res) => {
         if (err) return res.status(401).json(force(err))
         con.beginTransaction(async (err) => {
             if (err) return err
-            let receipt = await new Promise(async (resolve, reject) => {
+
+            let createReceipt = await new Promise(async (resolve, reject) => {
                 const builder = getreceipt.insert(req.body)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "receipt", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                    resolve({
+                        occurence: "createReceipt",
+                        insertResult: { id: ans.insertId ? ans.insertId : undefined }
+                    })
                 })
             })
 
-            // let delivery = await new Promise(async (resolve, reject) => {
-            //     let data = {
-            //         count: req.body.receiving,
-            //         id: req.body.delivery
-            //     }
-            //     const builder = getdelivery.update(data)
-            //     await con.query(builder.sql, builder.arr, async (err, ans) => {
-            //         if (err) con.rollback(() => reject(err))
-            //         resolve({ occurence: "delivery", updateResult: { id: data.id, alterated: ans.affectedRows } })
-            //     })
-            // })
-
-            let running_delivery = await new Promise(async (resolve, reject) => {
+            let runningDelivery = await new Promise(async (resolve, reject) => {
                 const sql = getdelivery
-                    .statement("running_via_delivery_receipt")
+                    .statement("delivery_update_receipt")
                     .inject({
                         id: req.body.delivery
                     })
                 await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "delivery", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                    resolve({
+                        occurence: "runningDelivery",
+                        updateResult: { id: req.body.delivery, alterated: ans.affectedRows }
+                    })
                 })
             })
 
-            let receivable = await new Promise(async (resolve, reject) => {
-                let data = {
-                    balance: req.body.remaining,
-                    received: req.body.receiving,
-                    id: req.body.receivable
-                }
-                const builder = getreceivable.update(data)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
+            let runningReceivable = await new Promise(async (resolve, reject) => {
+                const sql = getreceivable
+                    .statement("receivable_update_delivery")
+                    .inject({
+                        remaining: req.body.remaining,
+                        id: req.body.receivable
+                    })
+                await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "receivable", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                    resolve({
+                        occurence: "runningReceivable",
+                        updateResult: { id: req.body.receivable, alterated: ans.affectedRows }
+                    })
                 })
+
+                // let data = {
+                //     balance: req.body.remaining,
+                //     received: req.body.receiving,
+                //     id: req.body.receivable
+                // }
+                // const builder = getreceivable.update(data)
+                // await con.query(builder.sql, builder.arr, async (err, ans) => {
+                //     if (err) con.rollback(() => reject(err))
+                //     resolve({ occurence: "updateReceivable", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                // })
             })
 
-            // let purchase = await new Promise(async (resolve, reject) => {
-            //     let data = {
-            //         receivedtotal: req.body.receivedtotal,
-            //         id: req.body.purchase
-            //     }
-            //     const builder = getpurchase.update(data)
-            //     await con.query(builder.sql, builder.arr, async (err, ans) => {
-            //         if (err) con.rollback(() => reject(err))
-            //         resolve({ occurence: "purchase", updateResult: { id: data.id, alterated: ans.affectedRows } })
-            //     })
-            // })
-
-            let running_purchase = await new Promise(async (resolve, reject) => {
+            let runningPurchase = await new Promise(async (resolve, reject) => {
                 const sql = getpurchase
-                    .statement("running_via_delivery_receipt")
+                    .statement("purchase_update_receivable")
                     .inject({
                         id: req.body.purchase
                     })
                 await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "purchase", updateResult: { id: data.id, alterated: ans.affectedRows } })
+                    resolve({
+                        occurence: "runningPurchase",
+                        updateResult: { id: req.body.purchase, alterated: ans.affectedRows }
+                    })
                 })
             })
 
-            let inventory = await new Promise(async (resolve, reject) => {
+            let statusPurchase = await new Promise(async (resolve, reject) => {
+                const sql = getpurchase
+                    .statement("purchase_update_status")
+                    .inject({
+                        id: req.body.purchase
+                    })
+                await con.query(sql, async (err, ans) => {
+                    if (err) con.rollback(() => reject(err))
+                    resolve({
+                        occurence: "statusPurchase",
+                        updateResult: { id: req.body.purchase, alterated: ans.affectedRows }
+                    })
+                })
+            })
+
+            let createInventory = await new Promise(async (resolve, reject) => {
                 let data = {
                     product: req.body.product,
                     variant: req.body.variant,
@@ -117,10 +132,21 @@ const sqlCreateReceipt = handler(async (req, res) => {
                 const builder = getinventory.insert(data)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "inventory", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
+                    resolve({
+                        occurence: "createInventory",
+                        insertResult: { id: ans.insertId ? ans.insertId : undefined }
+                    })
                 })
             })
-            let result = { receipt, running_delivery, receivable, running_purchase, inventory }
+            let result = {
+                createReceipt,
+                runningDelivery,
+                runningReceivable,
+                runningPurchase,
+                statusPurchase,
+                createInventory,
+                data: req.body
+            }
             con.commit((err) => {
                 if (err) con.rollback(() => {
                     con.release()
@@ -148,7 +174,7 @@ const sqlCreateTransmit = handler(async (req, res) => {
 
             let running_transfer = await new Promise(async (resolve, reject) => {
                 const sql = gettransfer
-                    .statement("running_via_transfer_receipt")
+                    .statement("transfer_update_transmit")
                     .inject({
                         id: req.body.transfer
                     })
@@ -160,7 +186,7 @@ const sqlCreateTransmit = handler(async (req, res) => {
 
             let running_source = await new Promise(async (resolve, reject) => {
                 const sql = getinventory
-                    .statement("running_via_transfer_receipt")
+                    .statement("inventory_update_transfer")
                     .inject({
                         id: req.body.item,
                         operator: op.min,
@@ -237,7 +263,7 @@ const sqlDeleteTransmit = handler(async (req, res) => {
 
             let running_transfer = await new Promise(async (resolve, reject) => {
                 const sql = gettransfer
-                    .statement("running_via_transfer_receipt")
+                    .statement("transfer_update_transmit")
                     .inject({
                         id: req.body.transfer
                     })
@@ -249,7 +275,7 @@ const sqlDeleteTransmit = handler(async (req, res) => {
 
             let running_source = await new Promise(async (resolve, reject) => {
                 const sql = getinventory
-                    .statement("running_via_transfer_receipt")
+                    .statement("inventory_update_transfer")
                     .inject({
                         id: req.body.item,
                         operator: op.add,
@@ -300,7 +326,7 @@ const sqlCreateTransaction = handler(async (req, res) => {
 
                     let running_inventory = await new Promise(async (resolve, reject) => {
                         const sql = getinventory
-                            .statement("running_via_dispensing")
+                            .statement("inventory_update_dispensing")
                             .inject({
                                 id: dispense.item,
                                 operator: op.min,
@@ -412,7 +438,7 @@ const sqlCreateReturn = handler(async (req, res) => {
 
                     let running_inventory = await new Promise(async (resolve, reject) => {
                         const sql = getinventory
-                            .statement("running_via_dispensing")
+                            .statement("inventory_update_dispensing")
                             .inject({
                                 id: dispense.item,
                                 operator: op.add,

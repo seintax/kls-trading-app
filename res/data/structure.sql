@@ -57,6 +57,12 @@ CREATE TABLE lib_variant (
     vrnt_brand       varchar(99)
 );
 
+CREATE TABLE lib_inclusion (
+    incl_id          int auto_increment primary key,
+    incl_name        varchar(75) unique,
+    incl_status      varchar(1) DEFAULT "A"
+);
+
 DROP TABLE pos_archive_customer;
 CREATE TABLE pos_archive_customer (
     cust_id          int auto_increment primary key,
@@ -240,11 +246,13 @@ CREATE TABLE pos_transfer_request (
     trnr_store       varchar(50),
     trnr_category    varchar(75),
     trnr_date        date,
-    trnr_arrival     date,
-    trnr_status      varchar(30) DEFAULT 'ON-TRANSIT',
+    trnr_status      varchar(30) DEFAULT 'ON-GOING',
     trnr_count       int DEFAULT 0 COMMENT 'running count',
-    trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value'
+    trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
+    trnr_arrive      int DEFAULT 0
 );
+
+ALTER TABLE pos_transfer_request ADD COLUMN trnr_arrive int DEFAULT 0;
 
 DROP TABLE pos_transfer_receipt;
 CREATE TABLE pos_transfer_receipt (
@@ -256,10 +264,12 @@ CREATE TABLE pos_transfer_receipt (
     trni_variant     int,
     trni_quantity    decimal(10,2),
     trni_pricing     decimal(30,2),
-    trni_received    decimal(10,2)
+    trni_received    decimal(10,2),
+    trni_arrival     date
 );
 
 ALTER TABLE pos_transfer_receipt ADD COLUMN trni_pricing decimal(30,2) AFTER trni_quantity;
+ALTER TABLE pos_transfer_receipt ADD COLUMN trni_arrival date;
 
 CREATE TABLE pos_acctg_accounts (
     acct_id          int auto_increment primary key,
@@ -281,6 +291,7 @@ CREATE TABLE pos_acctg_entries (
 CREATE TABLE pos_archive_expenses (
     expn_id          int auto_increment primary key,
     expn_time        timestamp DEFAULT now(),
+    expn_inclusion   varchar(75),
     expn_particulars varchar(150),
     expn_purchase    decimal(30,2),
     expn_cash        decimal(30,2),
@@ -289,6 +300,8 @@ CREATE TABLE pos_archive_expenses (
     expn_notes       varchar(150),
     expn_account     int
 );
+
+ALTER TABLE pos_archive_expenses ADD COLUMN expn_inclusion   varchar(75) AFTER expn_time;
 
 DROP TABLE pos_sales_transaction;
 CREATE TABLE pos_sales_transaction (

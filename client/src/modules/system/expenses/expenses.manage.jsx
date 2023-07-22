@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { amount } from "../../../utilities/functions/number.funtions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInputs from "../../../utilities/interface/datastack/data.inputs"
 import FormEl from "../../../utilities/interface/forminput/input.active"
+import { useFetchAllInclusionMutation } from "../../library/inclusion/inclusion.services"
 import { resetExpensesManager, setExpensesNotifier } from "./expenses.reducer"
 import { useCreateExpensesMutation, useUpdateExpensesMutation } from "./expenses.services"
 
@@ -19,12 +21,23 @@ const ExpensesManage = () => {
     const { yup } = useYup()
     const toast = useToast()
 
+    const [libInclusion, setLibInclusion] = useState()
+
+    const [allInclusion] = useFetchAllInclusionMutation()
     const [createExpenses] = useCreateExpensesMutation()
     const [updateExpenses] = useUpdateExpensesMutation()
 
     useEffect(() => {
         const instantiate = async () => {
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
+            await allInclusion()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setLibInclusion(FormatOptionsWithEmptyLabel(res?.arrayResult, "name", "name", "Select account inclusion"))
+                    }
+                })
+                .catch(err => console.error(err))
             setInstantiated(true)
         }
 
@@ -45,6 +58,7 @@ const ExpensesManage = () => {
         if (instantiated) {
             let item = dataSelector.item
             setValues({
+                inclusion: init(item.inclusion),
                 particulars: init(item.particulars),
                 purchase: init(item.purchase),
                 cash: init(item.cash),
@@ -58,6 +72,15 @@ const ExpensesManage = () => {
     const onFields = (errors, register, values, setValue) => {
         return (
             <>
+                <FormEl.Select
+                    label='Account Inclusion'
+                    register={register}
+                    name='inclusion'
+                    errors={errors}
+                    options={libInclusion}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
                 <FormEl.Text
                     label='Particulars'
                     register={register}
@@ -121,6 +144,9 @@ const ExpensesManage = () => {
     }, [listener])
 
     const onSchema = yup.object().shape({
+        inclusion: yup
+            .string()
+            .required('Account inclusion is required.'),
         particulars: yup
             .string()
             .required('Particulars is required.'),

@@ -28,10 +28,18 @@ const delivery = new Table("pos_delivery_request", {
     }
 ])
 
-delivery.register("running_via_delivery_receipt",
+delivery.register("delivery_update_receipt",
     `UPDATE pos_delivery_request SET 
-        dlvr_count=(SELECT IFNULL(COUNT(*),0) FROM pos_delivery_receipt WHERE rcpt_delivery=dlvr_id),
-        dlvr_value=(SELECT IFNULL(SUM(rcpt_quantity * rcpt_pricing),0) FROM pos_delivery_receipt WHERE rcpt_delivery=dlvr_id)
-            WHERE dlvr_id=@id`)
+        dlvr_count=(
+                SELECT IFNULL(SUM(rcpt_quantity),0) 
+                FROM pos_delivery_receipt 
+                WHERE rcpt_delivery=dlvr_id
+            ),
+        dlvr_value=(
+                SELECT IFNULL(SUM(rcpt_quantity * rcpt_pricing),0) 
+                FROM pos_delivery_receipt 
+                WHERE rcpt_delivery=dlvr_id
+            )
+        WHERE dlvr_id=@id`)
 
 module.exports = delivery

@@ -10,6 +10,7 @@ const transmit = new Table("pos_transfer_receipt", {
     quantity: 'trni_quantity',
     pricing: 'trni_pricing',
     received: 'trni_received',
+    arrival: 'trni_arrival',
 }, [
     {
         key: "trni_transfer",
@@ -27,25 +28,17 @@ const transmit = new Table("pos_transfer_receipt", {
         }
     },
     {
-        key: "trni_item",
-        reference: { table: "pos_stock_inventory", key: "invt_id" },
+        key: "trni_id",
+        reference: { table: "pos_stock_inventory", key: "invt_transmit" },
         include: {
-            inventory_category: 'invt_category',
-            inventory_delivery: 'invt_delivery',
-            inventory_purchase: 'invt_purchase',
-            inventory_receipt: 'invt_receipt',
-            inventory_orderno: 'invt_orderno',
-            inventory_supplier: 'invt_supplier',
-            inventory_store: 'invt_store',
-            inventory_sku: 'invt_sku',
-            inventory_stocks: 'invt_stocks',
-            inventory_base: 'invt_base',
-            inventory_price: 'invt_price',
-            inventory_barcode: 'invt_barcode',
-            inventory_alert: 'invt_alert',
-            inventory_acquisition: 'invt_acquisition',
-            inventory_sold_total: 'invt_sold_total',
-            inventory_trni_total: 'invt_trni_total',
+            destination_id: 'invt_id',
+            destination_store: 'invt_store',
+            destination_sku: 'invt_sku',
+            destination_price: 'invt_price',
+            destination_barcode: 'invt_barcode',
+            destination_alert: 'invt_alert',
+            destination_acquisition: 'invt_acquisition',
+            destination_source: 'invt_source',
         }
     },
     {

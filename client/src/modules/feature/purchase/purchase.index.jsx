@@ -1,15 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import PurchaseManage from "./purchase.manage"
 import PurchaseRecords from "./purchase.records"
-import { resetPurchaseItem, resetPurchaseSelector, setPurchaseData, setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
+import { resetPurchaseItem, resetPurchaseManager, resetPurchaseSelector, setPurchaseData, setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
 import { useFetchAllPurchaseMutation } from "./purchase.services"
 
 const PurchaseIndex = () => {
-    const [allPurchase, { isLoading, isError, isSuccess }] = useFetchAllPurchaseMutation()
+    const [allPurchase, { isLoading, isError }] = useFetchAllPurchaseMutation()
     const dataSelector = useSelector(state => state.purchase)
     const dispatch = useDispatch()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+                dispatch(resetPurchaseManager())
+            }
+        }
+    }, [mounted])
+
 
     useEffect(() => {
         const instantiate = async () => {
@@ -36,12 +48,6 @@ const PurchaseIndex = () => {
             instantiate()
         }
     }, [dataSelector.notifier, dataSelector.selector])
-
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.info("done")
-        }
-    }, [isSuccess, isLoading])
 
     const toggleNewEntry = () => {
         dispatch(resetPurchaseItem())
