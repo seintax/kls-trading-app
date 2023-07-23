@@ -15,11 +15,11 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Supplier', stack: true, sort: 'name' },
-            { name: 'Address', stack: false, sort: 'address', size: 250 },
-            { name: 'Tel No.', stack: false, sort: 'telephone', size: 150 },
-            { name: 'Cell No.', stack: false, sort: 'cellphone', size: 150 },
-            { name: 'Email Address', stack: false, sort: 'email', size: 200 },
+            { name: 'Supplier', stack: false, sort: 'name' },
+            { name: 'Address', stack: true, sort: 'address', size: 250 },
+            { name: 'Tel No.', stack: true, sort: 'telephone', size: 150 },
+            { name: 'Cell No.', stack: true, sort: 'cellphone', size: 150 },
+            { name: 'Email Address', stack: true, sort: 'email', size: 200 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

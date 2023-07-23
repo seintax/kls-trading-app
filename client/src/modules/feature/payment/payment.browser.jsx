@@ -102,9 +102,11 @@ const PaymentBrowser = () => {
 
     const onSubmit = (e) => {
         e.preventDefault()
-        if (amount(settle.amount) > dataSelector.balance) {
-            toast.showWarning("Amount entered exceeds the allowed balance.")
-            return
+        if (settle.method !== "CASH") {
+            if (amount(settle.amount) > dataSelector.balance) {
+                toast.showWarning("Amount entered exceeds the allowed balance.")
+                return
+            }
         }
         if (settle.type === "CREDIT" && !dataSelector.settlement) {
             if (dataSelector.paid.length) {

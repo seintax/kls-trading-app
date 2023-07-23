@@ -14,11 +14,11 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Particulars', stack: true, sort: 'particulars' },
-            { name: 'Inclusion', stack: false, sort: 'inclusion', size: 250 },
-            { name: 'Cash-on-Hand', stack: false, sort: 'cash', size: 150 },
-            { name: 'Expense', stack: false, sort: 'purchase', size: 150 },
-            { name: 'Supplimentary', stack: false, sort: 'change', size: 150 },
+            { name: 'Particulars', stack: false, sort: 'particulars' },
+            { name: 'Inclusion', stack: true, sort: 'inclusion', size: 250 },
+            { name: 'Cash-on-Hand', stack: true, sort: 'cash', size: 150 },
+            { name: 'Expense', stack: true, sort: 'purchase', size: 150 },
+            { name: 'Supplimentary', stack: true, sort: 'change', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

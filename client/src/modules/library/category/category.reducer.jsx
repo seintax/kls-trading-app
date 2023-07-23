@@ -14,8 +14,8 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Category', stack: true, sort: 'name' },
-            { name: 'Status', stack: false, sort: 'status', size: 250 },
+            { name: 'Category', stack: false, sort: 'name' },
+            { name: 'Status', stack: true, sort: 'status', size: 250 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

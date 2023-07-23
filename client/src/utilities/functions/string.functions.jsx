@@ -52,6 +52,13 @@ export const safeValue = (value) => {
     return value || ""
 }
 
+export const formatVariant = (serial, model, brand) => {
+    let variantarr = [serial, model, brand]
+    return variantarr
+        ?.filter(f => !isEmpty(f))
+        ?.join("/")
+}
+
 const formatWithZeros = (str, maxcount) => {
     if (str) {
         let maxlen = Number(maxcount) - str?.toString().length

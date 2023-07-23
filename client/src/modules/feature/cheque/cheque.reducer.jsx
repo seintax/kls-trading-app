@@ -14,12 +14,12 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Transaction', stack: true, sort: 'code' },
-            { name: 'Cheque No.', stack: false, sort: 'refcode', size: 150 },
-            { name: 'Cheque Date', stack: false, sort: 'refdate', size: 150 },
-            { name: 'Amount', stack: false, sort: 'amount', size: 150 },
-            { name: 'Type', stack: false, sort: 'type', size: 150 },
-            { name: 'Status', stack: false, sort: 'refstat', size: 150 },
+            { name: 'Transaction', stack: false, sort: 'code' },
+            { name: 'Cheque No.', stack: true, sort: 'refcode', size: 150 },
+            { name: 'Cheque Date', stack: true, sort: 'refdate', size: 150 },
+            { name: 'Amount', stack: true, sort: 'amount', size: 150 },
+            { name: 'Type', stack: true, sort: 'type', size: 150 },
+            { name: 'Status', stack: true, sort: 'refstat', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     }

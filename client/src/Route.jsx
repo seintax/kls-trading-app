@@ -22,9 +22,12 @@ import VariantIndex from "./modules/library/variant/variant.index"
 import AccountIndex from "./modules/system/account/account.index"
 import AccountLogin from "./modules/system/account/account.login"
 import ExpensesIndex from "./modules/system/expenses/expenses.index"
+import PrintBase from "./modules/system/prints/print.base"
+import PrintReceipt from "./modules/system/prints/print.receipt"
 import ReportsIndex from "./modules/system/reports/reports.index"
 import RolesIndex from "./modules/system/roles/roles.index"
 import usePrivate from "./utilities/hooks/usePrivate"
+import AppEmpty from "./utilities/interface/application/errormgmt/app.empty"
 import AppErrorFallback from "./utilities/interface/application/errormgmt/app.fallback"
 import AppPageNotFound from "./utilities/interface/application/errormgmt/app.notfound"
 
@@ -66,6 +69,14 @@ const AppRoute = () => {
                 </Route>
             </Route>
 
+            <Route path="/print" element={<PrintBase />} >
+                <Route index element={<AppEmpty />} />
+
+                <Route path="receipt" >
+                    <Route index element={<PrintReceipt />} />
+                    <Route path=":id" element={<PrintReceipt />} />
+                </Route>
+            </Route>
             <Route path="/error" element={<AppErrorFallback />} />
             <Route path="*" element={<AppPageNotFound />} />
         </Routes>

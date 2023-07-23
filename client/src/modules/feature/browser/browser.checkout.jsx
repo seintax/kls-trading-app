@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount, currency } from "../../../utilities/functions/number.funtions"
-import { StrFn, isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, formatVariant, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
@@ -17,6 +17,7 @@ import { useCreateBrowserBySqlTransactionMutation } from "./browser.services"
 
 const BrowserCheckout = () => {
     const auth = useAuth()
+    const [mounted, setMounted] = useState(false)
     const dataSelector = useSelector(state => state.browser)
     const paymentSelector = useSelector(state => state.payment)
     const dispatch = useDispatch()
@@ -35,6 +36,16 @@ const BrowserCheckout = () => {
         rate: 0,
         net: 0,
     })
+
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+
+            }
+        }
+    }, [mounted])
 
     const [maxAccountTransaction] = useByMaxAccountTransactionMutation()
     const [createTransaction] = useCreateBrowserBySqlTransactionMutation()
@@ -127,7 +138,7 @@ const BrowserCheckout = () => {
                 ...prev,
                 discount: discount,
                 rate: paymentSelector?.less?.rate,
-                net: amount(total) - discount
+                net: amount(summary.total) - discount
             }))
         }
     }, [paymentSelector?.less, summary.total])
@@ -166,6 +177,10 @@ const BrowserCheckout = () => {
         dispatch(setBrowserNotifier(true))
         dispatch(resetBrowserTransaction())
         dispatch(resetPaymentTransaction())
+    }
+
+    const onPrint = () => {
+
     }
 
     const destructCode = (maxcode) => {
@@ -246,8 +261,8 @@ const BrowserCheckout = () => {
                             ?.map(cred => {
                                 let payment = {
                                     code: code,
-                                    type: pay.type,
-                                    method: pay.method,
+                                    type: cred.type,
+                                    method: cred.method,
                                     total: amount(cred.partial),
                                     amount: amount(cred.partial),
                                     refcode: cred.refcode,
@@ -273,8 +288,43 @@ const BrowserCheckout = () => {
                         .unwrap()
                         .then(res => {
                             if (res.success) {
+                                let printdata = {
+                                    branch: "Jally Trading - MAIN",
+                                    address: "Diversion Road National Highway, Banale, Pagadian City",
+                                    service: "Auto and Agri Machine Parts Supply",
+                                    subtext: "Autocare, Heavy Equipment and Trucking Services",
+                                    contact: "Mobile No.: (0966) 483 5853 - (0930) 990 2456",
+                                    customer: {
+                                        name: "George Stubborn",
+                                        address: "Davao City"
+                                    },
+                                    cashier: auth.name,
+                                    transaction: code,
+                                    items: dataSelector.cart?.map(item => {
+                                        let total = amount(item.quantity) * amount(item.price)
+                                        let less = total * amount(summary.rate)
+                                        let net = total - less
+                                        return {
+                                            product: `${item.product_name} (${formatVariant(item.variant_serial, item.variant_model, item.variant_brand)})`,
+                                            quantity: item.quantity,
+                                            price: item.price,
+                                            item: item.id,
+                                            total: total,
+                                            less: less,
+                                        }
+                                    }),
+                                    discount: {
+                                        rate: summary.rate * 100,
+                                        amount: summary.discount
+                                    },
+                                    total: summary.net,
+                                    cash: tended,
+                                    change: change
+                                }
+                                localStorage.setItem("rcpt", JSON.stringify(printdata))
+                                window.open(`/#/print/receipt/${code}${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
                                 toast.showCreate("Transaction successfully completed.")
-                                onCompleted()
+                                // onCompleted()
                             }
                         })
                         .catch(err => console.error(err))
