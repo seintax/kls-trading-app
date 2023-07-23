@@ -1,12 +1,13 @@
 import { Transition } from "@headlessui/react"
 import { CalculatorIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import { resetDispensingItem, resetDispensingManager, updateDispensingData } from "./dispensing.reducer"
 
-const CasheringReturn = ({ qtyRef }) => {
+const CasheringReturn = () => {
+    const qtyRef = useRef()
     const dataSelector = useSelector(state => state.dispensing)
     const dispatch = useDispatch()
     const [quantity, setQuantity] = useState("")
@@ -83,15 +84,15 @@ const CasheringReturn = ({ qtyRef }) => {
             leave="transition-opacity ease-linear duration-300"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            className={`fixed left-0 top-0 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-20 flex items-start justify-center`}
+            className="fixed left-0 top-0 h-screen w-screen bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-20 flex items-center justify-center"
         >
             <Transition.Child
                 enter="transition ease-in-out duration-500 transform"
-                enterFrom="-translate-y-0"
-                enterTo="translate-y-full lg:translate-y-48"
+                // enterFrom="-translate-y-0"
+                // enterTo="translate-y-full lg:translate-y-48"
                 leave="transition ease-in-out duration-500 transform"
-                leaveFrom="translate-y-0"
-                leaveTo="-translate-y-full"
+                // leaveFrom="translate-y-0"
+                // leaveTo="-translate-y-full"
                 className="flex flex-col gap-2 bg-white p-3 w-[80%] lg:w-[550px] h-fit text-sm mt-1"
             >
                 <div className="flex items-center justify-between">
@@ -155,8 +156,8 @@ const CasheringReturn = ({ qtyRef }) => {
                             <span className="text-gray-400">balance after commit</span>
                         </div>
                     </div>
-                    <div className="flex justify-end mt-5">
-                        <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
+                    <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
+                        <button type="button" tabIndex={-1} className="button-cancel text-white p-2.5" onClick={() => onClose()}>Cancel</button>
                         <button type="submit" className="button-submit">Add Return</button>
                     </div>
                 </form>

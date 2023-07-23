@@ -112,7 +112,7 @@ const BrowserDiscount = () => {
                     </div>
                     <form onSubmit={onSubmit} className="flex flex-col gap-3 mt-2 p-5">
                         <div className="flex border border-secondary-500 p-0.5 items-center">
-                            <div className="py-2.5 px-3 text-[15px] flex justify-between w-full">
+                            <div className="py-2.5 px-3 text-xs lg:text-sm text-[15px] flex justify-between w-full">
                                 Transaction Total:
                                 <span>{NumFn.currency(dataSelector.total)}</span>
                             </div>
@@ -124,7 +124,7 @@ const BrowserDiscount = () => {
                                 onChange={onOptionChange}
                                 tabIndex={0}
                                 autoFocus
-                                className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1">
+                                className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1">
                                 <option value="CUSTOM" className="text-sm">Custom</option>
                                 <option value="30%" className="text-sm">30%</option>
                                 <option value="25%" className="text-sm">25%</option>
@@ -143,7 +143,7 @@ const BrowserDiscount = () => {
                                 autoComplete="off"
                                 required
                                 placeholder="Enter discount amount"
-                                className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                                className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                             />
                         </div>
                         <div className="flex border border-secondary-500 p-0.5 items-center">
@@ -154,10 +154,10 @@ const BrowserDiscount = () => {
                                 readOnly
                                 required
                                 placeholder="Discount Rate (%) (auto-computed)"
-                                className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                                className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                             />
                         </div>
-                        <div className="flex justify-end mt-5">
+                        <div className="flex flex-col-reverse lg:flex-row justify-end mt-5">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit">Add Option</button>
                         </div>

@@ -13,7 +13,7 @@ export default function Item(props) {
         <StaticDisplay>
             <StaticTitle label={label} />
             <StaticWrapper>
-                <div>:</div>
+                <div className="hidden lg:flex">:</div>
                 <div className="w-full">
                     <input
                         type="text"

@@ -75,7 +75,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                         <th
                                             key={colindex}
                                             scope="col"
-                                            className={`${col.stack ? "hidden lg:table-cell" : ""} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left text-sm font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
+                                            className={`${col.stack ? "hidden lg:table-cell" : "hidden md:table-cell"} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left text-sm font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
                                             style={{ width: `${col.size}px` || "300px" }}
                                         >
                                             <div
@@ -110,11 +110,11 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             row.items?.map((item, itemindex) => (
                                                 <td
                                                     key={itemindex}
-                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle} ${setPosition(order && order[itemindex]?.position, false)}`}
+                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle} ${setPosition(order && order[itemindex]?.position, false)}`}
                                                     onClick={item?.onclick}
                                                     onDoubleClick={item?.ondoubleclick}
                                                 >
-                                                    {item.value}
+                                                    <span className="hidden md:flex">{item.value}</span>
                                                     {
                                                         (itemindex === 0) ? (
                                                             <dl className="font-normal lg:hidden">
@@ -122,9 +122,11 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                                                     order?.map((col, colindex) => (
                                                                         <div
                                                                             key={colindex}
-                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "hidden") : "hidden"} flex items-start gap-3 text-xs mt-1`}
+                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "md:hidden") : "md:hidden"} flex flex-col lg:flex-row items-start gap-1 lg:gap-3 text-xs mt-1`}
                                                                         >
-                                                                            <dt className="text-gray-400">{col.name}: </dt>
+                                                                            <dt className="text-gray-400 text-[10px] lg:text-xs">
+                                                                                {col.name ? `${col.name}:` : ""}
+                                                                            </dt>
                                                                             <dd className="truncate text-gray-500">
                                                                                 {row.items[colindex]?.value}
                                                                             </dd>

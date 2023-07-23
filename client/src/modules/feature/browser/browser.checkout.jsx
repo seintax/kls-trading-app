@@ -293,7 +293,7 @@ const BrowserCheckout = () => {
                 leave="transition-opacity ease-linear duration-300"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-                className={`fixed left-16 lg:left-56 top-24 mt-1 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
+                className={`fixed left-16 lg:left-56 top-12 lg:top-24 mt-2 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
             >
                 <Transition.Child
                     enter="transition ease-in-out duration-500 transform"
@@ -396,7 +396,7 @@ const BrowserCheckout = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex border-t border-t-gray-400">
+                        <div className="flex flex-col lg:flex-row border-t border-t-gray-400">
                             <div className="flex flex-col py-3 pl-3">
                                 <div className="flex flex-col justify-end items-start">
                                     <div className="text-sm flex gap-2">
@@ -407,8 +407,8 @@ const BrowserCheckout = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex gap-4 ml-auto py-3">
-                                <div className="flex flex-col justify-end items-end">
+                            <div className="flex flex-col lg:flex-row gap-4 lg:ml-auto py-3">
+                                <div className="flex flex-col px-3 lg:px-0 lg:justify-end lg:items-end">
                                     <div className="text-sm flex gap-2">
                                         Tended Cash:
                                         <span className="text-secondary-500 font-bold">

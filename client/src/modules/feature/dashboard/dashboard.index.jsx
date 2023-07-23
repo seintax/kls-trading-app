@@ -13,7 +13,7 @@ import { Outlet } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
 import useAuth from "../../../utilities/hooks/useAuth"
 import AppBreadcrumbs from "../../../utilities/interface/application/aesthetics/app.breadcrumb"
-import AppSidebar from "../../../utilities/interface/application/navigation/app.sidebar"
+import AppSideBar from "../../../utilities/interface/application/navigation/app.sidebar"
 import AppSideMenu from "../../../utilities/interface/application/navigation/app.sidemenu"
 import NotificationContainer from "../../../utilities/interface/notification/notification.container"
 
@@ -82,11 +82,16 @@ const DashboardIndex = () => {
 
     return (
         <div className="flex h-screen flex-col">
-            <AppSidebar menulist={menulist} sidebarSideMenu={sidebarSideMenu} setSidebarSideMenu={setSidebarSideMenu} setSideMenuItems={setSideMenuItems} />
-            <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5">
+            <AppSideBar
+                menulist={menulist}
+                sidebarSideMenu={sidebarSideMenu}
+                setSidebarSideMenu={setSidebarSideMenu}
+                setSideMenuItems={setSideMenuItems}
+            />
+            <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5 bg-red-200">
                 <AppBreadcrumbs pages={trail} />
                 <div className="p-0 lg:p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md relative">
-                    <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-4 lg:p-6 text-xs min-h-full flex-none shadow-md">
+                    <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-4 lg:p-6 text-xs min-h-full flex-none shadow-md bg-red-200">
                         <Outlet />
                     </div>
                     <AppSideMenu sidebarSideMenu={sidebarSideMenu} setSidebarSideMenu={setSidebarSideMenu} sideMenuItems={sideMenuItems} />

@@ -124,7 +124,7 @@ const CasheringReceipts = () => {
                 leave="transition-opacity ease-linear duration-300"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-                className={`fixed left-16 lg:left-56 top-24 mt-1 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
+                className={`fixed left-16 lg:left-56 top-12 lg:top-24 mt-2 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
             >
                 <Transition.Child
                     enter="transition ease-in-out duration-500 transform"
@@ -140,21 +140,21 @@ const CasheringReceipts = () => {
                         <span>Receipts</span>
                     </div>
                     <div className="flex border border-secondary-500 p-0.5 items-center mt-4">
-                        <MagnifyingGlassIcon className="w-8 h-8 ml-1 text-secondary-500" />
+                        <MagnifyingGlassIcon className="w-8 h-8 ml-1 text-secondary-500 hidden lg:flex" />
                         <input
                             type="search"
                             value={search}
                             onChange={onChange}
                             placeholder="Search receipts here"
-                            className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
                         <input
                             type="date"
                             value={range}
                             onChange={onRangeChange}
-                            className="w-[150px] flex-none border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            className="w-[120px] lg:w-[150px] text-xs lg:text-sm flex-none border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button className="button-link ml-auto px-9 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onSearch()}>Search</button>
+                        <button className="button-link text-xs lg:text-sm ml-auto px-4 lg:px-9 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onSearch()}>Search</button>
                     </div>
                     <DataRecords
                         page={startpage}

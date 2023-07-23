@@ -260,7 +260,7 @@ const DeliveryManage = () => {
                                     style="text-sm lg:w-1/2"
                                 />
                                 <div className="w-full">
-                                    <div className=" pt-4 flex justify-end">
+                                    <div className="pt-4 flex justify-end">
                                         <button
                                             type="button"
                                             className="button-submit flex gap-3 items-center"

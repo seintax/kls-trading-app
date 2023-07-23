@@ -186,7 +186,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
 
     return (
         <>
-            <div className="w-16 md:fixed md:inset-y-0 md:flex lg:w-56 md:flex-col no-select">
+            <div className="w-16 fixed inset-y-0 flex lg:w-56 no-select">
                 <div className="flex flex-grow flex-col overflow-y-auto border-r border-r-secondary-500 text-white bg-white shadow-md border-shadow scroll-sm">
                     <div className="mt-20 px-1 flex flex-grow flex-col">
                         {renderNavigation()}
