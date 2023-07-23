@@ -136,7 +136,7 @@ const BrowserPurchase = () => {
                 leave="transition-opacity ease-linear duration-300"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-                className={`fixed left-16 lg:left-56 top-24 mt-1 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
+                className={`fixed left-16 lg:left-56 top-12 lg:top-24 mt-2 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
             >
                 <Transition.Child
                     enter="transition ease-in-out duration-500 transform"
@@ -158,19 +158,19 @@ const BrowserPurchase = () => {
                         setPage={setstartpage}
                         itemsperpage={dataSelector?.perpage}
                     />
-                    <div className="w-full flex">
+                    <div className="w-full flex flex-col lg:flex-row">
                         <div className={`p-3 hover:text-blue-700 text-blue-500 cursor-pointer ${dataSelector.cart?.length ? "" : "hidden"}`} onClick={() => saveAsDraft()}>
                             Save cart as draft
                         </div>
-                        <div className="flex gap-4 ml-auto py-3">
-                            <div className="flex flex-col justify-end items-end">
-                                <div className="text-lg flex gap-2">
+                        <div className="flex flex-col lg:flex-row gap-4 lg:ml-auto py-3">
+                            <div className="flex flex-col px-3 lg:px-0 lg:justify-end lg:items-end">
+                                <div className="text-sm lg:text-lg flex gap-2">
                                     Value:
                                     <span className="text-secondary-500 font-bold">
                                         {currency(dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0))}
                                     </span>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="text-xs lg:text-sm flex gap-2">
                                     No. of items:
                                     <span className="text-secondary-500 font-bold">
                                         {dataSelector.cart.length}
@@ -186,9 +186,9 @@ const BrowserPurchase = () => {
                             value={discard}
                             onChange={onChange}
                             placeholder="Type 'discard' here"
-                            className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button className="button-link ml-auto px-8 py-3 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onDiscard()}>Discard</button>
+                        <button className="button-link ml-auto text-xs lg:text-sm px-4 py-1.5 lg:px-8 lg:py-3 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onDiscard()}>Discard</button>
                     </div>
                 </Transition.Child>
             </Transition>

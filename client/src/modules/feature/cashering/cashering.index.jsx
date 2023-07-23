@@ -91,13 +91,13 @@ const CasheringIndex = () => {
         <>
             <div className="w-full mb-[4rem] lg:mb-0 pb-0 lg:pb-[4rem]">
                 <div className="w-full bg-full border border-b border-b-gray-400 pb-5">
-                    <div className="flex justify-between items-center">
-                        <div className="text-sm flex gap-2">
+                    <div className="flex flex-col gap-3 lg:gap-0 lg:flex-row lg:justify-between lg:items-center">
+                        <div className="text-xs lg:text-sm flex gap-2">
                             <CubeIcon className="w-5 h-5" />
                             <div>Cart No. <span className="font-bold text-secondary-500">{StrFn.formatWithZeros(count, 4)}</span></div>
                         </div>
-                        <div className="flex gap-4">
-                            <div className="flex flex-col justify-end items-end">
+                        <div className="flex flex-col lg:flex-row gap-4">
+                            <div className="flex flex-col lg:justify-end lg:items-end">
                                 <div className="text-sm flex gap-2">
                                     Value:
                                     <span className="text-secondary-500 font-bold">
@@ -115,17 +115,19 @@ const CasheringIndex = () => {
                         </div>
                     </div>
                 </div>
-                <div className="text-sm py-3">
+                <div className="text-xs lg:text-sm py-3">
                     <div className="flex border border-secondary-500 p-0.5 items-center">
-                        <MagnifyingGlassIcon className="w-8 h-8 ml-1 text-secondary-500" />
+                        <MagnifyingGlassIcon className="w-8 h-8 ml-1 text-secondary-500 hidden lg:block" />
                         <input
                             type="search"
                             value={search}
                             onChange={onChange}
                             placeholder="Search inventory item here"
-                            className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button className="button-link ml-auto px-9 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0">Search</button>
+                        <button className="button-link ml-auto px-3 lg:px-9 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0">
+                            Search
+                        </button>
                     </div>
                     <div className="flex mt-1 gap-2">
                         Searching Branch:
@@ -136,24 +138,24 @@ const CasheringIndex = () => {
                     </div>
                 </div>
                 <div className="fixed bottom-0 left-16 pr-20 lg:pr-60 lg:left-56 h-[5rem] w-full border border-t border-t-secondary-500 bg-white flex items-center justify-center pl-4 z-10">
-                    <div className="flex justify-around gap-2 w-full">
-                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select" onClick={() => toggleViewCart()}>
+                    <div className="flex justify-around gap-1 lg:gap-2 w-full">
+                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select" onClick={() => toggleViewCart()}>
                             <ShoppingCartIcon className="w-5 h-5" />
                             Cart
                         </button>
-                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select">
+                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select">
                             <DocumentTextIcon className="w-5 h-5" />
                             Draft
                         </button>
-                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select">
+                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select">
                             <LockClosedIcon className="w-5 h-5" />
                             Lock
                         </button>
-                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select" onClick={() => toggleViewReceipts()}>
+                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select" onClick={() => toggleViewReceipts()}>
                             <ReceiptPercentIcon className="w-5 h-5" />
                             Receipt
                         </button>
-                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full px-8 py-3 cursor-pointer rounded-md no-select">
+                        <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select">
                             <ShoppingCartIcon className="w-5 h-5" />
                             Account
                         </button>

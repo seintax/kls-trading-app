@@ -6,7 +6,7 @@ const DataListing = ({ reference, header, layout, records, appendcallback, savec
         <>
             <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg py-3 px-2 border border-b-1 border-b-gray-400 shadow-md rounded-md">
                 <div className="flex flex-col no-select">
-                    <div className="text-lg font-semibold uppercase flex flex-col md:flex-row justify-between items-center">
+                    <div className="text-lg font-semibold uppercase flex flex-col md:flex-row lg:justify-between lg:items-center">
                         <span>{header.title}</span>
                         <span className="hidden text-sm md:flex pr-3">
                             {records?.length ? records?.length : "No"} Item{records?.length === 1 ? "" : "s"} Listed
@@ -17,7 +17,7 @@ const DataListing = ({ reference, header, layout, records, appendcallback, savec
                 <div className="flex flex-col mt-8 gap-4">
                     {
                         records?.map((data, index) => (
-                            <div key={data.key} className="w-full flex gap-3 px-3 py-4 rounded-sm cursor-pointer hover:bg-gray-300 ease-in duration-100 flex-grow">
+                            <div key={data.key} className="w-full flex flex-col lg:flex-row gap-3 px-3 py-4 rounded-sm cursor-pointer hover:bg-gray-300 ease-in duration-100 flex-grow">
                                 <div className="no-select w-[50px]">{index + 1}.</div>
                                 <div className="flex flex-col w-full">
                                     <div className="flex flex-col lg:flex-row text-sm gap-1 w-full">
@@ -48,7 +48,7 @@ const DataListing = ({ reference, header, layout, records, appendcallback, savec
                                 </div>
                                 {
                                     (data?.controls?.length) ? (
-                                        <div className="flex flex-none gap-2 w-[100px] ml-auto text-secondary-600 no-select">
+                                        <div className="flex flex-none gap-4 lg:gap-2 w-[100px] lg:ml-auto text-secondary-600 no-select">
                                             {
                                                 data?.controls?.map((control, index) => (
                                                     <span key={index} className={control?.style ? control?.style : "hover:underline"} onClick={() => control?.trigger()}>
@@ -65,7 +65,7 @@ const DataListing = ({ reference, header, layout, records, appendcallback, savec
                     <div className={`${!records?.length || records?.length === 0 ? "flex" : "hidden"}  w-full gap-3 px-3 py-4 rounded-sm cursor-pointer ease-in duration-100 flex-grow`}>
                         <span className="text-sm font-bold">No items listed.</span>
                     </div>
-                    <div className="w-full flex gap-3 py-4 rounded-sm cursor-pointer justify-between">
+                    <div className="w-full flex flex-col lg:flex-row gap-3 py-4 rounded-sm cursor-pointer justify-between">
                         <button className={`button-blue text-sm no-select ${reference ? "" : "hidden"}`} onClick={appendcallback}>
                             Add Item to the List
                         </button>

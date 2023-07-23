@@ -14,8 +14,6 @@ import { useByOngoingCreditMutation } from "../credit/credit.services"
 import CasheringLedgerPurchase from "./cashering.ledger.purchase"
 import CasheringLedgerReturned from "./cashering.ledger.returned"
 import { resetTransactionLedger } from "./cashering.reducer"
-import CasheringReimburse from "./cashering.reimburse"
-import CasheringReturn from "./cashering.return"
 import { setDispensingData, setDispensingItem, setDispensingNotifier, showDispensingManager } from "./dispensing.reducer"
 import { setReimburseTotal, showReimburseManager } from "./reimburse.reducer"
 import { setReturnedData, setReturnedNotifier } from "./returned.reducer"
@@ -99,7 +97,6 @@ const CasheringLedger = () => {
     const selectItem = (item) => {
         dispatch(setDispensingItem(item))
         dispatch(showDispensingManager())
-        qtyRef.current && qtyRef.current?.focus()
     }
 
     const actions = (item) => {
@@ -182,7 +179,7 @@ const CasheringLedger = () => {
                 leave="transition-opacity ease-linear duration-300"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-                className={`fixed left-16 lg:left-56 top-24 mt-1 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
+                className={`fixed left-16 lg:left-56 top-12 lg:top-24 mt-2 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
             >
                 <Transition.Child
                     enter="transition ease-in-out duration-500 transform"
@@ -197,51 +194,51 @@ const CasheringLedger = () => {
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffLedger()} />
                         <span>Transaction Ledger</span>
                     </div>
-                    <div className="px-1 flex flex-wrap justify-center my-4 gap-3">
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                    <div className="px-1 flex flex-wrap justify-start lg:justify-center my-4 gap-2 lg:gap-3">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Transaction No.
                             </span>
                             <div>{dataSelector.item.code}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Type
                             </span>
                             <div>{dataSelector.item.method}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Status
                             </span>
                             <div>{dataSelector.item.status}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Total
                             </span>
                             <div>{NumFn.currency(dataSelector.item.total)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Less
                             </span>
                             <div>{NumFn.currency(dataSelector.item.less)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Net
                             </span>
                             <div>{NumFn.currency(dataSelector.item.net)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Date
                             </span>
                             <div>{longDate(dataSelector.item.date)}</div>
                         </div>
-                        <div className="min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md">
-                            <span className="text-xs text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
+                            <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Discount Rate
                             </span>
                             <div>{(amount(dataSelector.item.discount) * 100).toFixed(2)?.toString().replaceAll(".00", "")}%</div>
@@ -288,7 +285,7 @@ const CasheringLedger = () => {
                                 </div>
                                 <CasheringLedgerPurchase />
                                 <div className="py-1 w-full text-right">
-                                    <button className="button-link" onClick={() => onSubmit()}>Save Changes</button>
+                                    <button className="button-link w-full lg:w-fit" onClick={() => onSubmit()}>Save Changes</button>
                                 </div>
                             </>
                         ) : (
@@ -310,8 +307,6 @@ const CasheringLedger = () => {
                         )
                     }
 
-                    <CasheringReturn qtyRef={qtyRef} />
-                    <CasheringReimburse qtyRef={qtyRef} />
                 </Transition.Child>
             </Transition >
         </>

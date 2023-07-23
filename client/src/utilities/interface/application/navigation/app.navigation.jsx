@@ -1,7 +1,6 @@
 import { Menu, Transition } from "@headlessui/react"
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import { Bars3BottomLeftIcon, BellIcon, TicketIcon } from "@heroicons/react/24/outline"
-import PropTypes from "prop-types"
 import { Fragment, useState } from "react"
 import { Link } from "react-router-dom"
 import { useClientContext } from "../../../context/client.context"
@@ -140,9 +139,4 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
             </div>
         </div>
     )
-}
-
-AppNavigation.propTypes = {
-    userNavigation: PropTypes.array.isRequired,
-    handleSidebarOpen: PropTypes.func.isRequired,
 }
