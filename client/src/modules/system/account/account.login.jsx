@@ -6,7 +6,7 @@ import DevLogo from "../../../assets/logo.ico"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
-import { setCredentials } from "../../../utilities/redux/slices/authSlice"
+import { setCredentials, setToken } from "../../../utilities/redux/slices/authSlice"
 import { useLoginMutation } from "./account.services"
 
 const AccountLogin = () => {
@@ -34,9 +34,10 @@ const AccountLogin = () => {
         const { user, pass } = login
         await authLogin({ user, pass }).unwrap()
             .then(res => {
-                localStorage.setItem("token", res.token)
-                toast.userNotify(user)
+                // localStorage.setItem("token", res.token)
+                dispatch(setToken(res.token))
                 dispatch(setCredentials(res.data))
+                toast.userNotify(user)
             })
             .catch(err => console.error(err))
 

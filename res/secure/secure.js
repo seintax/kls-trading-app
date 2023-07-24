@@ -51,7 +51,8 @@ const tokenize = (res, payload) => {
     const token = jwt.sign(
         payload,
         process.env.JWT_SECRET,
-        { expiresIn: '2d' }
+        { expiresIn: '6d' }
+        // { expiresIn: '2d' }
     )
     // res.cookie('jwt', token, {
     //     httpOnly: true,

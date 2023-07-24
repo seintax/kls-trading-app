@@ -12,6 +12,8 @@ import React, { useEffect, useState } from 'react'
 import { Outlet } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
 import useAuth from "../../../utilities/hooks/useAuth"
+import useAuthenticate from "../../../utilities/hooks/useAuthenticate"
+import useLogout from "../../../utilities/hooks/useLogout"
 import AppBreadcrumbs from "../../../utilities/interface/application/aesthetics/app.breadcrumb"
 import AppSideBar from "../../../utilities/interface/application/navigation/app.sidebar"
 import AppSideMenu from "../../../utilities/interface/application/navigation/app.sidemenu"
@@ -70,15 +72,23 @@ const menulist = [
 const DashboardIndex = () => {
     const [sidebarSideMenu, setSidebarSideMenu] = useState(false)
     const [sideMenuItems, setSideMenuItems] = useState()
+    const [instance, setInstance] = useState(true)
     const { trail } = useClientContext()
+    const authenticate = useAuthenticate()
+    const { logout } = useLogout()
     const auth = useAuth()
 
     useEffect(() => {
         const instantiate = async () => {
+            console.log("instance")
+            if (!authenticate) {
+                logout()
+            }
+            setInstance(false)
         }
 
-        instantiate()
-    }, [])
+        if (instance) instantiate()
+    }, [instance])
 
     return (
         <div className="flex h-screen flex-col">
