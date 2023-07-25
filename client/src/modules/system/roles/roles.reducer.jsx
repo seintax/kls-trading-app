@@ -17,7 +17,7 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Role', stack: true, sort: 'name' },
+            { name: 'Role', stack: false, sort: 'name' },
             { name: 'Defined', stack: true, sort: 'permission', size: 200 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]

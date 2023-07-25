@@ -15,13 +15,13 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Permission Title', stack: true, sort: 'name' },
-            { name: 'Menu', stack: false, },
-            { name: 'Create', stack: false, },
-            { name: 'Read', stack: false, },
-            { name: 'Update', stack: false, },
-            { name: 'Delete', stack: false, },
-            { name: 'Custom', stack: false, },
+            { name: 'Permission Title', stack: false, sort: 'name' },
+            { name: 'Menu', stack: true, },
+            { name: 'Create', stack: true, },
+            { name: 'Read', stack: true, },
+            { name: 'Update', stack: true, },
+            { name: 'Delete', stack: true, },
+            { name: 'Custom', stack: true, },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

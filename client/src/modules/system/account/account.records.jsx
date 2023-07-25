@@ -8,7 +8,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
-import { setAccountItem, setAccountNotifier, showAccountManager } from "./account.reducer"
+import { setAccountItem, setAccountNotifier, showAccountManager, showAccountRole } from "./account.reducer"
 import { useDeleteAccountMutation } from "./account.services"
 
 const AccountRecords = () => {
@@ -23,6 +23,11 @@ const AccountRecords = () => {
     const toast = useToast()
 
     const [deleteAccount] = useDeleteAccountMutation()
+
+    const toggleRole = (item) => {
+        dispatch(setAccountItem(item))
+        dispatch(showAccountRole())
+    }
 
     const toggleEdit = (item) => {
         dispatch(setAccountItem(item))
@@ -52,6 +57,7 @@ const AccountRecords = () => {
 
     const actions = (item) => {
         return [
+            { type: 'button', trigger: () => toggleRole(item), label: 'Role' },
             { type: 'button', trigger: () => toggleEdit(item), label: 'Edit' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
