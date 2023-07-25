@@ -4,6 +4,7 @@ import DataIndex from "../../../utilities/interface/datastack/data.index"
 import AccountManage from "./account.manage"
 import AccountRecords from "./account.records"
 import { resetAccountItem, setAccountData, setAccountNotifier, showAccountManager } from "./account.reducer"
+import AccountRoles from "./account.roles"
 import { useFetchAllAccountMutation } from "./account.services"
 
 const AccountIndex = () => {
@@ -44,15 +45,19 @@ const AccountIndex = () => {
         (dataSelector.manager) ? (
             <AccountManage name={dataSelector.display.name} />
         ) : (
-            <DataIndex
-                display={dataSelector.display}
-                actions={actions()}
-                data={dataSelector.data}
-                isError={isError}
-                isLoading={isLoading}
-            >
-                <AccountRecords />
-            </DataIndex >
+            (dataSelector.role) ? (
+                <AccountRoles />
+            ) : (
+                <DataIndex
+                    display={dataSelector.display}
+                    actions={actions()}
+                    data={dataSelector.data}
+                    isError={isError}
+                    isLoading={isLoading}
+                >
+                    <AccountRecords />
+                </DataIndex>
+            )
         )
     )
 }

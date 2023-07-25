@@ -6,6 +6,7 @@ const initialState = {
     item: {},
     manager: false,
     notifier: false,
+    role: false,
     perpage: 150,
     display: {
         name: "Account",
@@ -42,6 +43,12 @@ const accountSlice = createSlice({
         resetAccountManager: (state) => {
             state.manager = false
         },
+        showAccountRole: (state) => {
+            state.role = true
+        },
+        resetAccountRole: (state) => {
+            state.role = false
+        },
         setAccountNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -63,6 +70,8 @@ export const {
     setAccountNotifier,
     showAccountManager,
     resetAccountManager,
+    showAccountRole,
+    resetAccountRole,
     resetAccount
 } = accountSlice.actions
 

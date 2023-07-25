@@ -194,13 +194,13 @@ const RolesPermissions = () => {
                     </span>
                 </span>
             </div>
-            <div className={`fixed bottom-44 right-12 p-2 rounded-md cursor-pointer bg-red-600 hover:bg-red-700`} onClick={() => onClose()}>
+            <div className={`fixed bottom-44 right-6 lg:right-12 p-2 rounded-md cursor-pointer bg-red-600 hover:bg-red-700`} onClick={() => onClose()}>
                 <FiXSquare className="text-[30px] text-white" />
             </div>
-            <div className={`fixed bottom-28 right-12 p-2 rounded-md cursor-pointer bg-green-600 hover:bg-green-700`} onClick={() => resetPermissions()}>
+            <div className={`fixed bottom-28 right-6 lg:right-12 p-2 rounded-md cursor-pointer bg-green-600 hover:bg-green-700`} onClick={() => resetPermissions()}>
                 <FiRepeat className="text-[30px] text-white" />
             </div>
-            <div className={`fixed bottom-12 right-12 p-2 rounded-md cursor-pointer ${isDirty ? "bg-blue-600 hover:bg-blue-700" : " bg-gray-400 hover:bg-gray-500"}`} onClick={() => applyChanges()}>
+            <div className={`fixed bottom-12 right-6 lg:right-12 p-2 rounded-md cursor-pointer ${isDirty ? "bg-blue-600 hover:bg-blue-700" : " bg-gray-400 hover:bg-gray-500"}`} onClick={() => applyChanges()}>
                 <FiSave className="text-[30px] text-white" />
             </div>
             <div className="w-full flex flex-col items-center gap-5 my-10">
@@ -241,14 +241,14 @@ const RolesPermissions = () => {
                                             <span className="isolate inline-flex rounded-md shadow-sm">
                                                 <button
                                                     type="button"
-                                                    className={`relative inline-flex items-center bg-white px-3 py-1 font-semibold ring-1 ring-inset ring-gray-300 focus:z-10 w-[50px] justify-center hover:bg-gray-300 ${prop.value ? "bg-blue-600 text-white hover:bg-blue-400" : "text-gray-400"}`}
+                                                    className={`relative inline-flex items-center px-3 py-1 font-semibold ring-1 ring-inset ring-gray-300 focus:z-10 w-[50px] justify-center ${prop.value ? "bg-[#2a2dfa] text-white hover:bg-[#0b0ee0]" : "bg-white hover:bg-gray-300 text-gray-400"}`}
                                                     onClick={() => updatePermission(permission.name, prop.name, true)}
                                                 >
                                                     ON
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    className={`relative -ml-px inline-flex items-center bg-white px-3 py-1 font-semibold ring-1 ring-inset ring-gray-300 focus:z-10 w-[50px] justify-center hover:bg-gray-300 ${!prop.value ? "bg-blue-600 text-white hover:bg-blue-400" : "text-gray-400"}`}
+                                                    className={`relative -ml-px inline-flex items-center px-3 py-1 font-semibold ring-1 ring-inset ring-gray-300 focus:z-10 w-[50px] justify-center ${!prop.value ? "bg-[#2a2dfa] text-white hover:bg-[#0b0ee0]" : "bg-white hover:bg-gray-300 text-gray-400"}`}
                                                     onClick={() => updatePermission(permission.name, prop.name, false)}
                                                 >
                                                     OFF

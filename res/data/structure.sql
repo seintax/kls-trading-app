@@ -9,9 +9,11 @@ CREATE TABLE sys_account (
     acct_role        varchar(99)
 );
 
-ALTER TABLE sys_account ADD COLUMN acct_role        varchar(99);
+ALTER TABLE sys_account ADD COLUMN acct_role varchar(99);
 
-INSERT INTO sys_account (acct_email,acct_password,acct_fullname,acct_store) VALUES ('SEINTAX','$2a$10$EwcQz1bHeYqo8fbgDMSBl.MWIgExkqECMh52ABA2.qrnFOv8gbt/m','DEVELOPER','DevOp');
+INSERT INTO sys_account (acct_email,acct_password,acct_fullname,acct_store,acct_role) VALUES ('SEINTAX','$2a$10$EwcQz1bHeYqo8fbgDMSBl.MWIgExkqECMh52ABA2.qrnFOv8gbt/m','DEVELOPER','DevOp','DevOp');
+
+UPDATE sys_user SET acct_role='DevOp' WHERE acct_store='DevOp';
 
 CREATE TABLE sys_user (
     user_id          int auto_increment primary key,
@@ -25,17 +27,21 @@ CREATE TABLE sys_user (
     user_display     text
 );
 
+DROP TABLE sys_permission;
 CREATE TABLE sys_permission (
     perm_id          int auto_increment primary key,
     perm_name        varchar(50) unique,
     perm_json        text
 );
 
+DROP TABLE sys_roles;
 CREATE TABLE sys_roles (
     role_id          int auto_increment primary key,
     role_name        varchar(99) unique,
     role_permission  text
 );
+
+INSERT INTO sys_roles (role_name,role_permission) VALUES ('DevOp', '{"cashering-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true,"view-receipt":true,"view-draft":true},"purchase-order-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"inventory-menu":{"show":true,"read":true,"update":true},"stock-transfer-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"receiving-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"credits-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"cheque-monitor-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"expenses-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"branches-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"suppliers-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"customers-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"categories-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"masterlist-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"options-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"inclusions-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"permissions-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"reports-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"accounts-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true},"roles-menu":{"show":true,"create":true,"read":true,"update":true,"delete":true}}');
 
 CREATE TABLE lib_category (
     ctgy_id          int auto_increment primary key,

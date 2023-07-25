@@ -44,8 +44,8 @@ const PermissionManage = () => {
     useEffect(() => {
         if (instantiated) {
             let item = dataSelector.item
-            let json = JSON.parse(item.json)
-            let inner = JSON.parse(item.json)
+            let json = JSON.parse(item?.json || null)
+            let inner = JSON.parse(item?.json || null)
             if (inner) {
                 delete inner.show
                 delete inner.create
@@ -114,7 +114,7 @@ const PermissionManage = () => {
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
-                <div className="w-1/2 ml-auto flex">
+                <div className="w-1/2 gap-5 lg:gap-0 lg:ml-auto flex">
                     <FormEl.Check
                         label='Menu'
                         register={register}
@@ -146,7 +146,7 @@ const PermissionManage = () => {
                         wrapper='lg:w-1/2'
                     />
                 </div>
-                <div className="w-1/2 ml-auto flex">
+                <div className="w-1/2 lg:ml-auto flex">
                     <button
                         type="button"
                         className="button-link"
@@ -168,7 +168,7 @@ const PermissionManage = () => {
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
-                <div className="w-1/2 ml-auto">
+                <div className="w-1/2 lg:ml-auto">
                     <FormEl.Check
                         label='Continues'
                         register={register}

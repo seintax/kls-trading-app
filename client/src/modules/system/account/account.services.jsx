@@ -15,6 +15,14 @@ export const accountApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['accounts']
         }),
+        hashedUpdateAccount: builder.mutation({
+            query: (body) => ({
+                url: `${ENDPOINT_URL}/hashed`,
+                method: 'PATCH',
+                body
+            }),
+            invalidatesTags: ['accounts', 'accounts/id']
+        }),
         updateAccount: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}`,
@@ -81,6 +89,7 @@ export const accountApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useCreateAccountMutation,
+    useHashedUpdateAccountMutation,
     useUpdateAccountMutation,
     useDeleteAccountMutation,
     useDistinctAccountMutation,
