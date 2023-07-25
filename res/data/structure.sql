@@ -9,7 +9,7 @@ CREATE TABLE sys_account (
     acct_role        varchar(99)
 );
 
-ALTER TABLE sys_account ADD COLUMN acct_role        varchar(99);
+ALTER TABLE sys_account ADD COLUMN acct_role varchar(99);
 
 INSERT INTO sys_account (acct_email,acct_password,acct_fullname,acct_store) VALUES ('SEINTAX','$2a$10$EwcQz1bHeYqo8fbgDMSBl.MWIgExkqECMh52ABA2.qrnFOv8gbt/m','DEVELOPER','DevOp');
 
@@ -25,12 +25,14 @@ CREATE TABLE sys_user (
     user_display     text
 );
 
+DROP TABLE sys_permission;
 CREATE TABLE sys_permission (
     perm_id          int auto_increment primary key,
     perm_name        varchar(50) unique,
     perm_json        text
 );
 
+DROP TABLE sys_roles;
 CREATE TABLE sys_roles (
     role_id          int auto_increment primary key,
     role_name        varchar(99) unique,

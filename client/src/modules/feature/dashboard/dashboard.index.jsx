@@ -194,6 +194,9 @@ const DashboardIndex = () => {
         }
     }, [auth, roleSelector.cache])
 
+    const currentService = () => {
+        return import.meta.env.MODE === "development" ? import.meta.env.VITE_API_BASE_URL : import.meta.env.VITE_API_BASE_URL_PROD
+    }
 
     return (
         <div className="flex h-screen flex-col">
@@ -211,7 +214,12 @@ const DashboardIndex = () => {
                     </div>
                     <AppSideMenu sidebarSideMenu={sidebarSideMenu} setSidebarSideMenu={setSidebarSideMenu} sideMenuItems={sideMenuItems} />
                 </div>
-                <div className="flex flex-none w-full h-[40px] bg-white border border-t-secondary-500"></div>
+                <div className="flex flex-none w-full h-[40px] bg-white border border-t-secondary-500 items-center px-3">
+                    <span className="ml-auto flex items-center gap-3 text-sm">
+                        <div className="bg-lime-400 w-3 h-3 rounded-full"></div>
+                        {currentService().includes("vercel") ? "Cloud" : "Local"} Endpoint
+                    </span>
+                </div>
             </main>
             <NotificationContainer />
         </div>
