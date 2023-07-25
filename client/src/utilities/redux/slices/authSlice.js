@@ -4,6 +4,7 @@ const initialState = {
     user_info: localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : null,
     token: localStorage.getItem('token') ? localStorage.getItem('token') : "",
     loggedin: false,
+    role: ""
 }
 
 const authSlice = createSlice({
@@ -13,6 +14,9 @@ const authSlice = createSlice({
         setCredentials: (state, action) => {
             state.user_info = action.payload
             localStorage.setItem('auth', JSON.stringify(action.payload))
+        },
+        setRole: (state, action) => {
+            state.role = action.payload
         },
         setToken: (state, action) => {
             state.token = action.payload
@@ -33,6 +37,7 @@ const authSlice = createSlice({
 const authReducer = authSlice.reducer
 
 export const {
+    setRole,
     setToken,
     setCredentials,
     resetLoggedIn,

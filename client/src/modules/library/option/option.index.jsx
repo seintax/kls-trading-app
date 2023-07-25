@@ -29,12 +29,6 @@ const OptionIndex = () => {
         }
     }, [dataSelector.notifier])
 
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.log("done")
-        }
-    }, [isSuccess, isLoading])
-
     const toggleNewEntry = () => {
         dispatch(resetOptionItem())
         dispatch(showOptionManager())

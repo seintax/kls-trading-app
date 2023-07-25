@@ -59,6 +59,16 @@ export const formatVariant = (serial, model, brand) => {
         ?.join("/")
 }
 
+export const YesNoFromBoolean = (bool) => {
+    if (bool) return "Yes"
+    return "No"
+}
+
+export const removeWhiteSpaces = (string) => {
+    if (isEmpty(string)) return string
+    return string.replace(/[\r\n]/gm, '').replaceAll(' ', '')
+}
+
 const formatWithZeros = (str, maxcount) => {
     if (str) {
         let maxlen = Number(maxcount) - str?.toString().length

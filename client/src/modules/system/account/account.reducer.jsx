@@ -16,8 +16,8 @@ const initialState = {
         items: [
             { name: 'Username', stack: false, sort: 'user' },
             { name: 'Fullname', stack: true, sort: 'name', size: 350 },
-            { name: 'Branch Access', stack: true, sort: 'store', size: 180 },
-            { name: 'Confirmed', stack: true, sort: 'confirm', size: 150, position: "center" },
+            { name: 'Branch Access', stack: true, sort: 'store', size: 350 },
+            { name: 'Confirmed', stack: true, sort: 'confirm', size: 100 },
             { name: '', stack: false, screenreader: 'Action', size: 200 },
         ]
     }

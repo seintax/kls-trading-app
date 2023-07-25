@@ -92,7 +92,8 @@ const authenticate = handler(async (req, res) => {
                         user: ans.distinctResult.data.user,
                         name: ans.distinctResult.data.name,
                         confirm: ans.distinctResult.data.confirm,
-                        store: ans.distinctResult.data.store
+                        store: ans.distinctResult.data.store,
+                        role: ans.distinctResult.data.role,
                     },
                     token: token
                 }, req))

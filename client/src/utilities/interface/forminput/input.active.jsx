@@ -13,6 +13,7 @@
 // export { default as Select } from "./input.select"
 // export { default as Text } from "./input.text"
 
+import Area from "./input.area"
 import Check from "./input.check"
 import Currency from "./input.currency"
 import Date from "./input.date"
@@ -31,6 +32,7 @@ import Select from "./input.select"
 import Text from "./input.text"
 
 const FormEl = {
+    Area,
     Check,
     Currency,
     Date,

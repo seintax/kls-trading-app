@@ -118,9 +118,13 @@ const PrintReceipt = () => {
                                 <span>Cash</span>
                                 <span>{currency(dataSelector.print.cash)}</span>
                             </div>
-                            <div className="w-full flex justify-between my-1 mb-3 text-xs">
+                            <div className="w-full flex justify-between my-1 text-xs">
                                 <span>Change</span>
                                 <span>{currency(dataSelector.print.change)}</span>
+                            </div>
+                            <div className="w-full flex justify-between my-1 mb-3 text-xs">
+                                <span>Credit</span>
+                                <span>{currency(dataSelector.print.credit)}</span>
                             </div>
                             <div className="w-full border border-t-black border-dashed"></div>
                             <div className="font-normal text-center my-3 mb-14">

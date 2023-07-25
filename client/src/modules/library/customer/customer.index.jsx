@@ -29,12 +29,6 @@ const CustomerIndex = () => {
         }
     }, [dataSelector.notifier])
 
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.log("done")
-        }
-    }, [isSuccess, isLoading])
-
     const toggleNewEntry = () => {
         dispatch(resetCustomerItem())
         dispatch(showCustomerManager())

@@ -13,7 +13,8 @@ const authorize = handler(async (param, callback) => {
             return callback(null, {
                 id: ans.distinctResult.data.id,
                 user: ans.distinctResult.data.user,
-                store: ans.distinctResult.data.store
+                store: ans.distinctResult.data.store,
+                role: ans.distinctResult.data.role,
             })
         }
         return callback({ err: "Invalid credentials." })

@@ -14,6 +14,7 @@ router.get('/credit/search', secure, service._search)
 router.post('/credit/specify', service._specify)
 router.get('/credit/byongoing', service.byOngoing)
 router.get('/credit/byallongoing', service.byAllOngoing)
+router.get('/credit/bytransaction', service.byTransaction)
 
 router.post('/credit/sqlsettlecredit', complex.sqlSettleCredit)
 

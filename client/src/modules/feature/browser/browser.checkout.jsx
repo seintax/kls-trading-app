@@ -11,7 +11,7 @@ import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useByMaxAccountTransactionMutation } from "../cashering/cashering.services"
-import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, setPaymentTotal, showPaymentDiscount, showPaymentManager } from "../payment/payment.reducer"
+import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, setPaymentTotal, showPaymentDiscount, showPaymentManager, showPaymentPayor } from "../payment/payment.reducer"
 import { resetBrowserCheckout, resetBrowserTransaction, setBrowserNotifier } from "./browser.reducer"
 import { useCreateBrowserBySqlTransactionMutation } from "./browser.services"
 
@@ -156,6 +156,10 @@ const BrowserCheckout = () => {
         }
     }
 
+    const toggleCustomer = () => {
+        dispatch(showPaymentPayor())
+    }
+
     const togglePayments = () => {
         if (balance > 0) {
             dispatch(setPaymentBalance(balance))
@@ -179,14 +183,15 @@ const BrowserCheckout = () => {
         dispatch(resetPaymentTransaction())
     }
 
-    const onPrint = () => {
-
-    }
-
     const destructCode = (maxcode) => {
         let tags = maxcode.split("-")
         return String(Number(tags[2]) + 1)
     }
+
+    useEffect(() => {
+        console.log(paymentSelector.customer)
+    }, [paymentSelector.customer])
+
 
     const processTransaction = async () => {
         if (balance !== 0) {
@@ -216,6 +221,7 @@ const BrowserCheckout = () => {
                             method: dataSelector.method,
                             status: "COMPLETED",
                             account: auth.id,
+                            customer: paymentSelector.customer.id,
                             date: sqlDate()
                         },
                         dispensing: dataSelector.cart?.map(item => {
@@ -272,7 +278,7 @@ const BrowserCheckout = () => {
                                 }
                                 return {
                                     code: code,
-                                    creditor: cred.creditor,
+                                    creditor: paymentSelector.customer.id,
                                     total: amount(summary.net),
                                     partial: amount(cred.partial),
                                     balance: amount(cred.amount),
@@ -288,6 +294,12 @@ const BrowserCheckout = () => {
                         .unwrap()
                         .then(res => {
                             if (res.success) {
+                                let partial = paymentSelector.paid
+                                    ?.filter(f => f.type === "CREDIT")
+                                    ?.reduce((prev, curr) => prev + amount(curr.partial), 0)
+                                let credit = paymentSelector.paid
+                                    ?.filter(f => f.type === "CREDIT")
+                                    ?.reduce((prev, curr) => prev + amount(curr.amount), 0)
                                 let printdata = {
                                     branch: "Jally Trading - MAIN",
                                     address: "Diversion Road National Highway, Banale, Pagadian City",
@@ -295,8 +307,8 @@ const BrowserCheckout = () => {
                                     subtext: "Autocare, Heavy Equipment and Trucking Services",
                                     contact: "Mobile No.: (0966) 483 5853 - (0930) 990 2456",
                                     customer: {
-                                        name: "George Stubborn",
-                                        address: "Davao City"
+                                        name: paymentSelector.customer.name,
+                                        address: paymentSelector.customer.address
                                     },
                                     cashier: auth.name,
                                     transaction: code,
@@ -318,9 +330,11 @@ const BrowserCheckout = () => {
                                         amount: summary.discount
                                     },
                                     total: summary.net,
-                                    cash: tended,
-                                    change: change
+                                    cash: partial > 0 ? partial : tended,
+                                    change: change,
+                                    credit: credit
                                 }
+                                console.log(printdata)
                                 localStorage.setItem("rcpt", JSON.stringify(printdata))
                                 window.open(`/#/print/receipt/${code}${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
                                 toast.showCreate("Transaction successfully completed.")
@@ -366,6 +380,12 @@ const BrowserCheckout = () => {
                         itemsperpage={dataSelector?.perpage}
                     />
                     <div className="flex flex-col">
+                        <div className="flex justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer" onClick={() => toggleCustomer()}>
+                            <span>Payor:</span>
+                            <span className={`ml-auto font-bold ${paymentSelector.customer?.name ? "text-secondary-500" : ""}`}>
+                                {paymentSelector.customer?.name ? paymentSelector.customer?.name : "Not selected"}
+                            </span>
+                        </div>
                         <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
                             <span>Order Total ({dataSelector?.cart?.length} Item/s):</span>
                             <span className="ml-auto text-gray-800">
@@ -412,7 +432,7 @@ const BrowserCheckout = () => {
                                                 {pay.refcode ? ` #${pay.refcode}` : ""}
                                             </span>
                                             <span className={pay.type === "CREDIT" ? "flex gap-5" : "hidden"}>
-                                                <span>{pay.creditor_name}</span>
+                                                <span>{paymentSelector.customer.name}</span>
                                             </span>
                                             <span className="ml-auto text-gray-800">
                                                 {currency(pay.amount)}
@@ -430,7 +450,7 @@ const BrowserCheckout = () => {
                                                 </span>
                                             </span>
                                             <span className="flex gap-5 ">
-                                                <span>{paymentSelector?.paid[0]?.creditor_name}</span>
+                                                <span>{paymentSelector?.customer?.name}</span>
                                             </span>
                                             <span className="ml-auto text-gray-800">
                                                 {currency(paymentSelector?.paid[0]?.partial)}

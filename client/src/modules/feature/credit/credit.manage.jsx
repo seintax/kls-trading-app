@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { longDate, sqlTimestamp } from "../../../utilities/functions/datetime.functions"
+import { longDate, sqlDate, sqlTimestamp } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount, currency } from "../../../utilities/functions/number.funtions"
 import { eitherIs, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -11,7 +11,7 @@ import DataRecords from "../../../utilities/interface/datastack/data.records"
 import PaymentBrowser from "../payment/payment.browser"
 import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, showPaymentManager } from "../payment/payment.reducer"
 import { resetCreditManager, setCreditNotifier } from "./credit.reducer"
-import { useCreateCreditMutation, useSqlSettleCreditMutation, useUpdateCreditMutation } from "./credit.services"
+import { useByTransactionCreditMutation, useCreateCreditMutation, useSqlSettleCreditMutation } from "./credit.services"
 
 const CreditManage = () => {
     const auth = useAuth()
@@ -19,6 +19,7 @@ const CreditManage = () => {
     const paymentSelector = useSelector(state => state.payment)
     const dispatch = useDispatch()
     const [instantiated, setInstantiated] = useState(false)
+    const [transaction, setTransaction] = useState()
     const [records, setrecords] = useState()
     const [values, setValues] = useState()
     const { yup } = useYup()
@@ -42,18 +43,26 @@ const CreditManage = () => {
     }
 
     const [createCredit] = useCreateCreditMutation()
-    const [updateCredit] = useUpdateCreditMutation()
+    const [transactionCredit] = useByTransactionCreditMutation()
     const [sqlSettleCredit] = useSqlSettleCreditMutation()
 
     useEffect(() => {
         const instantiate = async () => {
-            console.log(dataSelector.item)
-            // fetch all library dependencies here. (e.g. dropdown values, etc.)
+            if (dataSelector.item.code) {
+                await transactionCredit({ code: dataSelector.item.code })
+                    .unwrap()
+                    .then(res => {
+                        if (res.success) {
+                            setTransaction(res.arrayResult)
+                        }
+                    })
+                    .catch(err => console.error(err))
+            }
             setInstantiated(true)
         }
 
         instantiate()
-    }, [])
+    }, [dataSelector.item.code])
 
     const init = (value, initial = "") => {
         if (!isEmpty(value)) {
@@ -85,13 +94,13 @@ const CreditManage = () => {
             { value: currency(item.returned) },
             { value: currency(item.reimburse) },
             { value: item.status },
-            { value: item.settledon },
+            { value: sqlDate(item.settledon, "") },
         ]
     }
 
     useEffect(() => {
-        if (dataSelector?.item?.id) {
-            let data = [dataSelector?.item]
+        if (transaction?.length) {
+            let data = transaction
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
@@ -100,7 +109,7 @@ const CreditManage = () => {
                 }
             }))
         }
-    }, [dataSelector?.cart])
+    }, [transaction])
 
     useEffect(() => {
         if (dataSelector.item.balance > 0) {
@@ -183,7 +192,6 @@ const CreditManage = () => {
                 }
             }
         }
-        console.log(data)
         await sqlSettleCredit(data)
             .unwrap()
             .then(res => {
@@ -219,7 +227,8 @@ const CreditManage = () => {
 
     useEffect(() => {
         console.log(paymentSelector?.paid)
-    }, [paymentSelector?.paid])
+        console.log(records)
+    }, [paymentSelector?.paid, records])
 
     return (
         <div className="w-full">
@@ -233,12 +242,12 @@ const CreditManage = () => {
             <DataRecords
                 columns={columns}
                 records={records}
-                itemsperpage={1}
+                itemsperpage={20}
                 page={1}
             />
             <div className="flex flex-col">
                 <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
-                    <span>{dataSelector.item.customer_name}</span>
+                    <span>Creditor: {dataSelector.item.customer_name}</span>
                     <span className="ml-auto text-gray-800">
                         {dataSelector.item.code}
                     </span>

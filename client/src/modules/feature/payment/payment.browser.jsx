@@ -3,12 +3,10 @@ import { XMarkIcon } from "@heroicons/react/20/solid"
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { createInstance, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import { eitherNot } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
-import { useFetchAllCustomerMutation } from "../../library/customer/customer.services"
 import { resetPaymentManager, setPaymentMethod, setPaymentPaid } from "./payment.reducer"
 
 const PaymentBrowser = () => {
@@ -24,25 +22,11 @@ const PaymentBrowser = () => {
         refcode: "",
         refdate: sqlDate(),
         refstat: "",
-        creditor: "",
-        creditor_name: "",
     })
     const toast = useToast()
 
-    const [libCustomers, setLibCustomers] = useState()
-
-    const [allCustomer] = useFetchAllCustomerMutation()
-
     useEffect(() => {
         const instantiate = async () => {
-            await allCustomer()
-                .unwrap()
-                .then(res => {
-                    if (res.success) {
-                        setLibCustomers(FormatOptionsWithEmptyLabel(res?.arrayResult, "id", "name", "Select customer"))
-                    }
-                })
-                .catch(err => console.error(err))
             setInstantiated(true)
         }
 
@@ -66,16 +50,6 @@ const PaymentBrowser = () => {
 
     const onChange = (e) => {
         const { name, value } = e.target
-        if (name === "creditor") {
-            let customers = libCustomers?.filter(f => String(f.value) === String(value))
-            let customer = customers.length ? customers[0] : undefined
-            setSettle(prev => ({
-                ...prev,
-                [name]: value,
-                creditor_name: customer?.key
-            }))
-            return
-        }
         setSettle(prev => ({
             ...prev,
             [name]: value,
@@ -95,8 +69,6 @@ const PaymentBrowser = () => {
             refcode: "",
             refdate: sqlDate(),
             refstat: "",
-            creditor: "",
-            creditor_name: "",
         })
     }
 
@@ -140,7 +112,6 @@ const PaymentBrowser = () => {
                 amount: amount(dataSelector.balance) - amount(settlement.amount || 0)
             }
         }
-        console.log(settlement)
         dispatch(setPaymentMethod(settle.type))
         dispatch(setPaymentPaid(settlement))
         dispatch(resetPaymentManager())
@@ -210,31 +181,6 @@ const PaymentBrowser = () => {
                                 </option>
                             </select>
                         </div>
-                        {
-                            (dataSelector.enablecredit) ? (
-                                <div className="flex border border-secondary-500 p-0.5 items-center">
-                                    <select
-                                        name="creditor"
-                                        value={settle.creditor}
-                                        onChange={onChange}
-                                        autoFocus
-                                        required={settle.type === "CREDIT"}
-                                        disabled={settle.type !== "CREDIT"}
-                                        className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1 disabled:bg-gray-300">
-                                        {
-                                            libCustomers?.map(lib => (
-                                                <option
-                                                    key={lib.value}
-                                                    value={lib.value} className="text-sm"
-                                                >
-                                                    {lib.key}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-                            ) : null
-                        }
                         <div className="flex border border-secondary-500 p-0.5 items-center">
                             <select
                                 name="method"
