@@ -1,5 +1,6 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { userNavigation } from "../../../../modules/feature/dashboard/dashboard.index.jsx"
 import { isEmpty } from "../../../functions/string.functions.jsx"
@@ -10,6 +11,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
     const auth = useAuth()
     const location = useLocation()
     const navigate = useNavigate()
+    const roleSelector = useSelector(state => state.roles)
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [sidebarMenu, setSidebarMenu] = useState([])
     const [currentMenu, setCurrentMenu] = useState("Dashboard")
@@ -103,14 +105,22 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
             }
             return { ...nav, current: false }
         }))
-        // setCurrentMenu(subitem.name)
         navigate(subitem.href)
         handleSidebarOpen(true)
         setSidebarSideMenu(false)
     }
 
-    const isVisible = (exclusive) => {
-        if (isEmpty(exclusive) || exclusive.includes(auth.store)) return true
+    // const isVisible = (exclusive) => {
+    //     if (isEmpty(exclusive) || exclusive.includes(auth.store)) return true
+    //     return false
+    // }
+
+    const isVisible = (href) => {
+        if (href === "/dashboard") return true
+        let propName = `${href?.replace("/", "")}-menu`
+        if (roleSelector.access.permission?.hasOwnProperty(propName)) {
+            return roleSelector.access.permission[propName]?.show
+        }
         return false
     }
 
@@ -127,7 +137,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
                     (!item.children) ? (
                         <div
                             key={item.name}
-                            className={`${location.pathname.startsWith(item.href) ? activeLink : normalLink} group flex items-center px-1.5 lg:px-2 py-2 text-xs font-medium rounded-md cursor-pointer ${isVisible(item?.exclusive) ? "" : "hidden"}`}
+                            className={`${location.pathname.startsWith(item.href) ? activeLink : normalLink} group flex items-center px-1.5 lg:px-2 py-2 text-xs font-medium rounded-md cursor-pointer ${isVisible(item?.href) ? "" : "hidden"}`}
                             onClick={() => handleMenuSelect(item)}
                         >
                             <item.icon
@@ -170,7 +180,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
                                 {currentCascade === item.name && isCascaded && item.children.map((subItem) => (
                                     <div
                                         key={subItem.name}
-                                        className={`${location.pathname.startsWith(subItem.href) ? activeLink : normalLink} group mt-1 flex items-center pl-[43px] pr-2 py-2 text-xs font-medium rounded-md cursor-pointer ${isVisible(subItem?.exclusive) ? "" : "hidden"}`}
+                                        className={`${location.pathname.startsWith(subItem.href) ? activeLink : normalLink} group mt-1 flex items-center pl-[43px] pr-2 py-2 text-xs font-medium rounded-md cursor-pointer ${isVisible(subItem?.href) ? "" : "hidden"}`}
                                         onClick={() => handleSubMenuSelect(item, subItem)}
                                     >
                                         {subItem.name}

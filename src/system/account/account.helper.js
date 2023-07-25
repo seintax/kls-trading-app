@@ -8,6 +8,7 @@ const account = new Table("sys_account", {
     store: 'acct_store',
     confirm: 'acct_confirmed',
     blocked: 'acct_isblocked',
+    role: 'acct_role',
 })
 
 module.exports = account

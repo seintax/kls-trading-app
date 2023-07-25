@@ -5,6 +5,7 @@ export function createInstance() {
 }
 
 export function sqlDate(datevalue = undefined) {
+    if (datevalue === "0000-00-00 00:00:00") return ""
     if (datevalue) return moment(datevalue).format("YYYY-MM-DD")
     return moment(new Date()).format("YYYY-MM-DD")
 }

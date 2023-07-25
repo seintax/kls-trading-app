@@ -1,10 +1,12 @@
 import { Transition } from "@headlessui/react"
 import { ArrowLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
+import moment from "moment"
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { longDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
+import { formatVariant } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from "../../../utilities/interface/datastack/data.operation"
@@ -169,6 +171,45 @@ const CasheringLedger = () => {
         }
     }
 
+    const onPrint = () => {
+        let printdata = {
+            branch: "Jally Trading - MAIN",
+            address: "Diversion Road National Highway, Banale, Pagadian City",
+            service: "Auto and Agri Machine Parts Supply",
+            subtext: "Autocare, Heavy Equipment and Trucking Services",
+            contact: "Mobile No.: (0966) 483 5853 - (0930) 990 2456",
+            customer: {
+                name: "George Stubborn",
+                address: "Davao City"
+            },
+            cashier: auth.name,
+            transaction: dataSelector.item.code,
+            items: dispensingSelector.data?.map(item => {
+                let total = amount(item.dispense) * amount(item.price)
+                let less = total * amount(dataSelector.item.discount)
+                let net = total - less
+                return {
+                    product: `${item.product_name} (${formatVariant(item.variant_serial, item.variant_model, item.variant_brand)})`,
+                    quantity: item.dispense,
+                    price: item.price,
+                    item: item.id,
+                    total: total,
+                    less: less,
+                }
+            }),
+            discount: {
+                rate: dataSelector.item.discount * 100,
+                amount: dataSelector.item.less
+            },
+            total: dataSelector.item.net,
+            cash: dataSelector.item.tended,
+            change: dataSelector.item.change,
+            reprint: true
+        }
+        localStorage.setItem("rcpt", JSON.stringify(printdata))
+        window.open(`/#/print/receipt/${dataSelector.item.code}${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
+    }
+
     return (
         <>
             <Transition
@@ -284,7 +325,8 @@ const CasheringLedger = () => {
                                     </div>
                                 </div>
                                 <CasheringLedgerPurchase />
-                                <div className="py-1 w-full text-right">
+                                <div className="py-1 w-full flex flex-col gap-2 lg:gap-0 lg:flex-row justify-between">
+                                    <button className="button-blue w-full lg:w-fit" onClick={() => onPrint()}>Reprint Receipt</button>
                                     <button className="button-link w-full lg:w-fit" onClick={() => onSubmit()}>Save Changes</button>
                                 </div>
                             </>

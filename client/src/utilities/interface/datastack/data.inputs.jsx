@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom"
 import SpinnerIcon from "../../../assets/SpinnerIcon"
 import { useClientContext } from "../../context/client.context"
 
-const DataInputs = ({ formData, fields, change, submit, closed, listing, header = true }) => {
+const DataInputs = ({ formData, fields, change, submit, closed, listing, mutation, header = true }) => {
     const location = useLocation()
     const { handleTrail } = useClientContext()
     const isEdit = !!formData.id
@@ -33,6 +33,13 @@ const DataInputs = ({ formData, fields, change, submit, closed, listing, header 
             for (const prop in formData?.values)
                 setValue(prop, formData?.values[prop])
     }, [formData?.values])
+
+    useEffect(() => {
+        if (mutation) {
+            for (const prop in mutation)
+                setValue(prop, mutation[prop])
+        }
+    }, [mutation])
 
     useEffect(() => {
         if (formData?.values) {

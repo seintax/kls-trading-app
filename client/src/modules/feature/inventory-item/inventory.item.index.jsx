@@ -45,12 +45,6 @@ const AdjustmentIndex = () => {
     }, [dataSelector.notifier, inventorySelector.item])
 
     useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.log("done")
-        }
-    }, [isSuccess, isLoading])
-
-    useEffect(() => {
         if (inventorySelector.manager && inventorySelector.item.id) {
             setProduct(`${inventorySelector.item.product_name} (${inventorySelector.item.category}/${inventorySelector.item.variant_serial}/${inventorySelector.item.variant_model}/${inventorySelector.item.variant_brand})`)
         }

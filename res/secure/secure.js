@@ -13,7 +13,8 @@ const authorize = handler(async (param, callback) => {
             return callback(null, {
                 id: ans.distinctResult.data.id,
                 user: ans.distinctResult.data.user,
-                store: ans.distinctResult.data.store
+                store: ans.distinctResult.data.store,
+                role: ans.distinctResult.data.role,
             })
         }
         return callback({ err: "Invalid credentials." })
@@ -51,7 +52,8 @@ const tokenize = (res, payload) => {
     const token = jwt.sign(
         payload,
         process.env.JWT_SECRET,
-        { expiresIn: '2d' }
+        { expiresIn: '6d' }
+        // { expiresIn: '2d' }
     )
     // res.cookie('jwt', token, {
     //     httpOnly: true,

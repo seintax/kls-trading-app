@@ -163,7 +163,7 @@ const ChequeManage = () => {
         }
         let formData = {
             payment: {
-                status: data.status,
+                refstat: data.status,
                 id: dataSelector.item.id
             }
         }
@@ -174,6 +174,7 @@ const ChequeManage = () => {
                     ...formData.payment,
                     refcode: data.refcode,
                     refdate: data.refdate,
+                    refstat: "UNCLAIMED",
                 },
                 cheque: {
                     payment: dataSelector.item.id,
@@ -186,6 +187,7 @@ const ChequeManage = () => {
                 }
             }
         }
+        console.log(formData)
         await sqlChequePayment(formData)
             .unwrap()
             .then(res => {

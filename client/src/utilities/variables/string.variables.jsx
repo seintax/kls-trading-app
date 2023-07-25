@@ -8,3 +8,5 @@ export const specifyfilter = {
     ])
 } // request JSON body
 export const authHeader = { 'Authorization': 'Bearer my-token' }
+
+export const defaultRole = "DevOp"

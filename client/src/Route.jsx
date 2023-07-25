@@ -22,9 +22,13 @@ import VariantIndex from "./modules/library/variant/variant.index"
 import AccountIndex from "./modules/system/account/account.index"
 import AccountLogin from "./modules/system/account/account.login"
 import ExpensesIndex from "./modules/system/expenses/expenses.index"
+import PermissionIndex from "./modules/system/permission/permission.index"
+import PrintBase from "./modules/system/prints/print.base"
+import PrintReceipt from "./modules/system/prints/print.receipt"
 import ReportsIndex from "./modules/system/reports/reports.index"
 import RolesIndex from "./modules/system/roles/roles.index"
 import usePrivate from "./utilities/hooks/usePrivate"
+import AppEmpty from "./utilities/interface/application/errormgmt/app.empty"
 import AppErrorFallback from "./utilities/interface/application/errormgmt/app.fallback"
 import AppPageNotFound from "./utilities/interface/application/errormgmt/app.notfound"
 
@@ -45,27 +49,36 @@ const AppRoute = () => {
                     <Route path="/stock-transfer" element={<TransferIndex />} />
                     <Route path="/receiving" element={<ReceivingRecords />} />
                     <Route path="/stock-adjustment" element={<AdjustmentIndex />} />
-                    <Route path="/credit" element={<CreditIndex />} />
+                    <Route path="/credits" element={<CreditIndex />} />
                     <Route path="/cheque-monitor" element={<ChequeIndex />} />
-                    <Route path="/expense" element={<ExpensesIndex />} />
+                    <Route path="/expenses" element={<ExpensesIndex />} />
 
-                    <Route path="/supplier" element={<SupplierIndex />} />
-                    <Route path="/customer" element={<CustomerIndex />} />
-                    <Route path="/category" element={<CategoryIndex />} />
+                    <Route path="/suppliers" element={<SupplierIndex />} />
+                    <Route path="/customers" element={<CustomerIndex />} />
+                    <Route path="/categories" element={<CategoryIndex />} />
                     <Route path="/masterlist">
                         <Route index element={<MasterlistIndex />} />
                         <Route path="variant" element={<VariantIndex />} />
                     </Route>
-                    <Route path="/option" element={<OptionIndex />} />
-                    <Route path="/inclusion" element={<InclusionIndex />} />
-                    <Route path="/branch" element={<BranchIndex />} />
+                    <Route path="/options" element={<OptionIndex />} />
+                    <Route path="/inclusions" element={<InclusionIndex />} />
+                    <Route path="/branches" element={<BranchIndex />} />
 
-                    <Route path="/users" element={<AccountIndex />} />
+                    <Route path="/accounts" element={<AccountIndex />} />
                     <Route path="/reports" element={<ReportsIndex />} />
                     <Route path="/roles" element={<RolesIndex />} />
+                    <Route path="/permissions" element={<PermissionIndex />} />
                 </Route>
             </Route>
 
+            <Route path="/print" element={<PrintBase />} >
+                <Route index element={<AppEmpty />} />
+
+                <Route path="receipt" >
+                    <Route index element={<PrintReceipt />} />
+                    <Route path=":id" element={<PrintReceipt />} />
+                </Route>
+            </Route>
             <Route path="/error" element={<AppErrorFallback />} />
             <Route path="*" element={<AppPageNotFound />} />
         </Routes>

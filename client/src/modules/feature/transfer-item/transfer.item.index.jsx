@@ -29,12 +29,6 @@ const TransmitIndex = () => {
         }
     }, [dataSelector.notifier])
 
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.log("done")
-        }
-    }, [isSuccess, isLoading])
-
     const toggleNewEntry = () => {
         dispatch(resetTransmitItem())
         dispatch(showTransmitManager())

@@ -43,12 +43,6 @@ const InventoryIndex = () => {
         }
     }, [dataSelector.notifier, auth])
 
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.log("done")
-        }
-    }, [isSuccess, isLoading])
-
     const toggleNewEntry = () => {
         dispatch(resetInventoryItem())
         dispatch(showInventoryManager())

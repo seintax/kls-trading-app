@@ -8,6 +8,7 @@ import useYup from "../../../utilities/hooks/useYup"
 import DataInputs from "../../../utilities/interface/datastack/data.inputs"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
+import { useFetchAllRolesMutation } from "../roles/roles.services"
 import { resetAccountManager, setAccountNotifier } from "./account.reducer"
 import { useCreateAccountMutation, useUpdateAccountMutation } from "./account.services"
 
@@ -23,14 +24,15 @@ const AccountManage = () => {
     const toast = useToast()
 
     const [libBranches, setLibBranches] = useState()
+    const [libRoles, setLibRoles] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
+    const [allRoles] = useFetchAllRolesMutation()
     const [createAccount] = useCreateAccountMutation()
     const [updateAccount] = useUpdateAccountMutation()
 
     useEffect(() => {
         const instantiate = async () => {
-            // fetch all library dependencies here. (e.g. dropdown values, etc.)
             await allBranches()
                 .unwrap()
                 .then(res => {
@@ -48,6 +50,19 @@ const AccountManage = () => {
                             : initial
                         setLibBranches(options)
 
+                    }
+                })
+                .catch(err => console.error(err))
+            await allRoles()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        if (isDev(auth)) {
+                            setLibRoles(FormatOptionsWithEmptyLabel(res?.arrayResult, "name", "name", "Select user roles"))
+                            return
+                        }
+                        setLibRoles(FormatOptionsWithEmptyLabel(res?.arrayResult
+                            ?.filter(f => f.name !== "DevOp" && f.name !== "SysAd"), "name", "name", "Select user roles"))
                     }
                 })
                 .catch(err => console.error(err))
@@ -75,7 +90,8 @@ const AccountManage = () => {
                 name: init(item.name),
                 store: init(item.store),
                 pass: "",
-                repass: ""
+                repass: "",
+                role: init(item.role),
             })
         }
     }, [instantiated])
@@ -121,6 +137,14 @@ const AccountManage = () => {
                     name='repass'
                     errors={errors}
                     autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
+                <FormEl.Select
+                    label='User Role'
+                    register={register}
+                    name='role'
+                    errors={errors}
+                    options={libRoles}
                     wrapper='lg:w-1/2'
                 />
             </>

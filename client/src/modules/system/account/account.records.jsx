@@ -57,6 +57,12 @@ const AccountRecords = () => {
         ]
     }
 
+    const renderAccess = (store, role) => {
+        if (!role) return store
+        if (store === role) return store
+        return `${store}/${role}`
+    }
+
     const items = (item) => {
         return [
             {
@@ -72,7 +78,7 @@ const AccountRecords = () => {
             {
                 value: isDev(item) && !isDev(auth)
                     ? <span className="text-[10px] px-2 py-1 bg-gray-300 italic text-gray-500 rounded-md no-select uppercase">Confidential</span>
-                    : item.store
+                    : renderAccess(item.store, item.role)
             },
             {
                 value: isDev(item) && !isDev(auth)

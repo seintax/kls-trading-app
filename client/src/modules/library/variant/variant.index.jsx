@@ -44,7 +44,6 @@ const VariantIndex = () => {
 
     useEffect(() => {
         if (!isLoading && isSuccess) {
-            console.log("done")
             return () => {
                 dispatch(setVariantData([]))
                 dispatch(setVariantNotifier(false))

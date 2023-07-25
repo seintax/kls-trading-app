@@ -10,6 +10,8 @@ const initialState = {
     total: 0,
     balance: 0,
     creditor: {},
+    customer: {},
+    payor: false,
     manager: false,
     notifier: false,
     payments: false,
@@ -31,6 +33,12 @@ const paymentSlice = createSlice({
         },
         resetPaymentItem: (state) => {
             state.item = {}
+        },
+        setPaymentCustomer: (state, action) => {
+            state.customer = action.payload
+        },
+        resetPaymentCustomer: (state) => {
+            state.customer = {}
         },
         setPaymentPaid: (state, action) => {
             state.paid = [...state.paid, action.payload]
@@ -72,6 +80,12 @@ const paymentSlice = createSlice({
         resetPaymentDiscount: (state) => {
             state.discount = false
         },
+        showPaymentPayor: (state) => {
+            state.payor = true
+        },
+        resetPaymentPayor: (state) => {
+            state.payor = false
+        },
         showPaymentManager: (state) => {
             state.manager = true
         },
@@ -98,6 +112,8 @@ const paymentSlice = createSlice({
             state.method = ""
             state.total = 0
             state.balance = 0
+            state.customer = {}
+            state.payor = false
             state.manager = false
             state.payments = false
             state.discount = false
@@ -121,6 +137,8 @@ export const {
     setPaymentData,
     setPaymentItem,
     resetPaymentItem,
+    setPaymentCustomer,
+    resetPaymentCustomer,
     setPaymentPaid,
     removePaymentPaid,
     resetPaymentPaid,
@@ -134,6 +152,8 @@ export const {
     showPaymentDiscount,
     resetPaymentDiscount,
     setPaymentNotifier,
+    showPaymentPayor,
+    resetPaymentPayor,
     showPaymentManager,
     resetPaymentManager,
     setPaymentMethod,

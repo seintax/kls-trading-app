@@ -6,7 +6,7 @@ import DevLogo from "../../../assets/logo.ico"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
-import { setCredentials } from "../../../utilities/redux/slices/authSlice"
+import { setCredentials, setRole, setToken } from "../../../utilities/redux/slices/authSlice"
 import { useLoginMutation } from "./account.services"
 
 const AccountLogin = () => {
@@ -34,12 +34,12 @@ const AccountLogin = () => {
         const { user, pass } = login
         await authLogin({ user, pass }).unwrap()
             .then(res => {
-                localStorage.setItem("token", res.token)
+                dispatch(setRole(res.role))
+                dispatch(setToken(res.token))
                 toast.userNotify(user)
                 dispatch(setCredentials(res.data))
             })
             .catch(err => console.error(err))
-
         seterror("Invalid credentials. Please try again.")
     }
 

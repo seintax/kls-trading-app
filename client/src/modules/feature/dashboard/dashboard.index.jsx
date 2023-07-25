@@ -9,13 +9,23 @@ import {
     UsersIcon
 } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { Outlet } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
+import { isDev, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
+import useAuthenticate from "../../../utilities/hooks/useAuthenticate"
+import useLogout from "../../../utilities/hooks/useLogout"
 import AppBreadcrumbs from "../../../utilities/interface/application/aesthetics/app.breadcrumb"
 import AppSideBar from "../../../utilities/interface/application/navigation/app.sidebar"
 import AppSideMenu from "../../../utilities/interface/application/navigation/app.sidemenu"
 import NotificationContainer from "../../../utilities/interface/notification/notification.container"
+import { defaultRole } from "../../../utilities/variables/string.variables"
+import { useUpdateAccountMutation } from "../../system/account/account.services"
+import { setPermissionCache } from "../../system/permission/permission.reducer"
+import { useFetchAllPermissionMutation } from "../../system/permission/permission.services"
+import { setRolesAccess, setRolesCache } from "../../system/roles/roles.reducer"
+import { useCreateRolesMutation, useFetchAllRolesMutation } from "../../system/roles/roles.services"
 
 export const userNavigation = [
     { name: "My Profile", href: "/profile" },
@@ -43,9 +53,9 @@ const menulist = [
         icon: ClipboardDocumentCheckIcon,
         cascade: false,
         children: [
-            { name: "Credits", href: "/credit" },
+            { name: "Credits", href: "/credits" },
             { name: "Cheque Monitor", href: "/cheque-monitor" },
-            { name: "Expenses", href: "/expense" },
+            { name: "Expenses", href: "/expenses" },
         ]
     },
     {
@@ -53,32 +63,137 @@ const menulist = [
         icon: NewspaperIcon,
         cascade: false,
         children: [
-            { name: "Branches", href: "/branch", exclusive: ["DevOp"] },
-            { name: "Suppliers", href: "/supplier" },
-            { name: "Customers", href: "/customer" },
-            { name: "Categories", href: "/category" },
+            { name: "Branches", href: "/branches" },
+            { name: "Suppliers", href: "/suppliers" },
+            { name: "Customers", href: "/customers" },
+            { name: "Categories", href: "/categories" },
             { name: "Masterlist", href: "/masterlist" },
-            { name: "Options", href: "/option" },
-            { name: "Inclusions", href: "/inclusion" },
+            { name: "Options", href: "/options" },
+            { name: "Inclusions", href: "/inclusions" },
+            { name: "Permissions", href: "/permissions" },
         ]
     },
     { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
-    { name: "Accounts", href: "/users", icon: UsersIcon, current: false },
-    { name: "Roles", href: "/roles", icon: UserGroupIcon, current: false, exclusive: ["DevOp"] },
+    { name: "Roles", href: "/roles", icon: UserGroupIcon, current: false },
+    { name: "Accounts", href: "/accounts", icon: UsersIcon, current: false },
 ]
 
 const DashboardIndex = () => {
+    const permissionSelector = useSelector(state => state.permission)
+    const roleSelector = useSelector(state => state.roles)
+    const authSelector = useSelector(state => state.roles)
     const [sidebarSideMenu, setSidebarSideMenu] = useState(false)
     const [sideMenuItems, setSideMenuItems] = useState()
+    const [instance, setInstance] = useState(true)
+    const [noDev, setNoDev] = useState(false)
     const { trail } = useClientContext()
+    const authenticate = useAuthenticate()
+    const dispatch = useDispatch()
+    const { logout } = useLogout()
     const auth = useAuth()
 
+    const [allRoles] = useFetchAllRolesMutation()
+    const [allPermissions] = useFetchAllPermissionMutation()
+    const [createRole] = useCreateRolesMutation()
+    const [updateAccount] = useUpdateAccountMutation()
+
+    const formatToJSONObject = (array) => {
+        let jsonObject = {}
+        array?.map(permission => {
+            let usableJson = JSON.parse(permission.json)
+            let jsonArray = {}
+            for (const prop in usableJson) {
+                if (usableJson[prop])
+                    jsonArray = {
+                        ...jsonArray,
+                        [prop]: usableJson[prop]
+                    }
+            }
+            jsonObject = {
+                ...jsonObject,
+                [permission.name]: {
+                    ...jsonArray
+                }
+            }
+        })
+        return jsonObject
+    }
+
     useEffect(() => {
-        const instantiate = async () => {
+        const roleauth = async () => {
+            await allRoles()
+                .unwrap()
+                .then(async (res) => {
+                    if (res.success) {
+                        let dev = res?.arrayResult?.filter(f => f.name === defaultRole)
+                        if (isEmpty(dev.length)) setNoDev(true)
+                        dispatch(setRolesCache(res?.arrayResult))
+                    }
+                })
+                .catch(err => console.error(err))
         }
 
-        instantiate()
-    }, [])
+        const permissions = async () => {
+            await allPermissions()
+                .unwrap()
+                .then(async (res) => {
+                    if (res.success) {
+                        dispatch(setPermissionCache(res?.arrayResult))
+                    }
+                })
+                .catch(err => console.error(err))
+        }
+
+        const instantiate = async () => {
+            await roleauth()
+            await permissions()
+
+            if (!authenticate) {
+                logout()
+            }
+            setInstance(false)
+        }
+
+        if (instance) instantiate()
+    }, [instance])
+
+    useEffect(() => {
+        if (isDev(auth) && noDev && permissionSelector.cache.length) {
+            const registerDev = async () => {
+                let json = JSON.stringify(formatToJSONObject(permissionSelector.cache))
+                await createRole({ name: defaultRole, permission: json })
+                    .unwrap()
+                    .then(async (res) => {
+                        if (res.success) {
+                            await updateAccount({ role: defaultRole, id: auth.id })
+                                .unwrap()
+                                .then(res => {
+                                    if (res.success) {
+                                        setNoDev(false)
+                                    }
+                                })
+                                .catch(err => console.error(err))
+                        }
+                    })
+                    .catch(err => console.error(err))
+            }
+            if (window.confirm("Do you wish to create a dev role?")) {
+                registerDev()
+            }
+        }
+    }, [noDev, auth, permissionSelector.cache])
+
+    useEffect(() => {
+        if (auth.role && roleSelector.cache.length) {
+            let matchRoles = roleSelector.cache.filter(f => f.name === auth.role)
+            let matched = matchRoles.length ? matchRoles[0] : undefined
+            dispatch(setRolesAccess({
+                ...matched,
+                permission: JSON.parse(matched?.permission)
+            }))
+        }
+    }, [auth, roleSelector.cache])
+
 
     return (
         <div className="flex h-screen flex-col">

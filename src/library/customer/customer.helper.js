@@ -11,6 +11,7 @@ const customer = new Table("pos_archive_customer", {
     count: 'cust_count',
     value: 'cust_value',
     waive: 'cust_waive',
+    sales: 'cust_sales',
     status: 'cust_status',
 })
 
@@ -27,6 +28,15 @@ customer.register("customer_update_credit",
                 FROM pos_sales_credit 
                 WHERE cred_creditor=cust_id 
                     AND cred_status='ON-GOING'
+            )
+        WHERE cust_id=@id`)
+
+customer.register("customer_update_sales",
+    `UPDATE pos_archive_customer SET 
+        cust_sales=(
+                SELECT IFNULL(SUM(trns_net),0) 
+                FROM pos_sales_transaction 
+                WHERE trns_customer=cust_id
             )
         WHERE cust_id=@id`)
 

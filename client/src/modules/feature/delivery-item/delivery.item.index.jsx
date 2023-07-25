@@ -29,12 +29,6 @@ const ReceiptIndex = () => {
         }
     }, [dataSelector.notifier])
 
-    useEffect(() => {
-        if (!isLoading && isSuccess) {
-            console.log("done")
-        }
-    }, [isSuccess, isLoading])
-
     const toggleNewEntry = () => {
         dispatch(resetReceiptItem())
         dispatch(showReceiptManager())

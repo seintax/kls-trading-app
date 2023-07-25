@@ -5,8 +5,11 @@ CREATE TABLE sys_account (
     acct_fullname    varchar(99),
     acct_confirmed   tinyint DEFAULT 0,
     acct_isblocked   tinyint DEFAULT 0,
-    acct_store       varchar(50)
+    acct_store       varchar(50),
+    acct_role        varchar(99)
 );
+
+ALTER TABLE sys_account ADD COLUMN acct_role        varchar(99);
 
 INSERT INTO sys_account (acct_email,acct_password,acct_fullname,acct_store) VALUES ('SEINTAX','$2a$10$EwcQz1bHeYqo8fbgDMSBl.MWIgExkqECMh52ABA2.qrnFOv8gbt/m','DEVELOPER','DevOp');
 
@@ -24,13 +27,14 @@ CREATE TABLE sys_user (
 
 CREATE TABLE sys_permission (
     perm_id          int auto_increment primary key,
-    perm_account     int,
-    perm_data        varchar(99)
+    perm_name        varchar(50) unique,
+    perm_json        text
 );
 
 CREATE TABLE sys_roles (
     role_id          int auto_increment primary key,
-    role_name        varchar(99)
+    role_name        varchar(99) unique,
+    role_permission  text
 );
 
 CREATE TABLE lib_category (
@@ -75,8 +79,13 @@ CREATE TABLE pos_archive_customer (
     cust_count       int DEFAULT 0 COMMENT 'running count',
     cust_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
     cust_waive       decimal(30,2) DEFAULT 0,
+    cust_sales       decimal(30,2) DEFAULT 0,
     cust_status      varchar(1) DEFAULT "A"
 );
+
+ALTER TABLE pos_archive_customer ADD COLUMN cust_sales decimal(30,2) DEFAULT 0 AFTER cust_waive;
+
+INSERT INTO pos_archive_customer (cust_id,cust_name) VALUES (0,'Walkin Customer');
 
 DROP TABLE pos_archive_store;
 CREATE TABLE pos_archive_store (
@@ -326,8 +335,11 @@ CREATE TABLE pos_sales_transaction (
     trns_method      varchar(30),
     trns_status      varchar(20) DEFAULT 'COMPLETED',
     trns_account     int,
+    trns_customer    int.
     trns_date        date
 );
+
+ALTER TABLE pos_sales_transaction ADD COLUMN trns_customer int AFTER trns_account;
 
 DROP TABLE pos_sales_dispensing;
 CREATE TABLE pos_sales_dispensing (
