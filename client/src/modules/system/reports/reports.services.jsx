@@ -14,9 +14,72 @@ export const reportsApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['reports']
         }),
+        weeklyGrossSalesReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklygrosssales`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
+        weeklyRefundsReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklyrefunds`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
+        weeklyDiscountsReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklydiscounts`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
+        weeklyNetSalesReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklynetsales`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
+        weeklyGrossProfitReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklygrossprofit`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
+        weeklyCollectiblesReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklycollectibles`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
+        collectiblesReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/collectibles`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
     })
 })
 
 export const {
-    useWeeklyReportMutation
+    useWeeklyReportMutation,
+    useWeeklyGrossSalesReportMutation,
+    useWeeklyRefundsReportMutation,
+    useWeeklyDiscountsReportMutation,
+    useWeeklyNetSalesReportMutation,
+    useWeeklyGrossProfitReportMutation,
+    useWeeklyCollectiblesReportMutation,
+    useCollectiblesReportMutation
 } = reportsApiSlice

@@ -290,3 +290,7 @@ svg.fill-primary>path {
 .set-drop-shadow {
   filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
+
+.card-font {
+  font-family: Helvetica, sans-serif;
+}

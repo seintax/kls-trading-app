@@ -198,6 +198,10 @@ const BrowserCheckout = () => {
             toast.showWarning("Please settle the checkout balance.")
             return
         }
+        if (isEmpty(paymentSelector.customer?.id)) {
+            toast.showWarning("Please provide a payor for checkout.")
+            return
+        }
         await maxAccountTransaction({ account: auth.id, date: sqlDate() })
             .unwrap()
             .then(async (res) => {

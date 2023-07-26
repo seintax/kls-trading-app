@@ -1,10 +1,17 @@
+import { XMarkIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
 import useToast from "../../../utilities/hooks/useToast"
+import DashboardCards from "./dashboard.cards"
 import DashboardGraph from "./dashboard.graph"
+import { resetDashboardSummary } from "./dashboard.reducer"
+import DashboardSummary from "./dashboard.summary"
 
 const DashboardPanel = ({ id }) => {
+    const dashboardSelector = useSelector(state => state.dashboard)
+    const dispatch = useDispatch()
     const location = useLocation()
     const { handleTrail, user } = useClientContext()
     const toast = useToast()
@@ -24,37 +31,24 @@ const DashboardPanel = ({ id }) => {
         )
     }
 
+    const onClose = () => {
+        dispatch(resetDashboardSummary())
+    }
+
     return (
         <div className="h-full flex-none w-full">
             <div className="flex flex-col gap-3 w-full h-full">
-                <div className="flex gap-5 text-sm">
-                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
-                        Gross Sales
-                        <div className="text-xl">1,000.00</div>
+                <DashboardCards />
+                <div className="flex w-full h-full gap-4">
+                    <div className={`${dashboardSelector.summary ? "w-2/3" : "hidden"} transition ease-in-out duration-300 h-full p-5 border border-gray-300 rounded-[20px] relative`}>
+                        <span className="absolute right-5 p-0.5 bg-secondary-500" onClick={() => onClose()}>
+                            <XMarkIcon className="w-4 h-4 text-white cursor-pointer" />
+                        </span>
+                        <DashboardSummary />
                     </div>
-                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
-                        Refunds
-                        <div className="text-xl">1,000.00</div>
+                    <div className={`${dashboardSelector.summary ? "w-1/3" : "w-full"} transition ease-in-out duration-300 h-full p-5 border border-gray-300 rounded-[20px]`}>
+                        <DashboardGraph />
                     </div>
-                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
-                        Discounts
-                        <div className="text-xl">1,000.00</div>
-                    </div>
-                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
-                        Net Sales
-                        <div className="text-xl">1,000.00</div>
-                    </div>
-                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
-                        Gross Profit
-                        <div className="text-xl">1,000.00</div>
-                    </div>
-                    <div className="w-full flex flex-col p-5 border border-gray-300 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 cursor-pointer transition ease-in-out duration-500">
-                        Collectibles
-                        <div className="text-xl">1,000.00</div>
-                    </div>
-                </div>
-                <div className="w-full h-full p-5 border border-gray-300">
-                    <DashboardGraph />
                 </div>
             </div>
         </div>
