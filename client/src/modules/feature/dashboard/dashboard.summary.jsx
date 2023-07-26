@@ -86,6 +86,16 @@ const DashboardSummary = () => {
         }
     }
 
+    const isLoading = () => {
+        return grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading
+    }
+
+    useEffect(() => {
+        if (grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading) {
+            setline({ label: [], datasets: [] })
+        }
+    }, [grosssalesLoading, refundsLoading, discountsLoading, netsalesLoading, grossprofitLoading, collectibleLoading])
+
     useEffect(() => {
         const weeklySales = async () => {
             if (dashboardSelector.summary === "Gross Sales") {
@@ -131,11 +141,11 @@ const DashboardSummary = () => {
 
 
     return (
-        <div className="flex flex-col w-full h-full p-3 font-mono relative">
-            <div className={`${(grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading) ? "" : "hidden"} absolute z-10 top-0 l-0 w-full h-full transition ease-in duration-300`}>
+        <div className="flex flex-col w-full h-full p-3 font-mono">
+            {line ? <AppLineChart data={line} options={options} /> : null}
+            <div className={`${(isLoading()) ? "" : "hidden"} absolute z-10 top-0 left-0 w-full h-full transition ease-in duration-300`}>
                 <AppSuspense />
             </div>
-            {line ? <AppLineChart data={line} options={options} /> : null}
         </div>
     )
 }

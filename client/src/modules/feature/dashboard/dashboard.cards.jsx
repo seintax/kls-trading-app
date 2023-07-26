@@ -2,7 +2,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid"
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { firstDayOfWeekByDate, lastDayOfWeekByDate } from "../../../utilities/functions/datetime.functions"
+import { firstDayOfWeekByDate, lastDayOfWeekByDate, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import { useCollectiblesReportMutation, useWeeklyDiscountsReportMutation, useWeeklyGrossProfitReportMutation, useWeeklyGrossSalesReportMutation, useWeeklyNetSalesReportMutation, useWeeklyRefundsReportMutation } from "../../system/reports/reports.services"
 import { setDashboardSummary, setDashboardWeek } from "./dashboard.reducer"
@@ -16,6 +16,7 @@ const DashboardCards = () => {
     const [totalNetSales, setTotalNetSales] = useState(0)
     const [totalGrossProfit, setTotalGrossProfit] = useState(0)
     const [totalCollectibles, setTotalCollectibles] = useState(0)
+    const currentWeek = firstDayOfWeekByDate(sqlDate())
 
     const [grossSales, { isLoading: grosssalesLoading }] = useWeeklyGrossSalesReportMutation()
     const [refunds, { isLoading: refundsLoading }] = useWeeklyRefundsReportMutation()
@@ -81,7 +82,9 @@ const DashboardCards = () => {
         <div className="w-full flex flex-col gap-5">
             <div className="flex justify-center text-black font-bold p-2 border border-1 border-gray-300 rounded-[20px] text-[12px] card-font relative items-center no-select">
                 <div className="w-full text-center py-3 bg-gradient-to-bl from-primary-300 to-white rounded-[20px] font-mono text-[14px] flex flex-col gap-0.5">
-                    <span className="text-xs">Sales Summary for the Current Week:</span>
+                    <span className="text-xs">
+                        Sales Summary for the {currentWeek === dashboardSelector.week ? "Current" : "Previous"} Week:
+                    </span>
                     <span>
                         {firstDayOfWeekByDate(dashboardSelector.week, "MMM DD, YYYY")} - {lastDayOfWeekByDate(dashboardSelector.week, "MMM DD, YYYY")}
                     </span>

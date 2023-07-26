@@ -22,16 +22,8 @@ const DashboardPanel = ({ id }) => {
         handleTrail(location.pathname.split("/").filter(path => path !== id).join("/"))
     }, [location])
 
-    const fetch = async () => {
-        await toast.showPending(
-            new Promise(resolve => setTimeout(resolve, 3000)),
-            "Please wait...",
-            "Fetch successful",
-            "Fetch has failed"
-        )
-    }
-
     const onClose = () => {
+        console.log("watas")
         dispatch(resetDashboardSummary())
     }
 
