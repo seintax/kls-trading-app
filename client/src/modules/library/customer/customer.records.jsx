@@ -28,6 +28,10 @@ const CustomerRecords = () => {
     }
 
     const toggleDelete = (item) => {
+        if (item.id === 0) {
+            toast.showWarning("Cannot delete a system constant value.")
+            return
+        }
         assignDeleteCallback({ item: item, callback: handleDelete })
         dispatch(showDelete({ description: "Customer", reference: item.name }))
     }

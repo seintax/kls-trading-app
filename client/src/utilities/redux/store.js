@@ -7,6 +7,7 @@ import reimburseReducer from "../../modules/feature/cashering/reimburse.reducer"
 import returnedReducer from "../../modules/feature/cashering/returned.reducer"
 import chequeReducer from "../../modules/feature/cheque/cheque.reducer"
 import creditReducer from "../../modules/feature/credit/credit.reducer"
+import dashboardReducer from "../../modules/feature/dashboard/dashboard.reducer"
 import receiptReducer from "../../modules/feature/delivery-item/delivery.item.reducer"
 import deliveryReducer from "../../modules/feature/delivery/delivery.reducer"
 import adjustmentReducer from "../../modules/feature/inventory-item/inventory.item.reducer"
@@ -69,6 +70,7 @@ const store = configureStore({
         roles: rolesReducer,
         reports: reportsReducer,
         printing: printingReducer,
+        dashboard: dashboardReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true

@@ -40,3 +40,13 @@ export function shortDate12Time(datevalue) {
 export function longDateTime(datevalue) {
     if (datevalue) return moment(datevalue).format("MMMM DD, YYYY hh:mm:ss A")
 }
+
+export function firstDayOfWeekByDate(datevalue, format = "YYYY-MM-DD") {
+    let index = moment(datevalue).day()
+    return moment(datevalue).subtract(index, 'days').format(format)
+}
+
+export function lastDayOfWeekByDate(datevalue, format = "") {
+    let index = 6 - moment(datevalue).day()
+    return moment(datevalue).add(index, 'days').format(format)
+}

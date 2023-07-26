@@ -8,8 +8,56 @@ const DashboardGraph = () => {
 
     const [weeklyReports] = useWeeklyReportMutation()
 
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                ticks: {
+                    color: '#000000',
+                    padding: 30,
+                    font: {
+                        size: 10,
+                        family: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    color: '#000000',
+                    padding: 30,
+                    font: {
+                        size: 10,
+                        family: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    color: "#000000",
+                    font: {
+                        family: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                    },
+                }
+            },
+            title: {
+                display: true,
+                text: 'Collection Summary Data for the Past 15 Days',
+                font: {
+                    size: 14,
+                    family: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                },
+                color: '#000000'
+                // color: '#ef4444'
+            }
+        }
+    }
+
     useEffect(() => {
-        const weeklySales = async () => {
+        const collectionData = async () => {
             await weeklyReports({
                 fr: moment(new Date()).subtract(15, 'days').format("YYYY-MM-DD"),
                 to: moment(new Date()).format("YYYY-MM-DD")
@@ -25,7 +73,7 @@ const DashboardGraph = () => {
                                     data: res?.data.map((data) => data.cash),
                                     borderColor: '#88df8f',
                                     color: '#ffffff',
-                                    backgroundColor: ["#02680b"],
+                                    backgroundColor: ["#02680b90"],
                                     pointStyle: 'circle',
                                     pointRadius: 8,
                                     pointHoverRadius: 15
@@ -35,7 +83,7 @@ const DashboardGraph = () => {
                                     data: res?.data.map((data) => data.cheque),
                                     borderColor: '#df9588',
                                     color: '#ffffff',
-                                    backgroundColor: ["#680e02"],
+                                    backgroundColor: ["#680e0290"],
                                     pointStyle: 'circle',
                                     pointRadius: 8,
                                     pointHoverRadius: 15
@@ -45,7 +93,7 @@ const DashboardGraph = () => {
                                     data: res?.data.map((data) => data.gcash),
                                     borderColor: '#889cdf',
                                     color: '#ffffff',
-                                    backgroundColor: ["#022668"],
+                                    backgroundColor: ["#02266890"],
                                     pointStyle: 'circle',
                                     pointRadius: 8,
                                     pointHoverRadius: 15
@@ -55,16 +103,15 @@ const DashboardGraph = () => {
                     }
                 })
                 .catch(err => console.error(err))
-
         }
 
-        weeklySales()
+        collectionData()
     }, [])
 
 
     return (
-        <div className="flex w-full h-full p-3">
-            {line ? <AppLineChart data={line} /> : null}
+        <div className="flex w-full h-full p-3 font-mono">
+            {line ? <AppLineChart data={line} options={options} /> : null}
         </div>
     )
 }
