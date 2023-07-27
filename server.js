@@ -62,6 +62,7 @@ app.use('/app', approutes.roles)
 
 app.use('/app', approutes.complex)
 app.use('/app', approutes.reports)
+app.use('/app', approutes.dashboard)
 
 app.all('*', (req, res) => {
     if (req.accepts('html')) {

@@ -1,12 +1,12 @@
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import AppLineChart from "../../../utilities/interface/application/aesthetics/app.chart.line"
-import { useWeeklyReportMutation } from "../../system/reports/reports.services"
+import { useWeeklyDashboardMutation } from "./dashboard.services"
 
-const DashboardGraph = () => {
+const DashboardGraphCollection = () => {
     const [line, setline] = useState()
 
-    const [weeklyReports] = useWeeklyReportMutation()
+    const [weeklyReports] = useWeeklyDashboardMutation()
 
     const options = {
         responsive: true,
@@ -116,4 +116,4 @@ const DashboardGraph = () => {
     )
 }
 
-export default DashboardGraph
+export default DashboardGraphCollection

@@ -2,7 +2,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { userNavigation } from "../../../../modules/feature/dashboard/dashboard.index.jsx"
+import { userNavigation } from "../../../../modules/app/app.index.jsx"
 import { isEmpty } from "../../../functions/string.functions.jsx"
 import useAuth from "../../../hooks/useAuth.jsx"
 import AppNavigation from "./app.navigation.jsx"
@@ -152,7 +152,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
                         >
                             {/* large viewport */}
                             <NavLink
-                                className={`${(currentMenu === item.name && ((currentCascade === item.name && !isCascaded) || currentCascade !== item.name)) ? activelgLink : normalLink} w-full group hidden lg:flex items-center px-1.5 lg:px-2 py-2 text-xs font-medium rounded-md cursor-pointer`}
+                                className={`${(currentMenu === item.name && ((currentCascade === item.name && !isCascaded) || currentCascade !== item.name)) ? activelgLink : normalLink} w-full group hidden lg:flex items-center px-1.5 lg:px-2 py-2 text-xs font-medium rounded-md cursor-pointer focus:outline-none`}
                                 onClick={() => handleMenuSelect(item)}
                             >
                                 <item.icon

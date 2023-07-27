@@ -34,6 +34,7 @@ const roles = require('./src/system/roles/roles.route')
 
 const complex = require('./src/complex/complex.route')
 const reports = require('./src/system/reports/reports.route')
+const dashboard = require('./src/system/dashboard/dashboard.route')
 
 module.exports = {
     transaction,
@@ -66,5 +67,6 @@ module.exports = {
     permission,
     roles,
     complex,
-    reports
+    reports,
+    dashboard,
 }

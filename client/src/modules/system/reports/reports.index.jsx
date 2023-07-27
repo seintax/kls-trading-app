@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector } from "react-redux"
+import ReportsFormSales from "./reports.form.sales"
+import ReportsMenu from "./reports.menu"
 
 const ReportsIndex = () => {
+    const reportSelector = useSelector(state => state.reports)
+
+    useEffect(() => {
+        console.log(reportSelector.report)
+    }, [reportSelector.report])
+
     return (
-        <div>ReportsIndex</div>
+        <div className="w-full min-h-full flex lg:pl-56 relative">
+            <ReportsMenu />
+            <div className="pl-5 w-full">
+                <ReportsFormSales />
+            </div>
+        </div>
     )
 }
 
