@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux"
+import ReportsFormExpenses from "./reports.form.expenses"
 import ReportsFormSales from "./reports.form.sales"
+import ReportsFormSummary from "./reports.form.summary"
 import ReportsMenu from "./reports.menu"
 
 const ReportsIndex = () => {
@@ -15,6 +17,8 @@ const ReportsIndex = () => {
             <ReportsMenu />
             <div className="pl-5 w-full">
                 <ReportsFormSales />
+                <ReportsFormSummary />
+                <ReportsFormExpenses />
             </div>
         </div>
     )

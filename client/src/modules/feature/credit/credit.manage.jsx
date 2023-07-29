@@ -193,11 +193,9 @@ const CreditManage = () => {
             }
         }
 
-        console.log(data)
         await sqlSettleCredit(data)
             .unwrap()
             .then(res => {
-                console.log(res)
                 if (res.success) {
                     toast.showCreate("Credit settlement successfully completed.")
                     onCompleted()

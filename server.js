@@ -25,8 +25,6 @@ app.use(cors(corsoptions))
 app.use('/', express.static(path.join(__dirname, '/public')))
 app.use('/', require('./res/routes/root'))
 
-console.log("1")
-
 app.use('/app', approutes.transaction)
 app.use('/app', approutes.dispensing)
 app.use('/app', approutes.credit)

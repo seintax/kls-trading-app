@@ -3,15 +3,18 @@ import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { amount } from "../../../utilities/functions/number.funtions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInputs from "../../../utilities/interface/datastack/data.inputs"
 import FormEl from "../../../utilities/interface/forminput/input.active"
+import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllInclusionMutation } from "../../library/inclusion/inclusion.services"
 import { resetExpensesManager, setExpensesNotifier } from "./expenses.reducer"
 import { useCreateExpensesMutation, useUpdateExpensesMutation } from "./expenses.services"
 
 const ExpensesManage = () => {
+    const auth = useAuth()
     const dataSelector = useSelector(state => state.expenses)
     const dispatch = useDispatch()
     const [instantiated, setInstantiated] = useState(false)
@@ -22,7 +25,9 @@ const ExpensesManage = () => {
     const toast = useToast()
 
     const [libInclusion, setLibInclusion] = useState()
+    const [libBranches, setLibBranches] = useState()
 
+    const [allBranches] = useFetchAllBranchMutation()
     const [allInclusion] = useFetchAllInclusionMutation()
     const [createExpenses] = useCreateExpensesMutation()
     const [updateExpenses] = useUpdateExpensesMutation()
@@ -30,6 +35,14 @@ const ExpensesManage = () => {
     useEffect(() => {
         const instantiate = async () => {
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
+            await allBranches()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setLibBranches(FormatOptionsWithEmptyLabel(res?.arrayResult, "code", "name", "Select a branch"))
+                    }
+                })
+                .catch(err => console.error(err))
             await allInclusion()
                 .unwrap()
                 .then(res => {
@@ -64,6 +77,7 @@ const ExpensesManage = () => {
                 cash: init(item.cash),
                 change: init(item.change),
                 remarks: init(item.remarks),
+                account: auth.id,
                 notes: init(item.notes),
             })
         }
@@ -126,6 +140,15 @@ const ExpensesManage = () => {
                     register={register}
                     name='notes'
                     errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
+                <FormEl.Select
+                    label='Branch'
+                    register={register}
+                    name='store'
+                    errors={errors}
+                    options={libBranches}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />

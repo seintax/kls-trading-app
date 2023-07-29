@@ -1,7 +1,8 @@
-import { PresentationChartLineIcon } from "@heroicons/react/24/outline"
+import { ArrowPathIcon, PresentationChartLineIcon } from "@heroicons/react/24/outline"
 import moment from "moment"
 import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
+import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
@@ -17,20 +18,47 @@ const ReportsFormSales = () => {
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
     const [filters, setFilters] = useState({
-        fr: "2023-07-19",
-        to: "2023-07-27",
+        fr: sqlDate(),
+        to: sqlDate(),
         store: ""
     })
 
-    const [libBranchers, setAllBranches] = useState()
+    const onChange = (e) => {
+        const { name, value } = e.target
+        setFilters(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const [libBranchers, setLibBranches] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
     const [salesByItem] = useSalesByItemReportMutation()
     const [salesByCategory] = useSalesByCategoryReportMutation()
     const [salesByCollection] = useSalesByCollectionReportMutation()
 
+    const inclusion = [
+        "Daily Sales by Item",
+        "Daily Sales by Category",
+        "Daily Sales by Collection",
+    ]
+
     useEffect(() => {
         const instantiate = async () => {
+            await allBranches()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setLibBranches(res?.arrayResult.map(item => {
+                            return {
+                                key: item.code,
+                                value: item.code
+                            }
+                        }))
+                    }
+                })
+                .catch(err => console.error(err))
             if (reportSelector.report === "Daily Sales by Item") {
                 await salesByItem({ fr: filters.fr, to: filters.to, store: filters.store })
                     .unwrap()
@@ -56,7 +84,6 @@ const ReportsFormSales = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
-                            console.log(res)
                             setdata(res.data)
                         }
                     })
@@ -65,7 +92,9 @@ const ReportsFormSales = () => {
             setRefetch(false)
         }
 
-        if (!isEmpty(reportSelector.report || refetch)) instantiate()
+        if (!isEmpty(reportSelector.report) || refetch) {
+            instantiate()
+        }
     }, [reportSelector.report, refetch])
 
     const byItemColumn = {
@@ -153,14 +182,6 @@ const ReportsFormSales = () => {
         }
     }, [data, sorted, reportSelector.report])
 
-    const onChange = (e) => {
-        const { value } = e.target
-        setfilter(prev => ({
-            ...prev,
-            fr: value,
-        }))
-    }
-
     const printData = () => {
         localStorage.setItem(reportSelector.report, JSON.stringify({
             title: reportSelector.report,
@@ -170,8 +191,12 @@ const ReportsFormSales = () => {
         window.open(`/#/print/${reportSelector.report}/${moment(filters.fr).format("MMDDYYYY")}`, '_blank')
     }
 
+    const reLoad = () => {
+        setRefetch(true)
+    }
+
     return (
-        (reportSelector.manager && !isEmpty(reportSelector.report)) ? (
+        (reportSelector.manager && inclusion.includes(reportSelector.report)) ? (
             <>
                 <div className="w-full text-lg uppercase font-bold flex justify-between items-center no-select">
                     <div className="flex gap-4">
@@ -179,11 +204,19 @@ const ReportsFormSales = () => {
                         {reportSelector.report}
                     </div>
                     <div className="flex items-center gap-2">
-                        <input type="date" className="" />
-                        <input type="date" className="" />
-                        <select name="" id="">
+                        <input name="fr" type="date" className="text-sm" value={filters.fr} onChange={onChange} />
+                        <input name="to" type="date" className="text-sm" value={filters.to} onChange={onChange} />
+                        <select name="store" className="text-sm" value={filters.store} onChange={onChange}>
                             <option value="">All</option>
+                            {
+                                libBranchers?.map(branch => (
+                                    <option key={branch.key} value={branch.value}>{branch.key}</option>
+                                ))
+                            }
                         </select>
+                        <button className="button-link py-2" onClick={() => reLoad()}>
+                            <ArrowPathIcon className="w-5 h-5" />
+                        </button>
                     </div>
                 </div>
                 {

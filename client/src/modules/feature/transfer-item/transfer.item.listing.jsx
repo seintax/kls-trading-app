@@ -34,7 +34,6 @@ const TransmitListing = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
-                            console.log(res)
                             dispatch(setTransmitData(res?.arrayResult))
                             dispatch(setTransmitNotifier(false))
                         }
@@ -62,7 +61,6 @@ const TransmitListing = () => {
             toast.showError("Reference id does not exist.")
             return
         }
-        console.log(item)
         let formData = {
             transmit: {
                 delete: true,

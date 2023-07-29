@@ -51,7 +51,6 @@ const ReceiptListing = () => {
     }
 
     const toggleDelete = (item) => {
-        console.log(item)
         assignDeleteCallback({ item: item, callback: handleDelete })
         dispatch(showDelete({ description: "Delivery Receipt Item", reference: `(PO#${StrFn.formatWithZeros(item.purchase, 6)}) ${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` }))
     }

@@ -94,6 +94,7 @@ const reports = {
     expenses: new Query("expenses", `
         SELECT
             expn_inclusion AS expense_name,
+            expn_store AS branch_name,
             COUNT(expn_id) AS expense_count,
             SUM(expn_purchase) AS expense_value
         FROM 
@@ -102,9 +103,9 @@ const reports = {
         WHERE 
             expn_account=acct_id AND 
             expn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
-            acct_store LIKE '%@store%' 
-        GROUP BY DATE(expn_time),acct_store
-        ORDER BY DATE(expn_time)
+            expn_store LIKE '%@store%' 
+        GROUP BY DATE(expn_time),expn_store
+        ORDER BY DATE(expn_time),expn_store
         `
     ),
     purchases: new Query("purchases", `

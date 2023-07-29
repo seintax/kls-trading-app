@@ -320,8 +320,11 @@ CREATE TABLE pos_archive_expenses (
     expn_change      decimal(30,2),
     expn_remarks     varchar(99),
     expn_notes       varchar(150),
-    expn_account     int
+    expn_account     int,
+    expn_store       varchar(50)
 );
+
+ALTER TABLE pos_archive_expenses ADD COLUMN expn_store  varchar(50);
 
 ALTER TABLE pos_archive_expenses ADD COLUMN expn_inclusion   varchar(75) AFTER expn_time;
 

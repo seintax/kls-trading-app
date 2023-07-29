@@ -19,6 +19,8 @@ const initialState = {
             { name: 'Cash-on-Hand', stack: true, sort: 'cash', size: 150 },
             { name: 'Expense', stack: true, sort: 'purchase', size: 150 },
             { name: 'Supplimentary', stack: true, sort: 'change', size: 150 },
+            { name: 'Logged by', stack: true, sort: 'account_name', size: 150 },
+            { name: 'Branch', stack: true, sort: 'store', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }
