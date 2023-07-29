@@ -12,6 +12,7 @@ import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./invent
 
 const InventoryRecords = () => {
     const dataSelector = useSelector(state => state.inventory)
+    const roleSelector = useSelector(state => state.roles)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -64,6 +65,7 @@ const InventoryRecords = () => {
     const actions = (item) => {
         return [
             { type: 'button', trigger: () => toggleView(item), label: 'View' }
+            // { type: 'button', trigger: () => toggleView(item), label: 'View', hidden: roleSelector.access.permission["inventory"]?.show }
         ]
     }
 

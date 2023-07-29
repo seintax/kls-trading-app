@@ -26,7 +26,7 @@ const reports = {
         WHERE 
             sale_item=invt_id AND 
             sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
-            invt_store='@store' 
+            invt_store LIKE '%@store%' 
         GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category,invt_store
         ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category
         `
@@ -44,15 +44,15 @@ const reports = {
         WHERE 
             sale_item=invt_id AND 
             sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
-            invt_store='@store' 
+            invt_store LIKE '%@store%' 
         GROUP BY invt_category,invt_store
         ORDER BY invt_category
         `
     ),
     sales_collection: new Query("sales_collection", `
         SELECT
-            paym_type,
-            paym_method,
+            paym_type AS trans_type,
+            paym_method AS payment_method,
             COUNT(paym_id) AS transaction_count,
             SUM(paym_total) AS payment_total,
             SUM(IF(paym_returned>0, 1, 0)) AS refund_count,
@@ -64,7 +64,7 @@ const reports = {
         WHERE 
             paym_account=acct_id AND 
             paym_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
-            acct_store='@store'
+            acct_store LIKE '%@store%'
         GROUP BY paym_type,paym_method,acct_store
         ORDER BY paym_type,paym_method
         `
@@ -86,7 +86,7 @@ const reports = {
         WHERE 
             sale_item=invt_id AND 
             sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
-            invt_store='@store' 
+            invt_store LIKE '%@store%' 
         GROUP BY DATE(sale_time),invt_store
         ORDER BY DATE(sale_time)
         `
@@ -102,7 +102,7 @@ const reports = {
         WHERE 
             expn_account=acct_id AND 
             expn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
-            acct_store='@store' 
+            acct_store LIKE '%@store%' 
         GROUP BY DATE(expn_time),acct_store
         ORDER BY DATE(expn_time)
         `
@@ -118,7 +118,7 @@ const reports = {
         WHERE 
             expn_account=acct_id AND 
             expn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
-            acct_store='@store' 
+            acct_store LIKE '%@store%' 
         GROUP BY DATE(expn_time),acct_store
         ORDER BY DATE(expn_time)
         `

@@ -14,6 +14,7 @@ import CasheringReturn from "../cashering/cashering.return"
 import PaymentBrowser from "../payment/payment.browser"
 import PaymentCustomer from "../payment/payment.customer"
 import PaymentDiscount from "../payment/payment.discount"
+import PaymentPrinting from "../payment/payment.printing"
 import BrowserCheckout from "./browser.checkout"
 import BrowserPurchase from "./browser.purchase"
 import BrowserQuantity from "./browser.quantity"
@@ -148,6 +149,7 @@ const BrowserRecords = () => {
             <PaymentBrowser />
             <PaymentDiscount />
             <PaymentCustomer />
+            <PaymentPrinting />
             <CasheringReceipts />
             <CasheringLedger />
             <CasheringReturn />

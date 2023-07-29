@@ -5,7 +5,7 @@ import { useSelector } from "react-redux"
 import { currency } from "../../../utilities/functions/number.funtions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
-import { useSalesByItemReportMutation } from "./reports.services"
+import { useSalesByCategoryReportMutation, useSalesByCollectionReportMutation, useSalesByItemReportMutation } from "./reports.services"
 
 const ReportsFormSales = () => {
     const reportSelector = useSelector(state => state.reports)
@@ -18,10 +18,12 @@ const ReportsFormSales = () => {
     const [filters, setFilters] = useState({
         fr: "2023-07-19",
         to: "2023-07-27",
-        store: "JT-MAIN"
+        store: ""
     })
 
     const [salesByItem] = useSalesByItemReportMutation()
+    const [salesByCategory] = useSalesByCategoryReportMutation()
+    const [salesByCollection] = useSalesByCollectionReportMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -35,13 +37,34 @@ const ReportsFormSales = () => {
                     })
                     .catch(err => console.error(err))
             }
+            if (reportSelector.report === "Daily Sales by Category") {
+                await salesByCategory({ fr: filters.fr, to: filters.to, store: filters.store })
+                    .unwrap()
+                    .then(res => {
+                        if (res.success) {
+                            setdata(res.data)
+                        }
+                    })
+                    .catch(err => console.error(err))
+            }
+            if (reportSelector.report === "Daily Sales by Collection") {
+                await salesByCollection({ fr: filters.fr, to: filters.to, store: filters.store })
+                    .unwrap()
+                    .then(res => {
+                        if (res.success) {
+                            console.log(res)
+                            setdata(res.data)
+                        }
+                    })
+                    .catch(err => console.error(err))
+            }
             setRefetch(false)
         }
 
         if (!isEmpty(reportSelector.report || refetch)) instantiate()
     }, [reportSelector.report, refetch])
 
-    const columns = {
+    const byItemColumn = {
         style: '',
         items: [
             { name: 'Product', stack: false, sort: 'product' },
@@ -55,17 +78,63 @@ const ReportsFormSales = () => {
         ]
     }
 
-    const items = (item) => {
-        return [
-            { value: `${item.product} ${item.variant1} ${item.variant2} ${item.variant3}` },
-            { value: item.category },
-            { value: item.item_sold },
-            { value: currency(item.net_sales) },
-            { value: currency(item.goods_cost) },
-            { value: currency(item.gross_profit) },
-            { value: currency(item.sales_type_net) },
-            { value: currency(item.credit_type_net) },
+    const byCategoryColumn = {
+        style: '',
+        items: [
+            { name: 'Category', stack: true, sort: 'category', size: 150 },
+            { name: 'Item Sold', stack: true, sort: 'item_sold', size: 150 },
+            { name: 'Net Sales', stack: true, sort: 'net_sales', size: 150 },
+            { name: 'Cost of Goods', stack: true, sort: 'goods_cost', size: 150 },
+            { name: 'Gross Profit', stack: true, sort: 'gross_profit', size: 150 },
         ]
+    }
+
+    const byCollectionColumn = {
+        style: '',
+        items: [
+            { name: 'Type of Transaction', stack: true, sort: 'trans_type', size: 250 },
+            { name: 'Payment Method', stack: true, sort: 'payment_method', size: 150 },
+            { name: 'No. of Transactions', stack: true, sort: 'transaction_count', size: 150 },
+            { name: 'Total Collection', stack: true, sort: 'payment_total', size: 150 },
+            { name: 'No. of Refunds', stack: true, sort: 'refund_count', size: 150 },
+            { name: 'Total Refunds', stack: true, sort: 'payment_refund', size: 150 },
+            { name: 'Net Collection', stack: true, sort: 'payment_net', size: 150 },
+        ]
+    }
+
+    const items = (item) => {
+        if (reportSelector.report === "Daily Sales by Item") {
+            return [
+                { value: `${item.product} ${item.variant1} ${item.variant2} ${item.variant3}` },
+                { value: item.category },
+                { value: item.item_sold },
+                { value: currency(item.net_sales) },
+                { value: currency(item.goods_cost) },
+                { value: currency(item.gross_profit) },
+                { value: currency(item.sales_type_net) },
+                { value: currency(item.credit_type_net) },
+            ]
+        }
+        if (reportSelector.report === "Daily Sales by Category") {
+            return [
+                { value: item.category },
+                { value: item.item_sold },
+                { value: currency(item.net_sales) },
+                { value: currency(item.goods_cost) },
+                { value: currency(item.gross_profit) },
+            ]
+        }
+        if (reportSelector.report === "Daily Sales by Collection") {
+            return [
+                { value: item.trans_type },
+                { value: item.payment_method },
+                { value: item.transaction_count },
+                { value: currency(item.payment_total) },
+                { value: item.refund_count },
+                { value: currency(item.payment_refund) },
+                { value: currency(item.payment_net) },
+            ]
+        }
     }
 
     useEffect(() => {
@@ -98,7 +167,7 @@ const ReportsFormSales = () => {
     }
 
     return (
-        (reportSelector.manager && reportSelector.report === "Daily Sales by Item") ? (
+        (reportSelector.manager && !isEmpty(reportSelector.report)) ? (
             <>
                 <div className="w-full text-lg uppercase font-bold flex justify-between items-center no-select">
                     <div className="flex gap-4">
@@ -110,15 +179,45 @@ const ReportsFormSales = () => {
                         <input type="date" className="" />
                     </div>
                 </div>
-                <DataRecords
-                    page={startpage}
-                    columns={columns}
-                    records={records}
-                    setsorted={setsorted}
-                    setPage={setstartpage}
-                    itemsperpage={itemsperpage}
-                    keeppagination={true}
-                />
+                {
+                    (reportSelector.report === "Daily Sales by Item") ? (
+                        <DataRecords
+                            page={startpage}
+                            columns={byItemColumn}
+                            records={records}
+                            setsorted={setsorted}
+                            setPage={setstartpage}
+                            itemsperpage={itemsperpage}
+                            keeppagination={true}
+                        />
+                    ) : null
+                }
+                {
+                    (reportSelector.report === "Daily Sales by Category") ? (
+                        <DataRecords
+                            page={startpage}
+                            columns={byCategoryColumn}
+                            records={records}
+                            setsorted={setsorted}
+                            setPage={setstartpage}
+                            itemsperpage={itemsperpage}
+                            keeppagination={true}
+                        />
+                    ) : null
+                }
+                {
+                    (reportSelector.report === "Daily Sales by Collection") ? (
+                        <DataRecords
+                            page={startpage}
+                            columns={byCollectionColumn}
+                            records={records}
+                            setsorted={setsorted}
+                            setPage={setstartpage}
+                            itemsperpage={itemsperpage}
+                            keeppagination={true}
+                        />
+                    ) : null
+                }
             </>
         ) : null
     )

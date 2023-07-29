@@ -20,6 +20,7 @@ const BrowserCheckout = () => {
     const [mounted, setMounted] = useState(false)
     const dataSelector = useSelector(state => state.browser)
     const paymentSelector = useSelector(state => state.payment)
+    const [isPaid, setIsPaid] = useState(false)
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
@@ -42,7 +43,10 @@ const BrowserCheckout = () => {
     useEffect(() => {
         if (mounted) {
             return () => {
-
+                if (isPaid) {
+                    onCompleted()
+                }
+                setIsPaid(false)
             }
         }
     }, [mounted])
@@ -148,6 +152,7 @@ const BrowserCheckout = () => {
     }
 
     const toggleDiscount = () => {
+        if (isPaid) return
         if (summary.total > 0) {
             let total = dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0)
             dispatch(setPaymentTotal(total))
@@ -157,10 +162,12 @@ const BrowserCheckout = () => {
     }
 
     const toggleCustomer = () => {
+        if (isPaid) return
         dispatch(showPaymentPayor())
     }
 
     const togglePayments = () => {
+        if (isPaid) return
         if (balance > 0) {
             dispatch(setPaymentBalance(balance))
             dispatch(setPaymentSettlement(false))
@@ -172,6 +179,7 @@ const BrowserCheckout = () => {
     }
 
     const removePayment = (id) => {
+        if (isPaid) return
         if (window.confirm("Do you wish to delete this payment option?")) {
             dispatch(removePaymentPaid(id))
         }
@@ -181,6 +189,7 @@ const BrowserCheckout = () => {
         dispatch(setBrowserNotifier(true))
         dispatch(resetBrowserTransaction())
         dispatch(resetPaymentTransaction())
+        localStorage.removeItem("printcompleted")
     }
 
     const destructCode = (maxcode) => {
@@ -189,9 +198,18 @@ const BrowserCheckout = () => {
     }
 
     useEffect(() => {
-        console.log(paymentSelector.customer)
-    }, [paymentSelector.customer])
-
+        if (dataSelector.checkout && isPaid) {
+            const interval = setInterval(() => {
+                let printcompleted = localStorage.getItem("printcompleted")
+                console.log(printcompleted)
+                if (!isEmpty(printcompleted)) {
+                    console.log("here")
+                    onCompleted()
+                }
+            }, 1000)
+            return () => clearInterval(interval)
+        }
+    }, [dataSelector.checkout, isPaid])
 
     const processTransaction = async () => {
         if (balance !== 0) {
@@ -200,6 +218,10 @@ const BrowserCheckout = () => {
         }
         if (isEmpty(paymentSelector.customer?.id)) {
             toast.showWarning("Please provide a payor for checkout.")
+            return
+        }
+        if (paymentSelector.customer?.name === "Walkin Customer" && paymentSelector.method === "CREDIT") {
+            toast.showWarning("Cannot process credit for walk-in customers.")
             return
         }
         await maxAccountTransaction({ account: auth.id, date: sqlDate() })
@@ -298,6 +320,7 @@ const BrowserCheckout = () => {
                         .unwrap()
                         .then(res => {
                             if (res.success) {
+                                setIsPaid(true)
                                 let partial = paymentSelector.paid
                                     ?.filter(f => f.type === "CREDIT")
                                     ?.reduce((prev, curr) => prev + amount(curr.partial), 0)
@@ -305,7 +328,7 @@ const BrowserCheckout = () => {
                                     ?.filter(f => f.type === "CREDIT")
                                     ?.reduce((prev, curr) => prev + amount(curr.amount), 0)
                                 let printdata = {
-                                    branch: "Jally Trading - MAIN",
+                                    branch: "Jally Trading",
                                     address: "Diversion Road National Highway, Banale, Pagadian City",
                                     service: "Auto and Agri Machine Parts Supply",
                                     subtext: "Autocare, Heavy Equipment and Trucking Services",
@@ -338,7 +361,6 @@ const BrowserCheckout = () => {
                                     change: change,
                                     credit: credit
                                 }
-                                console.log(printdata)
                                 localStorage.setItem("rcpt", JSON.stringify(printdata))
                                 window.open(`/#/print/receipt/${code}${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
                                 toast.showCreate("Transaction successfully completed.")
@@ -497,11 +519,13 @@ const BrowserCheckout = () => {
                                     </div>
                                 </div>
                                 <button
-                                    className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7"
+                                    className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7 disabled:bg-gray-400"
+                                    disabled={isPaid}
                                     onClick={() => processTransaction()}
                                 >
                                     Process Transaction
                                 </button>
+                                <button className="button-link" onClick={() => mockPrint()}>Test Print</button>
                             </div>
                         </div>
                     </div>
