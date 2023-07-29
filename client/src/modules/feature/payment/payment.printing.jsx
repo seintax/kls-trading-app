@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react"
 import { PrinterIcon, XMarkIcon } from "@heroicons/react/20/solid"
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import PrintReceipt from "../../system/prints/print.receipt"
 import { resetPaymentPrint } from "./payment.reducer"
@@ -8,10 +8,6 @@ import { resetPaymentPrint } from "./payment.reducer"
 const PaymentPrinting = () => {
     const dataSelector = useSelector(state => state.payment)
     const dispatch = useDispatch()
-
-    useEffect(() => {
-        console.log(dataSelector.print)
-    }, [dataSelector.print])
 
     const onClose = () => {
         dispatch(resetPaymentPrint())

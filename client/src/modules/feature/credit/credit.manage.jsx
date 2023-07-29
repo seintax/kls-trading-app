@@ -225,11 +225,6 @@ const CreditManage = () => {
         dispatch(resetCreditManager())
     }
 
-    useEffect(() => {
-        // console.log(paymentSelector?.paid)
-        // console.log(records)
-    }, [paymentSelector?.paid, records])
-
     return (
         <div className="w-full">
             <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">

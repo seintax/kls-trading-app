@@ -127,7 +127,6 @@ const AccountRoles = () => {
 
     const onSubmit = async (data) => {
         if (dataSelector.item.id) {
-            console.log({ role: data.role, id: dataSelector.item.id })
             await updateAccount({ role: data.role, id: dataSelector.item.id })
                 .unwrap()
                 .then(res => {
