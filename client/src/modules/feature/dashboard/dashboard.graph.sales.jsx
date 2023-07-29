@@ -3,18 +3,18 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
 import AppLineChart from "../../../utilities/interface/application/aesthetics/app.chart.line"
 import AppSuspense from "../../../utilities/interface/application/errormgmt/app.suspense"
-import { useWeeklyCollectiblesReportMutation, useWeeklyDiscountsReportMutation, useWeeklyGrossProfitReportMutation, useWeeklyGrossSalesReportMutation, useWeeklyNetSalesReportMutation, useWeeklyRefundsReportMutation } from "../../system/reports/reports.services"
+import { useWeeklyCollectiblesDashboardMutation, useWeeklyDiscountsDashboardMutation, useWeeklyGrossProfitDashboardMutation, useWeeklyGrossSalesDashboardMutation, useWeeklyNetSalesDashboardMutation, useWeeklyRefundsDashboardMutation } from "./dashboard.services"
 
-const DashboardSummary = () => {
+const DashboardGraphSales = () => {
     const [line, setline] = useState()
     const dashboardSelector = useSelector(state => state.dashboard)
 
-    const [grossSales, { isLoading: grosssalesLoading }] = useWeeklyGrossSalesReportMutation()
-    const [refunds, { isLoading: refundsLoading }] = useWeeklyRefundsReportMutation()
-    const [discounts, { isLoading: discountsLoading }] = useWeeklyDiscountsReportMutation()
-    const [netSales, { isLoading: netsalesLoading }] = useWeeklyNetSalesReportMutation()
-    const [grossProfit, { isLoading: grossprofitLoading }] = useWeeklyGrossProfitReportMutation()
-    const [collectibles, { isLoading: collectibleLoading }] = useWeeklyCollectiblesReportMutation()
+    const [grossSales, { isLoading: grosssalesLoading }] = useWeeklyGrossSalesDashboardMutation()
+    const [refunds, { isLoading: refundsLoading }] = useWeeklyRefundsDashboardMutation()
+    const [discounts, { isLoading: discountsLoading }] = useWeeklyDiscountsDashboardMutation()
+    const [netSales, { isLoading: netsalesLoading }] = useWeeklyNetSalesDashboardMutation()
+    const [grossProfit, { isLoading: grossprofitLoading }] = useWeeklyGrossProfitDashboardMutation()
+    const [collectibles, { isLoading: collectibleLoading }] = useWeeklyCollectiblesDashboardMutation()
 
     const options = {
         responsive: true,
@@ -86,6 +86,16 @@ const DashboardSummary = () => {
         }
     }
 
+    const isLoading = () => {
+        return grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading
+    }
+
+    useEffect(() => {
+        if (grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading) {
+            setline({ label: [], datasets: [] })
+        }
+    }, [grosssalesLoading, refundsLoading, discountsLoading, netsalesLoading, grossprofitLoading, collectibleLoading])
+
     useEffect(() => {
         const weeklySales = async () => {
             if (dashboardSelector.summary === "Gross Sales") {
@@ -131,13 +141,13 @@ const DashboardSummary = () => {
 
 
     return (
-        <div className="flex flex-col w-full h-full p-3 font-mono relative">
-            <div className={`${(grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading) ? "" : "hidden"} absolute z-10 top-0 l-0 w-full h-full transition ease-in duration-300`}>
+        <div className="flex flex-col w-full h-full p-3 font-mono">
+            {line ? <AppLineChart data={line} options={options} /> : null}
+            <div className={`${(isLoading()) ? "" : "hidden"} absolute z-10 top-0 left-0 w-full h-full transition ease-in duration-300`}>
                 <AppSuspense />
             </div>
-            {line ? <AppLineChart data={line} options={options} /> : null}
         </div>
     )
 }
 
-export default DashboardSummary
+export default DashboardGraphSales

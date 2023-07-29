@@ -11,6 +11,7 @@ const initialState = {
     balance: 0,
     creditor: {},
     customer: {},
+    print: false,
     payor: false,
     manager: false,
     notifier: false,
@@ -92,6 +93,12 @@ const paymentSlice = createSlice({
         resetPaymentManager: (state) => {
             state.manager = false
         },
+        showPaymentPrint: (state) => {
+            state.print = true
+        },
+        resetPaymentPrint: (state) => {
+            state.print = false
+        },
         setPaymentNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -156,6 +163,8 @@ export const {
     resetPaymentPayor,
     showPaymentManager,
     resetPaymentManager,
+    showPaymentPrint,
+    resetPaymentPrint,
     setPaymentMethod,
     setPaymentTotal,
     setPaymentBalance,

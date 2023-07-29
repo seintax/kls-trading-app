@@ -6,65 +6,41 @@ const ENDPOINT_URL = `${BASE_URL}/app/reports`
 
 export const reportsApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        weeklyReport: builder.mutation({
+        salesByItemReport: builder.mutation({
             query: (params) => ({
-                url: `${ENDPOINT_URL}/weekly`,
+                url: `${ENDPOINT_URL}/salesbyitem`,
                 method: 'GET',
                 params
             }),
             providesTags: ['reports']
         }),
-        weeklyGrossSalesReport: builder.mutation({
+        salesByCategoryReport: builder.mutation({
             query: (params) => ({
-                url: `${ENDPOINT_URL}/weeklygrosssales`,
+                url: `${ENDPOINT_URL}/salesbycategory`,
                 method: 'GET',
                 params
             }),
             providesTags: ['reports']
         }),
-        weeklyRefundsReport: builder.mutation({
+        salesByCollectionReport: builder.mutation({
             query: (params) => ({
-                url: `${ENDPOINT_URL}/weeklyrefunds`,
+                url: `${ENDPOINT_URL}/salesbycollection`,
                 method: 'GET',
                 params
             }),
             providesTags: ['reports']
         }),
-        weeklyDiscountsReport: builder.mutation({
+        salesSummaryReport: builder.mutation({
             query: (params) => ({
-                url: `${ENDPOINT_URL}/weeklydiscounts`,
+                url: `${ENDPOINT_URL}/salessummary`,
                 method: 'GET',
                 params
             }),
             providesTags: ['reports']
         }),
-        weeklyNetSalesReport: builder.mutation({
+        expensesReport: builder.mutation({
             query: (params) => ({
-                url: `${ENDPOINT_URL}/weeklynetsales`,
-                method: 'GET',
-                params
-            }),
-            providesTags: ['reports']
-        }),
-        weeklyGrossProfitReport: builder.mutation({
-            query: (params) => ({
-                url: `${ENDPOINT_URL}/weeklygrossprofit`,
-                method: 'GET',
-                params
-            }),
-            providesTags: ['reports']
-        }),
-        weeklyCollectiblesReport: builder.mutation({
-            query: (params) => ({
-                url: `${ENDPOINT_URL}/weeklycollectibles`,
-                method: 'GET',
-                params
-            }),
-            providesTags: ['reports']
-        }),
-        collectiblesReport: builder.mutation({
-            query: (params) => ({
-                url: `${ENDPOINT_URL}/collectibles`,
+                url: `${ENDPOINT_URL}/expenses`,
                 method: 'GET',
                 params
             }),
@@ -74,12 +50,9 @@ export const reportsApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-    useWeeklyReportMutation,
-    useWeeklyGrossSalesReportMutation,
-    useWeeklyRefundsReportMutation,
-    useWeeklyDiscountsReportMutation,
-    useWeeklyNetSalesReportMutation,
-    useWeeklyGrossProfitReportMutation,
-    useWeeklyCollectiblesReportMutation,
-    useCollectiblesReportMutation
+    useSalesByItemReportMutation,
+    useSalesByCategoryReportMutation,
+    useSalesByCollectionReportMutation,
+    useSalesSummaryReportMutation,
+    useExpensesReportMutation,
 } = reportsApiSlice

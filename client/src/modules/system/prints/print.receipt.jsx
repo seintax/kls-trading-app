@@ -24,59 +24,65 @@ const PrintReceipt = () => {
         }
     }, [mounted])
 
+    const onAfterPrinting = () => {
+        localStorage.setItem("printcompleted", "true")
+        window.close()
+    }
+
     useEffect(() => {
-        if (dataSelector.print.transaction) {
+        if (dataSelector.print?.transaction && mounted) {
             window.print()
+            window.onafterprint = onAfterPrinting()
         }
-    }, [dataSelector.print.transaction])
+    }, [dataSelector.print?.transaction, mounted])
 
     return (
-        <div className="w-full min-h-screen bg-blue-900 bg-opacity-50 flex justify-center items-center">
+        <div id="receipt" className="w-full min-h-screen bg-blue-900 bg-opacity-50 flex justify-center items-center">
             {
-                (dataSelector.print.transaction) ? (
+                (dataSelector.print?.transaction) ? (
                     <div className="w-[56mm] bg-white h-fit pt-8 text-[11px]">
                         <div className="grayscale">
                             <AppLogo />
                         </div>
                         <div className="flex flex-col w-full items-center mt-5 px-3">
                             <div className="font-bold text-center">
-                                {dataSelector.print.branch}
+                                {dataSelector.print?.branch}
                             </div>
                             <div className="font-normal text-center">
-                                {dataSelector.print.address}
+                                {dataSelector.print?.address}
                             </div>
                             <div className="font-normal text-center">
-                                {dataSelector.print.service}
+                                {dataSelector.print?.service}
                             </div>
                             <div className="font-normal text-center">
-                                {dataSelector.print.subtext}
+                                {dataSelector.print?.subtext}
                             </div>
                             <div className="font-normal text-center">
-                                {dataSelector.print.contact}
+                                {dataSelector.print?.contact}
                             </div>
                             <div className="w-full border border-b-black mt-1 border-dashed mt-3"></div>
                             <div className="font-normal text-center mt-3">
                                 Customer:
                             </div>
                             <div className="font-normal text-center">
-                                {dataSelector.print.customer.name}
+                                {dataSelector.print?.customer.name}
                             </div>
                             <div className="font-normal text-center">
-                                {dataSelector.print.customer.address}
+                                {dataSelector.print?.customer.address}
                             </div>
                             <div className="font-normal text-center mt-3">
-                                Cashier: {dataSelector.print.cashier}
+                                Cashier: {dataSelector.print?.cashier}
                             </div>
                             <div className="font-normal text-center mt-0.5">
                                 Transaction:
                             </div>
                             <div className="font-normal text-center mt-0.5">
-                                {dataSelector.print.transaction}
+                                {dataSelector.print?.transaction}
                             </div>
                             <div className="font-normal text-center mt-0.5">
                                 {moment(new Date).format("MM/DD/YYYY hh:mm:ss A")}
                             </div>
-                            <div className={`font-normal text-[10px] text-center mt-0.5 ${dataSelector.print.reprint ? "" : "hidden"}`}>
+                            <div className={`font-normal text-[10px] text-center mt-0.5 ${dataSelector.print?.reprint ? "" : "hidden"}`}>
                                 **Note: This is a reprinted copy.
                             </div>
                             <div className="w-full border border-b-black border-dashed mt-3"></div>

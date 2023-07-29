@@ -2,8 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     name: "reports",
-    week1: [],
-    week2: [],
+    report: "",
     manager: false,
     notifier: false,
     perpage: 150,
@@ -17,11 +16,11 @@ const reportsSlice = createSlice({
     name: 'reports',
     initialState,
     reducers: {
-        setWeeklyReport1: (state, action) => {
-            state.week1 = action.payload
+        setReportName: (state, action) => {
+            state.report = action.payload
         },
-        setWeeklyReport2: (state, action) => {
-            state.week2 = action.payload
+        resetReportName: (state) => {
+            state.report = ""
         },
         showReportManager: (state) => {
             state.manager = true
@@ -33,8 +32,7 @@ const reportsSlice = createSlice({
             state.notifier = action.payload
         },
         resetReport: (state) => {
-            state.week1 = []
-            state.week2 = []
+            state.report = ""
             state.manager = false
             state.notifier = false
         }
@@ -44,8 +42,8 @@ const reportsSlice = createSlice({
 const reportsReducer = reportsSlice.reducer
 
 export const {
-    setWeeklyReport1,
-    setWeeklyReport2,
+    setReportName,
+    resetReportName,
     showReportManager,
     resetReportManager,
     setReportNotifier,

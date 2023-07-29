@@ -192,6 +192,8 @@ const CreditManage = () => {
                 }
             }
         }
+
+        console.log(data)
         await sqlSettleCredit(data)
             .unwrap()
             .then(res => {
@@ -226,8 +228,8 @@ const CreditManage = () => {
     }
 
     useEffect(() => {
-        console.log(paymentSelector?.paid)
-        console.log(records)
+        // console.log(paymentSelector?.paid)
+        // console.log(records)
     }, [paymentSelector?.paid, records])
 
     return (

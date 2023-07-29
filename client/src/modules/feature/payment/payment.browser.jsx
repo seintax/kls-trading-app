@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { createInstance, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
@@ -24,6 +24,16 @@ const PaymentBrowser = () => {
         refstat: "",
     })
     const toast = useToast()
+
+    const keydown = useCallback(e => {
+        if (dataSelector.manager)
+            if (e.key === 'Escape') onClose()
+    })
+
+    useEffect(() => {
+        document.addEventListener('keydown', keydown)
+        return () => { document.removeEventListener('keydown', keydown) }
+    }, [keydown])
 
     useEffect(() => {
         const instantiate = async () => {

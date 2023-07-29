@@ -24,7 +24,7 @@ const dashboardSlice = createSlice({
             state.summary = action.payload
         },
         resetDashboardSummary: (state) => {
-            state.summary = ""
+            state.summary = undefined
         },
         showDashboardManager: (state) => {
             state.manager = true

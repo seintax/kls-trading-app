@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const format = {
-
     branch: "Jally Trading - MAIN",
     address: "Diversion Road National Highway, Banale, Pagadian City",
     service: "Auto and Agri Machine Parts Supply",
@@ -34,6 +33,13 @@ const format = {
             price: 85,
             total: 425,
             less: 50,
+        },
+        {
+            product: "BOLT SEMS/FLAGE/SCENE (DC70/01574-50890)",
+            quantity: 5,
+            price: 85,
+            total: 425,
+            less: 50,
         }
     ],
     discount: {
@@ -51,7 +57,7 @@ const initialState = {
     name: "printing",
     data: [],
     item: {},
-    print: {},
+    print: format,
     manager: false,
     notifier: false,
     perpage: 150,

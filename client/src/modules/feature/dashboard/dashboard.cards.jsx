@@ -2,10 +2,10 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid"
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { firstDayOfWeekByDate, lastDayOfWeekByDate } from "../../../utilities/functions/datetime.functions"
+import { firstDayOfWeekByDate, lastDayOfWeekByDate, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { useCollectiblesReportMutation, useWeeklyDiscountsReportMutation, useWeeklyGrossProfitReportMutation, useWeeklyGrossSalesReportMutation, useWeeklyNetSalesReportMutation, useWeeklyRefundsReportMutation } from "../../system/reports/reports.services"
 import { setDashboardSummary, setDashboardWeek } from "./dashboard.reducer"
+import { useCollectiblesDashboardMutation, useWeeklyDiscountsDashboardMutation, useWeeklyGrossProfitDashboardMutation, useWeeklyGrossSalesDashboardMutation, useWeeklyNetSalesDashboardMutation, useWeeklyRefundsDashboardMutation } from "./dashboard.services"
 
 const DashboardCards = () => {
     const dashboardSelector = useSelector(state => state.dashboard)
@@ -16,13 +16,14 @@ const DashboardCards = () => {
     const [totalNetSales, setTotalNetSales] = useState(0)
     const [totalGrossProfit, setTotalGrossProfit] = useState(0)
     const [totalCollectibles, setTotalCollectibles] = useState(0)
+    const currentWeek = firstDayOfWeekByDate(sqlDate())
 
-    const [grossSales, { isLoading: grosssalesLoading }] = useWeeklyGrossSalesReportMutation()
-    const [refunds, { isLoading: refundsLoading }] = useWeeklyRefundsReportMutation()
-    const [discounts, { isLoading: discountsLoading }] = useWeeklyDiscountsReportMutation()
-    const [netSales, { isLoading: netsalesLoading }] = useWeeklyNetSalesReportMutation()
-    const [grossProfit, { isLoading: grossprofitLoading }] = useWeeklyGrossProfitReportMutation()
-    const [collectibles, { isLoading: collectibleLoading }] = useCollectiblesReportMutation()
+    const [grossSales, { isLoading: grosssalesLoading }] = useWeeklyGrossSalesDashboardMutation()
+    const [refunds, { isLoading: refundsLoading }] = useWeeklyRefundsDashboardMutation()
+    const [discounts, { isLoading: discountsLoading }] = useWeeklyDiscountsDashboardMutation()
+    const [netSales, { isLoading: netsalesLoading }] = useWeeklyNetSalesDashboardMutation()
+    const [grossProfit, { isLoading: grossprofitLoading }] = useWeeklyGrossProfitDashboardMutation()
+    const [collectibles, { isLoading: collectibleLoading }] = useCollectiblesDashboardMutation()
 
     useEffect(() => {
         dispatch(setDashboardWeek(firstDayOfWeekByDate(new Date())))
@@ -81,7 +82,9 @@ const DashboardCards = () => {
         <div className="w-full flex flex-col gap-5">
             <div className="flex justify-center text-black font-bold p-2 border border-1 border-gray-300 rounded-[20px] text-[12px] card-font relative items-center no-select">
                 <div className="w-full text-center py-3 bg-gradient-to-bl from-primary-300 to-white rounded-[20px] font-mono text-[14px] flex flex-col gap-0.5">
-                    <span className="text-xs">Sales Summary for the Current Week:</span>
+                    <span className="text-xs">
+                        Sales Summary for the {currentWeek === dashboardSelector.week ? "Current" : "Previous"} Week:
+                    </span>
                     <span>
                         {firstDayOfWeekByDate(dashboardSelector.week, "MMM DD, YYYY")} - {lastDayOfWeekByDate(dashboardSelector.week, "MMM DD, YYYY")}
                     </span>
@@ -96,11 +99,11 @@ const DashboardCards = () => {
                 />
             </div>
             <div className="w-full flex items-start justify-between gap-[20px]">
-                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Gross Sales")}>
+                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Gross Sales")}>
                     <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
                         Gross Sales
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px]">
+                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span className="text-lg font-bold font-mono">
                                 PhP {grosssalesLoading ? "loading..." : NumFn.currency(totalGrossSales)}
@@ -108,11 +111,11 @@ const DashboardCards = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Refunds")}>
+                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Refunds")}>
                     <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
                         Refunds
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px]">
+                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span className="text-lg font-bold font-mono">
                                 PhP {refundsLoading ? "loading..." : NumFn.currency(totalRefunds)}
@@ -120,11 +123,11 @@ const DashboardCards = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Discounts")}>
+                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Discounts")}>
                     <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
                         Discounts
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px]">
+                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span className="text-lg font-bold font-mono">
                                 PhP {discountsLoading ? "loading..." : NumFn.currency(totalDiscounts)}
@@ -132,11 +135,11 @@ const DashboardCards = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Net Sales")}>
+                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Net Sales")}>
                     <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
                         Net Sales
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px]">
+                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span className="text-lg font-bold font-mono">
                                 PhP {netsalesLoading ? "loading..." : NumFn.currency(totalNetSales)}
@@ -144,11 +147,11 @@ const DashboardCards = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Gross Profit")}>
+                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Gross Profit")}>
                     <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
                         Gross Profit
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px]">
+                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span className="text-lg font-bold font-mono">
                                 PhP {grossprofitLoading ? "loading..." : NumFn.currency(totalGrossProfit)}
@@ -156,11 +159,11 @@ const DashboardCards = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Collectibles")}>
+                <div className="w-full flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Collectibles")}>
                     <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
                         Collectibles
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px]">
+                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span className="text-lg font-bold font-mono">
                                 PhP {collectibleLoading ? "loading..." : NumFn.currency(totalCollectibles)}

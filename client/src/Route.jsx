@@ -1,10 +1,10 @@
 import React from 'react'
 import { Route, Routes } from "react-router-dom"
+import AppIndex from "./modules/app/app.index"
 import CasheringIndex from "./modules/feature/cashering/cashering.index"
 import ChequeIndex from "./modules/feature/cheque/cheque.index"
 import CreditIndex from "./modules/feature/credit/credit.index"
 import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
-import DashboardPanel from "./modules/feature/dashboard/dashboard.panel"
 import DeliveryIndex from "./modules/feature/delivery/delivery.index"
 import AdjustmentIndex from "./modules/feature/inventory-item/inventory.item.index"
 import InventoryIndex from "./modules/feature/inventory/inventory.index"
@@ -40,8 +40,8 @@ const AppRoute = () => {
             <Route path="/" element={<AccountLogin />} />
 
             <Route path="" element={<PrivateRoute />}>
-                <Route element={<DashboardIndex />}>
-                    <Route path="/dashboard" element={<DashboardPanel />} />
+                <Route element={<AppIndex />}>
+                    <Route path="/dashboard" element={<DashboardIndex />} />
                     <Route path="/cashering" element={<CasheringIndex />} />
                     <Route path="/purchase-order" element={<PurchaseIndex />} />
                     <Route path="/delivery" element={<DeliveryIndex />} />

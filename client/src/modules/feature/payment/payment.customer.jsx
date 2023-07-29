@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { createInstance } from "../../../utilities/functions/datetime.functions"
@@ -24,6 +24,16 @@ const PaymentCustomer = () => {
         newcontact: "",
     })
     const toast = useToast()
+
+    const keydown = useCallback(e => {
+        if (dataSelector.payor)
+            if (e.key === 'Escape') onClose()
+    })
+
+    useEffect(() => {
+        document.addEventListener('keydown', keydown)
+        return () => { document.removeEventListener('keydown', keydown) }
+    }, [keydown])
 
     const [libCustomers, setLibCustomers] = useState()
 

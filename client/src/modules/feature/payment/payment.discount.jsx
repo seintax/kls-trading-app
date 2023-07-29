@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -17,6 +17,16 @@ const PaymentDiscount = () => {
         rate: "",
     })
     const toast = useToast()
+
+    const keydown = useCallback(e => {
+        if (dataSelector.discount)
+            if (e.key === 'Escape') onClose()
+    })
+
+    useEffect(() => {
+        document.addEventListener('keydown', keydown)
+        return () => { document.removeEventListener('keydown', keydown) }
+    }, [keydown])
 
     useEffect(() => {
         if (dataSelector.discount && dataSelector.total > 0) {
