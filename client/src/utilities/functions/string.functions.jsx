@@ -20,7 +20,7 @@ export const isBranch = (auth) => {
 
 export const getBranch = (auth) => {
     if (auth?.store) {
-        const notBranches = ["DevOp", "SysAd", "JT-MAIN"]
+        const notBranches = ["DevOp", "SysAd", "Admin"]
         return notBranches.includes(auth.store) ? "" : auth.store
     }
     throw new Error("Invalid branch.")

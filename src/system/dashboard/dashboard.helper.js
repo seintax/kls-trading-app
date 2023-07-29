@@ -9,10 +9,18 @@ const dashboard = {
         SUM(IF(paym_method='GCASH',paym_amount,0)) AS gcash
     FROM 
         pos_payment_collection 
-            LEFT JOIN pos_sales_transaction 
-                ON trns_code = paym_trans
+            LEFT JOIN (
+                SELECT 
+                    acct_store,trns_code 
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = paym_trans
     WHERE 
-        DATE(paym_time) BETWEEN '@fr' AND '@to' 
+        DATE(paym_time) BETWEEN '@fr' AND '@to'  AND 
+        acct_store LIKE '%@store%'
     GROUP BY DATE(paym_time) 
     ORDER BY DATE(paym_time) ASC
     `),
@@ -21,9 +29,19 @@ const dashboard = {
         @date
         SUM(sale_total) AS total
     FROM 
-        pos_sales_dispensing
+        pos_sales_dispensing 
+            LEFT JOIN (
+                SELECT 
+                    acct_store,trns_code 
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = sale_trans
     WHERE 
-        WEEK(sale_time) = WEEK(DATE('@day')) 
+        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        acct_store LIKE '%@store%'
     @group 
     @order
     `),
@@ -33,8 +51,11 @@ const dashboard = {
         SUM(rtrn_r_net) AS total
     FROM 
         pos_return_transaction
+            LEFT JOIN sys_account 
+                ON acct_id = rtrn_account
     WHERE 
-        WEEK(rtrn_time) = WEEK(DATE('@day'))
+        WEEK(rtrn_time) = WEEK(DATE('@day')) AND 
+        acct_store LIKE '%@store%'
     @group 
     @order
     `),
@@ -44,8 +65,18 @@ const dashboard = {
         SUM(sale_less) AS total
     FROM 
         pos_sales_dispensing
+            LEFT JOIN (
+                SELECT 
+                    acct_store,trns_code 
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = sale_trans
     WHERE 
-        WEEK(sale_time) = WEEK(DATE('@day'))
+        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        acct_store LIKE '%@store%'
     @group 
     @order
     `),
@@ -55,8 +86,18 @@ const dashboard = {
         SUM(sale_net) AS total
     FROM 
         pos_sales_dispensing
+            LEFT JOIN (
+                SELECT 
+                    acct_store,trns_code 
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = sale_trans
     WHERE 
-        WEEK(sale_time) = WEEK(DATE('@day'))
+        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        acct_store LIKE '%@store%'
     @group 
     @order
     `),
@@ -69,7 +110,8 @@ const dashboard = {
         pos_stock_inventory
     WHERE 
         sale_item=invt_id AND 
-        WEEK(sale_time) = WEEK(DATE('@day'))
+        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        invt_store LIKE '%@store%'
     @group 
     @order
     `),
@@ -79,8 +121,18 @@ const dashboard = {
         SUM(cred_outstand) AS total 
     FROM 
         pos_sales_credit
+            LEFT JOIN (
+                SELECT 
+                    acct_store,trns_code 
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = cred_trans
     WHERE 
-        WEEK(cred_time) = WEEK(DATE('@day'))
+        WEEK(cred_time) = WEEK(DATE('@day')) AND 
+        acct_store LIKE '%@store%'
     @group 
     @order
     `),
@@ -88,7 +140,18 @@ const dashboard = {
     SELECT 
         SUM(cred_outstand) AS total 
     FROM 
-        pos_sales_credit;
+        pos_sales_credit 
+            LEFT JOIN (
+                SELECT 
+                    acct_store,trns_code 
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = cred_trans
+    WHERE
+        acct_store LIKE '%@store%';
     `),
 }
 
