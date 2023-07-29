@@ -5,6 +5,7 @@ import { useSelector } from "react-redux"
 import { currency } from "../../../utilities/functions/number.funtions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
+import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useSalesByCategoryReportMutation, useSalesByCollectionReportMutation, useSalesByItemReportMutation } from "./reports.services"
 
 const ReportsFormSales = () => {
@@ -21,6 +22,9 @@ const ReportsFormSales = () => {
         store: ""
     })
 
+    const [libBranchers, setAllBranches] = useState()
+
+    const [allBranches] = useFetchAllBranchMutation()
     const [salesByItem] = useSalesByItemReportMutation()
     const [salesByCategory] = useSalesByCategoryReportMutation()
     const [salesByCollection] = useSalesByCollectionReportMutation()
@@ -174,9 +178,12 @@ const ReportsFormSales = () => {
                         <PresentationChartLineIcon className="w-6 h-6" />
                         {reportSelector.report}
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2">
                         <input type="date" className="" />
                         <input type="date" className="" />
+                        <select name="" id="">
+                            <option value="">All</option>
+                        </select>
                     </div>
                 </div>
                 {
