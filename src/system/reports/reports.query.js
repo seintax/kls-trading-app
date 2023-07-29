@@ -3,7 +3,6 @@ const { proceed, force, mysqlpool } = require("../../utilities/callback.utility"
 const helper = require('./reports.helper')
 
 const sales_by_item = handler(async (req, res) => {
-    console.log(req.query)
     const sql = helper.sales_by_item.inject({
         fr: req.query.fr,
         to: req.query.to,

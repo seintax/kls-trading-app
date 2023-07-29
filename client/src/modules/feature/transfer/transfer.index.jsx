@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { getBranch } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import TransferManage from "./transfer.manage"
 import TransferRecords from "./transfer.records"
 import { resetTransferItem, resetTransferManager, resetTransferSelector, setTransferData, setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
-import { useFetchAllTransferMutation } from "./transfer.services"
+import { useByBranchTransferMutation } from "./transfer.services"
 
 const TransferIndex = () => {
-    const [allTransfer, { isLoading, isError, isSuccess }] = useFetchAllTransferMutation()
+    // const [allTransfer, { isLoading, isError, isSuccess }] = useFetchAllTransferMutation()
+    const auth = useAuth()
+    const [allTransfer, { isLoading, isError }] = useByBranchTransferMutation()
     const dataSelector = useSelector(state => state.transfer)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
@@ -24,7 +28,7 @@ const TransferIndex = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            await allTransfer()
+            await allTransfer({ source: getBranch(auth) })
                 .unwrap()
                 .then(res => {
                     if (res.success) {

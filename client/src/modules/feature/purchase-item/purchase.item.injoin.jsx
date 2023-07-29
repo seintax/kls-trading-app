@@ -227,7 +227,6 @@ const ReceivableInjoin = () => {
     }
 
     const closeAppender = useCallback(() => {
-        console.log("closing appender...")
         dispatch(resetReceivableInjoiner())
     }, [])
 

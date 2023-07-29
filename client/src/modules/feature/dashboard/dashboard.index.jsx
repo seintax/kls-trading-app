@@ -23,7 +23,6 @@ const DashboardIndex = ({ id }) => {
     }, [location])
 
     const onClose = () => {
-        console.log("watas")
         dispatch(resetDashboardSummary())
     }
 

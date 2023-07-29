@@ -196,7 +196,6 @@ const TransferManage = () => {
     }
 
     const returnToList = useCallback(() => {
-        console.log("closing appender...")
         dispatch(resetTransferManager())
     }, [])
 

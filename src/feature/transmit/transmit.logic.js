@@ -77,7 +77,6 @@ const sqlTransmit = handler(async (req, res) => {
                         operator: req.body.source.operator,
                         qty: req.body.source.quantity
                     })
-                console.log(`${req.body.source.operator}${req.body.source.quantity}`)
                 await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
                     resolve({

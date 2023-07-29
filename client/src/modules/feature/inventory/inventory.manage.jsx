@@ -24,7 +24,6 @@ const InventoryManage = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            console.log(dataSelector.item)
             setInstantiated(true)
         }
 

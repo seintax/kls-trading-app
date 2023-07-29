@@ -11,6 +11,16 @@ const expenses = new Table("pos_archive_expenses", {
     remarks: 'expn_remarks',
     notes: 'expn_notes',
     account: 'expn_account',
-})
+    store: 'expn_store',
+}, [
+    {
+        key: "expn_account",
+        reference: { table: "sys_account", key: "acct_id" },
+        include: {
+            account_name: 'acct_fullname',
+            account_store: 'acct_store',
+        }
+    },
+])
 
 module.exports = expenses

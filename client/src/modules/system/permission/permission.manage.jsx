@@ -212,7 +212,6 @@ const PermissionManage = () => {
     }
 
     const onSubmit = async (data) => {
-        console.log(data.inner)
         let inner = data.inner ? JSON.parse(data.inner) : undefined
         let formData = {
             name: data.name,
@@ -242,7 +241,6 @@ const PermissionManage = () => {
             .then(res => {
                 if (res.success) {
                     toast.showCreate("Permission successfully created.")
-                    console.log("is continues", continues)
                     onCompleted()
                 }
             })

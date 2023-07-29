@@ -36,7 +36,6 @@ const ChequeManage = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            console.log(dataSelector.item)
             // fetch all library dependencies here. (e.g. dropdown values, etc.)
             setInstantiated(true)
         }
@@ -187,7 +186,6 @@ const ChequeManage = () => {
                 }
             }
         }
-        console.log(formData)
         await sqlChequePayment(formData)
             .unwrap()
             .then(res => {

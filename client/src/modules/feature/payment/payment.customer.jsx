@@ -61,7 +61,6 @@ const PaymentCustomer = () => {
         if (name === "customer") {
             let customers = libCustomers?.filter(f => String(f.value) === String(value))
             let customer = customers.length ? customers[0] : undefined
-            console.log(customer)
             setCustomer(prev => ({
                 ...prev,
                 customer: value,

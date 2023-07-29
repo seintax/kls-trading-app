@@ -62,6 +62,8 @@ const ExpensesRecords = () => {
             { value: NumFn.currency(item.purchase) },
             { value: NumFn.currency(item.cash) },
             { value: NumFn.currency(item.change) },
+            { value: item.account_name },
+            { value: item.store },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

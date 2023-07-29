@@ -12,4 +12,6 @@ router.get('/transfer/id', secure, service._findone)
 router.get('/transfer/search', secure, service._search)
 router.post('/transfer/specify', service._specify)
 
+router.get('/transfer/bybranch', service.byBranch)
+
 module.exports = router

@@ -201,9 +201,7 @@ const BrowserCheckout = () => {
         if (dataSelector.checkout && isPaid) {
             const interval = setInterval(() => {
                 let printcompleted = localStorage.getItem("printcompleted")
-                console.log(printcompleted)
                 if (!isEmpty(printcompleted)) {
-                    console.log("here")
                     onCompleted()
                 }
             }, 1000)

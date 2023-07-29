@@ -193,11 +193,9 @@ const CreditManage = () => {
             }
         }
 
-        console.log(data)
         await sqlSettleCredit(data)
             .unwrap()
             .then(res => {
-                console.log(res)
                 if (res.success) {
                     toast.showCreate("Credit settlement successfully completed.")
                     onCompleted()
@@ -226,11 +224,6 @@ const CreditManage = () => {
     const toggleOffCreditManager = () => {
         dispatch(resetCreditManager())
     }
-
-    useEffect(() => {
-        // console.log(paymentSelector?.paid)
-        // console.log(records)
-    }, [paymentSelector?.paid, records])
 
     return (
         <div className="w-full">
