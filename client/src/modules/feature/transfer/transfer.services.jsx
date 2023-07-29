@@ -62,6 +62,14 @@ export const transferApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['transfer']
         }),
+        byBranchTransfer: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bybranch`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['transfer']
+        }),
     })
 })
 
@@ -73,4 +81,5 @@ export const {
     useFetchAllTransferMutation,
     useSearchTransferMutation,
     useSpecifyTransferMutation,
+    useByBranchTransferMutation,
 } = transferApiSlice
