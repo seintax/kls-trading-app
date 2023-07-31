@@ -46,7 +46,6 @@ const BrowserCheckout = () => {
                 if (isPaid) {
                     onCompleted()
                 }
-                setIsPaid(false)
             }
         }
     }, [mounted])
@@ -186,6 +185,7 @@ const BrowserCheckout = () => {
     }
 
     const onCompleted = () => {
+        setIsPaid(false)
         dispatch(setBrowserNotifier(true))
         dispatch(resetBrowserTransaction())
         dispatch(resetPaymentTransaction())
@@ -319,6 +319,8 @@ const BrowserCheckout = () => {
                         .then(res => {
                             if (res.success) {
                                 setIsPaid(true)
+                                console.log(paymentSelector.paid
+                                    ?.filter(f => f.type === "CREDIT"))
                                 let partial = paymentSelector.paid
                                     ?.filter(f => f.type === "CREDIT")
                                     ?.reduce((prev, curr) => prev + amount(curr.partial), 0)
@@ -355,7 +357,7 @@ const BrowserCheckout = () => {
                                         amount: summary.discount
                                     },
                                     total: summary.net,
-                                    cash: partial > 0 ? partial : tended,
+                                    cash: credit > 0 ? partial : tended,
                                     change: change,
                                     credit: credit
                                 }
@@ -413,7 +415,7 @@ const BrowserCheckout = () => {
                         <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
                             <span>Order Total ({dataSelector?.cart?.length} Item/s):</span>
                             <span className="ml-auto text-gray-800">
-                                {currency(summary?.total)}
+                                {currency(summary?.total)}  ({isPaid.toString()})
                             </span>
                         </div>
                         <div className="flex justify-between items-center px-3 pt-1 pb-3 text-xs text-gray-600">
