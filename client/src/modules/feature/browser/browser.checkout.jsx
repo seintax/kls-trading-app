@@ -10,6 +10,7 @@ import { StrFn, formatVariant, isEmpty } from "../../../utilities/functions/stri
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
+import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { useByMaxAccountTransactionMutation } from "../cashering/cashering.services"
 import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, setPaymentTotal, showPaymentDiscount, showPaymentManager, showPaymentPayor } from "../payment/payment.reducer"
 import { resetBrowserCheckout, resetBrowserTransaction, setBrowserNotifier } from "./browser.reducer"
@@ -20,12 +21,14 @@ const BrowserCheckout = () => {
     const [mounted, setMounted] = useState(false)
     const dataSelector = useSelector(state => state.browser)
     const paymentSelector = useSelector(state => state.payment)
+    const printingSelector = useSelector(state => state.printing)
     const [isPaid, setIsPaid] = useState(false)
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
     const columns = dataSelector.header
     const toast = useToast()
+    const [branch, setBranch] = useState()
     const [balance, setBalance] = useState(0)
     const [tended, setTended] = useState(0)
     const [change, setChange] = useState(0)
@@ -50,8 +53,24 @@ const BrowserCheckout = () => {
         }
     }, [mounted])
 
+    const [distinctBranch] = useDistinctBranchMutation()
     const [maxAccountTransaction] = useByMaxAccountTransactionMutation()
     const [createTransaction] = useCreateBrowserBySqlTransactionMutation()
+
+    useEffect(() => {
+        const instantiate = async () => {
+            await distinctBranch({ code: auth.store })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setBranch(res.distinctResult)
+                    }
+                })
+                .catch(err => console.error(err))
+        }
+
+        instantiate()
+    }, [])
 
     const items = (item) => {
         return [
@@ -319,8 +338,6 @@ const BrowserCheckout = () => {
                         .then(res => {
                             if (res.success) {
                                 setIsPaid(true)
-                                console.log(paymentSelector.paid
-                                    ?.filter(f => f.type === "CREDIT"))
                                 let partial = paymentSelector.paid
                                     ?.filter(f => f.type === "CREDIT")
                                     ?.reduce((prev, curr) => prev + amount(curr.partial), 0)
@@ -328,11 +345,11 @@ const BrowserCheckout = () => {
                                     ?.filter(f => f.type === "CREDIT")
                                     ?.reduce((prev, curr) => prev + amount(curr.amount), 0)
                                 let printdata = {
-                                    branch: "Jally Trading",
-                                    address: "Diversion Road National Highway, Banale, Pagadian City",
-                                    service: "Auto and Agri Machine Parts Supply",
-                                    subtext: "Autocare, Heavy Equipment and Trucking Services",
-                                    contact: "Mobile No.: (0966) 483 5853 - (0930) 990 2456",
+                                    branch: branch?.data?.name || printingSelector.defaults.branch,
+                                    address: branch?.data?.address || printingSelector.defaults.address,
+                                    service: printingSelector.defaults.service,
+                                    subtext: printingSelector.defaults.subtext,
+                                    contact: branch?.data?.contact || printingSelector.defaults.contact,
                                     customer: {
                                         name: paymentSelector.customer.name,
                                         address: paymentSelector.customer.address

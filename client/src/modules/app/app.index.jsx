@@ -1,9 +1,11 @@
 import {
+    BanknotesIcon,
     CalculatorIcon,
-    ClipboardDocumentCheckIcon,
+    DocumentTextIcon,
     HomeIcon,
     NewspaperIcon,
     PresentationChartLineIcon,
+    ReceiptRefundIcon,
     ShoppingCartIcon,
     UserGroupIcon,
     UsersIcon
@@ -35,6 +37,8 @@ export const userNavigation = [
 const menulist = [
     { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
     { name: "Cashering", href: "/cashering", icon: CalculatorIcon, current: false },
+    { name: "Credits", href: "/credits", icon: ReceiptRefundIcon, current: false },
+    { name: "Cheque Monitor", href: "/cheque-monitor", icon: DocumentTextIcon, current: false },
     {
         name: "Stocks",
         icon: ShoppingCartIcon,
@@ -46,16 +50,6 @@ const menulist = [
             // { name: "Adjustment", href: "/stock-adjustment" },
             { name: "Stock Transfer", href: "/stock-transfer" },
             { name: "Receiving", href: "/receiving" },
-        ]
-    },
-    {
-        name: "Transactions",
-        icon: ClipboardDocumentCheckIcon,
-        cascade: false,
-        children: [
-            { name: "Credits", href: "/credits" },
-            { name: "Cheque Monitor", href: "/cheque-monitor" },
-            { name: "Expenses", href: "/expenses" },
         ]
     },
     {
@@ -73,6 +67,7 @@ const menulist = [
             { name: "Permissions", href: "/permissions" },
         ]
     },
+    { name: "Expenses", href: "/expenses", icon: BanknotesIcon, current: false },
     { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
     { name: "Roles", href: "/roles", icon: UserGroupIcon, current: false },
     { name: "Accounts", href: "/accounts", icon: UsersIcon, current: false },

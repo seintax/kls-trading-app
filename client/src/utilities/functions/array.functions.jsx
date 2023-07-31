@@ -16,11 +16,11 @@ export function FormatOptionsWithNewOption(dataArray, newOptions) {
     return [...dataArray, ...options]
 }
 
-export function FormatOptionsWithEmptyLabel(dataArray, valueProp, nameProp, emptyLabel) {
+export function FormatOptionsWithEmptyLabel(dataArray, valueProp, nameProp, firstOption, firstValue = "", firstData = {}) {
     let options = dataArray?.map(arr => {
         return { value: arr[valueProp], key: arr[nameProp], data: arr }
     })
-    return [{ value: "", key: emptyLabel, data: {} }, ...options]
+    return [{ value: firstValue, key: firstOption, data: firstData }, ...options]
 }
 
 export function FormatOptionsNoLabel(dataArray, valueProp, nameProp) {
@@ -37,6 +37,10 @@ export const provideValueFromLibrary = (arrayData, valueSought) => {
         return value
     }
     return undefined
+}
+
+export const getFirstElementFromArray = (arr) => {
+    return arr?.length ? arr[0] : undefined
 }
 
 export function AttribDestruct(dataArray) {

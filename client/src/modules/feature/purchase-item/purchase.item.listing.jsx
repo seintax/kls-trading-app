@@ -122,7 +122,6 @@ const ReceivableListing = () => {
 
     const saveList = useCallback(() => {
         console.log("saving...")
-        toast.showWarning("Oh my god!!! What have you done!! \nThis button has no function.🤪😋")
     }, [])
 
     return (

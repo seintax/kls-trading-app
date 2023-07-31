@@ -2,12 +2,17 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid"
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { firstDayOfWeekByDate, lastDayOfWeekByDate, sqlDate } from "../../../utilities/functions/datetime.functions"
+import { getFirstElementFromArray } from "../../../utilities/functions/array.functions"
+import { dateFormat, dateRangedFormat, firstDayOfWeekByDate, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { setDashboardSummary, setDashboardWeek } from "./dashboard.reducer"
+import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
+import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
+import { setDashboardBranch, setDashboardStart, setDashboardStore, setDashboardSummary, showDashboardFilters } from "./dashboard.reducer"
 import { useCollectiblesDashboardMutation, useWeeklyDiscountsDashboardMutation, useWeeklyGrossProfitDashboardMutation, useWeeklyGrossSalesDashboardMutation, useWeeklyNetSalesDashboardMutation, useWeeklyRefundsDashboardMutation } from "./dashboard.services"
 
 const DashboardCards = () => {
+    const auth = useAuth()
     const dashboardSelector = useSelector(state => state.dashboard)
     const dispatch = useDispatch()
     const [totalGrossSales, setTotalGrossSales] = useState(0)
@@ -18,6 +23,7 @@ const DashboardCards = () => {
     const [totalCollectibles, setTotalCollectibles] = useState(0)
     const currentWeek = firstDayOfWeekByDate(sqlDate())
 
+    const [allBranches] = useFetchAllBranchMutation()
     const [grossSales, { isLoading: grosssalesLoading }] = useWeeklyGrossSalesDashboardMutation()
     const [refunds, { isLoading: refundsLoading }] = useWeeklyRefundsDashboardMutation()
     const [discounts, { isLoading: discountsLoading }] = useWeeklyDiscountsDashboardMutation()
@@ -26,67 +32,115 @@ const DashboardCards = () => {
     const [collectibles, { isLoading: collectibleLoading }] = useCollectiblesDashboardMutation()
 
     useEffect(() => {
-        dispatch(setDashboardWeek(firstDayOfWeekByDate(new Date())))
-    }, [])
+        dispatch(setDashboardStart(firstDayOfWeekByDate(new Date())))
+        dispatch(setDashboardStore(isEmpty(getBranch(auth)) ? "" : auth.store))
 
+        const instantiate = async () => {
+            if (isEmpty(dashboardSelector.branch)) {
+                await allBranches()
+                    .unwrap()
+                    .then(res => {
+                        if (res.success) {
+                            dispatch(setDashboardBranch(isEmpty(getBranch(auth)) ? "All Branches" : getFirstElementFromArray(res?.arrayResult?.filter(f => f.code === auth.store))?.name || ""))
+                        }
+                    })
+                    .catch(err => console.error(err))
+            }
+        }
+
+        instantiate()
+    }, [])
 
     useEffect(() => {
         const weeklyCards = async () => {
-            await grossSales({ day: dashboardSelector.week, total: true })
+            let end = dateRangedFormat(dashboardSelector.start, 'add', dashboardSelector.range - 1)
+            await grossSales({
+                fr: dashboardSelector.start,
+                to: end,
+                total: true,
+                store: dashboardSelector.store
+            })
                 .unwrap()
                 .then(res => { setTotalGrossSales(res.data.total) })
                 .catch(err => console.error(err))
 
-            await refunds({ day: dashboardSelector.week, total: true })
+            await refunds({
+                fr: dashboardSelector.start,
+                to: end,
+                total: true,
+                store: dashboardSelector.store
+            })
                 .unwrap()
                 .then(res => { setTotalRefunds(res.data.total) })
                 .catch(err => console.error(err))
 
-            await discounts({ day: dashboardSelector.week, total: true })
+            await discounts({
+                fr: dashboardSelector.start,
+                to: end,
+                total: true,
+                store: dashboardSelector.store
+            })
                 .unwrap()
                 .then(res => { setTotalDiscounts(res.data.total) })
                 .catch(err => console.error(err))
 
-            await netSales({ day: dashboardSelector.week, total: true })
+            await netSales({
+                fr: dashboardSelector.start,
+                to: end,
+                total: true,
+                store: dashboardSelector.store
+            })
                 .unwrap()
                 .then(res => { setTotalNetSales(res.data.total) })
                 .catch(err => console.error(err))
 
-            await grossProfit({ day: dashboardSelector.week, total: true })
+            await grossProfit({
+                fr: dashboardSelector.start,
+                to: end,
+                total: true,
+                store: dashboardSelector.store
+            })
                 .unwrap()
                 .then(res => { setTotalGrossProfit(res.data.total) })
                 .catch(err => console.error(err))
-            await collectibles()
+            await collectibles({ store: dashboardSelector.store })
                 .unwrap()
                 .then(res => { setTotalCollectibles(res.data.total) })
                 .catch(err => console.error(err))
         }
-        if (dashboardSelector.week) weeklyCards()
-    }, [dashboardSelector.week])
+        if (dashboardSelector.start) weeklyCards()
+    }, [dashboardSelector.start, dashboardSelector.store])
 
     const onClick = (summary) => {
         dispatch(setDashboardSummary(summary))
     }
 
     const prevWeek = () => {
-        let prevweek = moment(dashboardSelector.week).subtract(7, 'days').format("YYYY-MM-DD")
-        dispatch(setDashboardWeek(firstDayOfWeekByDate(prevweek)))
+        let prevrange = moment(dashboardSelector.start).subtract(dashboardSelector.range, 'days').format("YYYY-MM-DD")
+        dispatch(setDashboardStart(prevrange))
     }
 
     const nextWeek = () => {
-        let nextweek = moment(dashboardSelector.week).add(7, 'days').format("YYYY-MM-DD")
-        dispatch(setDashboardWeek(firstDayOfWeekByDate(nextweek)))
+        let nextrange = moment(dashboardSelector.start).add(dashboardSelector.range, 'days').format("YYYY-MM-DD")
+        dispatch(setDashboardStart(nextrange))
+    }
+
+    const showFilters = () => {
+        dispatch(showDashboardFilters())
     }
 
     return (
         <div className="w-full flex flex-col gap-5">
             <div className="flex justify-center text-black font-bold p-2 border border-1 border-gray-300 rounded-[20px] text-[12px] card-font relative items-center no-select">
-                <div className="w-full text-center py-3 bg-gradient-to-bl from-primary-300 to-white rounded-[20px] font-mono text-[14px] flex flex-col gap-0.5">
+                <div className="w-full text-center items-center py-3 bg-gradient-to-bl from-primary-300 to-white rounded-[20px] font-mono text-[14px] flex flex-col gap-0.5">
                     <span className="text-xs">
-                        Sales Summary for the {currentWeek === dashboardSelector.week ? "Current" : "Previous"} Week:
+                        Sales Summary <u>{dashboardSelector.branch}</u> for the {currentWeek === dashboardSelector.start ? "Current" : "Previous"} Range:
                     </span>
-                    <span>
-                        {firstDayOfWeekByDate(dashboardSelector.week, "MMM DD, YYYY")} - {lastDayOfWeekByDate(dashboardSelector.week, "MMM DD, YYYY")}
+                    <span
+                        className="cursor-pointer w-fit hover:text-secondary-500"
+                        onClick={() => showFilters()}
+                    >
+                        {dateFormat(dashboardSelector.start, "MMM DD, YYYY")} - {dateRangedFormat(dashboardSelector.start, 'add', dashboardSelector.range - 1, "MMM DD, YYYY")}
                     </span>
                 </div>
                 <ChevronLeftIcon

@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
 import useToast from "../../../utilities/hooks/useToast"
 import DashboardCards from "./dashboard.cards"
+import DashboardFilters from "./dashboard.filters"
 import DashboardGraphCollection from "./dashboard.graph.collection"
 import DashboardGraphSales from "./dashboard.graph.sales"
 import { resetDashboardSummary } from "./dashboard.reducer"
@@ -42,6 +43,7 @@ const DashboardIndex = ({ id }) => {
                     </div>
                 </div>
             </div>
+            <DashboardFilters />
         </div>
     )
 }

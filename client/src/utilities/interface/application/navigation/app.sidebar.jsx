@@ -124,6 +124,17 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
         return false
     }
 
+    const isRoledCascade = (item) => {
+        let hasRole = item.children?.map(child => {
+            let propName = `${child.href?.replace("/", "")}-menu`
+            if (roleSelector.access.permission?.hasOwnProperty(propName)) {
+                return { show: roleSelector.access.permission[propName]?.show }
+            }
+            return { show: false }
+        })?.filter(f => f.show)
+        return hasRole.length ? true : false
+    }
+
     const activeLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-primary-200"
     const normalLink = "text-secondary-500 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 hover:text-secondary-500 lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-secondary-500 border border-transparent hover:border-secondary-400"
     const activemdLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-white lg:to-white lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-secondary-500 lg:border-transparent hover:border-secondary-400"
@@ -149,6 +160,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
                     ) : (
                         <div
                             key={item.name}
+                            className={isRoledCascade(item) ? "" : "hidden"}
                         >
                             {/* large viewport */}
                             <NavLink
