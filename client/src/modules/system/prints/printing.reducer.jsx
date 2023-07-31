@@ -57,7 +57,7 @@ const initialState = {
     name: "printing",
     data: [],
     item: {},
-    print: format,
+    print: {},
     manager: false,
     notifier: false,
     perpage: 150,

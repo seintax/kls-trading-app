@@ -89,7 +89,7 @@ const CasheringIndex = () => {
 
     return (
         <>
-            <div className="w-full mb-[4rem] lg:mb-0 pb-0 lg:pb-[4rem]">
+            <div id="no-print" className="w-full mb-[4rem] lg:mb-0 pb-0 lg:pb-[4rem]">
                 <div className="w-full bg-full border border-b border-b-gray-400 pb-5">
                     <div className="flex flex-col gap-3 lg:gap-0 lg:flex-row lg:justify-between lg:items-center">
                         <div className="text-xs lg:text-sm flex gap-2">

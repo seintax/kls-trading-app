@@ -294,3 +294,17 @@ svg.fill-primary>path {
 .card-font {
   font-family: Helvetica, sans-serif;
 }
+
+/* #receipt {
+  display: none;
+}
+
+@media print {
+  #no-print  {
+    display: none;
+  }
+
+  #receipt  {
+    display: flex;
+  }
+} */
