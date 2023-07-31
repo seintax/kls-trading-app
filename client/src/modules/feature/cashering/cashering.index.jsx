@@ -1,7 +1,7 @@
-import { CubeIcon, DocumentTextIcon, LockClosedIcon, MagnifyingGlassIcon, ReceiptPercentIcon, ShoppingCartIcon } from "@heroicons/react/24/outline"
+import { CubeIcon, DocumentPlusIcon, DocumentTextIcon, LockClosedIcon, MagnifyingGlassIcon, ReceiptPercentIcon, ShoppingCartIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
@@ -25,6 +25,7 @@ const CasheringIndex = () => {
     const dataSelector = useSelector(state => state.transaction)
     const browserSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     useEffect(() => {
         handleTrail(location?.pathname)
@@ -87,6 +88,10 @@ const CasheringIndex = () => {
         }
     }
 
+    const navigateTo = (url) => {
+        navigate(`/${url}`)
+    }
+
     return (
         <>
             <div id="no-print" className="w-full mb-[4rem] lg:mb-0 pb-0 lg:pb-[4rem]">
@@ -144,7 +149,7 @@ const CasheringIndex = () => {
                             Cart
                         </button>
                         <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select">
-                            <DocumentTextIcon className="w-5 h-5" />
+                            <DocumentPlusIcon className="w-5 h-5" />
                             Draft
                         </button>
                         <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select">
@@ -153,10 +158,10 @@ const CasheringIndex = () => {
                         </button>
                         <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select" onClick={() => toggleViewReceipts()}>
                             <ReceiptPercentIcon className="w-5 h-5" />
-                            Receipt
+                            Receipts
                         </button>
                         <button className="flex flex-col lg:flex-row items-center gap-1 bg-gradient-to-b from-transparent via-gray-200 to-gray-400 w-full lg:px-8 py-3 cursor-pointer rounded-md no-select">
-                            <ShoppingCartIcon className="w-5 h-5" />
+                            <DocumentTextIcon className="w-5 h-5" />
                             Account
                         </button>
                     </div>

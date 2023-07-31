@@ -19,7 +19,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = paym_trans
     WHERE 
-        DATE(paym_time) BETWEEN '@fr' AND '@to'  AND 
+        paym_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     GROUP BY DATE(paym_time) 
     ORDER BY DATE(paym_time) ASC
@@ -40,7 +40,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = sale_trans
     WHERE 
-        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -54,7 +54,7 @@ const dashboard = {
             LEFT JOIN sys_account 
                 ON acct_id = rtrn_account
     WHERE 
-        WEEK(rtrn_time) = WEEK(DATE('@day')) AND 
+        rtrn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -75,7 +75,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = sale_trans
     WHERE 
-        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -96,7 +96,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = sale_trans
     WHERE 
-        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -110,7 +110,7 @@ const dashboard = {
         pos_stock_inventory
     WHERE 
         sale_item=invt_id AND 
-        WEEK(sale_time) = WEEK(DATE('@day')) AND 
+        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         invt_store LIKE '%@store%'
     @group 
     @order
@@ -131,7 +131,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = cred_trans
     WHERE 
-        WEEK(cred_time) = WEEK(DATE('@day')) AND 
+        cred_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order

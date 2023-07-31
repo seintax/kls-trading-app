@@ -1,9 +1,11 @@
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
+import { useSelector } from "react-redux"
 import AppLineChart from "../../../utilities/interface/application/aesthetics/app.chart.line"
 import { useWeeklyDashboardMutation } from "./dashboard.services"
 
 const DashboardGraphCollection = () => {
+    const dashboardSelector = useSelector(state => state.dashboard)
     const [line, setline] = useState()
 
     const [weeklyReports] = useWeeklyDashboardMutation()
@@ -45,7 +47,7 @@ const DashboardGraphCollection = () => {
             },
             title: {
                 display: true,
-                text: 'Collection Summary Data for the Past 15 Days',
+                text: `Collection Summary Data ${dashboardSelector.branch} for the Past 15 Days`,
                 font: {
                     size: 14,
                     family: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
@@ -60,7 +62,8 @@ const DashboardGraphCollection = () => {
         const collectionData = async () => {
             await weeklyReports({
                 fr: moment(new Date()).subtract(15, 'days').format("YYYY-MM-DD"),
-                to: moment(new Date()).format("YYYY-MM-DD")
+                to: moment(new Date()).format("YYYY-MM-DD"),
+                store: dashboardSelector.store
             })
                 .unwrap()
                 .then(res => {
@@ -104,9 +107,8 @@ const DashboardGraphCollection = () => {
                 })
                 .catch(err => console.error(err))
         }
-
         collectionData()
-    }, [])
+    }, [dashboardSelector.store])
 
 
     return (

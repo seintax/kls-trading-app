@@ -32,6 +32,7 @@ const PrintReceipt = () => {
     useEffect(() => {
         if (dataSelector.print?.transaction && mounted) {
             window.print()
+            window.onbe
             window.onafterprint = onAfterPrinting()
         }
     }, [dataSelector.print?.transaction, mounted])

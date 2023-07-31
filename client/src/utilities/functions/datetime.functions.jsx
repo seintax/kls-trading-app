@@ -4,6 +4,21 @@ export function createInstance() {
     return parseInt(moment(new Date()).format("MMDDYYYYHHmmss"))
 }
 
+export function dateFormat(datevalue = undefined, format = "YYYY-MM-DD") {
+    if (datevalue === "0000-00-00 00:00:00") return moment(new Date()).format(format)
+    if (datevalue) return moment(datevalue).format(format)
+    return moment(new Date()).format(format)
+}
+
+export function dateRangedFormat(datevalue, action = "add", range = 7, format = "YYYY-MM-DD") {
+    if (datevalue === "0000-00-00 00:00:00") return ""
+    if (datevalue) {
+        if (action.toLowerCase() === "add") return moment(datevalue).add(range, 'days').format(format)
+        if (action.toLowerCase() === "subtract") return moment(datevalue).subtract(range, 'days').format(format)
+        return ""
+    }
+}
+
 export function sqlDate(datevalue = undefined) {
     if (datevalue === "0000-00-00 00:00:00") return ""
     if (datevalue) return moment(datevalue).format("YYYY-MM-DD")

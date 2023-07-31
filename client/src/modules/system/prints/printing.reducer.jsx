@@ -53,6 +53,14 @@ const format = {
 
 }
 
+const defaults = {
+    branch: "Jally Trading",
+    address: "Diversion Road National Highway, Banale, Pagadian City",
+    service: "Auto and Agri Machine Parts Supply",
+    subtext: "Autocare, Heavy Equipment and Trucking Services",
+    contact: "Mobile No.: (0966) 483 5853 - (0930) 990 2456",
+}
+
 const initialState = {
     name: "printing",
     data: [],
@@ -60,6 +68,7 @@ const initialState = {
     print: {},
     manager: false,
     notifier: false,
+    defaults: defaults,
     perpage: 150,
 }
 

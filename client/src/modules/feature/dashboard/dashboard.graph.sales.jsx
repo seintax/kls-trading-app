@@ -1,6 +1,7 @@
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
+import { dateRangedFormat } from "../../../utilities/functions/datetime.functions"
 import AppLineChart from "../../../utilities/interface/application/aesthetics/app.chart.line"
 import AppSuspense from "../../../utilities/interface/application/errormgmt/app.suspense"
 import { useWeeklyCollectiblesDashboardMutation, useWeeklyDiscountsDashboardMutation, useWeeklyGrossProfitDashboardMutation, useWeeklyGrossSalesDashboardMutation, useWeeklyNetSalesDashboardMutation, useWeeklyRefundsDashboardMutation } from "./dashboard.services"
@@ -98,38 +99,63 @@ const DashboardGraphSales = () => {
 
     useEffect(() => {
         const weeklySales = async () => {
+            let end = dateRangedFormat(dashboardSelector.start, 'add', dashboardSelector.range - 1)
             if (dashboardSelector.summary === "Gross Sales") {
-                await grossSales({ day: dashboardSelector.week })
+                await grossSales({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
                     .unwrap()
                     .then(response => populateDataSet(response))
                     .catch(err => console.error(err))
             }
             if (dashboardSelector.summary === "Refunds") {
-                await refunds({ day: dashboardSelector.week })
+                await refunds({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
                     .unwrap()
                     .then(response => populateDataSet(response))
                     .catch(err => console.error(err))
             }
             if (dashboardSelector.summary === "Discounts") {
-                await discounts({ day: dashboardSelector.week })
+                await discounts({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
                     .unwrap()
                     .then(response => populateDataSet(response))
                     .catch(err => console.error(err))
             }
             if (dashboardSelector.summary === "Net Sales") {
-                await netSales({ day: dashboardSelector.week })
+                await netSales({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
                     .unwrap()
                     .then(response => populateDataSet(response))
                     .catch(err => console.error(err))
             }
             if (dashboardSelector.summary === "Gross Profit") {
-                await grossProfit({ day: dashboardSelector.week })
+                await grossProfit({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
                     .unwrap()
                     .then(response => populateDataSet(response))
                     .catch(err => console.error(err))
             }
             if (dashboardSelector.summary === "Collectibles") {
-                await collectibles({ day: dashboardSelector.week })
+                await collectibles({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
                     .unwrap()
                     .then(response => populateDataSet(response))
                     .catch(err => console.error(err))
@@ -137,7 +163,7 @@ const DashboardGraphSales = () => {
         }
 
         weeklySales()
-    }, [dashboardSelector.summary, dashboardSelector.week])
+    }, [dashboardSelector.summary, dashboardSelector.start])
 
 
     return (

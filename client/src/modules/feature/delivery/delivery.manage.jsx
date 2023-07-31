@@ -136,12 +136,6 @@ const DeliveryManage = () => {
         setElement(element)
     }
 
-    useEffect(() => {
-        if (listener) {
-            // console.log(`${element}`, listener[element])
-        }
-    }, [listener])
-
     const onSchema = yup.object().shape({
         supplier: yup
             .number()
