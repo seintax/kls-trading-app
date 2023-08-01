@@ -4,6 +4,12 @@ export function createInstance() {
     return parseInt(moment(new Date()).format("MMDDYYYYHHmmss"))
 }
 
+export const timeDurationInHours = (beg, end) => {
+    var diff = (end - beg) / 1000
+    diff /= (60 * 60)
+    return Math.abs(Math.round(diff))
+}
+
 export function dateFormat(datevalue = undefined, format = "YYYY-MM-DD") {
     if (datevalue === "0000-00-00 00:00:00") return moment(new Date()).format(format)
     if (datevalue) return moment(datevalue).format(format)

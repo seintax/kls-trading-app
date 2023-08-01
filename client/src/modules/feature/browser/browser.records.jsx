@@ -1,7 +1,8 @@
-import { ShoppingCartIcon, TrashIcon } from "@heroicons/react/24/outline"
+import { ArrowDownIcon, ShoppingCartIcon, TrashIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sortBy } from '../../../utilities/functions/array.functions'
+import { timeDurationInHours } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import { exactSearch, forBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -63,11 +64,26 @@ const BrowserRecords = () => {
         }
     }
 
+    const displayStatus = (item) => {
+        let beg = new Date(item.time).getTime()
+        let end = (new Date()).getTime()
+        let diff = timeDurationInHours(beg, end)
+        if (diff <= 72) {
+            return (
+                <div className="px-0">
+                    <span className="bg-orange-500 text-white text-xs py-0.5 px-1 rounded-[5px] cursor-default hover:no-underline">New</span>
+                </div>
+            )
+        }
+        return null
+    }
+
     const items = (item) => {
         return [
             {
                 value:
                     <div className="flex gap-1 flex-wrap">
+                        {displayStatus(item)}
                         <span className="bg-white px-1 rounded-md border border-gray-500">
                             {item.product_name}
                         </span>
@@ -92,7 +108,14 @@ const BrowserRecords = () => {
             { value: NumFn.currency(item.price) },
             { value: item.store },
             { value: item.remaining || 0 },
-            { value: item.quantity || "" },
+            {
+                value: <div className="flex flex-col">
+                    <span>{item.quantity || ""}</span>
+                    <span className={item.markdown ? "text-xs text-red-500 flex items-center" : "hidden"}>
+                        -{NumFn.currency(item.markdown)}<ArrowDownIcon className="w-3 h-4" />
+                    </span>
+                </div>
+            },
             {
                 value:
                     <div className="flex items-start justify-end">

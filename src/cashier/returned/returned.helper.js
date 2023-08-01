@@ -12,6 +12,7 @@ const returned = new Table("pos_return_dispensing", {
     vat: 'rsal_vat',
     total: 'rsal_total',
     less: 'rsal_less',
+    markdown: 'rsal_markdown',
     net: 'rsal_net',
     discount: 'rsal_discount',
     taxrated: 'rsal_taxrated',

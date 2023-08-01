@@ -15,6 +15,7 @@ const dispensing = new Table("pos_sales_dispensing", {
     vat: 'sale_vat',
     total: 'sale_total',
     less: 'sale_less',
+    markdown: 'sale_markdown',
     net: 'sale_net',
     discount: 'sale_discount',
     taxrated: 'sale_taxrated',
