@@ -155,16 +155,19 @@ const CasheringReimburse = () => {
             let returnVat = returns?.reduce((prev, curr) => prev + amount(curr.returnvat), 0)
             let returnTotal = returns?.reduce((prev, curr) => prev + amount(curr.returntotal), 0)
             let returnLess = returns?.reduce((prev, curr) => prev + amount(curr.returnless), 0)
+            let returnMarkdown = returns?.reduce((prev, curr) => prev + amount(curr.returnmarkdown), 0)
             let returnNet = returns?.reduce((prev, curr) => prev + amount(curr.returnnet), 0)
             let remainVat = dispense?.reduce((prev, curr) => prev + amount(curr.remainvat), 0)
             let remainTotal = dispense?.reduce((prev, curr) => prev + amount(curr.remaintotal), 0)
             let remainLess = dispense?.reduce((prev, curr) => prev + amount(curr.remainless), 0)
+            let remainMarkdown = dispense?.reduce((prev, curr) => prev + amount(curr.remainmarkdown), 0)
             let remainNet = dispense?.reduce((prev, curr) => prev + amount(curr.remainnet), 0)
             let data = {
                 transaction: {
                     vat: remainVat,
                     total: remainTotal,
                     less: remainLess,
+                    markdown: remainMarkdown,
                     net: remainNet,
                     return: amount(transactionSelector.item.return) + amount(returnNet),
                     id: transactionSelector.item.id
@@ -174,10 +177,12 @@ const CasheringReimburse = () => {
                     purchase_vat: transactionSelector.item.vat,
                     purchase_total: transactionSelector.item.total,
                     purchase_less: transactionSelector.item.less,
+                    purchase_markdown: transactionSelector.item.markdown,
                     purchase_net: transactionSelector.item.net,
                     return_vat: returnVat,
                     return_total: returnTotal,
                     return_less: returnLess,
+                    return_markdown: returnMarkdown,
                     return_net: returnNet,
                     discount: transactionSelector.item.discount,
                     account: auth.id,
@@ -186,9 +191,10 @@ const CasheringReimburse = () => {
                     return {
                         dispense: item.forreturned,
                         vat: amount(item.remainvat),
-                        total: amount(item.remainvotal),
-                        less: amount(item.remainvess),
-                        net: amount(item.remainvet),
+                        total: amount(item.remaintotal),
+                        less: amount(item.remainless),
+                        markdown: amount(item.remainmarkdown),
+                        net: amount(item.remainnet),
                         returned: amount(item.returned) + amount(item.toreturn),
                         toreturn: 0,
                         item: item.item,
@@ -206,6 +212,7 @@ const CasheringReimburse = () => {
                         vat: item.returnvat,
                         total: item.returntotal,
                         less: item.returnless,
+                        markdown: item.returnmarkdown,
                         net: item.returnnet,
                         discount: item.discount,
                         taxrated: 0.12,

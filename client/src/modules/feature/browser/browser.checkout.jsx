@@ -1,5 +1,6 @@
 import { Transition } from "@headlessui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
+import { ArrowDownIcon } from "@heroicons/react/24/outline"
 import { ChevronRightIcon } from "@heroicons/react/24/solid"
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
@@ -102,7 +103,11 @@ const BrowserCheckout = () => {
             { value: item.store },
             { value: item.remaining || 0 },
             { value: item.quantity || "" },
-            { value: "" }
+            {
+                value: <span className={item.markdown ? "text-xs text-red-500 flex items-center" : "hidden"}>
+                    -{NumFn.currency(item.markdown)}<ArrowDownIcon className="w-3 h-4" />
+                </span>
+            },
         ]
     }
 
@@ -117,11 +122,13 @@ const BrowserCheckout = () => {
                 }
             }))
             let total = dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0)
+            let markdown = dataSelector?.cart?.reduce((prev, curr) => prev + amount(curr.markdown), 0)
             setsummary(prev => ({
                 ...prev,
                 total: total,
+                markdown: markdown,
                 vat: amount(total) * 0.12,
-                net: amount(total) - amount(prev.discount)
+                net: amount(total) - amount(prev.discount) - amount(markdown)
             }))
         }
     }, [dataSelector?.cart])
@@ -132,7 +139,7 @@ const BrowserCheckout = () => {
             let totalnoncash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method !== "CASH" ? amount(curr.amount) : 0), 0)
             let totalcash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method === "CASH" ? amount(curr.amount) : 0), 0)
             let totalpartial = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.type === "CREDIT" ? amount(curr.partial) : 0), 0)
-            let total = amount(summary.total) - amount(summary.discount)
+            let total = amount(summary.total) - amount(summary.discount) - amount(summary.markdown)
             let settled = amount(total) - amount(totalnoncash)
             let change = totalcash - settled
             let balance = amount(total) - amount(totalpaid) - amount(totalpartial)
@@ -151,7 +158,7 @@ const BrowserCheckout = () => {
                     ...prev,
                     rate: (amount(paymentSelector?.less?.discount) / amount(summary.total)),
                     discount: paymentSelector?.less?.discount,
-                    net: amount(summary.total) - amount(paymentSelector?.less?.discount)
+                    net: amount(summary.total) - amount(paymentSelector?.less?.discount) - amount(summary.markdown)
                 }))
                 return
             }
@@ -160,7 +167,7 @@ const BrowserCheckout = () => {
                 ...prev,
                 discount: discount,
                 rate: paymentSelector?.less?.rate,
-                net: amount(summary.total) - discount
+                net: amount(summary.total) - discount - amount(summary.markdown)
             }))
         }
     }, [paymentSelector?.less, summary.total])
@@ -173,7 +180,8 @@ const BrowserCheckout = () => {
         if (isPaid) return
         if (summary.total > 0) {
             let total = dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0)
-            dispatch(setPaymentTotal(total))
+            let markdown = dataSelector?.cart?.reduce((prev, curr) => prev + amount(curr.markdown), 0)
+            dispatch(setPaymentTotal(amount(total) - amount(markdown)))
             dispatch(showPaymentDiscount())
             return
         }
@@ -257,11 +265,12 @@ const BrowserCheckout = () => {
                             vat: amount(summary.vat),
                             total: amount(summary.total),
                             less: amount(summary.discount),
+                            markdown: amount(summary.markdown),
                             net: amount(summary.net),
                             discount: amount(summary.rate),
                             tended: tended,
                             change: change,
-                            method: dataSelector.method,
+                            method: paymentSelector.method,
                             status: "COMPLETED",
                             account: auth.id,
                             customer: paymentSelector.customer.id,
@@ -271,7 +280,7 @@ const BrowserCheckout = () => {
                             let vat = amount(item.price) * 0.12
                             let total = amount(item.quantity) * amount(item.price)
                             let less = total * amount(summary.rate)
-                            let net = total - less
+                            let net = total - less - amount(item.markdown)
                             return {
                                 code: code,
                                 index: moment(new Date).format("YY-MM-DD-HH-mm-ss"),
@@ -285,6 +294,7 @@ const BrowserCheckout = () => {
                                 vat: vat,
                                 total: total,
                                 less: less,
+                                markdown: item.markdown,
                                 net: net,
                                 discount: amount(summary.rate),
                                 taxrated: 0.12
@@ -359,19 +369,18 @@ const BrowserCheckout = () => {
                                     items: dataSelector.cart?.map(item => {
                                         let total = amount(item.quantity) * amount(item.price)
                                         let less = total * amount(summary.rate)
-                                        let net = total - less
                                         return {
                                             product: `${item.product_name} (${formatVariant(item.variant_serial, item.variant_model, item.variant_brand)})`,
                                             quantity: item.quantity,
                                             price: item.price,
                                             item: item.id,
                                             total: total,
-                                            less: less,
+                                            less: amount(less) + amount(item.markdown),
                                         }
                                     }),
                                     discount: {
                                         rate: summary.rate * 100,
-                                        amount: summary.discount
+                                        amount: amount(summary.discount) + amount(summary.markdown)
                                     },
                                     total: summary.net,
                                     cash: credit > 0 ? partial : tended,
@@ -432,13 +441,19 @@ const BrowserCheckout = () => {
                         <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
                             <span>Order Total ({dataSelector?.cart?.length} Item/s):</span>
                             <span className="ml-auto text-gray-800">
-                                {currency(summary?.total)}  ({isPaid.toString()})
+                                {currency(summary?.total)}
                             </span>
                         </div>
                         <div className="flex justify-between items-center px-3 pt-1 pb-3 text-xs text-gray-600">
                             <span>Value Added Tax:</span>
                             <span className="ml-auto text-gray-600">
                                 {currency(summary.vat)}
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer">
+                            <span>Markdown Discount:</span>
+                            <span className="ml-auto text-gray-800">
+                                {currency(summary.markdown)}
                             </span>
                         </div>
                         <div className="flex justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer" onClick={() => toggleDiscount()}>
@@ -542,7 +557,7 @@ const BrowserCheckout = () => {
                                 >
                                     Process Transaction
                                 </button>
-                                <button className="button-link" onClick={() => mockPrint()}>Test Print</button>
+                                {/* <button className="button-link" onClick={() => mockPrint()}>Test Print</button> */}
                             </div>
                         </div>
                     </div>

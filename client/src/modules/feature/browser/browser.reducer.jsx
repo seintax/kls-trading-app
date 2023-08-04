@@ -20,11 +20,11 @@ const initialState = {
     header: {
         items: [
             { name: 'Product Name', stack: false, sort: 'product_name' },
-            { name: 'Stocks', stack: true, sort: 'stocks', size: 120, position: "center" },
-            { name: 'Price', stack: true, sort: 'price', size: 120, position: "center" },
-            { name: 'Branch', stack: true, sort: 'store', size: 150, position: "center" },
-            { name: 'Remaining', stack: true, sort: 'remaining', size: 150, position: "center" },
-            { name: 'Quantity', stack: false, sort: 'quantity', size: 100, position: "center" },
+            { name: 'Stocks', stack: true, sort: 'stocks', size: 120 },
+            { name: 'Price', stack: true, sort: 'price', size: 120 },
+            { name: 'Branch', stack: true, sort: 'store', size: 150 },
+            { name: 'Remaining', stack: true, sort: 'remaining', size: 150 },
+            { name: 'Quantity', stack: false, sort: 'quantity', size: 100 },
             { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     },
@@ -46,7 +46,8 @@ const browserSlice = createSlice({
                     return {
                         ...data,
                         quantity: 0,
-                        remaining: data.stocks
+                        remaining: data.stocks,
+                        markdown: 0
                     }
                 return data
             })

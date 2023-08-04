@@ -1,15 +1,17 @@
 import { Transition } from "@headlessui/react"
-import { CalculatorIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import React, { useCallback, useLayoutEffect, useState } from 'react'
+import { CalculatorIcon, DocumentArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
 import { resetBrowserItem, resetBrowserManager, setBrowserCart, updateBrowserData } from "./browser.reducer"
 
 const BrowserQuantity = ({ qtyRef }) => {
+    const mrkRef = useRef()
     const dataSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
     const [quantity, setQuantity] = useState("")
+    const [markdown, setMarkdown] = useState("")
     const [balance, setBalance] = useState(0)
     const toast = useToast()
 
@@ -28,6 +30,10 @@ const BrowserQuantity = ({ qtyRef }) => {
         setBalance(amount(dataSelector.item.stocks) - amount(e.target.value || 0))
     }
 
+    const onMarkdownChange = (e) => {
+        setMarkdown(e.target.value)
+    }
+
     const onClose = () => {
         dispatch(resetBrowserItem())
         dispatch(resetBrowserManager())
@@ -43,6 +49,11 @@ const BrowserQuantity = ({ qtyRef }) => {
         qtyRef.current.focus()
     }
 
+    const onMarkdownReset = () => {
+        setMarkdown("")
+        mrkRef.current.focus()
+    }
+
     const onSubmit = (e) => {
         e.preventDefault()
         if (balance < 0) {
@@ -52,9 +63,11 @@ const BrowserQuantity = ({ qtyRef }) => {
         let newItem = {
             ...dataSelector.item,
             quantity: quantity,
-            remaining: balance
+            remaining: balance,
+            markdown: markdown
         }
         setQuantity("")
+        setMarkdown("")
         setBalance(0)
         dispatch(setBrowserCart(newItem))
         dispatch(updateBrowserData(newItem))
@@ -142,8 +155,20 @@ const BrowserQuantity = ({ qtyRef }) => {
                             <span className="text-[10px] lg:text-xs text-gray-400">balance after commit</span>
                         </div>
                     </div>
+                    <div className="flex border border-secondary-500 p-0.5 items-center">
+                        <DocumentArrowDownIcon className="w-8 h-8 ml-1 text-secondary-500 hidden lg:flex" />
+                        <input
+                            ref={mrkRef}
+                            type="number"
+                            value={markdown}
+                            onChange={onMarkdownChange}
+                            placeholder="Enter markdown"
+                            className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                        />
+                        <button type="button" className="button-link text-xs lg:text-sm ml-auto px-3 lg:px-6 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onMarkdownReset()}>Reset</button>
+                    </div>
                     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
-                        <button type="button" tabIndex={-1} className="button-cancel text-white py-2.5" onClick={() => onClose()}>Cancel</button>
+                        <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black" onClick={() => onClose()}>Cancel</button>
                         <button type="submit" className="button-submit">Submit</button>
                     </div>
                 </form>

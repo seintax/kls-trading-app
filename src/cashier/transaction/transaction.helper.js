@@ -7,6 +7,7 @@ const transaction = new Table("pos_sales_transaction", {
     vat: 'trns_vat',
     total: 'trns_total',
     less: 'trns_less',
+    markdown: 'trns_markdown',
     net: 'trns_net',
     return: 'trns_return',
     discount: 'trns_discount',

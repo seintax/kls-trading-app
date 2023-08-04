@@ -19,6 +19,7 @@ const CasheringIndex = () => {
     const { handleTrail } = useClientContext()
     const [instantiated, setInstantiated] = useState(false)
     const [value, setValue] = useState(0)
+    const [less, setLess] = useState(0)
     const [search, setSearch] = useState("")
     const [count, setCount] = useState(1)
     const debounceSearch = useDebounce(search, 500)
@@ -61,6 +62,7 @@ const CasheringIndex = () => {
     useEffect(() => {
         if (browserSelector.cart) {
             setValue(browserSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0))
+            setLess(browserSelector?.cart?.reduce((prev, curr) => prev + amount(curr.markdown), 0))
         }
     }, [browserSelector.cart])
 
@@ -106,7 +108,7 @@ const CasheringIndex = () => {
                                 <div className="text-sm flex gap-2">
                                     Value:
                                     <span className="text-secondary-500 font-bold">
-                                        {NumFn.currency(value || 0)}
+                                        {NumFn.currency(value || 0)} {less > 0 ? `(${NumFn.currency(less)})` : ""}
                                     </span>
                                 </div>
                                 <div className="flex gap-2">

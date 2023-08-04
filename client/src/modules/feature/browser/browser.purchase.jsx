@@ -1,5 +1,6 @@
 import { Transition } from "@headlessui/react"
 import { ArrowLeftIcon, ShoppingCartIcon, TrashIcon } from "@heroicons/react/20/solid"
+import { ArrowDownIcon } from "@heroicons/react/24/outline"
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
@@ -56,7 +57,14 @@ const BrowserPurchase = () => {
             { value: NumFn.currency(item.price) },
             { value: item.store },
             { value: item.remaining || 0 },
-            { value: item.quantity || "" },
+            {
+                value: <div className="flex flex-col">
+                    <span>{item.quantity || ""}</span>
+                    <span className={item.markdown ? "text-xs text-red-500 flex items-center" : "hidden"}>
+                        -{NumFn.currency(item.markdown)}<ArrowDownIcon className="w-3 h-4" />
+                    </span>
+                </div>
+            },
             {
                 value:
                     <div className="flex items-start justify-end">
