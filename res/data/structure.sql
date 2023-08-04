@@ -336,6 +336,7 @@ CREATE TABLE pos_sales_transaction (
     trns_vat         decimal(30,2),
     trns_total       decimal(30,2),
     trns_less        decimal(30,2) DEFAULT 0,
+    trns_markdown    decimal(30,2) DEFAULT 0,
     trns_net         decimal(30,2),
     trns_return      decimal(30,2) DEFAULT 0,
     trns_discount    decimal(20,15) DEFAULT 0,
@@ -347,6 +348,8 @@ CREATE TABLE pos_sales_transaction (
     trns_customer    int.
     trns_date        date
 );
+
+ALTER TABLE pos_sales_transaction ADD COLUMN trns_markdown    decimal(30,2) DEFAULT 0 AFTER trns_less;
 
 ALTER TABLE pos_sales_transaction ADD COLUMN trns_customer int AFTER trns_account;
 
@@ -366,12 +369,15 @@ CREATE TABLE pos_sales_dispensing (
     sale_vat         decimal(30,2),
     sale_total       decimal(30,2),
     sale_less        decimal(30,2) DEFAULT 0,
+    sale_markdown    decimal(30,2) DEFAULT 0,
     sale_net         decimal(30,2),
     sale_discount    decimal(20,15) DEFAULT 0,
     sale_taxrated    decimal(5,2) DEFAULT 0,
     sale_toreturn    decimal(10,2) DEFAULT 0,
     sale_returned    decimal(10,2) DEFAULT 0
 );
+
+ALTER TABLE pos_sales_dispensing ADD COLUMN sale_markdown    decimal(30,2) DEFAULT 0 AFTER sale_less;
 
 DROP TABLE pos_sales_credit;
 CREATE TABLE pos_sales_credit (
@@ -432,15 +438,20 @@ CREATE TABLE pos_return_transaction (
     rtrn_p_vat       decimal(30,2),
     rtrn_p_total     decimal(30,2),
     rtrn_p_less      decimal(30,2) DEFAULT 0,
+    rtrn_p_markdown  decimal(30,2) DEFAULT 0, 
     rtrn_p_net       decimal(30,2),
     rtrn_r_vat       decimal(30,2),
     rtrn_r_total     decimal(30,2),
     rtrn_r_less      decimal(30,2) DEFAULT 0,
+    rtrn_r_markdown  decimal(30,2) DEFAULT 0, 
     rtrn_r_net       decimal(30,2),
     rtrn_discount    decimal(20,15) DEFAULT 0,
     rtrn_account     int,
     rtrn_status      varchar(20) DEFAULT 'COMPLETED'
 );
+
+ALTER TABLE pos_return_transaction ADD COLUMN rtrn_p_markdown  decimal(30,2) DEFAULT 0 AFTER rtrn_p_less;
+ALTER TABLE pos_return_transaction ADD COLUMN rtrn_r_markdown  decimal(30,2) DEFAULT 0 AFTER rtrn_r_less;
 
 DROP TABLE pos_return_dispensing;
 CREATE TABLE pos_return_dispensing (
@@ -455,10 +466,13 @@ CREATE TABLE pos_return_dispensing (
     rsal_vat         decimal(30,2),
     rsal_total       decimal(30,2),
     rsal_less        decimal(30,2) DEFAULT 0,
+    rsal_markdown    decimal(30,2) DEFAULT 0, 
     rsal_net         decimal(30,2),
     rsal_discount    decimal(20,15) DEFAULT 0,
     rsal_taxrated    decimal(5,2) DEFAULT 0
 );
+
+ALTER TABLE pos_return_dispensing ADD COLUMN rsal_markdown  decimal(30,2) DEFAULT 0 AFTER rsal_less;
 
 DROP TABLE pos_return_reimbursement;
 CREATE TABLE pos_return_reimbursement (

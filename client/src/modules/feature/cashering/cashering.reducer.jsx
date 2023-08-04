@@ -19,7 +19,7 @@ const initialState = {
             { name: 'Time', stack: true, sort: 'time', size: 150 },
             { name: 'Type', stack: true, sort: 'method', size: 150 },
             { name: 'Status', stack: true, sort: 'status', size: 250 },
-            { name: 'Net Amount', stack: false, size: 200, position: 'right' },
+            { name: 'Net Amount', stack: false, size: 200 },
             { name: '', stack: false, screenreader: 'Action', size: 70 }
         ]
     },

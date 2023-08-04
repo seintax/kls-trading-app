@@ -10,9 +10,10 @@ import { formatVariant } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from "../../../utilities/interface/datastack/data.operation"
+import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { useByCodeDispensingMutation, useByCodeReturnedMutation } from "../browser/browser.services"
 import { resetCreditItem, setCreditItem } from "../credit/credit.reducer"
-import { useByOngoingCreditMutation } from "../credit/credit.services"
+import { useByFirstCreditMutation, useByOngoingCreditMutation } from "../credit/credit.services"
 import CasheringLedgerPurchase from "./cashering.ledger.purchase"
 import CasheringLedgerReturned from "./cashering.ledger.returned"
 import { resetTransactionLedger } from "./cashering.reducer"
@@ -26,18 +27,37 @@ const CasheringLedger = () => {
     const dataSelector = useSelector(state => state.transaction)
     const dispensingSelector = useSelector(state => state.dispensing)
     const returnedSelector = useSelector(state => state.returned)
+    const printingSelector = useSelector(state => state.printing)
     const creditSelector = useSelector(state => state.credit)
     const dispatch = useDispatch()
+    const [branch, setBranch] = useState()
     const [records, setrecords] = useState()
-    const [startpage, setstartpage] = useState(1)
+    const [credits, setCredits] = useState()
     const [sorted, setsorted] = useState()
     const [tab, setTab] = useState("DISPENSE")
     const columns = dispensingSelector.header
     const toast = useToast()
 
+    const [distinctBranch] = useDistinctBranchMutation()
+    const [firstCredit] = useByFirstCreditMutation()
     const [byCodeDispensing] = useByCodeDispensingMutation()
     const [byCodeReturned] = useByCodeReturnedMutation()
     const [byOngoingCredit] = useByOngoingCreditMutation()
+
+    useEffect(() => {
+        const instantiate = async () => {
+            await distinctBranch({ code: auth.store })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setBranch(res.distinctResult)
+                    }
+                })
+                .catch(err => console.error(err))
+        }
+
+        instantiate()
+    }, [])
 
     useEffect(() => {
         const instantiate = async () => {
@@ -65,6 +85,14 @@ const CasheringLedger = () => {
                     if (res.success) {
                         dispatch(setReturnedData(res?.arrayResult))
                         dispatch(setReturnedNotifier(false))
+                    }
+                })
+                .catch(err => console.error(err))
+            await firstCredit({ code: dataSelector.item.code })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setCredits(res.distinctResult.data.length === 1 ? res.distinctResult.data[0] : undefined)
                     }
                 })
                 .catch(err => console.error(err))
@@ -172,38 +200,39 @@ const CasheringLedger = () => {
     }
 
     const onPrint = () => {
+        let credit = credits.total - credits.partial
         let printdata = {
-            branch: "Jally Trading - MAIN",
-            address: "Diversion Road National Highway, Banale, Pagadian City",
-            service: "Auto and Agri Machine Parts Supply",
-            subtext: "Autocare, Heavy Equipment and Trucking Services",
-            contact: "Mobile No.: (0966) 483 5853 - (0930) 990 2456",
+            branch: branch?.data?.name || printingSelector.defaults.branch,
+            address: branch?.data?.address || printingSelector.defaults.address,
+            service: printingSelector.defaults.service,
+            subtext: printingSelector.defaults.subtext,
+            contact: branch?.data?.contact || printingSelector.defaults.contact,
             customer: {
-                name: "George Stubborn",
-                address: "Davao City"
+                name: dataSelector.item.customer_name,
+                address: dataSelector.item.customer_address
             },
             cashier: auth.name,
             transaction: dataSelector.item.code,
             items: dispensingSelector.data?.map(item => {
                 let total = amount(item.dispense) * amount(item.price)
                 let less = total * amount(dataSelector.item.discount)
-                let net = total - less
                 return {
                     product: `${item.product_name} (${formatVariant(item.variant_serial, item.variant_model, item.variant_brand)})`,
                     quantity: item.dispense,
                     price: item.price,
                     item: item.id,
                     total: total,
-                    less: less,
+                    less: amount(less) + amount(item.markdown),
                 }
             }),
             discount: {
                 rate: dataSelector.item.discount * 100,
-                amount: dataSelector.item.less
+                amount: amount(dataSelector.item.less) + amount(dataSelector.item.markdown)
             },
             total: dataSelector.item.net,
-            cash: dataSelector.item.tended,
+            cash: credit > 0 ? credits.partial : dataSelector.item.tended,
             change: dataSelector.item.change,
+            credit: credit,
             reprint: true
         }
         localStorage.setItem("rcpt", JSON.stringify(printdata))
@@ -264,7 +293,7 @@ const CasheringLedger = () => {
                             <span className="text-[10px] lg:text-xs text-gray-500 no-select">
                                 Less
                             </span>
-                            <div>{NumFn.currency(dataSelector.item.less)}</div>
+                            <div>{NumFn.currency(dataSelector.item.less + dataSelector.item.markdown)}</div>
                         </div>
                         <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs lg:text-sm">
                             <span className="text-[10px] lg:text-xs text-gray-500 no-select">

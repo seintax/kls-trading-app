@@ -31,6 +31,7 @@ const dispensing = new Table("pos_sales_dispensing", {
             transaction_vat: 'trns_vat',
             transaction_total: 'trns_total',
             transaction_less: 'trns_less',
+            transaction_markdown: 'trns_markdown',
             transaction_net: 'trns_net',
             transaction_return: 'trns_return',
             transaction_discount: 'trns_discount',

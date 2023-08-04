@@ -88,7 +88,6 @@ const byOngoing = handler(async (req, res) => {
 })
 
 const byAllOngoing = handler(async (req, res) => {
-    const param = helper.parameters(req.query)
     const { status, id } = helper.fields
     let params = ["ON-GOING"]
     let clause = [f(status).IsEqual()]
@@ -96,6 +95,20 @@ const byAllOngoing = handler(async (req, res) => {
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
+const byFirst = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { code, id } = helper.fields
+    let params = [p(param.code).Contains()]
+    let clause = [f(code).Like()]
+    let series = [f(id).Asc()]
+    let limits = 1
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolwrap(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
     })
@@ -125,5 +138,6 @@ module.exports = {
     _findone,
     byOngoing,
     byAllOngoing,
-    byTransaction
+    byTransaction,
+    byFirst
 }

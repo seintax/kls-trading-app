@@ -164,7 +164,7 @@ const InventoryManage = () => {
                 id: dataSelector.item.id
             },
             transmit: {
-                arrival: data.arrival,
+                arrival: sqlDate(data.arrival),
                 received: data.quantity,
                 id: dataSelector.item.transmit
             },

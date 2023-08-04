@@ -63,11 +63,13 @@ const CasheringReturn = () => {
             returntotal: amount(dataSelector.item.price) * amount(quantity),
             returnvat: (amount(dataSelector.item.vat) / amount(dataSelector.item.dispense)) * amount(quantity),
             returnless: (amount(dataSelector.item.less) / amount(dataSelector.item.dispense)) * amount(quantity),
-            returnnet: (amount(dataSelector.item.price) * amount(quantity)) - ((amount(dataSelector.item.less) / amount(dataSelector.item.dispense)) * amount(quantity)),
+            returnmarkdown: (amount(dataSelector.item.markdown) / amount(dataSelector.item.dispense)) * amount(quantity),
+            returnnet: (amount(dataSelector.item.price) * amount(quantity)) - ((amount(dataSelector.item.less) / amount(dataSelector.item.dispense)) * amount(quantity)) - (amount(dataSelector.item.markdown) / amount(dataSelector.item.dispense)) * amount(quantity),
             remaintotal: amount(dataSelector.item.total) - (amount(dataSelector.item.price) * amount(quantity)),
             remainvat: (amount(dataSelector.item.vat) / amount(dataSelector.item.dispense)) * (amount(dataSelector.item.dispense) - amount(quantity)),
             remainless: (amount(dataSelector.item.less) / amount(dataSelector.item.dispense)) * (amount(dataSelector.item.dispense) - amount(quantity)),
-            remainnet: (amount(dataSelector.item.total) - (amount(dataSelector.item.price) * amount(quantity))) - ((amount(dataSelector.item.less) / amount(dataSelector.item.dispense)) * (amount(dataSelector.item.dispense) - amount(quantity)))
+            remainmarkdown: (amount(dataSelector.item.markdown) / amount(dataSelector.item.dispense)) * (amount(dataSelector.item.dispense) - amount(quantity)),
+            remainnet: (amount(dataSelector.item.total) - (amount(dataSelector.item.price) * amount(quantity))) - ((amount(dataSelector.item.less) / amount(dataSelector.item.dispense)) * (amount(dataSelector.item.dispense) - amount(quantity))) - (amount(dataSelector.item.markdown) / amount(dataSelector.item.dispense)) * (amount(dataSelector.item.dispense) - amount(quantity))
         }
         setQuantity("")
         setBalance(0)

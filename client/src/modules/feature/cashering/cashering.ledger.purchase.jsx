@@ -87,10 +87,10 @@ const CasheringLedgerPurchase = () => {
                 value:
                     <div className="flex flex-row lg:flex-col">
                         <span className={item.toreturn > 0 ? "mr-3 lg:text-[10px] line-through" : ""}>
-                            {NumFn.currency(item.less)}
+                            {NumFn.currency(item.less + item.markdown)}
                         </span>
                         <span className={item.toreturn > 0 ? "text-secondary-500" : "hidden"}>
-                            {NumFn.currency((amount(item.less) / amount(item.dispense)) * (amount(item.dispense) - amount(item.toreturn)))}
+                            {NumFn.currency(((amount(item.less) / amount(item.dispense)) * (amount(item.dispense) - amount(item.toreturn))) + ((amount(item.markdown) / amount(item.dispense)) * (amount(item.dispense) - amount(item.toreturn))))}
                         </span>
                     </div>
             },
@@ -101,7 +101,7 @@ const CasheringLedgerPurchase = () => {
                             {NumFn.currency(item.net)}
                         </span>
                         <span className={item.toreturn > 0 ? "text-secondary-500" : "hidden"}>
-                            {NumFn.currency((amount(item.total) - (amount(item.price) * amount(item.toreturn))) - ((amount(item.less) / amount(item.dispense)) * (amount(item.dispense) - amount(item.toreturn))))}
+                            {NumFn.currency((amount(item.total) - (amount(item.price) * amount(item.toreturn))) - ((amount(item.less) / amount(item.dispense)) * (amount(item.dispense) - amount(item.toreturn))) - ((amount(item.markdown) / amount(item.dispense)) * (amount(item.dispense) - amount(item.toreturn))))}
                         </span>
                     </div>
             },

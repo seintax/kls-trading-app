@@ -53,7 +53,7 @@ const CasheringLedgerReturned = () => {
             { value: NumFn.currency(item.price) },
             { value: item.dispense },
             { value: NumFn.currency(item.total) },
-            { value: NumFn.currency(item.less) },
+            { value: NumFn.currency(item.less + item.markdown) },
             { value: NumFn.currency(item.net) },
             { value: item.returned || "" },
             { value: "" }

@@ -270,7 +270,7 @@ const BrowserCheckout = () => {
                             discount: amount(summary.rate),
                             tended: tended,
                             change: change,
-                            method: dataSelector.method,
+                            method: paymentSelector.method,
                             status: "COMPLETED",
                             account: auth.id,
                             customer: paymentSelector.customer.id,
