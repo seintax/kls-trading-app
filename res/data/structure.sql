@@ -349,7 +349,7 @@ CREATE TABLE pos_sales_transaction (
     trns_date        date
 );
 
-ALTER TABLE pos_sales_transaction ADD COLUMN trns_markdown    decimal(30,2) DEFAULT 0 AFTER trns_less;
+ALTER TABLE pos_sales_transaction ADD COLUMN trns_markdown decimal(30,2) DEFAULT 0 AFTER trns_less;
 
 ALTER TABLE pos_sales_transaction ADD COLUMN trns_customer int AFTER trns_account;
 
@@ -377,7 +377,7 @@ CREATE TABLE pos_sales_dispensing (
     sale_returned    decimal(10,2) DEFAULT 0
 );
 
-ALTER TABLE pos_sales_dispensing ADD COLUMN sale_markdown    decimal(30,2) DEFAULT 0 AFTER sale_less;
+ALTER TABLE pos_sales_dispensing ADD COLUMN sale_markdown decimal(30,2) DEFAULT 0 AFTER sale_less;
 
 DROP TABLE pos_sales_credit;
 CREATE TABLE pos_sales_credit (
@@ -450,8 +450,8 @@ CREATE TABLE pos_return_transaction (
     rtrn_status      varchar(20) DEFAULT 'COMPLETED'
 );
 
-ALTER TABLE pos_return_transaction ADD COLUMN rtrn_p_markdown  decimal(30,2) DEFAULT 0 AFTER rtrn_p_less;
-ALTER TABLE pos_return_transaction ADD COLUMN rtrn_r_markdown  decimal(30,2) DEFAULT 0 AFTER rtrn_r_less;
+ALTER TABLE pos_return_transaction ADD COLUMN rtrn_p_markdown decimal(30,2) DEFAULT 0 AFTER rtrn_p_less;
+ALTER TABLE pos_return_transaction ADD COLUMN rtrn_r_markdown decimal(30,2) DEFAULT 0 AFTER rtrn_r_less;
 
 DROP TABLE pos_return_dispensing;
 CREATE TABLE pos_return_dispensing (
@@ -472,7 +472,7 @@ CREATE TABLE pos_return_dispensing (
     rsal_taxrated    decimal(5,2) DEFAULT 0
 );
 
-ALTER TABLE pos_return_dispensing ADD COLUMN rsal_markdown  decimal(30,2) DEFAULT 0 AFTER rsal_less;
+ALTER TABLE pos_return_dispensing ADD COLUMN rsal_markdown decimal(30,2) DEFAULT 0 AFTER rsal_less;
 
 DROP TABLE pos_return_reimbursement;
 CREATE TABLE pos_return_reimbursement (
