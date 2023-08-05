@@ -70,6 +70,14 @@ export const transactionApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['transaction']
         }),
+        byAdminTransaction: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byadmin`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['transaction']
+        }),
         byMaxAccountTransaction: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/bymaxaccount`,
@@ -98,6 +106,7 @@ export const {
     useSearchTransactionMutation,
     useSpecifyTransactionMutation,
     useByAccountTransactionMutation,
+    useByAdminTransactionMutation,
     useByMaxAccountTransactionMutation,
     useByCountTransactionMutation
 } = transactionApiSlice

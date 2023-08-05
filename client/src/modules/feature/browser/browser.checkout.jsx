@@ -337,6 +337,7 @@ const BrowserCheckout = () => {
                                     balance: amount(cred.amount),
                                     outstand: amount(cred.amount),
                                     status: "ON-GOING",
+                                    account: auth.id,
                                     credit_payment: amount(cred.partial) > 0
                                         ? payment
                                         : undefined

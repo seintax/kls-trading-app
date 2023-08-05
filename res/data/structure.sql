@@ -396,10 +396,13 @@ CREATE TABLE pos_sales_credit (
     cred_change      decimal(30,2) DEFAULT 0,
     cred_reimburse   decimal(30,2) DEFAULT 0,
     cred_status      varchar(30) DEFAULT "ON-GOING",
-    cred_settledon   timestamp
+    cred_settledon   timestamp,
+    cred_account     int
 );
 
-ALTER TABLE pos_sales_credit ADD COLUMN cred_reimburse   decimal(30,2) DEFAULT 0 AFTER cred_change;
+ALTER TABLE pos_sales_credit ADD COLUMN cred_account int;
+
+ALTER TABLE pos_sales_credit ADD COLUMN cred_reimburse decimal(30,2) DEFAULT 0 AFTER cred_change;
 
 DROP TABLE pos_payment_collection;
 CREATE TABLE pos_payment_collection (

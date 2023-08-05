@@ -17,6 +17,7 @@ const credit = new Table("pos_sales_credit", {
     reimburse: 'cred_reimburse',
     status: 'cred_status',
     settledon: 'cred_settledon',
+    account: 'cred_account'
 }, [
     {
         key: "cred_creditor",
@@ -54,6 +55,14 @@ const credit = new Table("pos_sales_credit", {
             transaction_date: 'trns_date',
         }
     },
+    {
+        key: "cred_account",
+        reference: { table: "sys_account", key: "acct_id" },
+        include: {
+            account_name: 'acct_fullname',
+            account_store: 'acct_store',
+        }
+    }
 ])
 
 module.exports = credit

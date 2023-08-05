@@ -56,16 +56,25 @@ const CreditRecords = () => {
 
     const items = (item) => {
         return [
-            { value: item.customer_name },
-            { value: NumFn.currency(item.customer_value) },
-            { value: item.code },
-            { value: NumFn.currency(item.total) },
+            {
+                value: <div className="flex flex-col">
+                    <span>{item.customer_name}</span>
+                    <span className="text-xs text-gray-400">Value: {NumFn.currency(item.customer_value)}</span>
+                </div>
+            },
+            {
+                value: <div className="flex flex-col">
+                    <span>{item.code}</span>
+                    <span className="text-xs text-gray-400">Total Purchase: {NumFn.currency(item.total)}</span>
+                </div>
+            },
             { value: NumFn.currency(item.partial) },
             { value: NumFn.currency(item.payment) },
             { value: NumFn.currency(item.waived) },
             { value: NumFn.currency(item.returned) },
             { value: NumFn.currency(item.outstand) },
             { value: item.status },
+            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.account_store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }
