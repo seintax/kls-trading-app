@@ -62,7 +62,7 @@ const dashboard = {
     weekly_discounts: new Query("weekly_discounts", `
     SELECT 
         @date
-        SUM(sale_less) AS total
+        SUM(sale_less + sale_markdown) AS total
     FROM 
         pos_sales_dispensing
             LEFT JOIN (
@@ -110,6 +110,7 @@ const dashboard = {
         pos_stock_inventory
     WHERE 
         sale_item=invt_id AND 
+        sale_net > 0 AND 
         sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         invt_store LIKE '%@store%'
     @group 

@@ -147,12 +147,18 @@ const BrowserQuantity = ({ qtyRef }) => {
                         />
                         <button type="button" className="button-link text-xs lg:text-sm ml-auto px-3 lg:px-6 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onReset()}>Reset</button>
                     </div>
-                    <div>
-                        <div className={`flex flex-col-reverse border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-white"}`}>
+                    <div className="flex gap-2">
+                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-white"}`}>
                             <div className={`text-xs lg:text-[15px]`}>
                                 {balance}
                             </div>
                             <span className="text-[10px] lg:text-xs text-gray-400">balance after commit</span>
+                        </div>
+                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-white"}`}>
+                            <div className={`text-xs lg:text-[15px]`}>
+                                {NumFn.currency(dataSelector.item.price * amount(quantity))}
+                            </div>
+                            <span className="text-[10px] lg:text-xs text-gray-400">purchase value</span>
                         </div>
                     </div>
                     <div className="flex border border-secondary-500 p-0.5 items-center">
@@ -161,6 +167,7 @@ const BrowserQuantity = ({ qtyRef }) => {
                             ref={mrkRef}
                             type="number"
                             value={markdown}
+                            tabIndex={2}
                             onChange={onMarkdownChange}
                             placeholder="Enter markdown"
                             className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
