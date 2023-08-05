@@ -20,6 +20,7 @@ const initialState = {
             { name: 'Amount', stack: true, sort: 'amount', size: 150 },
             { name: 'Type', stack: true, sort: 'type', size: 150 },
             { name: 'Status', stack: true, sort: 'refstat', size: 150 },
+            { name: '', sort: 'account_store', stack: true, size: 120, position: 'right' },
             { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     }

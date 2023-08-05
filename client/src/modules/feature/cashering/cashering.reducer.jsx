@@ -16,10 +16,11 @@ const initialState = {
     header: {
         items: [
             { name: 'Transaction', stack: false, sort: 'code' },
-            { name: 'Time', stack: true, sort: 'time', size: 150 },
+            { name: 'Time', stack: true, sort: 'time', size: 200 },
             { name: 'Type', stack: true, sort: 'method', size: 150 },
             { name: 'Status', stack: true, sort: 'status', size: 250 },
             { name: 'Net Amount', stack: false, size: 200 },
+            { name: '', sort: 'account_store', stack: true, size: 120, position: 'right' },
             { name: '', stack: false, screenreader: 'Action', size: 70 }
         ]
     },

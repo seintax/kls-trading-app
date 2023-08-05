@@ -12,6 +12,7 @@ router.get('/transaction/id', secure, service._findone)
 router.get('/transaction/search', secure, service._search)
 router.post('/transaction/specify', service._specify)
 router.get('/transaction/byaccount', service.byAccount)
+router.get('/transaction/byadmin', service.byAdmin)
 router.get('/transaction/bymaxaccount', service.byMaxAccount)
 router.get('/transaction/bycount', service.byCount)
 

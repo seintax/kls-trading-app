@@ -189,6 +189,7 @@ const CreditManage = () => {
                     balance: amount(outstand),
                     outstand: amount(outstand),
                     status: "ON-GOING",
+                    account: auth.id
                 }
             }
         }

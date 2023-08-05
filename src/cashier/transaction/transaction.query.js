@@ -87,6 +87,20 @@ const byAccount = handler(async (req, res) => {
     })
 })
 
+const byAdmin = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { date, id } = helper.fields
+    let params = [p(param.date).Exactly()]
+    let clause = [f(date).IsEqual()]
+    let series = [f(id).Asc()]
+    let limits = undefined
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 const byMaxAccount = handler(async (req, res) => {
     const param = helper.parameters(req.query)
     const { code, account, date } = helper.fields
@@ -121,6 +135,7 @@ module.exports = {
     _specify,
     _findone,
     byAccount,
+    byAdmin,
     byMaxAccount,
     byCount
 }

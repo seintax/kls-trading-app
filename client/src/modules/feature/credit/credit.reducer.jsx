@@ -15,15 +15,14 @@ const initialState = {
     header: {
         items: [
             { name: 'Customer', stack: false, sort: 'customer_name' },
-            { name: 'Value', stack: true, sort: 'customer_value', size: 120 },
             { name: 'Transaction', stack: true, sort: 'code', size: 250 },
-            { name: 'Total Purchase', stack: true, sort: 'total', size: 150 },
             { name: 'Partial', stack: true, sort: 'partial', size: 130 },
             { name: 'Payment', stack: true, sort: 'payment', size: 130 },
             { name: 'Waived', stack: true, sort: 'waived', size: 120 },
             { name: 'Returned', stack: false, sort: 'returned', size: 120 },
             { name: 'Balance', stack: false, sort: 'outstand', size: 120 },
             { name: 'Status', stack: true, sort: 'status', size: 100 },
+            { name: '', sort: 'account_store', stack: true, size: 120, position: 'right' },
             { name: '', stack: false, screenreader: 'Action', size: 80 }
         ]
     }

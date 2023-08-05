@@ -62,12 +62,14 @@ const ChequeRecords = () => {
             { value: NumFn.currency(item.amount) },
             { value: item.type },
             { value: item.refstat },
+            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.account_store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }
 
     useEffect(() => {
         if (dataSelector?.data) {
+            console.log(dataSelector?.data)
             let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
             setrecords(data?.map((item, i) => {
                 return {

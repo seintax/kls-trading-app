@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { short12Time, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { exactSearch } from "../../../utilities/functions/string.functions"
+import { exactSearch, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import { useDebounce } from "../../../utilities/hooks/useDebounce"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from "../../../utilities/interface/datastack/data.operation"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { resetTransactionReceipts, setTransactionData, setTransactionItem, setTransactionNotifier, setTransactionSearch, showTransactionLedger } from "./cashering.reducer"
-import { useByAccountTransactionMutation } from "./cashering.services"
+import { useByAccountTransactionMutation, useByAdminTransactionMutation } from "./cashering.services"
 
 const CasheringReceipts = () => {
     const auth = useAuth()
@@ -27,9 +27,27 @@ const CasheringReceipts = () => {
     const toast = useToast()
 
     const [accountTransaction] = useByAccountTransactionMutation()
+    const [adminTransaction] = useByAdminTransactionMutation()
 
     useEffect(() => {
         const instantiate = async () => {
+            if (isDev(auth)) {
+                await adminTransaction({ date: range })
+                    .unwrap()
+                    .then(res => {
+                        if (res.success) {
+                            dispatch(setTransactionData(res?.arrayResult))
+                            dispatch(setTransactionNotifier(false))
+                            if (dataSelector.ledger) {
+                                let itemlist = res?.arrayResult?.filter(f => f.code === dataSelector.item.code)
+                                let item = itemlist.length > 0 ? itemlist[0] : {}
+                                dispatch(setTransactionItem(item))
+                            }
+                        }
+                    })
+                    .catch(err => console.error(err))
+                return
+            }
             await accountTransaction({ account: auth.id, date: range })
                 .unwrap()
                 .then(res => {
@@ -85,6 +103,7 @@ const CasheringReceipts = () => {
             { value: item.method },
             { value: item.status },
             { value: NumFn.currency(item.net) },
+            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.account_store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

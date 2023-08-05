@@ -47,14 +47,14 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
     const setPosition = (position, isheader = true) => {
         if (position === "center") {
             if (isheader) return "justify-center pl-4"
-            return "text-center"
+            return "justify-center"
         }
         if (position === "right") {
             if (isheader) return "justify-end"
-            return "text-right"
+            return "justify-end"
         }
         if (isheader) return "justify-start"
-        return "text-left"
+        return "justify-start"
     }
 
     return (
@@ -110,11 +110,13 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             row.items?.map((item, itemindex) => (
                                                 <td
                                                     key={itemindex}
-                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle} ${setPosition(order && order[itemindex]?.position, false)}`}
+                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
                                                     onClick={item?.onclick}
                                                     onDoubleClick={item?.ondoubleclick}
                                                 >
-                                                    <span className="hidden md:flex">{item.value}</span>
+                                                    <span className={`hidden md:flex ${setPosition(order && order[itemindex]?.position, false)}`}>
+                                                        {item.value}
+                                                    </span>
                                                     {
                                                         (itemindex === 0) ? (
                                                             <dl className="font-normal lg:hidden">

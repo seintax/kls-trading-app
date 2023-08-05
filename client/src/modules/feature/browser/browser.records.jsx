@@ -106,7 +106,7 @@ const BrowserRecords = () => {
             },
             { value: item.stocks },
             { value: NumFn.currency(item.price) },
-            { value: item.store },
+            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             { value: item.remaining || 0 },
             {
                 value: <div className="flex flex-col">
