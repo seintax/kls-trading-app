@@ -4,7 +4,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react'
 import DataPagination from "./data.pagination"
 
-const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading }) => {
+const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading, fontsize = "sm" }) => {
     const refList = useRef()
     const [data, setData] = useState()
     const [order, setOrder] = useState()
@@ -25,7 +25,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
             setPages(Math.ceil(records?.length / itemsperpage) || 1)
             setData(records?.slice(firstindex, lastindex))
         }
-    }, [records, page])
+    }, [records, page, fontsize])
 
     const sortcallback = (index, column) => {
         if (column.sort && setsorted) {
@@ -57,6 +57,18 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
         return "justify-start"
     }
 
+    const fontSmall = "text-sm"
+    const fontLarge = "text-lg"
+    const fontExtraLarge = "text-xl"
+
+    const preferredFont = (size = "sm") => {
+        if (size === "xs") return fontExtraSmall
+        if (size === "sm") return fontSmall
+        if (size === "lg") return fontLarge
+        if (size === "xl") return fontExtraLarge
+        return fontSmall
+    }
+
     return (
         <>
             <div ref={refList} className="flex flex-col justify-between mt-3 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg">
@@ -65,7 +77,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                         <tr className={`${columns?.style}`}>
                             <th
                                 scope="col"
-                                className={`hidden lg:table-cell sticky top-0 z-5 bg-gray-200 border-b border-gray-300 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top no-select shadow-sm`}
+                                className={`hidden lg:table-cell sticky top-0 z-5 bg-gray-200 border-b border-gray-300 py-3.5 pr-3 text-left font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top no-select shadow-sm`}
                             >
                                 #
                             </th>
@@ -75,7 +87,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                         <th
                                             key={colindex}
                                             scope="col"
-                                            className={`${col.stack ? "hidden lg:table-cell" : "hidden md:table-cell"} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left text-sm font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
+                                            className={`${col.stack ? "hidden lg:table-cell" : "hidden md:table-cell"} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left ${preferredFont(fontsize)} font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
                                             style={{ width: `${col.size}px` || "300px" }}
                                         >
                                             <div
@@ -102,7 +114,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                     onDoubleClick={row?.ondoubleclick}
                                     className={`hover:bg-gray-100 ${rowstyle}`}
                                 >
-                                    <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-sm text-gray-500 lg:table-cell align-top no-select">
+                                    <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
                                         {index + rowindex}.
                                     </td>
                                     {
@@ -110,7 +122,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             row.items?.map((item, itemindex) => (
                                                 <td
                                                     key={itemindex}
-                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
+                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 ${preferredFont(fontsize)} font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
                                                     onClick={item?.onclick}
                                                     onDoubleClick={item?.ondoubleclick}
                                                 >
@@ -124,9 +136,9 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                                                     order?.map((col, colindex) => (
                                                                         <div
                                                                             key={colindex}
-                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "md:hidden") : "md:hidden"} flex flex-col lg:flex-row items-start gap-1 lg:gap-3 text-xs mt-1`}
+                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "md:hidden") : "md:hidden"} flex flex-row items-start gap-1 lg:gap-3 text-sm mt-1`}
                                                                         >
-                                                                            <dt className="text-gray-400 text-[10px] lg:text-xs">
+                                                                            <dt className={`text-gray-400 text-[10px] text-sm w-[100px] ${col.name ? "" : "hidden"}`}>
                                                                                 {col.name ? `${col.name}:` : ""}
                                                                             </dt>
                                                                             <dd className="truncate text-gray-500">

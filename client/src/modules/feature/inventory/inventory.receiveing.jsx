@@ -59,7 +59,7 @@ const ReceivingRecords = () => {
             { value: item.category },
             { value: item.stocks },
             { value: NumFn.currency(item.price) },
-            { value: item.store },
+            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

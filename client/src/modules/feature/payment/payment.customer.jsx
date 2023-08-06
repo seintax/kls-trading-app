@@ -152,7 +152,7 @@ const PaymentCustomer = () => {
                 leaveTo="translate-y-full"
                 className="flex items-center justify-center h-full w-full lg:w-[550px]"
             >
-                <div className="flex flex-col gap-2 bg-white p-3 w-[60%] lg:w-[550px] h-fit text-sm mt-1 transition ease-in-out duration-300">
+                <div className="flex flex-col gap-2 bg-white p-3 w-[90%] lg:w-[600px] h-fit text-lg mt-1 transition ease-in-out duration-300">
                     <div className="flex items-center justify-between">
                         <div>PAYMENT OPTIONS</div>
                         <div onClick={() => onClose()}>
@@ -225,7 +225,7 @@ const PaymentCustomer = () => {
                                 <button type="button" className="button-blue" onClick={() => onRegister()}>Register Customer</button>
                             </div>
                         </div>
-                        <div className="flex justify-end mt-5">
+                        <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit disabled:bg-gray-400" disabled={newCustomer}>Add Customer</button>
                         </div>

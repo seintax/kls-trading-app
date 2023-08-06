@@ -99,26 +99,26 @@ const CasheringIndex = () => {
             <div id="no-print" className="w-full mb-[4rem] lg:mb-0 pb-0 lg:pb-[4rem]">
                 <div className="w-full bg-full border border-b border-b-gray-400 pb-5">
                     <div className="flex flex-col gap-3 lg:gap-0 lg:flex-row lg:justify-between lg:items-center">
-                        <div className="text-xs lg:text-sm flex gap-2">
+                        <div className="text-sm lg:text-lg flex gap-2 items-center">
                             <CubeIcon className="w-5 h-5" />
                             <div>Cart No. <span className="font-bold text-secondary-500">{StrFn.formatWithZeros(count, 4)}</span></div>
                         </div>
                         <div className="flex flex-col lg:flex-row gap-4">
                             <div className="flex flex-col lg:justify-end lg:items-end">
-                                <div className="text-sm flex gap-2">
+                                <div className="text-lg flex gap-2">
                                     Value:
                                     <span className="text-secondary-500 font-bold">
                                         {NumFn.currency(value || 0)} {less > 0 ? `(${NumFn.currency(less)})` : ""}
                                     </span>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 text-sm">
                                     No. of items:
                                     <span className="text-secondary-500 font-bold">
                                         {browserSelector.cart.length}
                                     </span>
                                 </div>
                             </div>
-                            <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7" onClick={() => toggleCheckout()}>Checkout</button>
+                            <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7 text-lg" onClick={() => toggleCheckout()}>Checkout</button>
                         </div>
                     </div>
                 </div>
@@ -130,9 +130,9 @@ const CasheringIndex = () => {
                             value={search}
                             onChange={onChange}
                             placeholder="Search inventory item here"
-                            className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            className="w-full text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button className="button-link ml-auto px-3 lg:px-9 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0">
+                        <button className="button-link ml-auto px-3 lg:px-9 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0">
                             Search
                         </button>
                     </div>

@@ -142,6 +142,7 @@ const CasheringLedgerPurchase = () => {
                 setsorted={setsorted}
                 setPage={setstartpage}
                 itemsperpage={dispensingSelector?.perpage}
+                fontsize="lg"
             />
         </Transition>
     )

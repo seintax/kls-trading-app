@@ -61,9 +61,9 @@ const PurchaseRecords = () => {
             { value: item.supplier_name },
             { value: StrFn.formatWithZeros(item.id, 6) },
             { value: longDate(item.date) },
-            { value: item.store },
             { value: item.category },
             { value: item.status },
+            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }
