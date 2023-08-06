@@ -291,7 +291,7 @@ const TransmitInjoin = () => {
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    toast.showUpdate("Purchase Order successfully updated.")
+                    toast.showUpdate("Stock transfer successfully updated.")
                     onCompleted()
                 }
             })

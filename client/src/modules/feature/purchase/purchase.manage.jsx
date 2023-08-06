@@ -211,7 +211,7 @@ const PurchaseManage = () => {
         if (instantiated && valueSought && arrayData) {
             let array = arrayData?.filter(arr => arr.value === valueSought)
             let value = array?.length ? array[0] : undefined
-            return value.key
+            return value?.key
         }
         return ""
     }

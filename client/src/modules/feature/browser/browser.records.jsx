@@ -106,8 +106,8 @@ const BrowserRecords = () => {
             },
             { value: item.stocks },
             { value: NumFn.currency(item.price) },
-            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             { value: item.remaining || 0 },
+            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             {
                 value: <div className="flex flex-col">
                     <span>{item.quantity || ""}</span>
@@ -166,6 +166,7 @@ const BrowserRecords = () => {
                 setPage={setstartpage}
                 itemsperpage={dataSelector?.perpage}
                 loading={isLoading}
+                fontsize="lg"
             />
             <BrowserPurchase />
             <BrowserCheckout />

@@ -93,6 +93,7 @@ const CasheringLedgerReturned = () => {
                     setsorted={setsorted}
                     setPage={setstartpage}
                     itemsperpage={returnedSelector?.perpage}
+                    fontsize="lg"
                 />
             </Transition>
         </>

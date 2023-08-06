@@ -16,11 +16,11 @@ const initialState = {
     header: {
         items: [
             { name: 'TR No.', stack: false, sort: 'id' },
-            { name: 'Source', stack: true, sort: 'source', size: 200 },
-            { name: 'Destination', stack: true, sort: 'destination', size: 200 },
             { name: 'Category', stack: true, sort: 'category', size: 180 },
             { name: 'TR Date', stack: false, sort: 'date', size: 150 },
             { name: 'Status', stack: true, sort: 'Status', size: 150 },
+            { name: 'Source', stack: true, sort: 'source', size: 150 },
+            { name: 'Destination', stack: true, sort: 'destination', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 150 }
         ]
     }

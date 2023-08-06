@@ -18,9 +18,9 @@ const initialState = {
             { name: 'Supplier', stack: false, sort: 'supplier_name' },
             { name: 'PO No.', stack: true, sort: 'id', size: 150 },
             { name: 'PO Date', stack: false, sort: 'date', size: 150 },
-            { name: 'Branch', stack: true, sort: 'store', size: 180 },
             { name: 'Category', stack: true, sort: 'category', size: 180 },
             { name: 'Status', stack: true, sort: 'status', size: 120 },
+            { name: '', stack: true, sort: 'store', size: 180, position: 'right' },
             { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     }

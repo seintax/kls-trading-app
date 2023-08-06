@@ -182,6 +182,7 @@ const CasheringReceipts = () => {
                         setsorted={setsorted}
                         setPage={setstartpage}
                         itemsperpage={dataSelector?.perpage}
+                        fontsize="lg"
                     />
                 </Transition.Child>
             </Transition>

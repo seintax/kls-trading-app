@@ -22,6 +22,14 @@ export const dashboardApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['dashboard']
         }),
+        weeklyCreditSalesDashboard: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklycreditsales`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['dashboard']
+        }),
         weeklyRefundsDashboard: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/weeklyrefunds`,
@@ -62,6 +70,14 @@ export const dashboardApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['dashboard']
         }),
+        weeklyCreditCollectionDashboard: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/weeklycreditcollection`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['dashboard']
+        }),
         collectiblesDashboard: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/collectibles`,
@@ -76,10 +92,12 @@ export const dashboardApiSlice = apiSlice.injectEndpoints({
 export const {
     useWeeklyDashboardMutation,
     useWeeklyGrossSalesDashboardMutation,
+    useWeeklyCreditSalesDashboardMutation,
     useWeeklyRefundsDashboardMutation,
     useWeeklyDiscountsDashboardMutation,
     useWeeklyNetSalesDashboardMutation,
     useWeeklyGrossProfitDashboardMutation,
     useWeeklyCollectiblesDashboardMutation,
+    useWeeklyCreditCollectionDashboardMutation,
     useCollectiblesDashboardMutation,
 } = dashboardApiSlice

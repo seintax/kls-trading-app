@@ -11,7 +11,8 @@ const dashboard = {
         pos_payment_collection 
             LEFT JOIN (
                 SELECT 
-                    acct_store,trns_code 
+                    acct_store,
+                    trns_code 
                 FROM 
                     pos_sales_transaction, 
                     sys_account 
@@ -24,6 +25,20 @@ const dashboard = {
     GROUP BY DATE(paym_time) 
     ORDER BY DATE(paym_time) ASC
     `),
+    weekly_credit_collection: new Query("weekly_credit_collection", `
+    SELECT 
+        @date
+        SUM(paym_amount) AS total 
+    FROM 
+        pos_payment_collection
+            LEFT JOIN sys_account 
+                ON acct_id = paym_account
+    WHERE 
+        paym_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        acct_store LIKE '%@store%'
+    @group 
+    @order
+    `),
     weekly_gross_sales: new Query("weekly_gross_sales", `
     SELECT
         @date
@@ -32,7 +47,9 @@ const dashboard = {
         pos_sales_dispensing 
             LEFT JOIN (
                 SELECT 
-                    acct_store,trns_code 
+                    acct_store,
+                    trns_code,
+                    trns_method
                 FROM 
                     pos_sales_transaction, 
                     sys_account 
@@ -41,6 +58,7 @@ const dashboard = {
             ON a.trns_code = sale_trans
     WHERE 
         sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        trns_method = 'SALES' AND
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -67,7 +85,8 @@ const dashboard = {
         pos_sales_dispensing
             LEFT JOIN (
                 SELECT 
-                    acct_store,trns_code 
+                    acct_store,
+                    trns_code 
                 FROM 
                     pos_sales_transaction, 
                     sys_account 
@@ -88,7 +107,9 @@ const dashboard = {
         pos_sales_dispensing
             LEFT JOIN (
                 SELECT 
-                    acct_store,trns_code 
+                    acct_store,
+                    trns_code,
+                    trns_method 
                 FROM 
                     pos_sales_transaction, 
                     sys_account 
@@ -97,6 +118,7 @@ const dashboard = {
             ON a.trns_code = sale_trans
     WHERE 
         sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        trns_method = 'SALES' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -109,7 +131,7 @@ const dashboard = {
         pos_sales_dispensing, 
         pos_stock_inventory
     WHERE 
-        sale_item=invt_id AND 
+        sale_item = invt_id AND 
         sale_net > 0 AND 
         sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         invt_store LIKE '%@store%'
@@ -137,6 +159,30 @@ const dashboard = {
     @group 
     @order
     `),
+    weekly_credit_sales: new Query("weekly_credit_sales", `
+    SELECT
+        @date
+        SUM(sale_total) AS total
+    FROM 
+        pos_sales_dispensing 
+            LEFT JOIN (
+                SELECT 
+                    acct_store,
+                    trns_code,
+                    trns_method
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = sale_trans
+    WHERE 
+        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        trns_method = 'CREDIT' AND 
+        acct_store LIKE '%@store%'
+    @group 
+    @order
+    `),
     collectibles: new Query("collectibles", `
     SELECT 
         SUM(cred_outstand) AS total 
@@ -154,6 +200,40 @@ const dashboard = {
     WHERE
         acct_store LIKE '%@store%';
     `),
+    weekly_data_by_branch: new Query("weekly_data_by_branch", `
+    SELECT 
+        SUM(cred_outstand) AS total 
+    FROM 
+        pos_sales_credit 
+            LEFT JOIN (
+                SELECT 
+                    acct_store,trns_code 
+                FROM 
+                    pos_sales_transaction, 
+                    sys_account 
+                WHERE acct_id=trns_account
+            ) a 
+            ON a.trns_code = cred_trans
+    WHERE
+        acct_store LIKE '%@store%';
+    `),
+    // weekly_sales_by_category: new Query("weekly_sales_by_category", `
+    // SELECT
+    //     invt_category,
+    //     SUM(IF(trns_method = 'SALES', sale_net, 0)) AS net_sales,
+    //     SUM(IF(trns_method = 'CREDIT', sale_net, 0)) AS net_credit
+    // FROM 
+    //     pos_sales_dispensing,
+    //     pos_sales_transaction,
+    //     pos_stock_inventory
+    // WHERE 
+    //     sale_trans = trns_code AND 
+    //     sale_item = invt_id AND 
+    //     sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+    //     invt_store LIKE '%@store%'
+    // GROUP BY invt_category
+    // ORDER BY invt_category
+    // `),
 }
 
 module.exports = dashboard

@@ -153,7 +153,7 @@ const BrowserPurchase = () => {
                     leave="transition ease-in-out duration-500 transform"
                     leaveFrom="translate-y-0"
                     leaveTo="translate-y-full"
-                    className="flex flex-col gap-2 bg-white px-3 w-[90%] h-full text-sm mt-1 pr-20 lg:pr-60 pb-48"
+                    className="flex flex-col gap-2 bg-white px-3 w-[90%] h-full text-lg mt-1 pr-20 lg:pr-60 pb-48"
                 >
                     <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffViewCart()} />
@@ -165,6 +165,7 @@ const BrowserPurchase = () => {
                         records={records}
                         setPage={setstartpage}
                         itemsperpage={dataSelector?.perpage}
+                        fontsize="lg"
                     />
                     <div className="w-full flex flex-col lg:flex-row">
                         <div className={`p-3 hover:text-blue-700 text-blue-500 cursor-pointer ${dataSelector.cart?.length ? "" : "hidden"}`} onClick={() => saveAsDraft()}>
@@ -172,20 +173,20 @@ const BrowserPurchase = () => {
                         </div>
                         <div className="flex flex-col lg:flex-row gap-4 lg:ml-auto py-3">
                             <div className="flex flex-col px-3 lg:px-0 lg:justify-end lg:items-end">
-                                <div className="text-sm lg:text-lg flex gap-2">
+                                <div className="text-lg lg:text-lg flex gap-2">
                                     Value:
                                     <span className="text-secondary-500 font-bold">
                                         {currency(dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0))}
                                     </span>
                                 </div>
-                                <div className="text-xs lg:text-sm flex gap-2">
+                                <div className="text-sm lg:text-lg flex gap-2">
                                     No. of items:
                                     <span className="text-secondary-500 font-bold">
                                         {dataSelector.cart.length}
                                     </span>
                                 </div>
                             </div>
-                            <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7" onClick={() => toggleCheckout()}>Checkout</button>
+                            <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7" onClick={() => toggleCheckout()}>Checkout Cart</button>
                         </div>
                     </div>
                     <div className={`${dataSelector.cart?.length ? "flex" : "hidden"} border border-blue-500 p-0.5 items-center mt-4`}>
@@ -194,9 +195,9 @@ const BrowserPurchase = () => {
                             value={discard}
                             onChange={onChange}
                             placeholder="Type 'discard' here"
-                            className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            className="w-full text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button className="button-link ml-auto text-xs lg:text-sm px-4 py-1.5 lg:px-8 lg:py-3 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onDiscard()}>Discard</button>
+                        <button className="button-link ml-auto flex-none px-4 py-1.5 lg:px-8 lg:py-3 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onDiscard()}>Discard Cart</button>
                     </div>
                 </Transition.Child>
             </Transition>

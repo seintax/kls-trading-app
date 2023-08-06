@@ -419,7 +419,7 @@ const BrowserCheckout = () => {
                     leave="transition ease-in-out duration-500 transform"
                     leaveFrom="translate-y-0"
                     leaveTo="translate-y-full"
-                    className="flex flex-col gap-2 bg-white px-3 w-full h-full text-sm mt-1 pr-20 lg:pr-60 pb-48"
+                    className="flex flex-col gap-2 bg-white px-3 w-full h-full text-lg mt-1 pr-20 lg:pr-60 pb-48"
                 >
                     <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffCheckout()} />
@@ -431,6 +431,7 @@ const BrowserCheckout = () => {
                         records={records}
                         setPage={setstartpage}
                         itemsperpage={dataSelector?.perpage}
+                        fontsize="lg"
                     />
                     <div className="flex flex-col">
                         <div className="flex justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer" onClick={() => toggleCustomer()}>
@@ -445,7 +446,7 @@ const BrowserCheckout = () => {
                                 {currency(summary?.total)}
                             </span>
                         </div>
-                        <div className="flex justify-between items-center px-3 pt-1 pb-3 text-xs text-gray-600">
+                        <div className="flex justify-between items-center px-3 pt-1 pb-3 text-sm text-gray-600">
                             <span>Value Added Tax:</span>
                             <span className="ml-auto text-gray-600">
                                 {currency(summary.vat)}
@@ -479,7 +480,7 @@ const BrowserCheckout = () => {
                             <div className={`${paymentSelector.paid?.length ? "flex" : "hidden"} flex-col w-full gap-1 py-2`}>
                                 {
                                     paymentSelector?.paid?.map((pay, index) => (
-                                        <div key={index} className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(pay.id)}>
+                                        <div key={index} className="flex justify-between items-center pl-5 pr-3 py-1 text-sm" onClick={() => removePayment(pay.id)}>
                                             <span className="w-1/4 flex-none">
                                                 {
                                                     pay.type === "SALES"
@@ -501,7 +502,7 @@ const BrowserCheckout = () => {
                                 }
                                 {
                                     (paymentSelector.method === "CREDIT") ? (
-                                        <div className="flex justify-between items-center pl-5 pr-3 py-1 text-xs" onClick={() => removePayment(paymentSelector?.paid[0]?.id)}>
+                                        <div className="flex justify-between items-center pl-5 pr-3 py-1 text-sm" onClick={() => removePayment(paymentSelector?.paid[0]?.id)}>
                                             <span className="w-1/4 flex-none flex items-center gap-2">
                                                 {paymentSelector?.paid[0]?.method}
                                                 <span className="bg-gray-300 px-2 py-0.5 rounded-md">
@@ -517,7 +518,7 @@ const BrowserCheckout = () => {
                                         </div>
                                     ) : null
                                 }
-                                <div className={`${payment > 0 ? "flex" : "hidden"} justify-between items-center pl-5 pr-3 py-1 text-xs font-bold`}>
+                                <div className={`${payment > 0 ? "flex" : "hidden"} justify-between items-center pl-5 pr-3 py-1 text-sm font-bold`}>
                                     <span className="w-full pt-3">Total Payment</span>
                                     <span className="w-1/3 text-right text-secondary-500 border-t border-t-gray-400 pt-3">
                                         {currency(payment)}
@@ -528,7 +529,7 @@ const BrowserCheckout = () => {
                         <div className="flex flex-col lg:flex-row border-t border-t-gray-400">
                             <div className="flex flex-col py-3 pl-3">
                                 <div className="flex flex-col justify-end items-start">
-                                    <div className="text-sm flex gap-2">
+                                    <div className="text-lg flex gap-2">
                                         Balance:
                                         <span className="text-secondary-500 font-bold">
                                             {currency(balance)}
@@ -538,13 +539,13 @@ const BrowserCheckout = () => {
                             </div>
                             <div className="flex flex-col lg:flex-row gap-4 lg:ml-auto py-3">
                                 <div className="flex flex-col px-3 lg:px-0 lg:justify-end lg:items-end">
-                                    <div className="text-sm flex gap-2">
+                                    <div className="text-lg flex gap-2">
                                         Tended Cash:
                                         <span className="text-secondary-500 font-bold">
                                             {currency(tended)}
                                         </span>
                                     </div>
-                                    <div className="flex gap-2 text-xs">
+                                    <div className="flex gap-2 text-sm">
                                         Change:
                                         <span className="text-secondary-500 font-bold">
                                             {currency(change)}
@@ -552,7 +553,7 @@ const BrowserCheckout = () => {
                                     </div>
                                 </div>
                                 <button
-                                    className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7 disabled:bg-gray-400"
+                                    className="button-link bg-gradient-to-b from-primary-500 text-lg via-secondary-500 to-secondary-600 px-7 disabled:bg-gray-400"
                                     disabled={isPaid}
                                     onClick={() => processTransaction()}
                                 >
