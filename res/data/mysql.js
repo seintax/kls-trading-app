@@ -1,4 +1,5 @@
 const mysql = require('mysql')
+const cloudcredentials = 'mysql://5ec6b55hzkxra3qds94u:pscale_pw_wFVKhozWcPW3pfIT3jqO7sX5sMxuJ1jP2zGOPrn31oE@aws.connect.psdb.cloud/app-jat-tpos?ssl={"rejectUnauthorized":true}'
 const credentials = process.env.NODE_ENV === "development" ? {
     host: process.env.MY_SERVER,
     user: process.env.MY_USER,
@@ -8,12 +9,13 @@ const credentials = process.env.NODE_ENV === "development" ? {
     multipleStatements: true,
     connectionLimit: 10,
     queueLimit: 0
-} : 'mysql://5ec6b55hzkxra3qds94u:pscale_pw_wFVKhozWcPW3pfIT3jqO7sX5sMxuJ1jP2zGOPrn31oE@aws.connect.psdb.cloud/app-jat-tpos?ssl={"rejectUnauthorized":true}'
+} : cloudcredentials
 
 var server = process.env.NODE_ENV === "development" ? process.env.MY_SERVER : "planetscale.com"
 var database = process.env.NODE_ENV === "development" ? process.env.MY_DATABASE : "app-jat-tpos"
 
 var pool = mysql.createPool(credentials)
+var cloud = mysql.createPool(cloudcredentials)
 
 pool.getConnection((err, con) => {
     if (err) {
@@ -40,5 +42,6 @@ pool.getConnection((err, con) => {
 
 module.exports = {
     pool,
-    mysql
+    mysql,
+    cloud
 }

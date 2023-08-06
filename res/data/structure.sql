@@ -108,8 +108,8 @@ CREATE TABLE pos_archive_supplier (
     supp_name        varchar(99) unique,
     supp_address     varchar(150),
     supp_details     varchar(50),
-    supp_telephone   varchar(30),
-    supp_cellphone   varchar(40),
+    supp_telephone   varchar(99),
+    supp_cellphone   varchar(99),
     supp_email       varchar(99),
     supp_rating      decimal(5,2),
     supp_status      varchar(1) DEFAULT "A"
