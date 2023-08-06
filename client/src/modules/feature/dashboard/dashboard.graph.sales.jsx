@@ -4,18 +4,20 @@ import { useSelector } from "react-redux"
 import { dateRangedFormat } from "../../../utilities/functions/datetime.functions"
 import AppLineChart from "../../../utilities/interface/application/aesthetics/app.chart.line"
 import AppSuspense from "../../../utilities/interface/application/errormgmt/app.suspense"
-import { useWeeklyCollectiblesDashboardMutation, useWeeklyDiscountsDashboardMutation, useWeeklyGrossProfitDashboardMutation, useWeeklyGrossSalesDashboardMutation, useWeeklyNetSalesDashboardMutation, useWeeklyRefundsDashboardMutation } from "./dashboard.services"
+import { useWeeklyCollectiblesDashboardMutation, useWeeklyCreditCollectionDashboardMutation, useWeeklyCreditSalesDashboardMutation, useWeeklyDiscountsDashboardMutation, useWeeklyGrossProfitDashboardMutation, useWeeklyGrossSalesDashboardMutation, useWeeklyNetSalesDashboardMutation, useWeeklyRefundsDashboardMutation } from "./dashboard.services"
 
 const DashboardGraphSales = () => {
     const [line, setline] = useState()
     const dashboardSelector = useSelector(state => state.dashboard)
 
     const [grossSales, { isLoading: grosssalesLoading }] = useWeeklyGrossSalesDashboardMutation()
+    const [creditSales, { isLoading: creditsalesLoading }] = useWeeklyCreditSalesDashboardMutation()
     const [refunds, { isLoading: refundsLoading }] = useWeeklyRefundsDashboardMutation()
     const [discounts, { isLoading: discountsLoading }] = useWeeklyDiscountsDashboardMutation()
     const [netSales, { isLoading: netsalesLoading }] = useWeeklyNetSalesDashboardMutation()
     const [grossProfit, { isLoading: grossprofitLoading }] = useWeeklyGrossProfitDashboardMutation()
     const [collectibles, { isLoading: collectibleLoading }] = useWeeklyCollectiblesDashboardMutation()
+    const [creditCollection, { isLoading: creditcollectionLoading }] = useWeeklyCreditCollectionDashboardMutation()
 
     const options = {
         responsive: true,
@@ -66,6 +68,7 @@ const DashboardGraphSales = () => {
 
     const populateDataSet = (response) => {
         if (response.success) {
+            console.log(response)
             setline({
                 labels: response?.data
                     ?.map((data) => moment(data.day).format("MM-DD-YYYY")),
@@ -88,14 +91,14 @@ const DashboardGraphSales = () => {
     }
 
     const isLoading = () => {
-        return grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading
+        return grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading || creditsalesLoading || creditcollectionLoading
     }
 
     useEffect(() => {
-        if (grosssalesLoading || refundsLoading || discountsLoading || netsalesLoading || grossprofitLoading || collectibleLoading) {
+        if (isLoading()) {
             setline({ label: [], datasets: [] })
         }
-    }, [grosssalesLoading, refundsLoading, discountsLoading, netsalesLoading, grossprofitLoading, collectibleLoading])
+    }, [grosssalesLoading, refundsLoading, discountsLoading, netsalesLoading, grossprofitLoading, collectibleLoading, creditsalesLoading, creditcollectionLoading])
 
     useEffect(() => {
         const weeklySales = async () => {
@@ -160,8 +163,30 @@ const DashboardGraphSales = () => {
                     .then(response => populateDataSet(response))
                     .catch(err => console.error(err))
             }
+            if (dashboardSelector.summary === "Credit Sales") {
+                await creditSales({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
+                    .unwrap()
+                    .then(response => populateDataSet(response))
+                    .catch(err => console.error(err))
+            }
+            if (dashboardSelector.summary === "Credit Collection") {
+                await creditCollection({
+                    fr: dashboardSelector.start,
+                    to: end,
+                    store: dashboardSelector.store
+                })
+                    .unwrap()
+                    .then(response => populateDataSet(response))
+                    .catch(err => console.error(err))
+            }
         }
-
+        console.log(dashboardSelector.summary)
+        console.log(dashboardSelector.start)
+        console.log(dashboardSelector.range)
         weeklySales()
     }, [dashboardSelector.summary, dashboardSelector.start])
 
