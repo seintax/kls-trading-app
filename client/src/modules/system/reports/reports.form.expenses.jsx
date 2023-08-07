@@ -125,7 +125,7 @@ const ReportsFormExpenses = () => {
     return (
         (reportSelector.manager && reportSelector.report === "Expenses") ? (
             <>
-                <div className="w-full text-lg uppercase font-bold flex justify-between items-center no-select">
+                <div className="w-full text-lg uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select">
                     <div className="flex gap-4">
                         <PresentationChartLineIcon className="w-6 h-6" />
                         {reportSelector.report}
