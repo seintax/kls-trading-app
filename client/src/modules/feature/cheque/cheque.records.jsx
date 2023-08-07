@@ -69,7 +69,6 @@ const ChequeRecords = () => {
 
     useEffect(() => {
         if (dataSelector?.data) {
-            console.log(dataSelector?.data)
             let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
             setrecords(data?.map((item, i) => {
                 return {

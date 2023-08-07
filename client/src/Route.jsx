@@ -25,6 +25,7 @@ import ExpensesIndex from "./modules/system/expenses/expenses.index"
 import PermissionIndex from "./modules/system/permission/permission.index"
 import PrintBase from "./modules/system/prints/print.base"
 import PrintReceipt from "./modules/system/prints/print.receipt"
+import PrintReports from "./modules/system/prints/print.reports"
 import ReportsIndex from "./modules/system/reports/reports.index"
 import RolesIndex from "./modules/system/roles/roles.index"
 import usePrivate from "./utilities/hooks/usePrivate"
@@ -77,6 +78,11 @@ const AppRoute = () => {
                 <Route path="receipt" >
                     <Route index element={<PrintReceipt />} />
                     <Route path=":id" element={<PrintReceipt />} />
+                </Route>
+
+                <Route path="reports" >
+                    <Route index element={<PrintReports />} />
+                    <Route path=":id" element={<PrintReports />} />
                 </Route>
             </Route>
             <Route path="/error" element={<AppErrorFallback />} />

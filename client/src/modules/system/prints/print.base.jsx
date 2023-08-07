@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom"
 
 const PrintBase = () => {
     useEffect(() => {
-        document.title = "JBS | Report"
+        document.title = "Report | Jally Trading"
     }, [])
 
 
