@@ -7,6 +7,7 @@ import { dateFormat, dateRangedFormat, firstDayOfWeekByDate, sqlDate } from "../
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
+import AppDoughnutChart from "../../../utilities/interface/application/aesthetics/app.chart.doughnut"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { setDashboardBranch, setDashboardStart, setDashboardStore, setDashboardSummary, showDashboardFilters } from "./dashboard.reducer"
 import { useCollectiblesDashboardMutation, useWeeklyCreditCollectionDashboardMutation, useWeeklyCreditSalesDashboardMutation, useWeeklyDiscountsDashboardMutation, useWeeklyGrossProfitDashboardMutation, useWeeklyGrossSalesDashboardMutation, useWeeklyNetSalesDashboardMutation, useWeeklyRefundsDashboardMutation } from "./dashboard.services"
@@ -59,6 +60,23 @@ const DashboardCards = () => {
         const weeklyCards = async () => {
             let end = dateRangedFormat(dashboardSelector.start, 'add', dashboardSelector.range - 1)
             let collection = 0
+
+            await collectibles({
+                store: dashboardSelector.store
+            })
+                .unwrap()
+                .then(res => { setTotalCollectibles(res.data.total) })
+                .catch(err => console.error(err))
+
+            await creditSales({
+                fr: dashboardSelector.start,
+                to: end,
+                total: true,
+                store: dashboardSelector.store
+            })
+                .unwrap()
+                .then(res => { setTotalCreditSales(res.data.total) })
+                .catch(err => console.error(err))
 
             await creditCollection({
                 fr: dashboardSelector.start,
@@ -122,23 +140,6 @@ const DashboardCards = () => {
                 .unwrap()
                 .then(res => { setTotalGrossProfit(res.data.total + collection) })
                 .catch(err => console.error(err))
-
-            await collectibles({
-                store: dashboardSelector.store
-            })
-                .unwrap()
-                .then(res => { setTotalCollectibles(res.data.total) })
-                .catch(err => console.error(err))
-
-            await creditSales({
-                fr: dashboardSelector.start,
-                to: end,
-                total: true,
-                store: dashboardSelector.store
-            })
-                .unwrap()
-                .then(res => { setTotalCreditSales(res.data.total) })
-                .catch(err => console.error(err))
         }
         if (dashboardSelector.start) weeklyCards()
     }, [dashboardSelector.start, dashboardSelector.store])
@@ -164,7 +165,7 @@ const DashboardCards = () => {
     return (
         <div className="w-full flex flex-col gap-5">
             <div className="flex justify-center text-black font-bold border border-1 border-gray-300 text-[12px] card-font relative items-center no-select">
-                <div className="w-full text-center items-center py-3 bg-gradient-to-b from-primary-300 via-primary-200 to-white font-mono text-[14px] flex flex-col gap-0.5">
+                <div className="w-full text-center items-center py-3 bg-gradient-to-b from-primary-300 via-primary-300 to-primary-500 font-mono text-[14px] flex flex-col gap-0.5">
                     <span className="text-xs">
                         Sales Summary <u>{dashboardSelector.branch}</u> for the {currentWeek === dashboardSelector.start ? "Current" : "Previous"} Range:
                     </span>
@@ -196,98 +197,163 @@ const DashboardCards = () => {
                 />
             </div>
             <div className="w-full flex flex-col lg:flex-row flex-wrap items-center justify-center gap-2">
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Gross Sales")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Gross Sales
+
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Collectibles")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Collectibles",
+                                data: [totalCollectibles],
+                                backgroundColor: ["#fa5e04"]
+                            }]
+                        }} />
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
-                                PhP {grosssalesLoading ? "loading..." : NumFn.currency(totalGrossSales)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Refunds")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Refunds
-                    </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
-                        <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
-                                PhP {refundsLoading ? "loading..." : NumFn.currency(totalRefunds)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Discounts")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Discounts
-                    </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
-                        <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
-                                PhP {discountsLoading ? "loading..." : NumFn.currency(totalDiscounts)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Net Sales")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Net Sales
-                    </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
-                        <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
-                                PhP {netsalesLoading ? "loading..." : NumFn.currency(totalNetSales)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Gross Profit")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Gross Profit
-                    </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
-                        <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
-                                PhP {grossprofitLoading ? "loading..." : NumFn.currency(totalGrossProfit)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Collectibles")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Collectibles
-                    </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
-                        <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
+                            <span>Collectibles</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
                                 PhP {collectibleLoading ? "loading..." : NumFn.currency(totalCollectibles)}
                             </span>
                         </div>
                     </div>
                 </div>
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Credit Sales")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Credit Sales
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Credit Sales")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Credit Sales",
+                                data: [(totalCreditSales + totalGrossSales) | 1, totalCreditSales],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                            }]
+                        }} />
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
+                            <span>Credit Sales</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
                                 PhP {creditsalesLoading ? "loading..." : NumFn.currency(totalCreditSales)}
                             </span>
                         </div>
                     </div>
                 </div>
-                <div className="w-full lg:w-1/6 h-32 flex flex-col gap-[5px] cursor-pointer p-2 border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300 h-full" onClick={() => onClick("Credit Collection")}>
-                    <div className="text-xs bg-gradient-to-bl from-primary-300 to-white rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-5 font-mono no-select">
-                        Credit Collection
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Credit Collection")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Credit Collection",
+                                data: [(totalCollectibles + totalCreditCollection) | 1, totalCreditCollection],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                            }]
+                        }} />
                     </div>
-                    <div className="w-full py-3 px-5 bg-gradient-to-bl from-primary-300 to-white rounded-bl-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
-                            <span className="text-lg font-bold font-mono">
+                            <span>Credit Collection</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
                                 PhP {creditcollectionLoading ? "loading..." : NumFn.currency(totalCreditCollection)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Gross Sales")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Gross Sales",
+                                data: [(totalCreditSales + totalGrossSales) | 1, totalGrossSales],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                            }]
+                        }} />
+                    </div>
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                        <div className="flex flex-col gap-[5px]">
+                            <span>Gross Sales</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
+                                PhP {grosssalesLoading ? "loading..." : NumFn.currency(totalGrossSales)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Refunds")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Refunds",
+                                data: [(totalCreditSales + totalGrossSales) | 1, totalRefunds],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                            }]
+                        }} />
+                    </div>
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                        <div className="flex flex-col gap-[5px]">
+                            <span>Refunds</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
+                                PhP {refundsLoading ? "loading..." : NumFn.currency(totalRefunds)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Discounts")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Discounts",
+                                data: [(totalCreditSales + totalGrossSales) | 1, totalDiscounts],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                            }]
+                        }} />
+                    </div>
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                        <div className="flex flex-col gap-[5px]">
+                            <span>Discounts</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
+                                PhP {discountsLoading ? "loading..." : NumFn.currency(totalDiscounts)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Net Sales")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Net Sales",
+                                data: [(totalGrossProfit + totalNetSales) | 1, totalNetSales],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                            }]
+                        }} />
+                    </div>
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                        <div className="flex flex-col gap-[5px]">
+                            <span>Net Sales</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
+                                PhP {netsalesLoading ? "loading..." : NumFn.currency(totalNetSales)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Gross Profit")}>
+                    <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
+                        <AppDoughnutChart data={{
+                            labels: [],
+                            datasets: [{
+                                label: "Gross Profit",
+                                data: [(totalGrossProfit + totalNetSales) | 1, totalGrossProfit],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                            }]
+                        }} />
+                    </div>
+                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                        <div className="flex flex-col gap-[5px]">
+                            <span>Gross Profit</span>
+                            <span className="text-lg font-bold font-mono whitespace-nowrap">
+                                PhP {grossprofitLoading ? "loading..." : NumFn.currency(totalGrossProfit)}
                             </span>
                         </div>
                     </div>

@@ -1,10 +1,11 @@
 import { Transition } from "@headlessui/react"
+import { useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
-import { isEmpty } from "../../../functions/string.functions"
 import useAuth from "../../../hooks/useAuth"
 
 const AppSideMenu = ({ sidebarSideMenu, setSidebarSideMenu, sideMenuItems }) => {
     const auth = useAuth()
+    const roleSelector = useSelector(state => state.roles)
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -13,8 +14,17 @@ const AppSideMenu = ({ sidebarSideMenu, setSidebarSideMenu, sideMenuItems }) => 
         navigate(item.href)
     }
 
-    const isVisible = (exclusive) => {
-        if (isEmpty(exclusive) || exclusive === auth.store) return true
+    // const isVisible = (exclusive) => {
+    //     if (isEmpty(exclusive) || exclusive === auth.store) return true
+    //     return false
+    // }
+
+    const isVisible = (href) => {
+        if (href === "/dashboard") return true
+        let propName = `${href?.replace("/", "")}-menu`
+        if (roleSelector.access.permission?.hasOwnProperty(propName)) {
+            return roleSelector.access.permission[propName]?.show
+        }
         return false
     }
 
@@ -45,7 +55,7 @@ const AppSideMenu = ({ sidebarSideMenu, setSidebarSideMenu, sideMenuItems }) => 
                     sideMenuItems?.map(item => (
                         <div
                             key={item.name}
-                            className={`${location.pathname.startsWith(item.href) ? activeLink : normalLink} group mt-1 flex items-center px-2 py-2 text-xs font-medium rounded-md cursor-pointer left-0 ${isVisible(item?.exclusive) ? "" : "hidden"}`}
+                            className={`${location.pathname.startsWith(item.href) ? activeLink : normalLink} group mt-1 flex items-center px-2 py-2 text-xs font-medium rounded-md cursor-pointer left-0 ${isVisible(item?.href) ? "" : "hidden"}`}
                             onClick={() => handleSubMenuSelect(item)}
                         >
                             {item.name}
