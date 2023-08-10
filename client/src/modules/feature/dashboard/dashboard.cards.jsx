@@ -165,7 +165,7 @@ const DashboardCards = () => {
     return (
         <div className="w-full flex flex-col gap-5">
             <div className="flex justify-center text-black font-bold border border-1 border-gray-300 text-[12px] card-font relative items-center no-select">
-                <div className="w-full text-center items-center py-3 bg-gradient-to-b from-primary-300 via-primary-300 to-primary-500 font-mono text-[14px] flex flex-col gap-0.5">
+                <div className="w-full text-center items-center py-3 bg-primary-300 font-mono text-[14px] flex flex-col gap-0.5">
                     <span className="text-xs">
                         Sales Summary <u>{dashboardSelector.branch}</u> for the {currentWeek === dashboardSelector.start ? "Current" : "Previous"} Range:
                     </span>
@@ -205,7 +205,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Collectibles",
                                 data: [1, totalCollectibles],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>
@@ -225,7 +225,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Credit Sales",
                                 data: [(totalCreditSales + totalGrossSales) | 1, totalCreditSales],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>
@@ -245,7 +245,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Credit Collection",
                                 data: [(totalCollectibles + totalCreditCollection) | 1, totalCreditCollection],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>
@@ -265,7 +265,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Gross Sales",
                                 data: [(totalCreditSales + totalGrossSales) | 1, totalGrossSales],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>
@@ -285,7 +285,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Refunds",
                                 data: [(totalCreditSales + totalGrossSales) | 1, totalRefunds],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>
@@ -305,7 +305,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Discounts",
                                 data: [(totalCreditSales + totalGrossSales) | 1, totalDiscounts],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>
@@ -325,7 +325,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Net Sales",
                                 data: [(totalGrossProfit + totalNetSales) | 1, totalNetSales],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>
@@ -345,7 +345,7 @@ const DashboardCards = () => {
                             datasets: [{
                                 label: "Gross Profit",
                                 data: [(totalGrossProfit + totalNetSales) | 1, totalGrossProfit],
-                                backgroundColor: ["#f5f79f", "#fa5e04"]
+                                backgroundColor: ["#8ff5ae", "#fa5e04"]
                             }]
                         }} />
                     </div>

@@ -566,7 +566,7 @@ const BrowserCheckout = () => {
                                     disabled={isPaid || processing}
                                     onClick={() => processTransaction()}
                                 >
-                                    Process Transaction
+                                    {processing ? "Processing..." : "Process Transaction"}
                                 </button>
                                 {/* <button className="button-link" onClick={() => mockPrint()}>Test Print</button> */}
                             </div>
