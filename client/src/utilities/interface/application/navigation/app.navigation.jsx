@@ -46,13 +46,13 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
             <div className="w-full flex flex-row-reverse lg:flex-row items-center flex-1 pl-1 pr-3 ml-2.5">
                 {auth ? (
                     <div className="flex items-center relative isolate w-fit group cursor-pointer h-fit">
-                        <div className="hidden lg:flex items-center bg-primary-400 py-4 w-full pl-0 pr-5 rounded-br-[30px] absolute z-[-1] left-5 border border-secondary-500 group-hover:bg-primary-500">
+                        <div className="hidden lg:flex items-center bg-primary-400 py-4 w-full pl-0 pr-5 rounded-br-[30px] absolute z-[-1] left-5 border border-white group-hover:bg-primary-500">
                         </div>
                         <Menu as="div" className="relative">
                             <div>
                                 <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                                     <span className="sr-only">Open user menu</span>
-                                    <span className="h-9 w-9 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-[50%] flex items-center justify-center text-lg font-bold border border-1 border-[#ec45de] text-white hover:from-primary-400 hover:to-secondary-400">
+                                    <span className="h-9 w-9 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-[50%] flex items-center justify-center text-lg font-bold border border-1 border-white text-white hover:from-primary-400 hover:to-secondary-400">
                                         {auth?.name?.slice(0, 1) || "U"}
                                     </span>
                                 </Menu.Button>
@@ -110,7 +110,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
                                 </div>
                                 <input
                                     id="search-field"
-                                    className="block w-[350px] rounded-[10px] text-black bg-primary-400 my-2 focus:bg-primary-500 border-secondary-500 py-2 pl-8 pr-3 placeholder-gray-500 focus:border-transparent focus:placeholder-[#32395e] focus:outline-none focus:ring-0 text-xs"
+                                    className="block w-[350px] rounded-[10px] text-black bg-primary-400 my-2 focus:bg-primary-500 border-white py-2 pl-8 pr-3 placeholder-gray-500 focus:border-primary-300 focus:placeholder-[#32395e] focus:outline-none focus:ring-0 text-xs"
                                     placeholder="Search product, supplier or transaction"
                                     autoComplete="off"
                                     type="search"
@@ -123,14 +123,14 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
                     </div>
                     <button
                         type="button"
-                        className="rounded-full bg-primary-400 border border-secondary-500 p-[7px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
+                        className="rounded-full bg-primary-400 border border-white p-[7px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
                     >
                         <span className="sr-only">View notifications</span>
                         <TicketIcon className="h-5 w-5" aria-hidden="true" />
                     </button>
                     <button
                         type="button"
-                        className="rounded-full bg-primary-400 border border-secondary-500 p-[5px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
+                        className="rounded-full bg-primary-400 border border-white p-[5px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
                     >
                         <span className="sr-only">View notifications</span>
                         <BellIcon className="h-6 w-6" aria-hidden="true" />

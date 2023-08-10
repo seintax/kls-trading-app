@@ -50,6 +50,7 @@ const ChequeIndex = () => {
                 data={dataSelector.data}
                 isError={isError}
                 isLoading={isLoading}
+                plain={true}
             >
                 <ChequeRecords />
             </DataIndex >

@@ -77,7 +77,8 @@ const reports = {
             SUM(sale_less) AS discounts,
             SUM(sale_net) AS net_sales,
             SUM(sale_dispense * invt_cost) AS goods_cost,
-            SUM(sale_net - (sale_dispense * invt_cost)) AS gross_profit
+            SUM(sale_net - (sale_dispense * invt_cost)) AS gross_profit,
+            invt_store AS branch
         FROM 
             pos_sales_dispensing
                 LEFT JOIN pos_sales_transaction

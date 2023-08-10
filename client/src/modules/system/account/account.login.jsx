@@ -44,7 +44,7 @@ const AccountLogin = () => {
     }
 
     return (
-        <div className="flex min-h-full flex-col justify-center py-12 bg-gradient-to-b from-[#f1b83b] to-[#c28606] sm:px-6 lg:px-8 no-select">
+        <div className="flex min-h-full flex-col justify-center py-12 bg-gradient-to-bl from-primary-300 via-primary-400 to-primary-600 sm:px-6 lg:px-8 no-select">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
             </div>
             <div className="text-center text-red-500 max-w-md w-full rounded-[20px] mx-auto mt-5">
@@ -120,14 +120,14 @@ const AccountLogin = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md border border-transparent bg-secondary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                                className="flex w-full justify-center rounded-md border border-transparent bg-gradient-to-b from-primary-400 via-primary-600 to-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                             >
                                 Sign in
                             </button>
                         </div>
                     </form>
                 </div>
-                <div className="flex flex-col gap-4 justify-start px-4 py-5 mt-5 text-blue-600 items-start bg-gradient-to-b from-[#ffffff50] via-[#c7c6c650] to-[#ffffff] rounded-xl shadow border-shadow">
+                <div className="flex flex-col gap-4 justify-start px-4 py-5 mt-5 text-blue-600 items-start bg-gradient-to-b from-[#ffffff50] via-[#c7c6c650] to-[#ffffff90] rounded-xl shadow border-shadow">
                     <span>In partnership with:</span>
                     <div className="w-full flex justify-center gap-3">
                         <img src={DevLogo} className="h-7 w-7 ml-3" />

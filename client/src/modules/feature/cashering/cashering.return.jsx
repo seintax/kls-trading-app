@@ -148,7 +148,7 @@ const CasheringReturn = () => {
                             placeholder="Enter return quantity"
                             className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button type="button" className="button-link ml-auto px-6 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onReset()}>Reset</button>
+                        <button type="button" className="button-link text-sm ml-auto px-6 bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 focus:ring-0" onClick={() => onReset()}>Reset</button>
                     </div>
                     <div>
                         <div className={`flex flex-col-reverse border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-white"}`}>
@@ -159,7 +159,7 @@ const CasheringReturn = () => {
                         </div>
                     </div>
                     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
-                        <button type="button" tabIndex={-1} className="button-cancel text-white p-2.5" onClick={() => onClose()}>Cancel</button>
+                        <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black p-2.5" onClick={() => onClose()}>Cancel</button>
                         <button type="submit" className="button-submit">Add Return</button>
                     </div>
                 </form>

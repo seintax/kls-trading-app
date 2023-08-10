@@ -168,7 +168,7 @@ const PaymentDiscount = () => {
                             />
                         </div>
                         <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
-                            <button type="button" tabIndex={-1} className="button-cancel text-white py-2.5" onClick={() => onClose()}>Cancel</button>
+                            <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black py-2.5" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit">Add Option</button>
                         </div>
                     </form>

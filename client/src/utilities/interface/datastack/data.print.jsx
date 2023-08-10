@@ -10,7 +10,7 @@ const DataPrint = ({ columns, records, header, heading, trigger, rowstyle, items
         setOrder(columns?.items?.map(col => {
             return { ...col, order: "unsorted" }
         }))
-    }, [])
+    }, [columns])
 
     useEffect(() => {
         setData(records)

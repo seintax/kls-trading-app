@@ -9,9 +9,11 @@ const ReportsIndex = () => {
     const reportSelector = useSelector(state => state.reports)
 
     return (
-        <div className="w-full min-h-full flex lg:pl-56 relative">
-            <ReportsMenu />
-            <div className="pl-5 w-full">
+        <div className="w-full min-h-full flex flex-col lg:flex-row relative">
+            <div className="w-full lg:w-56 lg:h-full pr-4 border border-white border-r-secondary-500 flex-none">
+                <ReportsMenu />
+            </div>
+            <div className="lg:pl-5 mt-24 lg:mt-0 w-full flex flex-col">
                 <ReportsFormSales />
                 <ReportsFormSummary />
                 <ReportsFormExpenses />

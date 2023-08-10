@@ -173,7 +173,7 @@ const CasheringReceipts = () => {
                             onChange={onRangeChange}
                             className="w-[120px] lg:w-[150px] text-xs lg:text-sm flex-none border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button className="button-link text-xs lg:text-sm ml-auto px-4 lg:px-9 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onSearch()}>Search</button>
+                        <button className="button-link text-xs lg:text-sm ml-auto px-4 lg:px-9 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onSearch()}>Search</button>
                     </div>
                     <DataRecords
                         page={startpage}

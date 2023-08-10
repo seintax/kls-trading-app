@@ -135,11 +135,11 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
         return hasRole.length ? true : false
     }
 
-    const activeLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-primary-200"
-    const normalLink = "text-secondary-500 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 hover:text-secondary-500 lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-secondary-500 border border-transparent hover:border-secondary-400"
-    const activemdLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-white lg:to-white lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-secondary-500 lg:border-transparent hover:border-secondary-400"
-    const normalmdLink = "text-secondary-500 border border-transparent hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-white hover:text-transparent lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-secondary-500 lg:hover:border-secondary-400"
-    const activelgLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-white"
+    const activeLink = "bg-gradient-to-b text-black border border-secondary-600 from-white via-white to-primary-200"
+    const normalLink = "text-black hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200 hover:text-black lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-black border border-transparent hover:border-secondary-400"
+    const activemdLink = "bg-gradient-to-b text-black border border-secondary-600 from-white via-white to-white lg:to-white lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-black lg:border-transparent hover:border-secondary-400"
+    const normalmdLink = "text-black border border-transparent hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-white hover:text-transparent lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-black lg:hover:border-secondary-400"
+    const activelgLink = "bg-gradient-to-b text-black border border-secondary-600 from-white via-white to-white"
 
     const renderNavigation = () => {
         return (
@@ -209,7 +209,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
     return (
         <>
             <div className="w-16 fixed inset-y-0 flex lg:w-56 no-select">
-                <div className="flex flex-grow flex-col overflow-y-auto border-r border-r-secondary-500 text-white bg-white shadow-md border-shadow scroll-sm">
+                <div className="flex flex-grow flex-col overflow-y-auto border-r border-r-black text-white bg-white shadow-md border-shadow scroll-sm">
                     <div className="mt-20 px-1 flex flex-grow flex-col">
                         {renderNavigation()}
                     </div>

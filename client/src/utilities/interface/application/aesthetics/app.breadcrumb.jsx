@@ -13,7 +13,7 @@ const AppBreadcrumbs = ({ pages }) => {
 
     return (
         <nav
-            className="hidden sm:flex bg-white border border-b-secondary-500 top-0 z-11 py-2 pl-4 no-select text-xs drop-shadow-lg"
+            className="hidden sm:flex bg-white border border-b-primary-500 top-0 z-11 py-2 pl-4 no-select text-xs drop-shadow-lg"
             aria-label="Breadcrumb"
         >
             <ol role="list" className="flex items-center space-x-2">
@@ -21,7 +21,7 @@ const AppBreadcrumbs = ({ pages }) => {
                     <div>
                         <Link to="/dashboard" className="text-gray-400 hover:text-primary-500 ">
                             <HomeIcon
-                                className="h-5 w-5 flex-shrink-0 fill-secondary-500 hover:fill-[#132061]"
+                                className="h-5 w-5 flex-shrink-0 fill-primary-500 hover:fill-[#132061]"
                                 aria-hidden="true"
                             />
                             <span className="sr-only">Home</span>
@@ -33,11 +33,11 @@ const AppBreadcrumbs = ({ pages }) => {
                         <div className="flex items-center">
                             <span className="mx-2 text-secondary-300">&#10095;</span>
                             {page.current ? (
-                                <span className="ml-2 text-md text-secondary-500 px-2 font-bold rounded-[5px] py-1">{formatPageName(page.name)}</span>
+                                <span className="ml-2 text-sm text-primary-500 px-2 font-bold rounded-[5px] py-1">{formatPageName(page.name)}</span>
                             ) : (
                                 <Link
                                     to={page.href}
-                                    className="ml-2 text-md text-secondary-400 px-2 font-medium rounded-[5px] py-1"
+                                    className="ml-2 text-sm text-primary-400 px-2 font-medium rounded-[5px] py-1"
                                     aria-current={page.current ? "page" : undefined}
                                 >
                                     {formatPageName(page.name)}

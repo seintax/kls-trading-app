@@ -1,4 +1,4 @@
-import { ArrowPathIcon, PresentationChartLineIcon } from "@heroicons/react/24/outline"
+import { ArrowPathIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicons/react/24/outline"
 import moment from "moment"
 import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
@@ -17,11 +17,17 @@ const ReportsFormSales = () => {
     const [sorted, setsorted] = useState()
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
-    const [filters, setFilters] = useState({
-        fr: sqlDate(),
-        to: sqlDate(),
-        store: ""
-    })
+    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: "" })
+    const [mounted, setMounted] = useState(false)
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+                localStorage.removeItem("reports")
+            }
+        }
+    }, [mounted])
 
     const onChange = (e) => {
         const { name, value } = e.target
@@ -182,13 +188,23 @@ const ReportsFormSales = () => {
         }
     }, [data, sorted, reportSelector.report])
 
+    const reportColumn = () => {
+        if (reportSelector.report === "Daily Sales by Item") return byItemColumn
+        if (reportSelector.report === "Daily Sales by Category") return byCategoryColumn
+        if (reportSelector.report === "Daily Sales by Collection") return byCollectionColumn
+    }
+
     const printData = () => {
-        localStorage.setItem(reportSelector.report, JSON.stringify({
-            title: reportSelector.report,
-            subtext: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")}`,
-            data: records
-        }))
-        window.open(`/#/print/${reportSelector.report}/${moment(filters.fr).format("MMDDYYYY")}`, '_blank')
+        if (records?.length) {
+            localStorage.setItem("reports", JSON.stringify({
+                title: reportSelector.report,
+                subtext1: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")} - ${moment(filters.to).format("MMMM DD, YYYY")}`,
+                subtext2: `Branch: ${filters.store || "All"}`,
+                columns: reportColumn(),
+                data: records
+            }))
+            window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYY")}-${moment(filters.to).format("MMDDYYYY")}-${filters.store || "All"}`, '_blank')
+        }
     }
 
     const reLoad = () => {
@@ -198,7 +214,7 @@ const ReportsFormSales = () => {
     return (
         (reportSelector.manager && inclusion.includes(reportSelector.report)) ? (
             <>
-                <div className="w-full text-lg uppercase font-bold flex justify-between items-center no-select">
+                <div className="w-full text-lg uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select">
                     <div className="flex gap-4">
                         <PresentationChartLineIcon className="w-6 h-6" />
                         {reportSelector.report}
@@ -214,8 +230,11 @@ const ReportsFormSales = () => {
                                 ))
                             }
                         </select>
-                        <button className="button-link py-2" onClick={() => reLoad()}>
+                        <button className="button-red py-2" onClick={() => reLoad()}>
                             <ArrowPathIcon className="w-5 h-5" />
+                        </button>
+                        <button className="button-red py-2" onClick={() => printData()}>
+                            <PrinterIcon className="w-5 h-5" />
                         </button>
                     </div>
                 </div>

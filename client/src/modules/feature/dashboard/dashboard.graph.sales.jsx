@@ -68,7 +68,6 @@ const DashboardGraphSales = () => {
 
     const populateDataSet = (response) => {
         if (response.success) {
-            console.log(response)
             setline({
                 labels: response?.data
                     ?.map((data) => moment(data.day).format("MM-DD-YYYY")),
@@ -184,9 +183,6 @@ const DashboardGraphSales = () => {
                     .catch(err => console.error(err))
             }
         }
-        console.log(dashboardSelector.summary)
-        console.log(dashboardSelector.start)
-        console.log(dashboardSelector.range)
         weeklySales()
     }, [dashboardSelector.summary, dashboardSelector.start])
 
