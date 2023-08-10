@@ -6,7 +6,7 @@ const ReportsMenu = () => {
     const reportSelector = useSelector(state => state.reports)
     const dispatch = useDispatch()
 
-    const menuStyle = "text-secondary-500 border border-transparent hover:bg-gradient-to-b hover:from-primary-300 hover:via-primary-300 hover:to-primary-400 hover:text-secondary-500 hover:border-secondary-400 flex items-center px-1.5 px-2 py-2 text-xs font-medium rounded-md cursor-pointer flex-none"
+    const menuStyle = "text-black border border-transparent hover:bg-gradient-to-b hover:from-primary-300 hover:via-primary-300 hover:to-primary-400 hover:text-black hover:border-secondary-400 flex items-center px-1.5 px-2 py-2 text-xs font-medium rounded-md cursor-pointer flex-none"
 
     const onSelectReport = (reportName) => {
         dispatch(setReportName(reportName))

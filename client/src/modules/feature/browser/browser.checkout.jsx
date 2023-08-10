@@ -20,6 +20,7 @@ import { useCreateBrowserBySqlTransactionMutation } from "./browser.services"
 const BrowserCheckout = () => {
     const auth = useAuth()
     const [mounted, setMounted] = useState(false)
+    const [processing, setProcessing] = useState(false)
     const dataSelector = useSelector(state => state.browser)
     const paymentSelector = useSelector(state => state.payment)
     const printingSelector = useSelector(state => state.printing)
@@ -249,6 +250,7 @@ const BrowserCheckout = () => {
             toast.showWarning("Cannot process credit for walk-in customers.")
             return
         }
+        setProcessing(true)
         await maxAccountTransaction({ account: auth.id, date: sqlDate() })
             .unwrap()
             .then(async (res) => {
@@ -347,6 +349,7 @@ const BrowserCheckout = () => {
                     await createTransaction(data)
                         .unwrap()
                         .then(res => {
+                            setProcessing(false)
                             if (res.success) {
                                 setIsPaid(true)
                                 let partial = paymentSelector.paid
@@ -394,10 +397,16 @@ const BrowserCheckout = () => {
                                 // onCompleted()
                             }
                         })
-                        .catch(err => console.error(err))
+                        .catch(err => {
+                            console.error(err)
+                            setProcessing(false)
+                        })
                 }
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                setProcessing(false)
+            })
     }
 
     return (
@@ -436,7 +445,7 @@ const BrowserCheckout = () => {
                     <div className="flex flex-col">
                         <div className="flex justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer" onClick={() => toggleCustomer()}>
                             <span>Payor:</span>
-                            <span className={`ml-auto font-bold ${paymentSelector.customer?.name ? "text-secondary-500" : ""}`}>
+                            <span className={`ml-auto font-bold ${paymentSelector.customer?.name ? "text-orange-500" : ""}`}>
                                 {paymentSelector.customer?.name ? paymentSelector.customer?.name : "Not selected"}
                             </span>
                         </div>
@@ -466,14 +475,14 @@ const BrowserCheckout = () => {
                         </div>
                         <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
                             <span>Net Amount:</span>
-                            <span className="ml-auto text-secondary-500 font-bold">
+                            <span className="ml-auto text-orange-500 font-bold">
                                 {currency(summary.net)}
                             </span>
                         </div>
                         <div className="flex flex-col py-1 pl-3 border-t border-t-gray-400">
                             <div className="flex justify-between items-center py-2 cursor-pointer" onClick={() => togglePayments()}>
                                 <span>Payment Options:</span>
-                                <span className="ml-auto text-secondary-500 font-bold">
+                                <span className="ml-auto text-orange-500 font-bold">
                                     <ChevronRightIcon className="w-5 h-5" />
                                 </span>
                             </div>
@@ -520,7 +529,7 @@ const BrowserCheckout = () => {
                                 }
                                 <div className={`${payment > 0 ? "flex" : "hidden"} justify-between items-center pl-5 pr-3 py-1 text-sm font-bold`}>
                                     <span className="w-full pt-3">Total Payment</span>
-                                    <span className="w-1/3 text-right text-secondary-500 border-t border-t-gray-400 pt-3">
+                                    <span className="w-1/3 text-right text-orange-500 border-t border-t-gray-400 pt-3">
                                         {currency(payment)}
                                     </span>
                                 </div>
@@ -531,7 +540,7 @@ const BrowserCheckout = () => {
                                 <div className="flex flex-col justify-end items-start">
                                     <div className="text-lg flex gap-2">
                                         Balance:
-                                        <span className="text-secondary-500 font-bold">
+                                        <span className="text-orange-500 font-bold">
                                             {currency(balance)}
                                         </span>
                                     </div>
@@ -541,20 +550,20 @@ const BrowserCheckout = () => {
                                 <div className="flex flex-col px-3 lg:px-0 lg:justify-end lg:items-end">
                                     <div className="text-lg flex gap-2">
                                         Tended Cash:
-                                        <span className="text-secondary-500 font-bold">
+                                        <span className="text-orange-500 font-bold">
                                             {currency(tended)}
                                         </span>
                                     </div>
                                     <div className="flex gap-2 text-sm">
                                         Change:
-                                        <span className="text-secondary-500 font-bold">
+                                        <span className="text-orange-500 font-bold">
                                             {currency(change)}
                                         </span>
                                     </div>
                                 </div>
                                 <button
-                                    className="button-link bg-gradient-to-b from-primary-500 text-lg via-secondary-500 to-secondary-600 px-7 disabled:bg-gray-400"
-                                    disabled={isPaid}
+                                    className="button-link text-lg bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 px-7 disabled:bg-gray-400"
+                                    disabled={isPaid || processing}
                                     onClick={() => processTransaction()}
                                 >
                                     Process Transaction

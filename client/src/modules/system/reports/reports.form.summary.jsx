@@ -84,6 +84,7 @@ const ReportsFormSummary = () => {
             { name: 'Net Sales', stack: true, sort: 'net_sales', size: 150 },
             { name: 'Cost of Goods', stack: true, sort: 'goods_cost', size: 150 },
             { name: 'Gross Profit', stack: true, sort: 'gross_profit', size: 150 },
+            { name: 'Branch', stack: true, sort: 'branch', size: 150 },
         ]
     }
 
@@ -96,6 +97,7 @@ const ReportsFormSummary = () => {
             { value: currency(item.net_sales) },
             { value: currency(item.goods_cost) },
             { value: currency(item.gross_profit) },
+            { value: item.branch },
         ]
     }
 
@@ -147,10 +149,10 @@ const ReportsFormSummary = () => {
                                 ))
                             }
                         </select>
-                        <button className="button-link py-2" onClick={() => reLoad()}>
+                        <button className="button-red py-2" onClick={() => reLoad()}>
                             <ArrowPathIcon className="w-5 h-5" />
                         </button>
-                        <button className="button-link py-2" onClick={() => printData()}>
+                        <button className="button-red py-2" onClick={() => printData()}>
                             <PrinterIcon className="w-5 h-5" />
                         </button>
                     </div>

@@ -13,8 +13,8 @@ export default {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                primary: colors.yellow,
-                secondary: colors.red,
+                primary: colors.green,
+                secondary: colors.lime,
             },
         },
     },

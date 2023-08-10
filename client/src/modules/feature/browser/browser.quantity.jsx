@@ -145,7 +145,7 @@ const BrowserQuantity = ({ qtyRef }) => {
                             placeholder="Enter quantity"
                             className="w-full text-sm lg:text-lg border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button type="button" className="button-link text-sm lg:text-lg ml-auto px-3 lg:px-6 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onReset()}>Reset</button>
+                        <button type="button" className="button-link text-sm ml-auto px-3 lg:px-6 bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 focus:ring-0" onClick={() => onReset()}>Reset</button>
                     </div>
                     <div className="flex gap-2">
                         <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-white"}`}>
@@ -172,7 +172,7 @@ const BrowserQuantity = ({ qtyRef }) => {
                             placeholder="Enter markdown"
                             className="w-full text-sm lg:text-lg border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button type="button" className="button-link text-sm lg:text-lg ml-auto px-3 lg:px-6 bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 focus:ring-0" onClick={() => onMarkdownReset()}>Reset</button>
+                        <button type="button" className="button-link text-sm ml-auto px-3 lg:px-6 bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 focus:ring-0" onClick={() => onMarkdownReset()}>Reset</button>
                     </div>
                     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
                         <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black" onClick={() => onClose()}>Cancel</button>

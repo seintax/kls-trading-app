@@ -141,10 +141,10 @@ const ReportsFormExpenses = () => {
                                 ))
                             }
                         </select>
-                        <button className="button-link py-2" onClick={() => reLoad()}>
+                        <button className="button-red py-2" onClick={() => reLoad()}>
                             <ArrowPathIcon className="w-5 h-5" />
                         </button>
-                        <button className="button-link py-2" onClick={() => printData()}>
+                        <button className="button-red py-2" onClick={() => printData()}>
                             <PrinterIcon className="w-5 h-5" />
                         </button>
                     </div>

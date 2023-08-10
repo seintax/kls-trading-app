@@ -175,18 +175,18 @@ const BrowserPurchase = () => {
                             <div className="flex flex-col px-3 lg:px-0 lg:justify-end lg:items-end">
                                 <div className="text-lg lg:text-lg flex gap-2">
                                     Value:
-                                    <span className="text-secondary-500 font-bold">
+                                    <span className="text-orange-500 font-bold">
                                         {currency(dataSelector?.cart?.reduce((prev, curr) => prev + (amount(curr.price) * amount(curr.quantity)), 0))}
                                     </span>
                                 </div>
-                                <div className="text-sm lg:text-lg flex gap-2">
+                                <div className="text-sm lg:text-sm flex gap-2">
                                     No. of items:
-                                    <span className="text-secondary-500 font-bold">
+                                    <span className="text-orange-500 font-bold">
                                         {dataSelector.cart.length}
                                     </span>
                                 </div>
                             </div>
-                            <button className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7" onClick={() => toggleCheckout()}>Checkout Cart</button>
+                            <button className="button-link bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 px-7" onClick={() => toggleCheckout()}>Checkout Cart</button>
                         </div>
                     </div>
                     <div className={`${dataSelector.cart?.length ? "flex" : "hidden"} border border-blue-500 p-0.5 items-center mt-4`}>

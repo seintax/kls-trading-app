@@ -63,6 +63,7 @@ const CreditIndex = () => {
                 data={dataSelector.data}
                 isError={isError}
                 isLoading={isLoading}
+                plain={true}
             >
                 <CreditRecords />
             </DataIndex >

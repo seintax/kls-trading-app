@@ -28,8 +28,8 @@ const AppSideMenu = ({ sidebarSideMenu, setSidebarSideMenu, sideMenuItems }) => 
         return false
     }
 
-    const activeLink = "bg-gradient-to-b text-secondary-500 border border-secondary-600 from-white via-white to-primary-200"
-    const normalLink = "text-secondary-500 lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-secondary-500 border border-transparent lg:hover:border-secondary-400"
+    const activeLink = "bg-gradient-to-b text-black border border-secondary-600 from-white via-white to-primary-200"
+    const normalLink = "text-black lg:hover:bg-gradient-to-b lg:hover:from-primary-300 lg:hover:via-primary-300 lg:hover:to-primary-400 lg:hover:text-black border border-transparent lg:hover:border-secondary-400"
 
     return (
         <Transition

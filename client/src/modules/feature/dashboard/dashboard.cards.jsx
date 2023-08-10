@@ -204,8 +204,8 @@ const DashboardCards = () => {
                             labels: [],
                             datasets: [{
                                 label: "Collectibles",
-                                data: [totalCollectibles],
-                                backgroundColor: ["#fa5e04"]
+                                data: [1, totalCollectibles],
+                                backgroundColor: ["#f5f79f", "#fa5e04"]
                             }]
                         }} />
                     </div>
