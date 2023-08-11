@@ -85,13 +85,13 @@ const BrowserCheckout = () => {
                         <span className={`${item.category ? "" : "hidden"} bg-gradient-to-b from-white to-red-200 px-1 rounded-md border border-gray-400`}>
                             {item.category}
                         </span>
-                        <span className={`${item.variant_serial.replaceAll("-", "") ? "" : "hidden"} bg-gradient-to-b from-white to-blue-200 px-1 rounded-md border border-gray-400`}>
+                        <span className={`${item.variant_serial?.replaceAll("-", "") ? "" : "hidden"} bg-gradient-to-b from-white to-blue-200 px-1 rounded-md border border-gray-400`}>
                             {item.variant_serial}
                         </span>
-                        <span className={`${item.variant_model.replaceAll("-", "") ? "" : "hidden"} bg-gradient-to-b from-white to-blue-200 px-1 rounded-md border border-gray-400`}>
+                        <span className={`${item.variant_model?.replaceAll("-", "") ? "" : "hidden"} bg-gradient-to-b from-white to-blue-200 px-1 rounded-md border border-gray-400`}>
                             {item.variant_model}
                         </span>
-                        <span className={`${item.variant_brand.replaceAll("-", "") ? "" : "hidden"} bg-gradient-to-b from-white to-blue-200 px-1 rounded-md border border-gray-400`}>
+                        <span className={`${item.variant_brand?.replaceAll("-", "") ? "" : "hidden"} bg-gradient-to-b from-white to-blue-200 px-1 rounded-md border border-gray-400`}>
                             {item.variant_brand}
                         </span>
                         <span className={`${item.supplier_name ? "" : "hidden"} bg-gradient-to-b from-white to-green-200 px-1 rounded-md border border-gray-400`}>
@@ -409,6 +409,11 @@ const BrowserCheckout = () => {
             })
     }
 
+    const mockPrint = () => {
+        localStorage.setItem("rcpt", JSON.stringify(printingSelector.test))
+        window.open(`/#/print/receipt/TEST-0000001-${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
+    }
+
     return (
         <>
             <Transition
@@ -566,9 +571,9 @@ const BrowserCheckout = () => {
                                     disabled={isPaid || processing}
                                     onClick={() => processTransaction()}
                                 >
-                                    Process Transaction
+                                    {processing ? "Processing..." : "Process Transaction"}
                                 </button>
-                                {/* <button className="button-link" onClick={() => mockPrint()}>Test Print</button> */}
+                                <button className="button-link" onClick={() => mockPrint()}>Test Print</button>
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,7 @@
         "[Default Dark Modern]": {
             // "titleBar.activeBackground": "#f3eb7f",
             // "titleBar.activeForeground": "#000000",
-            "activityBar.background": "#7ff37f",
+            "activityBar.background": "#7ff3a6",
             "activityBar.foreground": "#000000",
             "activityBar.activeBackground": "#dfdede",
             "activityBar.inactiveForeground": "#000000",

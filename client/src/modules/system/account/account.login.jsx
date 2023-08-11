@@ -32,15 +32,20 @@ const AccountLogin = () => {
     const onLogin = async (e) => {
         e.preventDefault()
         const { user, pass } = login
-        await authLogin({ user, pass }).unwrap()
+        await authLogin({ user, pass })
+            .unwrap()
             .then(res => {
                 dispatch(setRole(res.role))
                 dispatch(setToken(res.token))
                 toast.userNotify(user)
                 dispatch(setCredentials(res.data))
+                return
             })
-            .catch(err => console.error(err))
-        seterror("Invalid credentials. Please try again.")
+            .catch(err => {
+                console.error(err)
+                return
+            })
+        seterror("Invalid credentials. Please try again1.")
     }
 
     return (
