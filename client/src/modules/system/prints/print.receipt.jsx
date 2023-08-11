@@ -26,19 +26,18 @@ const PrintReceipt = () => {
 
     const onAfterPrinting = () => {
         localStorage.setItem("printcompleted", "true")
-        window.close()
+        // window.close()
     }
 
     useEffect(() => {
         if (dataSelector.print?.transaction && mounted) {
             window.print()
-            window.onbe
             window.onafterprint = onAfterPrinting()
         }
     }, [dataSelector.print?.transaction, mounted])
 
     return (
-        <div id="receipt" className="w-full min-h-screen bg-blue-900 bg-opacity-50 flex justify-center items-center">
+        <div id="receipt" className="w-[58mm] min-h-screen bg-blue-900 bg-opacity-50 flex justify-center items-center">
             {
                 (dataSelector.print?.transaction) ? (
                     <div className="w-[56mm] bg-white h-fit pt-8 text-[11px]">
@@ -134,7 +133,7 @@ const PrintReceipt = () => {
                                 <span>{currency(dataSelector.print.credit)}</span>
                             </div>
                             <div className="w-full border border-t-black border-dashed"></div>
-                            <div className="font-normal text-center my-3 mb-14">
+                            <div className="font-normal text-center my-3 mb-3">
                                 Thank you and come again.
                             </div>
                         </div>

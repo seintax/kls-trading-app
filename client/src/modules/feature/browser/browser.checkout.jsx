@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount, currency } from "../../../utilities/functions/number.funtions"
-import { StrFn, formatVariant, isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, formatVariant, isAdmin, isDev, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
@@ -567,13 +567,17 @@ const BrowserCheckout = () => {
                                     </div>
                                 </div>
                                 <button
-                                    className="button-link text-lg bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 px-7 disabled:bg-gray-400"
+                                    className="button-link text-lg bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 px-7 disabled:from-gray-400 disabled:via-gray-600 disabled:to-gray-600"
                                     disabled={isPaid || processing}
                                     onClick={() => processTransaction()}
                                 >
                                     {processing ? "Processing..." : "Process Transaction"}
                                 </button>
-                                <button className="button-link" onClick={() => mockPrint()}>Test Print</button>
+                                {
+                                    isDev(auth) || isAdmin(auth) ? (
+                                        <button className="button-link" onClick={() => mockPrint()}>Test Print</button>
+                                    ) : null
+                                }
                             </div>
                         </div>
                     </div>
