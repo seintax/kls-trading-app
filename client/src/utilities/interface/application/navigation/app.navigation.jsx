@@ -5,6 +5,7 @@ import { Fragment, useState } from "react"
 import { Link } from "react-router-dom"
 import { useClientContext } from "../../../context/client.context"
 import { useUserContext } from "../../../context/user.context"
+import { isDev } from "../../../functions/string.functions"
 import useAuth from "../../../hooks/useAuth"
 import useLogout from "../../../hooks/useLogout"
 
@@ -34,7 +35,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
     }
 
     return (
-        <div className="sticky top-0 z-20 flex h-16 flex-shrink-0 bg-gradient-to-b from-primary-300 via-primary-300 to-primary-500 border-b border-secondary-500 shadow-md border-shadow">
+        <div className={`sticky top-0 z-20 flex h-16 flex-shrink-0 ${isDev(auth) ? "bg-gradient-to-b from-primary-300 via-primary-300 to-primary-500" : "bg-[#4baf4f]"} border-b border-secondary-500 shadow-md`}>
             <button
                 type="button"
                 className="border-r border-secondary-500 focus:bg-primary-500 px-5 -ml-0.5 text-secondary-500 focus:outline-none focus:ring-inset lg:hidden"

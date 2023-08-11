@@ -85,6 +85,7 @@ const authenticate = handler(async (req, res) => {
             if (isauthentic) {
                 const payload = { id: ans.distinctResult.data.id, store: ans.distinctResult.data.store }
                 let token = tokenize(res, payload)
+                console.log(token)
                 return res.status(200).json(proceed({
                     message: "Authorized.",
                     data: {

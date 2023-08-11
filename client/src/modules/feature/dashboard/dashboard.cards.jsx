@@ -165,7 +165,7 @@ const DashboardCards = () => {
     return (
         <div className="w-full flex flex-col gap-5">
             <div className="flex justify-center text-black font-bold border border-1 border-gray-300 text-[12px] card-font relative items-center no-select">
-                <div className="w-full text-center items-center py-3 bg-primary-300 font-mono text-[14px] flex flex-col gap-0.5">
+                <div className="w-full text-center items-center py-3 bg-gray-200 font-mono text-[14px] flex flex-col gap-0.5">
                     <span className="text-xs">
                         Sales Summary <u>{dashboardSelector.branch}</u> for the {currentWeek === dashboardSelector.start ? "Current" : "Previous"} Range:
                     </span>
@@ -197,7 +197,6 @@ const DashboardCards = () => {
                 />
             </div>
             <div className="w-full flex flex-col lg:flex-row flex-wrap items-center justify-center gap-2">
-
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Collectibles")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
                         <AppDoughnutChart data={{
@@ -209,7 +208,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Collectibles</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">
@@ -229,7 +228,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Credit Sales</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">
@@ -249,7 +248,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Credit Collection</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">
@@ -269,7 +268,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Gross Sales</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">
@@ -289,7 +288,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Refunds</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">
@@ -309,7 +308,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Discounts</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">
@@ -329,7 +328,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Net Sales</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">
@@ -349,7 +348,7 @@ const DashboardCards = () => {
                             }]
                         }} />
                     </div>
-                    <div className="w-full py-3 px-3 bg-gradient-to-l from-primary-300 via-primary-200 to-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
+                    <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
                             <span>Gross Profit</span>
                             <span className="text-lg font-bold font-mono whitespace-nowrap">

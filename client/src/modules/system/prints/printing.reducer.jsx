@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const format = {
+const test = {
     branch: "Jally Trading - MAIN",
     address: "Diversion Road National Highway, Banale, Pagadian City",
     service: "Auto and Agri Machine Parts Supply",
@@ -63,6 +63,7 @@ const defaults = {
 
 const initialState = {
     name: "printing",
+    test: test,
     data: [],
     item: {},
     print: {},
