@@ -88,9 +88,11 @@ const byCode = handler(async (req, res) => {
 })
 
 const byCheque = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
     const { method, refdate } = helper.fields
-    let params = ["CHEQUE"]
-    let clause = [f(method).IsEqual()]
+    const { account_store } = helper.included
+    let params = ["CHEQUE", p(param.store).Contains()]
+    let clause = [f(method).IsEqual(), f(account_store).Like()]
     let series = [f(refdate).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)

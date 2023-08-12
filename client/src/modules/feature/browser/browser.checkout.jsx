@@ -346,7 +346,6 @@ const BrowserCheckout = () => {
                                 }
                             })
                     }
-                    console.log(data)
                     await createTransaction(data)
                         .unwrap()
                         .then(res => {

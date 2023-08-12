@@ -64,7 +64,6 @@ const CasheringLedger = () => {
             await byCodeDispensing({ code: dataSelector.item.code })
                 .unwrap()
                 .then(res => {
-                    console.log(res)
                     if (res.success) {
                         let dispensed = res?.arrayResult?.map(item => {
                             return {
@@ -201,7 +200,7 @@ const CasheringLedger = () => {
     }
 
     const onPrint = () => {
-        let credit = credits.total - credits.partial
+        let credit = amount(credits?.total) - amount(credits?.partial)
         let printdata = {
             branch: branch?.data?.name || printingSelector.defaults.branch,
             address: branch?.data?.address || printingSelector.defaults.address,

@@ -88,9 +88,11 @@ const byOngoing = handler(async (req, res) => {
 })
 
 const byAllOngoing = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
     const { status, id } = helper.fields
-    let params = ["ON-GOING"]
-    let clause = [f(status).IsEqual()]
+    const { account_store } = helper.included
+    let params = ["ON-GOING", p(param.store).Contains()]
+    let clause = [f(status).IsEqual(), f(account_store).Like()]
     let series = [f(id).Asc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)

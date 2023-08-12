@@ -189,9 +189,14 @@ class Table {
         if (foreign?.length) {
             foreign?.map(ref => {
                 for (const prop in ref?.include) {
+                    let include = new Field(prop, ref?.include[prop])
                     alias_ = {
                         ...alias_,
                         [ref?.include[prop]]: prop
+                    }
+                    this.included = {
+                        ...this.included,
+                        [prop]: include
                     }
                 }
             })
