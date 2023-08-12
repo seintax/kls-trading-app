@@ -78,7 +78,7 @@ const byAccount = handler(async (req, res) => {
     const { account, date, id } = helper.fields
     let params = [p(param.account).Exactly(), p(param.date).Exactly()]
     let clause = [f(account).IsEqual(), f(date).IsEqual()]
-    let series = [f(id).Asc()]
+    let series = [f(id).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
@@ -92,7 +92,7 @@ const byAdmin = handler(async (req, res) => {
     const { date, id } = helper.fields
     let params = [p(param.date).Exactly()]
     let clause = [f(date).IsEqual()]
-    let series = [f(id).Asc()]
+    let series = [f(id).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {

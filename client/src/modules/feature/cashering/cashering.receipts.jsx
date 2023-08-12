@@ -103,6 +103,7 @@ const CasheringReceipts = () => {
             { value: item.method },
             { value: item.status },
             { value: NumFn.currency(item.net) },
+            { value: item.customer_name },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.account_store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
