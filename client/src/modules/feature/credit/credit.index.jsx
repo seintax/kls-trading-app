@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { getBranch } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import { resetBrowserPayments } from "../browser/browser.reducer"
 import CreditManage from "./credit.manage"
@@ -8,6 +10,7 @@ import { resetCreditItem, resetCreditManager, setCreditData, setCreditNotifier, 
 import { useByAllOngoingCreditMutation } from "./credit.services"
 
 const CreditIndex = () => {
+    const auth = useAuth()
     const [allCredit, { isLoading, isError, isSuccess }] = useByAllOngoingCreditMutation()
     const dataSelector = useSelector(state => state.credit)
     const dispatch = useDispatch()
@@ -26,7 +29,7 @@ const CreditIndex = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            await allCredit()
+            await allCredit({ store: getBranch(auth) })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
@@ -40,7 +43,7 @@ const CreditIndex = () => {
         if (dataSelector.data.length === 0 || dataSelector.notifier) {
             instantiate()
         }
-    }, [dataSelector.notifier])
+    }, [dataSelector.notifier, auth.store])
 
     const toggleNewEntry = () => {
         dispatch(resetCreditItem())

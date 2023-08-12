@@ -112,7 +112,6 @@ const CasheringLedgerPurchase = () => {
 
     useEffect(() => {
         if (dispensingSelector?.data) {
-            console.log(dispensingSelector?.data)
             let data = sorted
                 ? sortBy(dispensingSelector?.data, sorted)
                 : dispensingSelector?.data

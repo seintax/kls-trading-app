@@ -15,6 +15,7 @@ const PaymentCustomer = () => {
     const [instantiated, setInstantiated] = useState(false)
     const [instance, setInstance] = useState(createInstance())
     const [newCustomer, setNewCustomer] = useState(false)
+    const [search, setSearch] = useState("")
     const [customer, setCustomer] = useState({
         customer: "0",
         customer_name: "Walkin Customer",
@@ -55,6 +56,21 @@ const PaymentCustomer = () => {
 
         instantiate()
     }, [dataSelector.payor, instance])
+
+    const onSearchChange = (e) => {
+        let key = e.target.value
+        setSearch(key)
+        let found = libCustomers?.filter(f => f.key?.toLowerCase().startsWith(key.toLowerCase()))
+        if (found.length > 0) {
+            let firstrecord = found[0]
+            setCustomer(prev => ({
+                ...prev,
+                customer: firstrecord.value,
+                customer_name: firstrecord.key,
+                customer_address: firstrecord.data?.address,
+            }))
+        }
+    }
 
     const onChange = (e) => {
         const { name, value } = e.target
@@ -125,6 +141,7 @@ const PaymentCustomer = () => {
                         newaddress: "",
                         newcontact: "",
                     }))
+                    setSearch("")
                     setNewCustomer(false)
                     toast.showSuccess("Customer has been successfully added to the list.")
                 }
@@ -161,11 +178,23 @@ const PaymentCustomer = () => {
                     </div>
                     <form onSubmit={onSubmit} className="flex flex-col gap-3 mt-2 p-5">
                         <div className="flex border border-secondary-500 p-0.5 items-center">
+                            <input
+                                type="search"
+                                name="search"
+                                value={search}
+                                onChange={onSearchChange}
+                                autoComplete="off"
+                                autoFocus
+                                tabIndex={0}
+                                placeholder="Search customer here..."
+                                className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            />
+                        </div>
+                        <div className="flex border border-secondary-500 p-0.5 items-center">
                             <select
                                 name="customer"
                                 value={customer.customer}
                                 onChange={onChange}
-                                autoFocus
                                 required
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1 disabled:bg-gray-300">
                                 {

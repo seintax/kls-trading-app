@@ -88,7 +88,6 @@ const DashboardCards = () => {
             })
                 .unwrap()
                 .then(res => {
-                    console.log(res)
                     setTotalCreditCollection(res.data?.total || 0)
                     collection = res.data.total || 0
                 })

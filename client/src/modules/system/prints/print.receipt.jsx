@@ -112,7 +112,8 @@ const PrintReceipt = () => {
                             </div>
                             <div className="w-full border border-t-black border-dashed"></div>
                             <div className={`${dataSelector.print.discount.amount > 0 ? "flex" : "hidden"} w-full justify-between font-normal my-3`}>
-                                <span>Discount ({dataSelector.print.discount.rate}%)</span>
+                                {/* <span>Discount ({dataSelector.print.discount.rate}%)</span> */}
+                                <span>Discount</span>
                                 <span>{currency(dataSelector.print.discount.amount || 0)}</span>
                             </div>
                             <div className="w-full border border-t-black border-dashed"></div>
