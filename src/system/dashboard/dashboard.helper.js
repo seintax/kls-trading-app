@@ -35,6 +35,7 @@ const dashboard = {
                 ON acct_id = paym_account
     WHERE 
         paym_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        paym_type = 'CREDIT' AND
         acct_store LIKE '%@store%'
     @group 
     @order

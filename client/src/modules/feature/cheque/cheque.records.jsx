@@ -12,6 +12,7 @@ import { setChequeItem, setChequeNotifier, showChequeManager } from "./cheque.re
 
 const ChequeRecords = () => {
     const dataSelector = useSelector(state => state.cheque)
+    const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -69,7 +70,18 @@ const ChequeRecords = () => {
 
     useEffect(() => {
         if (dataSelector?.data) {
-            let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
+            let temp = dataSelector?.data
+            if (searchSelector.searchKey) {
+                let sought = searchSelector.searchKey
+                temp = dataSelector?.data?.filter(f => (
+                    f.code?.toLowerCase()?.includes(sought) ||
+                    f.refcode?.toLowerCase()?.includes(sought) ||
+                    longDate(f.refdate)?.toLowerCase()?.includes(sought) ||
+                    f.refstat?.toLowerCase()?.includes(sought) ||
+                    f.account_store?.toLowerCase()?.includes(sought)
+                ))
+            }
+            let data = sorted ? sortBy(temp, sorted) : temp
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
@@ -78,7 +90,7 @@ const ChequeRecords = () => {
                 }
             }))
         }
-    }, [dataSelector?.data, sorted])
+    }, [dataSelector?.data, sorted, searchSelector.searchKey])
 
     return (
         <>

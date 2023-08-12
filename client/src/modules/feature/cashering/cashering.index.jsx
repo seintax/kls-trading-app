@@ -7,7 +7,6 @@ import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import { StrFn, isBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
-import { useDebounce } from "../../../utilities/hooks/useDebounce"
 import BrowserRecords from "../browser/browser.records"
 import { resetBrowserViewCart, setBrowserSearch, showBrowserCheckout, showBrowserViewCart } from "../browser/browser.reducer"
 import { resetTransactionReceipts, showTransactionReceipts } from "./cashering.reducer"
@@ -22,7 +21,7 @@ const CasheringIndex = () => {
     const [less, setLess] = useState(0)
     const [search, setSearch] = useState("")
     const [count, setCount] = useState(1)
-    const debounceSearch = useDebounce(search, 500)
+    // const debounceSearch = useDebounce(search, 500)
     const dataSelector = useSelector(state => state.transaction)
     const browserSelector = useSelector(state => state.browser)
     const dispatch = useDispatch()
@@ -55,9 +54,9 @@ const CasheringIndex = () => {
         setSearch(e.target.value)
     }
 
-    useEffect(() => {
-        dispatch(setBrowserSearch(debounceSearch))
-    }, [debounceSearch])
+    // useEffect(() => {
+    //     dispatch(setBrowserSearch(debounceSearch))
+    // }, [debounceSearch])
 
     useEffect(() => {
         if (browserSelector.cart) {
@@ -94,6 +93,11 @@ const CasheringIndex = () => {
         navigate(`/${url}`)
     }
 
+    const onSubmit = (e) => {
+        e.preventDefault()
+        dispatch(setBrowserSearch(search))
+    }
+
     return (
         <>
             <div id="no-print" className="w-full mb-[4rem] lg:mb-0 pb-0 lg:pb-[4rem]">
@@ -123,7 +127,7 @@ const CasheringIndex = () => {
                     </div>
                 </div>
                 <div className="text-xs lg:text-sm py-3">
-                    <div className="flex border border-secondary-500 p-0.5 items-center">
+                    <form onSubmit={onSubmit} className="flex border border-secondary-500 p-0.5 items-center">
                         <MagnifyingGlassIcon className="w-8 h-8 ml-1 text-secondary-500 hidden lg:block" />
                         <input
                             type="search"
@@ -132,10 +136,10 @@ const CasheringIndex = () => {
                             placeholder="Search inventory item here"
                             className="w-full text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <button className="button-link ml-auto px-3 lg:px-9 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0">
+                        <button type="submit" className="button-link ml-auto px-3 lg:px-9 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0">
                             Search
                         </button>
-                    </div>
+                    </form>
                     <div className="flex mt-1 gap-2">
                         Searching Branch:
                         <span className="font-bold text-orange-500">{isBranch(auth) ? auth.store : "All Branches"}</span>

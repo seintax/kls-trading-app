@@ -8,7 +8,7 @@
         "start": "node server.js",
         "server": "nodemon server.js",
         "client": "npm run dev --prefix client",
-        "dev": "concurrently \"npm run server\" \"npm run client -- --host\""
+        "dev": "concurrently \"npm run server\" \"npm run client\""
     },
     "author": "syntaxfullstack",
     "license": "ISC",

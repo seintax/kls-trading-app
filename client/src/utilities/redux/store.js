@@ -34,11 +34,13 @@ import rolesReducer from "../../modules/system/roles/roles.reducer"
 import { apiSlice } from "./slices/apiSlice"
 import authReducer from './slices/authSlice'
 import deleteReducer from "./slices/deleteSlice"
+import searchReducer from "./slices/searchSlice"
 
 const store = configureStore({
     reducer: {
         [apiSlice.reducerPath]: apiSlice.reducer,
         auth: authReducer,
+        search: searchReducer,
         deleteModal: deleteReducer,
         account: accountReducer,
         branch: branchReducer,
@@ -72,7 +74,7 @@ const store = configureStore({
         printing: printingReducer,
         dashboard: dashboardReducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(apiSlice.middleware),
     devTools: true
 })
 

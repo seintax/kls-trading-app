@@ -15,7 +15,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
         setOrder(columns?.items?.map(col => {
             return { ...col, order: "unsorted" }
         }))
-    }, [])
+    }, [columns])
 
     useEffect(() => {
         if (records) {

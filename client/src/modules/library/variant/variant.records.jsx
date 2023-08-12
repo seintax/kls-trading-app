@@ -13,6 +13,7 @@ import { useDeleteVariantMutation } from "./variant.services"
 const VariantRecords = () => {
     const dataSelector = useSelector(state => state.variant)
     const masterlistSelector = useSelector(state => state.masterlist)
+    const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -68,7 +69,19 @@ const VariantRecords = () => {
 
     useEffect(() => {
         if (dataSelector?.data) {
-            let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
+            let temp = dataSelector?.data
+            if (searchSelector.searchKey) {
+                let sought = searchSelector.searchKey
+                temp = dataSelector?.data?.filter(f => (
+                    f.serial?.toLowerCase()?.includes(sought) ||
+                    f.model?.toLowerCase()?.includes(sought) ||
+                    f.brand?.toLowerCase()?.includes(sought) ||
+                    f.option1?.toLowerCase()?.includes(sought) ||
+                    f.option2?.toLowerCase()?.includes(sought) ||
+                    f.option3?.toLowerCase()?.includes(sought)
+                ))
+            }
+            let data = sorted ? sortBy(temp, sorted) : temp
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
@@ -77,7 +90,7 @@ const VariantRecords = () => {
                 }
             }))
         }
-    }, [dataSelector?.data, sorted])
+    }, [dataSelector?.data, sorted, searchSelector.searchKey])
 
     return (
         <>

@@ -1,13 +1,14 @@
 import { Menu, Transition } from "@headlessui/react"
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import { Bars3BottomLeftIcon, BellIcon, TicketIcon } from "@heroicons/react/24/outline"
-import { Fragment, useState } from "react"
-import { Link } from "react-router-dom"
-import { useClientContext } from "../../../context/client.context"
-import { useUserContext } from "../../../context/user.context"
+import { Fragment, useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
+import { Link, useLocation } from "react-router-dom"
 import { isDev } from "../../../functions/string.functions"
 import useAuth from "../../../hooks/useAuth"
+import { useDebounce } from "../../../hooks/useDebounce"
 import useLogout from "../../../hooks/useLogout"
+import { resetSearchKey, setSearchKey } from "../../../redux/slices/searchSlice"
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ")
@@ -15,23 +16,38 @@ function classNames(...classes) {
 
 export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
     const auth = useAuth()
-    const { user } = useUserContext()
-    const { setSearch } = useClientContext()
-    const [text, settext] = useState("")
     const { logout } = useLogout()
+    const [text, setText] = useState("")
+    const [cache, setCache] = useState({
+        service: ""
+    })
+    const debounceSearch = useDebounce(text, 700)
+    const dispatch = useDispatch()
+    const location = useLocation()
+
+    useEffect(() => {
+        dispatch(resetSearchKey())
+        if (cache.hasOwnProperty(location.pathname)) {
+            setText(cache[location.pathname])
+            return
+        }
+        setText("")
+    }, [location.pathname])
+
+    useEffect(() => {
+        dispatch(setSearchKey(debounceSearch))
+        setCache(prev => ({
+            ...prev,
+            [location.pathname]: debounceSearch
+        }))
+    }, [debounceSearch])
 
     const onChange = (e) => {
-        const { value } = e.target
-        settext(value)
+        setText(e.target.value)
     }
 
     const onSubmit = (e) => {
         e.preventDefault()
-        setSearch(prev => ({
-            ...prev,
-            time: new Date(),
-            key: text
-        }))
     }
 
     return (
