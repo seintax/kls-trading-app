@@ -291,7 +291,7 @@ const BrowserCheckout = () => {
                                 purchase: amount(item.quantity),
                                 dispense: amount(item.quantity),
                                 variant: item.variant,
-                                supplier: item.supplier,
+                                supplier: String(item.supplier),
                                 price: item.price,
                                 vat: vat,
                                 total: total,
@@ -346,6 +346,7 @@ const BrowserCheckout = () => {
                                 }
                             })
                     }
+                    console.log(data)
                     await createTransaction(data)
                         .unwrap()
                         .then(res => {

@@ -28,6 +28,7 @@ import Number from "./input.number"
 import Password from "./input.password"
 import Percent from "./input.percent"
 import Radio from "./input.radio"
+import SearchBox from "./input.searchbox"
 import Select from "./input.select"
 import Text from "./input.text"
 
@@ -49,6 +50,7 @@ const FormEl = {
     Select,
     Text,
     Item,
+    SearchBox,
 }
 
 export default FormEl
