@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { NumFn } from "../../../utilities/functions/number.funtions"
+import { exactSearch } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
@@ -12,6 +13,7 @@ import { useDeleteExpensesMutation } from "./expenses.services"
 
 const ExpensesRecords = () => {
     const dataSelector = useSelector(state => state.expenses)
+    const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -70,7 +72,18 @@ const ExpensesRecords = () => {
 
     useEffect(() => {
         if (dataSelector?.data) {
-            let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
+            let temp = dataSelector?.data
+            if (searchSelector.searchKey) {
+                let sought = searchSelector.searchKey
+                temp = dataSelector?.data?.filter(f => (
+                    f.particulars?.toLowerCase()?.includes(sought) ||
+                    f.inclusion?.toLowerCase()?.includes(sought) ||
+                    f.store?.toLowerCase()?.includes(sought) ||
+                    exactSearch(sought, f.purchase) ||
+                    exactSearch(sought, f.cash)
+                ))
+            }
+            let data = sorted ? sortBy(temp, sorted) : temp
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
@@ -79,7 +92,7 @@ const ExpensesRecords = () => {
                 }
             }))
         }
-    }, [dataSelector?.data, sorted])
+    }, [dataSelector?.data, sorted, searchSelector.searchKey])
 
     return (
         <>

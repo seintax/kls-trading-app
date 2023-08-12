@@ -13,6 +13,7 @@ import { useDeletePurchaseMutation } from "./purchase.services"
 
 const PurchaseRecords = () => {
     const dataSelector = useSelector(state => state.purchase)
+    const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
@@ -70,7 +71,17 @@ const PurchaseRecords = () => {
 
     useEffect(() => {
         if (dataSelector?.data) {
-            let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
+            let temp = dataSelector?.data
+            if (searchSelector.searchKey) {
+                let sought = searchSelector.searchKey
+                temp = dataSelector?.data?.filter(f => (
+                    f.supplier_name?.toLowerCase()?.includes(sought) ||
+                    f.id?.toLowerCase()?.includes(sought) ||
+                    f.store?.toLowerCase()?.includes(sought) ||
+                    longDate(f.date)?.toLowerCase()?.includes(sought)
+                ))
+            }
+            let data = sorted ? sortBy(temp, sorted) : temp
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
@@ -79,7 +90,7 @@ const PurchaseRecords = () => {
                 }
             }))
         }
-    }, [dataSelector?.data, sorted])
+    }, [dataSelector?.data, sorted, searchSelector.searchKey])
 
     return (
         <>

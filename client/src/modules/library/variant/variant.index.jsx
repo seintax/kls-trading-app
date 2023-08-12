@@ -84,15 +84,17 @@ const VariantIndex = () => {
                 (dataSelector.manager) ? (
                     <VariantManage name={dataSelector.display.name} />
                 ) : (
-                    <DataIndex
-                        display={dataSelector.display}
-                        actions={actions()}
-                        data={dataSelector.data}
-                        isError={isError}
-                        isLoading={isLoading}
-                    >
-                        <VariantRecords />
-                    </DataIndex >
+                    <div className="w-full px-10 mt-5">
+                        <DataIndex
+                            display={dataSelector.display}
+                            actions={actions()}
+                            data={dataSelector.data}
+                            isError={isError}
+                            isLoading={isLoading}
+                        >
+                            <VariantRecords />
+                        </DataIndex >
+                    </div>
                 )
             }
         </>
