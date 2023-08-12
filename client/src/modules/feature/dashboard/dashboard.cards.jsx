@@ -65,7 +65,7 @@ const DashboardCards = () => {
                 store: dashboardSelector.store
             })
                 .unwrap()
-                .then(res => { setTotalCollectibles(res.data.total) })
+                .then(res => { setTotalCollectibles(res.data?.total || 0) })
                 .catch(err => console.error(err))
 
             await creditSales({
@@ -75,7 +75,9 @@ const DashboardCards = () => {
                 store: dashboardSelector.store
             })
                 .unwrap()
-                .then(res => { setTotalCreditSales(res.data.total) })
+                .then(res => {
+                    setTotalCreditSales(res.data?.total || 0)
+                })
                 .catch(err => console.error(err))
 
             await creditCollection({
@@ -86,8 +88,9 @@ const DashboardCards = () => {
             })
                 .unwrap()
                 .then(res => {
-                    setTotalCreditCollection(res.data.total)
-                    collection = res.data.total
+                    console.log(res)
+                    setTotalCreditCollection(res.data?.total || 0)
+                    collection = res.data.total || 0
                 })
                 .catch(err => console.error(err))
 
@@ -98,7 +101,10 @@ const DashboardCards = () => {
                 store: dashboardSelector.store
             })
                 .unwrap()
-                .then(res => { setTotalGrossSales(res.data.total + collection) })
+                .then(res => {
+                    let total = res.data.total || 0
+                    setTotalGrossSales(total + collection)
+                })
                 .catch(err => console.error(err))
 
             await refunds({
@@ -108,7 +114,7 @@ const DashboardCards = () => {
                 store: dashboardSelector.store
             })
                 .unwrap()
-                .then(res => { setTotalRefunds(res.data.total) })
+                .then(res => { setTotalRefunds(res.data?.total || 0) })
                 .catch(err => console.error(err))
 
             await discounts({
@@ -118,7 +124,7 @@ const DashboardCards = () => {
                 store: dashboardSelector.store
             })
                 .unwrap()
-                .then(res => { setTotalDiscounts(res.data.total) })
+                .then(res => { setTotalDiscounts(res.data?.total || 0) })
                 .catch(err => console.error(err))
 
             await netSales({
@@ -128,7 +134,10 @@ const DashboardCards = () => {
                 store: dashboardSelector.store
             })
                 .unwrap()
-                .then(res => { setTotalNetSales(res.data.total + collection) })
+                .then(res => {
+                    let total = res.data.total || 0
+                    setTotalNetSales(total + collection)
+                })
                 .catch(err => console.error(err))
 
             await grossProfit({
@@ -138,7 +147,10 @@ const DashboardCards = () => {
                 store: dashboardSelector.store
             })
                 .unwrap()
-                .then(res => { setTotalGrossProfit(res.data.total + collection) })
+                .then(res => {
+                    let total = res.data.total || 0
+                    setTotalGrossProfit(total + collection)
+                })
                 .catch(err => console.error(err))
         }
         if (dashboardSelector.start) weeklyCards()
