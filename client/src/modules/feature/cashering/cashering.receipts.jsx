@@ -117,6 +117,7 @@ const CasheringReceipts = () => {
                 f.method?.toLowerCase()?.includes(sought) ||
                 f.status?.toString()?.includes(sought) ||
                 f.net?.toString()?.includes(sought) ||
+                f.customer_name?.toLowerCase()?.includes(sought) ||
                 exactSearch(sought, f.code)
             )
             let data = sorted ? sortBy(browsed, sorted) : browsed

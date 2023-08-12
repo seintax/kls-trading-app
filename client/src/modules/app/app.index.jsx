@@ -116,6 +116,7 @@ const AppIndex = () => {
 
     useEffect(() => {
         const roleauth = async () => {
+            console.log("watas")
             await allRoles()
                 .unwrap()
                 .then(async (res) => {
