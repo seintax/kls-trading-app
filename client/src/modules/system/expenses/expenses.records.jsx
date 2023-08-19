@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
+import { longDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import { exactSearch } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -62,10 +63,9 @@ const ExpensesRecords = () => {
             { value: item.particulars },
             { value: item.inclusion },
             { value: NumFn.currency(item.purchase) },
-            { value: NumFn.currency(item.cash) },
-            { value: NumFn.currency(item.change) },
-            { value: item.account_name },
+            { value: longDate(item.date) },
             { value: item.store },
+            { value: item.account_name },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

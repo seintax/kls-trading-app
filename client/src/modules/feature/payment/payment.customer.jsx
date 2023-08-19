@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
+import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
 import { createInstance } from "../../../utilities/functions/datetime.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import { useCreateCustomerMutation, useFetchAllCustomerMutation } from "../../library/customer/customer.services"
@@ -47,7 +47,7 @@ const PaymentCustomer = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        setLibCustomers(FormatOptionsWithEmptyLabel(res?.arrayResult, "id", "name", "Select a customer"))
+                        setLibCustomers(FormatOptionsNoLabel(res?.arrayResult, "id", "name", "Select a customer"))
                     }
                 })
                 .catch(err => console.error(err))
@@ -106,6 +106,15 @@ const PaymentCustomer = () => {
         })
     }
 
+    const onSelect = (item) => {
+        dispatch(setPaymentCustomer({
+            id: item.data?.id,
+            name: item.data?.name,
+            address: item.data?.address,
+        }))
+        dispatch(resetPaymentPayor())
+    }
+
     const onSubmit = (e) => {
         e.preventDefault()
         dispatch(setPaymentCustomer({
@@ -149,6 +158,25 @@ const PaymentCustomer = () => {
             .catch(err => console.error(err))
     }
 
+    useEffect(() => {
+        if (dataSelector.payor) {
+            setNewCustomer(false)
+            setSearch(dataSelector?.customer?.name || "")
+            if (!dataSelector?.customer?.name) {
+                onReset()
+                return
+            }
+            setCustomer({
+                customer: dataSelector?.customer?.id,
+                customer_name: dataSelector?.customer?.name,
+                customer_address: dataSelector?.customer?.address,
+                newcustomer: "",
+                newaddress: "",
+                newcontact: "",
+            })
+        }
+    }, [dataSelector.payor])
+
     return (
         <Transition
             show={dataSelector.payor}
@@ -190,7 +218,17 @@ const PaymentCustomer = () => {
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                             />
                         </div>
-                        <div className="flex border border-secondary-500 p-0.5 items-center">
+                        <div className="flex flex-col border border-secondary-500 p-0.5 items-center h-[200px] text-lg">
+                            {
+                                libCustomers?.filter(f => f?.key?.toLowerCase()?.includes(search?.toLowerCase())).map(lib => (
+                                    <div key={lib.value} className="flex items-center w-full px-2 cursor-pointer hover:bg-primary-200 py-2" onClick={() => onSelect(lib)}>
+                                        {lib.key}
+                                        <button type="button" className="ml-auto button-link py-1 no-select">Select</button>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        {/* <div className="flex border border-secondary-500 p-0.5 items-center">
                             <select
                                 name="customer"
                                 value={customer.customer}
@@ -208,7 +246,7 @@ const PaymentCustomer = () => {
                                     ))
                                 }
                             </select>
-                        </div>
+                        </div> */}
                         <div className={`${newCustomer ? "hidden" : "flex"} w-full justify-end`}>
                             <button type="button" className="button-blue" onClick={() => setNewCustomer(!newCustomer)}>Create New Customer</button>
                         </div>
@@ -254,7 +292,10 @@ const PaymentCustomer = () => {
                                 <button type="button" className="button-blue" onClick={() => onRegister()}>Register Customer</button>
                             </div>
                         </div>
-                        <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
+                        <div className={`${newCustomer ? "hidden" : ""} text-xs ml-auto`}>
+                            **Note: Add Customer button will apply the very first customer in the list above.
+                        </div>
+                        <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit disabled:bg-gray-400" disabled={newCustomer}>Add Customer</button>
                         </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
-import { amount } from "../../../utilities/functions/number.funtions"
+import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
@@ -74,11 +74,13 @@ const ExpensesManage = () => {
                 inclusion: init(item.inclusion),
                 particulars: init(item.particulars),
                 purchase: init(item.purchase),
-                cash: init(item.cash),
-                change: init(item.change),
-                remarks: init(item.remarks),
+                // cash: init(item.cash),
+                // change: init(item.change),
+                // remarks: init(item.remarks),
                 account: auth.id,
-                notes: init(item.notes),
+                date: sqlDate(item.date),
+                store: init(item.store)
+                // notes: init(item.notes),
             })
         }
     }, [instantiated])
@@ -86,6 +88,14 @@ const ExpensesManage = () => {
     const onFields = (errors, register, values, setValue) => {
         return (
             <>
+                <FormEl.Date
+                    label='Date'
+                    register={register}
+                    name='date'
+                    errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
                 <FormEl.Select
                     label='Account Inclusion'
                     register={register}
@@ -103,46 +113,38 @@ const ExpensesManage = () => {
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
-                <FormEl.Currency
+                {/* <FormEl.Currency
                     label='Cash-on-Hand'
                     register={register}
                     name='cash'
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
-                />
+                /> */}
                 <FormEl.Currency
-                    label='Expense'
+                    label='Amount'
                     register={register}
                     name='purchase'
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
-                <FormEl.Currency
+                {/* <FormEl.Currency
                     label='Supplementary'
                     register={register}
                     name='change'
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
-                />
-                <FormEl.Text
-                    label='Remarks'
-                    register={register}
-                    name='remarks'
-                    errors={errors}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                />
-                <FormEl.Text
+                /> */}
+                {/* <FormEl.Text
                     label='Notes'
                     register={register}
                     name='notes'
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
-                />
+                /> */}
                 <FormEl.Select
                     label='Branch'
                     register={register}
@@ -176,9 +178,9 @@ const ExpensesManage = () => {
         purchase: yup
             .string()
             .required('Purchase amount is required.'),
-        cash: yup
+        store: yup
             .string()
-            .required('Cash-on-Hand is required.'),
+            .required('Branch is required.'),
     })
 
     const onClose = () => {
@@ -191,11 +193,7 @@ const ExpensesManage = () => {
     }
 
     const onSubmit = async (data) => {
-        let balance = amount(data.cash) - (amount(data.purchase) + amount(data.change))
-        if (balance !== 0) {
-            toast.showWarning("You have entered an imbalance entry.\nPlease settle the discrepancy and try again.")
-            return
-        }
+        console.log(data)
         if (dataSelector.item.id) {
             await updateExpenses({ ...data, id: dataSelector.item.id })
                 .unwrap()
@@ -212,6 +210,7 @@ const ExpensesManage = () => {
             .unwrap()
             .then(res => {
                 if (res.success) {
+                    console.log(res)
                     toast.showCreate("Expenses successfully created.")
                     onCompleted()
                 }

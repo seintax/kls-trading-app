@@ -16,7 +16,7 @@ const PaymentBrowser = () => {
     const [instantiated, setInstantiated] = useState(false)
     const [settle, setSettle] = useState({
         type: "SALES",
-        method: "",
+        method: "CASH",
         amount: "",
         partial: "",
         refcode: "",
@@ -63,6 +63,7 @@ const PaymentBrowser = () => {
         setSettle(prev => ({
             ...prev,
             [name]: value,
+            amount: name === "type" && value === "CREDIT" ? "" : prev.amount
         }))
     }
 
@@ -73,7 +74,7 @@ const PaymentBrowser = () => {
     const onReset = () => {
         setSettle({
             type: "SALES",
-            method: "",
+            method: "CASH",
             amount: "",
             partial: "",
             refcode: "",
@@ -132,8 +133,15 @@ const PaymentBrowser = () => {
             ...prev,
             amount: amount(dataSelector.balance)
         }))
-        amtRef.current.focus()
+        amtRef?.current?.focus()
     }
+
+    useEffect(() => {
+        if (dataSelector.manager) {
+            applyBalance()
+        }
+    }, [dataSelector.manager])
+
 
     return (
         <Transition
