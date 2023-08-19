@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import useAuth from "../../../utilities/hooks/useAuth"
 import ConfigManage from "./config.manage"
-import { resetSettingsItem, setSettingsItem, showSettingsManager } from "./config.reducer"
+import { resetSettingsItem, resetSettingsManager, setSettingsItem, setSettingsNotifier, showSettingsManager } from "./config.reducer"
 import { useByAccountConfigMutation } from "./config.services"
 
 const ConfigIndex = () => {
@@ -10,6 +10,14 @@ const ConfigIndex = () => {
     const [accountConfig] = useByAccountConfigMutation()
     const dataSelector = useSelector(state => state.settings)
     const dispatch = useDispatch()
+    const [mounted, setMounted] = useState(false)
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => { }
+        }
+    }, [mounted])
 
     useEffect(() => {
         const instantiate = async () => {
@@ -30,11 +38,12 @@ const ConfigIndex = () => {
         }
 
         instantiate()
-    }, [])
+    }, [mounted, dataSelector.notifier])
 
     const toggleNewEntry = () => {
         dispatch(resetSettingsItem())
-        dispatch(showSettingsManager())
+        dispatch(resetSettingsManager())
+        dispatch(setSettingsNotifier(false))
     }
 
     const toggleUpdate = (item) => {
@@ -42,11 +51,24 @@ const ConfigIndex = () => {
             ...item,
             json: JSON.parse(item.json)
         }))
+        dispatch(resetSettingsManager())
+        dispatch(setSettingsNotifier(false))
+    }
+
+    const toggleSettingsManager = () => {
         dispatch(showSettingsManager())
     }
 
     return (
-        <ConfigManage name={dataSelector?.display?.name} />
+        (dataSelector.manager) ? (
+            <ConfigManage name={dataSelector?.display?.name} />
+        ) : (
+            <div className="w-full h-full flex items-center justify-center">
+                <div className="px-5 py-2 bg-gray-300 rounded-md cursor-pointer hover:text-primary-500 transition ease-in duration-300" onClick={() => toggleSettingsManager()}>
+                    Continue to User Configuration
+                </div>
+            </div>
+        )
     )
 }
 

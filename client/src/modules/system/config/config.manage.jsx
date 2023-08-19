@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -115,9 +115,9 @@ const ConfigManage = () => {
             .required('Field is required.'),
     })
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         dispatch(resetSettingsManager())
-    }
+    }, [])
 
     const onCompleted = () => {
         dispatch(setSettingsNotifier(true))
@@ -125,11 +125,13 @@ const ConfigManage = () => {
     }
 
     const onSubmit = async (data) => {
-        delete data.discountdata
-        delete data.shownetdiscountdata
         const formData = {
             account: auth.id,
-            json: JSON.stringify(data)
+            json: JSON.stringify({
+                discount: data.discount,
+                ratelimit: data.ratelimit,
+                shownetdiscount: data.shownetdiscount
+            })
         }
         if (dataSelector.item.id) {
             await updateConfig({ ...formData, id: dataSelector.item.id })
@@ -169,7 +171,7 @@ const ConfigManage = () => {
             fields={onFields}
             change={onChange}
             submit={onSubmit}
-        // closed={onClose}
+            closed={onClose}
         />
     )
 }
