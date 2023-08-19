@@ -12,6 +12,7 @@ const expenses = new Table("pos_archive_expenses", {
     notes: 'expn_notes',
     account: 'expn_account',
     store: 'expn_store',
+    date: 'expn_date'
 }, [
     {
         key: "expn_account",

@@ -30,6 +30,7 @@ const BrowserCheckout = () => {
     const [startpage, setstartpage] = useState(1)
     const columns = dataSelector.header
     const toast = useToast()
+    const [config, setConfig] = useState()
     const [branch, setBranch] = useState()
     const [balance, setBalance] = useState(0)
     const [tended, setTended] = useState(0)
@@ -236,6 +237,13 @@ const BrowserCheckout = () => {
             return () => clearInterval(interval)
         }
     }, [dataSelector.checkout, isPaid])
+
+    useEffect(() => {
+        if (dataSelector.checkout) {
+            let newConfig = JSON.parse(localStorage.getItem("config")) || {}
+            setConfig(newConfig)
+        }
+    }, [dataSelector.checkout])
 
     const processTransaction = async () => {
         if (balance !== 0) {
@@ -466,14 +474,14 @@ const BrowserCheckout = () => {
                                 {currency(summary.vat)}
                             </span>
                         </div>
-                        <div className="flex justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer">
-                            <span>Markdown Discount:</span>
+                        <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
+                            <span>Quantity Discount:</span>
                             <span className="ml-auto text-gray-800">
                                 {currency(summary.markdown)}
                             </span>
                         </div>
-                        <div className="flex justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer" onClick={() => toggleDiscount()}>
-                            <span>Discount ({currency(summary.rate * 100).replace("0.00", "")}%):</span>
+                        <div className={`${config?.shownetdiscount ? "flex" : "hidden"} justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer`} onClick={() => toggleDiscount()}>
+                            <span>Net Discount ({currency(summary.rate * 100).replace("0.00", "")}%):</span>
                             <span className="ml-auto text-gray-800">
                                 {currency(summary.discount)}
                             </span>

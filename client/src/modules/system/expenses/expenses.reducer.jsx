@@ -16,11 +16,10 @@ const initialState = {
         items: [
             { name: 'Particulars', stack: false, sort: 'particulars' },
             { name: 'Inclusion', stack: true, sort: 'inclusion', size: 250 },
-            { name: 'Cash-on-Hand', stack: true, sort: 'cash', size: 150 },
-            { name: 'Expense', stack: true, sort: 'purchase', size: 150 },
-            { name: 'Supplimentary', stack: true, sort: 'change', size: 150 },
-            { name: 'Logged by', stack: true, sort: 'account_name', size: 150 },
+            { name: 'Amount', stack: true, sort: 'cash', size: 150 },
+            { name: 'Date', stack: true, sort: 'change', size: 170 },
             { name: 'Branch', stack: true, sort: 'store', size: 150 },
+            { name: 'Logged by', stack: true, sort: 'account_name', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

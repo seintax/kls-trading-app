@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react"
 import { CalculatorIcon, DocumentArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -12,7 +12,9 @@ const BrowserQuantity = ({ qtyRef }) => {
     const dispatch = useDispatch()
     const [quantity, setQuantity] = useState("")
     const [markdown, setMarkdown] = useState("")
+    const [discount, setDiscount] = useState("")
     const [balance, setBalance] = useState(0)
+    const [config, setConfig] = useState()
     const toast = useToast()
 
     const keydown = useCallback(e => {
@@ -32,6 +34,10 @@ const BrowserQuantity = ({ qtyRef }) => {
 
     const onMarkdownChange = (e) => {
         setMarkdown(e.target.value)
+    }
+
+    const onDiscountChange = (e) => {
+        setDiscount(e.target.value)
     }
 
     const onClose = () => {
@@ -64,7 +70,7 @@ const BrowserQuantity = ({ qtyRef }) => {
             ...dataSelector.item,
             quantity: quantity,
             remaining: balance,
-            markdown: markdown
+            markdown: discount === "Amount" ? markdown : calculateDiscountAmt(false)
         }
         setQuantity("")
         setMarkdown("")
@@ -72,6 +78,53 @@ const BrowserQuantity = ({ qtyRef }) => {
         dispatch(setBrowserCart(newItem))
         dispatch(updateBrowserData(newItem))
         dispatch(resetBrowserManager())
+    }
+
+    useEffect(() => {
+        if (dataSelector.manager) {
+            setQuantity("")
+            setMarkdown("")
+            let newConfig = JSON.parse(localStorage.getItem("config")) || {}
+            setConfig(newConfig)
+            setDiscount(newConfig?.discount === "Percent" ? "Percent" : "Amount")
+            setBalance(amount(dataSelector.item.stocks) - amount(0))
+        }
+    }, [dataSelector.manager])
+
+    const setDiscountConfig = () => {
+        let newConfig = {
+            ...config,
+            discount: discount
+        }
+        setConfig(newConfig)
+        localStorage.setItem("config", JSON.stringify(newConfig))
+    }
+
+    const calculateDiscountAmt = (isDisplay = true) => {
+        if (quantity > 0) {
+            let currentMarkdown = markdown || 0
+            if (discount === "Percent") {
+                let purchaseValue = dataSelector.item.price * quantity
+                let discountRate = currentMarkdown / 100
+                return purchaseValue * discountRate
+            }
+            return isDisplay
+                ? currentMarkdown
+                : markdown
+        }
+        return isDisplay ? 0 : markdown
+    }
+
+    const calculateDiscountRate = () => {
+        if (quantity > 0) {
+            let currentMarkdown = markdown || 0
+            if (discount === "Amount") {
+                let purchaseValue = dataSelector.item.price * quantity
+                return (currentMarkdown / purchaseValue) * 100
+            }
+            return currentMarkdown
+        }
+        return 0
     }
 
     return (
@@ -148,18 +201,45 @@ const BrowserQuantity = ({ qtyRef }) => {
                         <button type="button" className="button-link text-sm ml-auto px-3 lg:px-6 bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 focus:ring-0" onClick={() => onReset()}>Reset</button>
                     </div>
                     <div className="flex gap-2">
-                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-white"}`}>
+                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-gray-200 text-gray-600"}`}>
                             <div className={`text-sm lg:text-[20px]`}>
                                 {balance}
                             </div>
                             <span className="text-[15px] lg:text-sm text-gray-400">balance after commit</span>
                         </div>
-                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-white"}`}>
+                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${balance < 0 ? "bg-red-500 [&>*]:text-white" : "bg-gray-200 text-gray-600"}`}>
                             <div className={`text-sm lg:text-[20px]`}>
                                 {NumFn.currency(dataSelector.item.price * amount(quantity))}
                             </div>
                             <span className="text-[15px] lg:text-sm text-gray-400">purchase value</span>
                         </div>
+                    </div>
+                    <div className="flex border border-secondary-500 p-3.5 items-center gap-5 text-sm no-select">
+                        <div className="flex items-center gap-2">
+                            <input
+                                id="amount"
+                                name="discount"
+                                type="radio"
+                                value="Amount"
+                                checked={discount === "Amount"}
+                                onChange={onDiscountChange}
+                            />
+                            <label htmlFor="amount" className="cursor-pointer">Amount</label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <input
+                                id="percent"
+                                name="discount"
+                                type="radio"
+                                value="Percent"
+                                checked={discount === "Percent"}
+                                onChange={onDiscountChange}
+                            />
+                            <label htmlFor="percent" className="cursor-pointer">Percent</label>
+                        </div>
+                        <span className={`${config?.discount === discount ? "hidden" : ""}  ml-auto text-blue-500 cursor-pointer`} onClick={() => setDiscountConfig()}>
+                            Set as Default Discount Option
+                        </span>
                     </div>
                     <div className="flex border border-secondary-500 p-0.5 items-center">
                         <DocumentArrowDownIcon className="w-8 h-8 ml-1 text-secondary-500 hidden lg:flex" />
@@ -169,10 +249,25 @@ const BrowserQuantity = ({ qtyRef }) => {
                             value={markdown}
                             tabIndex={2}
                             onChange={onMarkdownChange}
-                            placeholder="Enter markdown"
+                            placeholder={`Enter discount in ${discount.toLowerCase()}`}
                             className="w-full text-sm lg:text-lg border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
+                        <span className="pr-4">{discount === "Amount" ? "₱" : "%"}</span>
                         <button type="button" className="button-link text-sm ml-auto px-3 lg:px-6 bg-gradient-to-b from-orange-400 via-orange-600 to-orange-600 focus:ring-0" onClick={() => onMarkdownReset()}>Reset</button>
+                    </div>
+                    <div className="flex gap-2">
+                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${calculateDiscountRate() > (config?.ratelimit || 100) ? "bg-red-500 [&>*]:text-white" : "bg-gray-200 text-gray-600"}`}>
+                            <div className={`text-sm lg:text-[20px]`}>
+                                {NumFn.currency(calculateDiscountAmt() * -1)}
+                            </div>
+                            <span className="text-[15px] lg:text-sm text-gray-400">applied discount value</span>
+                        </div>
+                        <div className={`flex flex-col-reverse w-full border border-secondary-500 rounded-md py-2 px-4 ${calculateDiscountRate() > (config?.ratelimit || 100) ? "bg-red-500 [&>*]:text-white" : "bg-gray-200 text-gray-600"}`}>
+                            <div className={`text-sm lg:text-[20px]`}>
+                                {NumFn.currency(calculateDiscountRate() * -1)}%
+                            </div>
+                            <span className="text-[15px] lg:text-sm text-gray-400">applied discount rate</span>
+                        </div>
                     </div>
                     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
                         <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black" onClick={() => onClose()}>Cancel</button>
