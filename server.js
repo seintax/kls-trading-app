@@ -57,6 +57,7 @@ app.use('/app', approutes.schedule)
 app.use('/app', approutes.expenses)
 app.use('/app', approutes.permission)
 app.use('/app', approutes.roles)
+app.use('/app', approutes.config)
 
 app.use('/app', approutes.complex)
 app.use('/app', approutes.reports)

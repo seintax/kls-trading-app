@@ -4,7 +4,7 @@ const { secure } = require('../../../res/secure/secure')
 
 router
     .route('/inclusion')
-    .post(service._create)
+    .post(secure, service._create)
     .get(secure, service._record)
     .patch(secure, service._update)
     .delete(secure, service._delete)

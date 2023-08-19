@@ -8,7 +8,7 @@
 			"\r",
 			"router\r",
 			"    .route('/${1:ModuleName}')\r",
-			"    .post(service._create)\r",
+			"    .post(secure, service._create)\r",
 			"    .get(secure, service._record)\r",
 			"    .patch(secure, service._update)\r",
 			"    .delete(secure, service._delete)\r",

@@ -14,7 +14,8 @@ const BrowserQuantity = ({ qtyRef }) => {
     const [markdown, setMarkdown] = useState("")
     const [discount, setDiscount] = useState("")
     const [balance, setBalance] = useState(0)
-    const [config, setConfig] = useState()
+    const configSelector = useSelector(state => state.settings)
+    const config = configSelector.config
     const toast = useToast()
 
     const keydown = useCallback(e => {
@@ -84,9 +85,9 @@ const BrowserQuantity = ({ qtyRef }) => {
         if (dataSelector.manager) {
             setQuantity("")
             setMarkdown("")
-            let newConfig = JSON.parse(localStorage.getItem("config")) || {}
-            setConfig(newConfig)
-            setDiscount(newConfig?.discount === "Percent" ? "Percent" : "Amount")
+            // let newConfig = JSON.parse(localStorage.getItem("config")) || {}
+            // setConfig(newConfig)
+            setDiscount(config?.discount === "Percent" ? "Percent" : "Amount")
             setBalance(amount(dataSelector.item.stocks) - amount(0))
         }
     }, [dataSelector.manager])
@@ -237,9 +238,9 @@ const BrowserQuantity = ({ qtyRef }) => {
                             />
                             <label htmlFor="percent" className="cursor-pointer">Percent</label>
                         </div>
-                        <span className={`${config?.discount === discount ? "hidden" : ""}  ml-auto text-blue-500 cursor-pointer`} onClick={() => setDiscountConfig()}>
+                        {/* <span className={`${config?.discount === discount ? "hidden" : ""}  ml-auto text-blue-500 cursor-pointer`} onClick={() => setDiscountConfig()}>
                             Set as Default Discount Option
-                        </span>
+                        </span> */}
                     </div>
                     <div className="flex border border-secondary-500 p-0.5 items-center">
                         <DocumentArrowDownIcon className="w-8 h-8 ml-1 text-secondary-500 hidden lg:flex" />

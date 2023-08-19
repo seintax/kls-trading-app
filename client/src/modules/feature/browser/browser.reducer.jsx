@@ -7,6 +7,7 @@ const initialState = {
     item: {},
     paid: [],
     less: {},
+    found: 0,
     settle: {},
     method: "",
     balance: 0,
@@ -54,6 +55,9 @@ const browserSlice = createSlice({
         },
         resetBrowserCart: (state) => {
             state.cart = []
+        },
+        setBrowserSearchCount: (state, action) => {
+            state.found = action.payload
         },
         setBrowserData: (state, action) => {
             state.data = action.payload?.map(data => {
@@ -151,6 +155,7 @@ const browserSlice = createSlice({
             state.cart = []
             state.paid = []
             state.less = {}
+            state.found = 0
             state.settle = {}
             state.method = ""
             state.balance = 0
@@ -164,6 +169,7 @@ const browserSlice = createSlice({
             state.data = []
             state.item = {}
             state.less = {}
+            state.found = 0
             state.balance = 0
             state.manager = false
             state.notifier = false
@@ -211,6 +217,7 @@ export const {
     removeBrowserDraft,
     setBrowserMethod,
     setBrowserBalance,
+    setBrowserSearchCount,
     resetBrowserTransaction,
     resetBrowser
 } = browserSlice.actions

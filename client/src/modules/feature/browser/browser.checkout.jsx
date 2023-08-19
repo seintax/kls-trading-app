@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount, currency } from "../../../utilities/functions/number.funtions"
-import { StrFn, formatVariant, isAdmin, isDev, isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, formatVariant, isAdmin, isDev, isEmpty, isYes } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
@@ -30,7 +30,8 @@ const BrowserCheckout = () => {
     const [startpage, setstartpage] = useState(1)
     const columns = dataSelector.header
     const toast = useToast()
-    const [config, setConfig] = useState()
+    const configSelector = useSelector(state => state.settings)
+    const config = configSelector.config
     const [branch, setBranch] = useState()
     const [balance, setBalance] = useState(0)
     const [tended, setTended] = useState(0)
@@ -237,13 +238,6 @@ const BrowserCheckout = () => {
             return () => clearInterval(interval)
         }
     }, [dataSelector.checkout, isPaid])
-
-    useEffect(() => {
-        if (dataSelector.checkout) {
-            let newConfig = JSON.parse(localStorage.getItem("config")) || {}
-            setConfig(newConfig)
-        }
-    }, [dataSelector.checkout])
 
     const processTransaction = async () => {
         if (balance !== 0) {
@@ -480,7 +474,7 @@ const BrowserCheckout = () => {
                                 {currency(summary.markdown)}
                             </span>
                         </div>
-                        <div className={`${config?.shownetdiscount ? "flex" : "hidden"} justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer`} onClick={() => toggleDiscount()}>
+                        <div className={`${isYes(config?.shownetdiscount) ? "flex" : "hidden"} justify-between items-center p-3 border-t border-t-gray-400 cursor-pointer`} onClick={() => toggleDiscount()}>
                             <span>Net Discount ({currency(summary.rate * 100).replace("0.00", "")}%):</span>
                             <span className="ml-auto text-gray-800">
                                 {currency(summary.discount)}

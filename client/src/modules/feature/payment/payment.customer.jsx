@@ -218,7 +218,7 @@ const PaymentCustomer = () => {
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                             />
                         </div>
-                        <div className="flex flex-col border border-secondary-500 p-0.5 items-center h-[200px] text-lg">
+                        <div className="flex flex-col border border-secondary-500 p-0.5 items-center h-[200px] text-lg overflow-y-scroll">
                             {
                                 libCustomers?.filter(f => f?.key?.toLowerCase()?.includes(search?.toLowerCase())).map(lib => (
                                     <div key={lib.value} className="flex items-center w-full px-2 cursor-pointer hover:bg-primary-200 py-2" onClick={() => onSelect(lib)}>

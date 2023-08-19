@@ -27,6 +27,12 @@ CREATE TABLE sys_user (
     user_display     text
 );
 
+CREATE TABLE sys_config (
+    conf_id          int auto_increment primary key,
+    conf_account     int unique,
+    conf_json        text
+);
+
 DROP TABLE sys_permission;
 CREATE TABLE sys_permission (
     perm_id          int auto_increment primary key,

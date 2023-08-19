@@ -140,9 +140,12 @@ const CasheringIndex = () => {
                             Search
                         </button>
                     </form>
-                    <div className="flex mt-1 gap-2">
+                    <div className="w-full flex mt-1 gap-2">
                         Searching Branch:
                         <span className="font-bold text-orange-500">{isBranch(auth) ? auth.store : "All Branches"}</span>
+                        <span className="ml-auto flex gap-2">Record Found:
+                            <font className="font-bold text-orange-500">{browserSelector.found}</font>
+                        </span>
                     </div>
                     <div className="flex flex-col">
                         <BrowserRecords />
