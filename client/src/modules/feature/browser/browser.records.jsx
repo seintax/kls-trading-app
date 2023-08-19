@@ -19,7 +19,7 @@ import PaymentPrinting from "../payment/payment.printing"
 import BrowserCheckout from "./browser.checkout"
 import BrowserPurchase from "./browser.purchase"
 import BrowserQuantity from "./browser.quantity"
-import { removeBrowserCart, setBrowserData, setBrowserItem, setBrowserNotifier, showBrowserManager } from "./browser.reducer"
+import { removeBrowserCart, setBrowserData, setBrowserItem, setBrowserNotifier, setBrowserSearchCount, showBrowserManager } from "./browser.reducer"
 import { useFetchAllBrowserByBranchMutation } from "./browser.services"
 
 const BrowserRecords = () => {
@@ -148,6 +148,7 @@ const BrowserRecords = () => {
                 && f.acquisition !== "TRANSMIT"
             )
             let data = sorted ? sortBy(browsed, sorted) : browsed
+            dispatch(setBrowserSearchCount(data.length))
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,

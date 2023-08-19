@@ -35,7 +35,7 @@
 			"\r",
 			"    useEffect(() => {\r",
 			"        if (!isLoading && isSuccess) {\r",
-			"            console.log(\"done\")\r",
+			"            console.info(\"done\")\r",
 			"        }\r",
 			"    }, [isSuccess, isLoading])\r",
 			"\r",

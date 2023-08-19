@@ -21,6 +21,7 @@ import SupplierIndex from "./modules/library/supplier/supplier.index"
 import VariantIndex from "./modules/library/variant/variant.index"
 import AccountIndex from "./modules/system/account/account.index"
 import AccountLogin from "./modules/system/account/account.login"
+import ConfigIndex from "./modules/system/config/config.index"
 import ExpensesIndex from "./modules/system/expenses/expenses.index"
 import PermissionIndex from "./modules/system/permission/permission.index"
 import PrintBase from "./modules/system/prints/print.base"
@@ -69,6 +70,7 @@ const AppRoute = () => {
                     <Route path="/reports" element={<ReportsIndex />} />
                     <Route path="/roles" element={<RolesIndex />} />
                     <Route path="/permissions" element={<PermissionIndex />} />
+                    <Route path="/settings" element={<ConfigIndex />} />
                 </Route>
             </Route>
 

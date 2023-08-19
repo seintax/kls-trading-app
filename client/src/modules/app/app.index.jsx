@@ -1,6 +1,7 @@
 import {
     BanknotesIcon,
     CalculatorIcon,
+    Cog8ToothIcon,
     DocumentTextIcon,
     HomeIcon,
     NewspaperIcon,
@@ -13,6 +14,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { Outlet } from "react-router-dom"
+import { version } from "../../../package.json"
 import { useClientContext } from "../../utilities/context/client.context"
 import { isDev, isEmpty } from "../../utilities/functions/string.functions"
 import useAuth from "../../utilities/hooks/useAuth"
@@ -24,6 +26,8 @@ import AppSideMenu from "../../utilities/interface/application/navigation/app.si
 import NotificationContainer from "../../utilities/interface/notification/notification.container"
 import { defaultRole } from "../../utilities/variables/string.variables"
 import { useUpdateAccountMutation } from "../system/account/account.services"
+import { resetSettingsConfig, setSettingsConfig } from "../system/config/config.reducer"
+import { useByAccountConfigMutation } from "../system/config/config.services"
 import { setPermissionCache } from "../system/permission/permission.reducer"
 import { useFetchAllPermissionMutation } from "../system/permission/permission.services"
 import { setRolesAccess, setRolesCache } from "../system/roles/roles.reducer"
@@ -71,6 +75,7 @@ const menulist = [
     { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
     { name: "Roles", href: "/roles", icon: UserGroupIcon, current: false },
     { name: "Accounts", href: "/accounts", icon: UsersIcon, current: false },
+    { name: "Settings", href: "/settings", icon: Cog8ToothIcon, current: false },
 ]
 
 const AppIndex = () => {
@@ -91,6 +96,7 @@ const AppIndex = () => {
     const [allPermissions] = useFetchAllPermissionMutation()
     const [createRole] = useCreateRolesMutation()
     const [updateAccount] = useUpdateAccountMutation()
+    const [accountConfig] = useByAccountConfigMutation()
 
     const formatToJSONObject = (array) => {
         let jsonObject = {}
@@ -116,7 +122,6 @@ const AppIndex = () => {
 
     useEffect(() => {
         const roleauth = async () => {
-            console.log("created a crawler")
             await allRoles()
                 .unwrap()
                 .then(async (res) => {
@@ -140,13 +145,31 @@ const AppIndex = () => {
                 .catch(err => console.error(err))
         }
 
-        const instantiate = async () => {
-            await roleauth()
-            await permissions()
+        const config = async () => {
+            await accountConfig({ account: auth.id })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        if (res.distinctResult.data?.length) {
+                            let config = res.distinctResult.data[0]
+                            dispatch(setSettingsConfig(JSON.parse(config.json)))
+                        }
+                        if (!res.distinctResult.data?.length) {
+                            dispatch(resetSettingsConfig())
+                        }
+                    }
+                })
+                .catch(err => console.error(err))
+        }
 
+        const instantiate = async () => {
             if (!authenticate) {
                 logout()
             }
+
+            await roleauth()
+            await permissions()
+            await config()
             setInstance(false)
         }
 
@@ -211,6 +234,9 @@ const AppIndex = () => {
                     <AppSideMenu sidebarSideMenu={sidebarSideMenu} setSidebarSideMenu={setSidebarSideMenu} sideMenuItems={sideMenuItems} />
                 </div>
                 <div className="flex flex-none w-full h-[40px] bg-white border border-t-secondary-500 items-center px-3">
+                    <span className="flex items-center gap-3 text-sm">
+                        v{version}
+                    </span>
                     <span className="ml-auto flex items-center gap-3 text-sm">
                         <div className="bg-lime-400 w-3 h-3 rounded-full"></div>
                         {currentService().includes("vercel") ? "Cloud" : "Local"} Endpoint

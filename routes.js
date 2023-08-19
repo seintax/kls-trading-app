@@ -31,6 +31,7 @@ const schedule = require('./src/system/schedule/schedule.route')
 const expenses = require('./src/system/expenses/expenses.route')
 const permission = require('./src/system/permission/permission.route')
 const roles = require('./src/system/roles/roles.route')
+const config = require('./src/system/config/config.route')
 
 const complex = require('./src/complex/complex.route')
 const reports = require('./src/system/reports/reports.route')
@@ -67,6 +68,7 @@ module.exports = {
     expenses,
     permission,
     roles,
+    config,
     complex,
     reports,
     dashboard,

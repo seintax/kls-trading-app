@@ -121,7 +121,7 @@ const ReceivableListing = () => {
     }, [])
 
     const saveList = useCallback(() => {
-        console.log("saving...")
+        console.info("saving...")
     }, [])
 
     return (

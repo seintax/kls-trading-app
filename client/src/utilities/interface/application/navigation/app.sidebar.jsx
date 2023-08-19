@@ -117,6 +117,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
 
     const isVisible = (href) => {
         if (href === "/dashboard") return true
+        if (href === "/settings") return true
         let propName = `${href?.replace("/", "")}-menu`
         if (roleSelector.access.permission?.hasOwnProperty(propName)) {
             return roleSelector.access.permission[propName]?.show

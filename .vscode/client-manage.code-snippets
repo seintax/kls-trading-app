@@ -76,7 +76,7 @@
 			"\r",
 			"    useEffect(() => {\r",
 			"        if (listener) {\r",
-			"            // console.log(`\\${element}`, listener[element])\r",
+			"            // console.info(`\\${element}`, listener[element])\r",
 			"        }\r",
 			"    }, [listener])\r",
 			"\r",

@@ -26,6 +26,7 @@ import optionReducer from "../../modules/library/option/option.reducer"
 import supplierReducer from "../../modules/library/supplier/supplier.reducer"
 import variantReducer from "../../modules/library/variant/variant.reducer"
 import accountReducer from "../../modules/system/account/account.reducer"
+import settingsReducer from "../../modules/system/config/config.reducer"
 import expensesReducer from "../../modules/system/expenses/expenses.reducer"
 import permissionReducer from "../../modules/system/permission/permission.reducer"
 import printingReducer from "../../modules/system/prints/printing.reducer"
@@ -70,6 +71,7 @@ const store = configureStore({
         expenses: expensesReducer,
         permission: permissionReducer,
         roles: rolesReducer,
+        settings: settingsReducer,
         reports: reportsReducer,
         printing: printingReducer,
         dashboard: dashboardReducer,

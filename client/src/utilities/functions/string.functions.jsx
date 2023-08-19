@@ -18,6 +18,10 @@ export const isBranch = (auth) => {
     return notBranches.includes(auth.store) ? false : true
 }
 
+export const isYes = (value) => {
+    return value === "Yes"
+}
+
 export const getBranch = (auth) => {
     if (auth?.store) {
         const notBranches = ["DevOp", "SysAd", "Admin"]
