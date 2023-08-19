@@ -321,8 +321,11 @@ CREATE TABLE pos_archive_expenses (
     expn_remarks     varchar(99),
     expn_notes       varchar(150),
     expn_account     int,
-    expn_store       varchar(50)
+    expn_store       varchar(50),
+    expn_date        date
 );
+
+ALTER TABLE pos_archive_expenses ADD COLUMN expn_date  date;
 
 ALTER TABLE pos_archive_expenses ADD COLUMN expn_store  varchar(50);
 
