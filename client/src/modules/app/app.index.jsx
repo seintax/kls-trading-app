@@ -116,7 +116,6 @@ const AppIndex = () => {
 
     useEffect(() => {
         const roleauth = async () => {
-            console.log("created a crawler")
             await allRoles()
                 .unwrap()
                 .then(async (res) => {

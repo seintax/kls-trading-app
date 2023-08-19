@@ -193,7 +193,6 @@ const ExpensesManage = () => {
     }
 
     const onSubmit = async (data) => {
-        console.log(data)
         if (dataSelector.item.id) {
             await updateExpenses({ ...data, id: dataSelector.item.id })
                 .unwrap()
@@ -210,7 +209,6 @@ const ExpensesManage = () => {
             .unwrap()
             .then(res => {
                 if (res.success) {
-                    console.log(res)
                     toast.showCreate("Expenses successfully created.")
                     onCompleted()
                 }
