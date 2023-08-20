@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import useAuth from "../../../utilities/hooks/useAuth"
 import ConfigManage from "./config.manage"
-import { resetSettingsItem, resetSettingsManager, setSettingsItem, setSettingsNotifier, showSettingsManager } from "./config.reducer"
+import { resetSettingsItem, setSettingsItem, setSettingsNotifier, showSettingsManager } from "./config.reducer"
 import { useByAccountConfigMutation } from "./config.services"
 
 const ConfigIndex = () => {
@@ -42,7 +42,6 @@ const ConfigIndex = () => {
 
     const toggleNewEntry = () => {
         dispatch(resetSettingsItem())
-        dispatch(resetSettingsManager())
         dispatch(setSettingsNotifier(false))
     }
 
@@ -51,7 +50,6 @@ const ConfigIndex = () => {
             ...item,
             json: JSON.parse(item.json)
         }))
-        dispatch(resetSettingsManager())
         dispatch(setSettingsNotifier(false))
     }
 
