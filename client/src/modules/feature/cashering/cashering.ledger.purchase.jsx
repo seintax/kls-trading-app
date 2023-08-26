@@ -105,7 +105,7 @@ const CasheringLedgerPurchase = () => {
                         </span>
                     </div>
             },
-            { value: item.toreturn || "" },
+            { value: item.toreturn || "0" },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

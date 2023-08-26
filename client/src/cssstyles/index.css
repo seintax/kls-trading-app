@@ -308,3 +308,10 @@ svg.fill-primary>path {
     display: flex;
   }
 } */
+
+.plain-input::-webkit-outer-spin-button,
+.plain-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    -moz-appearance: textfield;
+}

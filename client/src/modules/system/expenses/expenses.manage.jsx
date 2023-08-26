@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
+import { FormatOptionsWithEmptyLabel, FormatOptionsWithNewOption } from "../../../utilities/functions/array.functions"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -39,7 +39,12 @@ const ExpensesManage = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        setLibBranches(FormatOptionsWithEmptyLabel(res?.arrayResult, "code", "name", "Select a branch"))
+                        let branchArr = FormatOptionsWithEmptyLabel(res?.arrayResult, "code", "name", "Select a branch")
+                        setLibBranches(FormatOptionsWithNewOption(branchArr, [{
+                            value: "BACK-OFFICE",
+                            key: "Back Office",
+                            data: undefined
+                        }]))
                     }
                 })
                 .catch(err => console.error(err))

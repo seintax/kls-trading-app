@@ -13,14 +13,14 @@ const initialState = {
     },
     header: {
         items: [
-            { name: 'Product', stack: false, sort: 'product_name' },
+            { name: 'Purchased Product', stack: false, sort: 'product_name' },
             { name: 'Price', stack: true, sort: 'price', size: 150 },
             { name: 'Quantity', stack: true, sort: 'dispense', size: 200 },
             { name: 'Total', stack: true, sort: 'total', size: 150 },
             { name: 'Less', stack: true, sort: 'less', size: 150 },
             { name: 'Net', stack: false, sort: 'net', size: 150 },
             { name: 'Return', stack: false, size: 100 },
-            { name: '', stack: false, screenreader: 'Action', size: 100, position: 'center' }
+            { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
     }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -6,7 +6,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInputs from "../../../utilities/interface/datastack/data.inputs"
 import FormEl from "../../../utilities/interface/forminput/input.active"
-import { resetSettingsManager, setSettingsConfig, setSettingsNotifier } from "./config.reducer"
+import { resetSettingsManager, setSettingsConfig, setSettingsNotifier, setSettingsUpdater } from "./config.reducer"
 import { useCreateConfigMutation, useUpdateConfigMutation } from "./config.services"
 
 const ConfigManage = () => {
@@ -48,6 +48,7 @@ const ConfigManage = () => {
                 discount: init(item?.discount, "Amount"),
                 ratelimit: init(item?.ratelimit, "100"),
                 shownetdiscount: init(item?.shownetdiscount, "Yes"),
+                simplifiedcashering: init(item?.simplifiedcashering, "No")
             })
         }
     }, [instantiated, dataSelector?.item])
@@ -92,6 +93,15 @@ const ConfigManage = () => {
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
+                <FormEl.Select
+                    label='Simplified Cashering'
+                    register={register}
+                    name='simplifiedcashering'
+                    errors={errors}
+                    options={YesNoOption}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
             </>
         )
     }
@@ -115,21 +125,25 @@ const ConfigManage = () => {
             .required('Field is required.'),
     })
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         dispatch(resetSettingsManager())
-    }
+    }, [])
 
     const onCompleted = () => {
         dispatch(setSettingsNotifier(true))
+        dispatch(setSettingsUpdater(true))
         dispatch(resetSettingsManager())
     }
 
     const onSubmit = async (data) => {
-        delete data.discountdata
-        delete data.shownetdiscountdata
         const formData = {
             account: auth.id,
-            json: JSON.stringify(data)
+            json: JSON.stringify({
+                discount: data.discount,
+                ratelimit: data.ratelimit,
+                shownetdiscount: data.shownetdiscount,
+                simplifiedcashering: data.simplifiedcashering
+            })
         }
         if (dataSelector.item.id) {
             await updateConfig({ ...formData, id: dataSelector.item.id })
@@ -169,7 +183,7 @@ const ConfigManage = () => {
             fields={onFields}
             change={onChange}
             submit={onSubmit}
-        // closed={onClose}
+            closed={onClose}
         />
     )
 }

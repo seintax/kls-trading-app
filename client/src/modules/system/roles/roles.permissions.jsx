@@ -1,6 +1,6 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
-import { FiRepeat, FiSave, FiXSquare } from "react-icons/fi"
+import { FiArrowDownCircle, FiRepeat, FiSave, FiXSquare } from "react-icons/fi"
 import { useDispatch, useSelector } from "react-redux"
 import { StrFn, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -56,11 +56,22 @@ const RolesPermissions = () => {
             setInstantiated(true)
         }
         instantiate()
-        setPermissions(JSON.parse(dataSelector.item.permission))
+        setPermissions(repairObject(JSON.parse(dataSelector.item.permission)))
         setCached(dataSelector.item.permission)
         setIsDirty(false)
         setInstantiated(true)
     }, [dataSelector.item.permission])
+
+    const repairObject = (obj) => {
+        let newObj = {}
+        for (const prop in obj) {
+            newObj = {
+                ...newObj,
+                [prop?.trim()]: obj[prop]
+            }
+        }
+        return newObj
+    }
 
     const onClose = () => {
         if (isDirty) {
@@ -180,6 +191,41 @@ const RolesPermissions = () => {
         }
     }
 
+    const propCount = (obj) => {
+        let count = 0
+        for (const prop in obj) {
+            count++
+        }
+        return count
+    }
+
+    const updatePermissions = () => {
+        let undercard = {}
+        let menucount = propCount(permissions)
+        let permcount = propCount(libPermissions)
+        let newProps = []
+        if (menucount !== permcount) {
+            for (const prop in libPermissions) {
+                if (!permissions.hasOwnProperty(prop)) {
+                    newProps.push(prop)
+                    undercard = {
+                        ...undercard,
+                        [prop]: libPermissions[prop]
+                    }
+                }
+            }
+        }
+        if (undercard) {
+            if (window.confirm(`Do you wish to update this permission with the following configuration?\n\n${newProps.join(", ")}`)) {
+                let newPermissions = {
+                    ...permissions,
+                    ...undercard
+                }
+                setPermissions(newPermissions)
+            }
+        }
+    }
+
     return (
         <div className="w-full min-h-full">
             <div className="flex gap-5 items-center">
@@ -194,11 +240,14 @@ const RolesPermissions = () => {
                     </span>
                 </span>
             </div>
-            <div className={`fixed bottom-44 right-6 lg:right-12 p-2 rounded-md cursor-pointer bg-red-600 hover:bg-red-700`} onClick={() => onClose()}>
+            <div className={`fixed bottom-60 right-6 lg:right-12 p-2 rounded-md cursor-pointer bg-red-600 hover:bg-red-700`} onClick={() => onClose()}>
                 <FiXSquare className="text-[30px] text-white" />
             </div>
-            <div className={`fixed bottom-28 right-6 lg:right-12 p-2 rounded-md cursor-pointer bg-green-600 hover:bg-green-700`} onClick={() => resetPermissions()}>
+            <div className={`fixed bottom-44 right-6 lg:right-12 p-2 rounded-md cursor-pointer bg-green-600 hover:bg-green-700`} onClick={() => resetPermissions()}>
                 <FiRepeat className="text-[30px] text-white" />
+            </div>
+            <div className={`fixed bottom-28 right-6 lg:right-12 p-2 rounded-md cursor-pointer bg-yellow-500 hover:bg-yellow-600`} onClick={() => updatePermissions()}>
+                <FiArrowDownCircle className="text-[30px] text-white" />
             </div>
             <div className={`fixed bottom-12 right-6 lg:right-12 p-2 rounded-md cursor-pointer ${isDirty ? "bg-blue-600 hover:bg-blue-700" : " bg-gray-400 hover:bg-gray-500"}`} onClick={() => applyChanges()}>
                 <FiSave className="text-[30px] text-white" />

@@ -4,6 +4,11 @@ const decimalFormat = new Intl.NumberFormat('en-PH', {
     minimumFractionDigits: 2,
 })
 
+const currencyFormat = new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+})
+
 const randomInRange = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -27,7 +32,7 @@ export const amount = (value) => {
 }
 
 export const currency = (value) => {
-    return decimalFormat.format(amount(value) || 0)
+    return currencyFormat.format(amount(value) || 0).replace("₱", "")
 }
 
 const percent = (value) => {

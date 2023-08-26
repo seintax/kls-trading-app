@@ -141,7 +141,7 @@ const BrowserCheckout = () => {
             let totalpaid = paymentSelector?.paid?.reduce((prev, curr) => prev + amount(curr.amount), 0)
             let totalnoncash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method !== "CASH" ? amount(curr.amount) : 0), 0)
             let totalcash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method === "CASH" ? amount(curr.amount) : 0), 0)
-            let totalpartial = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.type === "CREDIT" ? amount(curr.partial) : 0), 0)
+            let totalpartial = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.type === "CREDIT" ? amount(curr.amount) : 0), 0)
             let total = amount(summary.total) - amount(summary.discount) - amount(summary.markdown)
             let settled = amount(total) - amount(totalnoncash)
             let change = totalcash - settled
@@ -326,8 +326,8 @@ const BrowserCheckout = () => {
                                     code: code,
                                     type: cred.type,
                                     method: cred.method,
-                                    total: amount(cred.partial),
-                                    amount: amount(cred.partial),
+                                    total: amount(cred.amount),
+                                    amount: amount(cred.amount),
                                     refcode: cred.refcode,
                                     refdate: cred.method === "CHEQUE" ? cred.refdate : undefined,
                                     refstat: cred.refstat,
@@ -337,12 +337,12 @@ const BrowserCheckout = () => {
                                     code: code,
                                     creditor: paymentSelector.customer.id,
                                     total: amount(summary.net),
-                                    partial: amount(cred.partial),
-                                    balance: amount(cred.amount),
-                                    outstand: amount(cred.amount),
+                                    partial: amount(cred.amount),
+                                    balance: amount(cred.credit),
+                                    outstand: amount(cred.credit),
                                     status: "ON-GOING",
                                     account: auth.id,
-                                    credit_payment: amount(cred.partial) > 0
+                                    credit_payment: amount(cred.amount) > 0
                                         ? payment
                                         : undefined
                                 }
@@ -356,10 +356,10 @@ const BrowserCheckout = () => {
                                 setIsPaid(true)
                                 let partial = paymentSelector.paid
                                     ?.filter(f => f.type === "CREDIT")
-                                    ?.reduce((prev, curr) => prev + amount(curr.partial), 0)
+                                    ?.reduce((prev, curr) => prev + amount(curr.amount), 0)
                                 let credit = paymentSelector.paid
                                     ?.filter(f => f.type === "CREDIT")
-                                    ?.reduce((prev, curr) => prev + amount(curr.amount), 0)
+                                    ?.reduce((prev, curr) => prev + amount(curr.credit), 0)
                                 let printdata = {
                                     branch: branch?.data?.name || printingSelector.defaults.branch,
                                     address: branch?.data?.address || printingSelector.defaults.address,
@@ -511,7 +511,7 @@ const BrowserCheckout = () => {
                                                 <span>{paymentSelector.customer.name}</span>
                                             </span>
                                             <span className="ml-auto text-gray-800">
-                                                {currency(pay.amount)}
+                                                {pay.type === "SALES" ? currency(pay.amount) : currency(pay.credit)}
                                             </span>
                                         </div>
                                     ))
@@ -529,7 +529,7 @@ const BrowserCheckout = () => {
                                                 <span>{paymentSelector?.customer?.name}</span>
                                             </span>
                                             <span className="ml-auto text-gray-800">
-                                                {currency(paymentSelector?.paid[0]?.partial)}
+                                                {currency(paymentSelector?.paid[0]?.amount)}
                                             </span>
                                         </div>
                                     ) : null
