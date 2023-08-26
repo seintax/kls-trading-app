@@ -63,8 +63,17 @@ const PaymentBrowser = () => {
         setSettle(prev => ({
             ...prev,
             [name]: value,
-            amount: name === "type" && value === "CREDIT" ? "" : prev.amount
         }))
+        if (name === "type") {
+            let amount = settle.amount
+            if (value === "CREDIT") {
+                amount = ""
+            }
+            setSettle(prev => ({
+                ...prev,
+                amount: amount
+            }))
+        }
     }
 
     const onClose = () => {
@@ -119,8 +128,7 @@ const PaymentBrowser = () => {
         if (settle.type === "CREDIT" && !dataSelector.settlement) {
             settlement = {
                 ...settlement,
-                partial: settlement.amount,
-                amount: amount(dataSelector.balance) - amount(settlement.amount || 0)
+                credit: amount(dataSelector.balance) - amount(settlement.amount || 0)
             }
         }
         dispatch(setPaymentMethod(settle.type))
@@ -270,7 +278,7 @@ const PaymentBrowser = () => {
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1 disabled:bg-gray-300"
                             />
                         </div>
-                        <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
+                        <div className="flex flex-col-reverse lg:flex-row gap-2 justify-end mt-5">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit">Add Option</button>
                         </div>

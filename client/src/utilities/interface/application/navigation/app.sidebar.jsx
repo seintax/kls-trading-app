@@ -1,8 +1,9 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { userNavigation } from "../../../../modules/app/app.index.jsx"
+import { setSettingsUpdater } from "../../../../modules/system/config/config.reducer.jsx"
 import { isEmpty } from "../../../functions/string.functions.jsx"
 import useAuth from "../../../hooks/useAuth.jsx"
 import AppNavigation from "./app.navigation.jsx"
@@ -11,16 +12,30 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
     const auth = useAuth()
     const location = useLocation()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const configSelector = useSelector(state => state.settings)
     const roleSelector = useSelector(state => state.roles)
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [sidebarMenu, setSidebarMenu] = useState([])
     const [currentMenu, setCurrentMenu] = useState("Dashboard")
     const [currentCascade, setCurrentCascade] = useState("")
     const [isCascaded, setIsCascaded] = useState(false)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true) }, [])
 
     useEffect(() => {
-        setSidebarMenu(menulist)
-    }, [menulist])
+        if (mounted) {
+            return () => {
+                setSidebarMenu([])
+            }
+        }
+    }, [mounted])
+
+    useEffect(() => {
+        setSidebarMenu(configSelector.menus)
+        dispatch(setSettingsUpdater(false))
+    }, [configSelector.menus])
 
     function handleSidebarOpen(isOpen) {
         setSidebarOpen(isOpen)
@@ -41,8 +56,8 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
     }, [sidebarSideMenu])
 
     useEffect(() => {
-        let current = menulist?.filter(menu => location.pathname.startsWith(menu.href) || menu?.children?.filter(f => location.pathname.startsWith(f.href)).length)
-        if (current.length) setCurrentMenu(current[0].name)
+        let current = configSelector.menus?.filter(menu => location.pathname.startsWith(menu.href) || menu?.children?.filter(f => location.pathname.startsWith(f.href)).length)
+        if (current?.length) setCurrentMenu(current[0].name)
     }, [location.pathname])
 
     function handleMenuSelect(item) {
@@ -145,7 +160,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
     const renderNavigation = () => {
         return (
             <nav className="flex-1 space-y-1 px-2 pb-4 z-20">
-                {sidebarMenu.map((item) => (
+                {sidebarMenu?.map((item) => (
                     (!item.children) ? (
                         <div
                             key={item.name}

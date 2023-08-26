@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Outlet } from "react-router-dom"
 import { version } from "../../../package.json"
 import { useClientContext } from "../../utilities/context/client.context"
-import { isDev, isEmpty } from "../../utilities/functions/string.functions"
+import { isDev, isEmpty, isYes } from "../../utilities/functions/string.functions"
 import useAuth from "../../utilities/hooks/useAuth"
 import useAuthenticate from "../../utilities/hooks/useAuthenticate"
 import useLogout from "../../utilities/hooks/useLogout"
@@ -26,7 +26,7 @@ import AppSideMenu from "../../utilities/interface/application/navigation/app.si
 import NotificationContainer from "../../utilities/interface/notification/notification.container"
 import { defaultRole } from "../../utilities/variables/string.variables"
 import { useUpdateAccountMutation } from "../system/account/account.services"
-import { resetSettingsConfig, setSettingsConfig } from "../system/config/config.reducer"
+import { resetSettingsConfig, setSettingsConfig, setSettingsMenus, setSettingsNotifier } from "../system/config/config.reducer"
 import { useByAccountConfigMutation } from "../system/config/config.services"
 import { setPermissionCache } from "../system/permission/permission.reducer"
 import { useFetchAllPermissionMutation } from "../system/permission/permission.services"
@@ -38,47 +38,50 @@ export const userNavigation = [
     { name: "Activity", href: "/activity" },
 ]
 
-const menulist = [
-    { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
-    { name: "Cashering", href: "/cashering", icon: CalculatorIcon, current: false },
-    { name: "Credits", href: "/credits", icon: ReceiptRefundIcon, current: false },
-    { name: "Cheque Monitor", href: "/cheque-monitor", icon: DocumentTextIcon, current: false },
-    {
-        name: "Stocks",
-        icon: ShoppingCartIcon,
-        cascade: false,
-        children: [
-            { name: "Purchase Order", href: "/purchase-order" },
-            { name: "Delivery", href: "/delivery" },
-            { name: "Inventory", href: "/inventory" },
-            // { name: "Adjustment", href: "/stock-adjustment" },
-            { name: "Stock Transfer", href: "/stock-transfer" },
-            { name: "Receiving", href: "/receiving" },
-        ]
-    },
-    {
-        name: "Libraries",
-        icon: NewspaperIcon,
-        cascade: false,
-        children: [
-            { name: "Branches", href: "/branches" },
-            { name: "Suppliers", href: "/suppliers" },
-            { name: "Customers", href: "/customers" },
-            { name: "Categories", href: "/categories" },
-            { name: "Masterlist", href: "/masterlist" },
-            { name: "Options", href: "/options" },
-            { name: "Inclusions", href: "/inclusions" },
-            { name: "Permissions", href: "/permissions" },
-        ]
-    },
-    { name: "Expenses", href: "/expenses", icon: BanknotesIcon, current: false },
-    { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
-    { name: "Roles", href: "/roles", icon: UserGroupIcon, current: false },
-    { name: "Accounts", href: "/accounts", icon: UsersIcon, current: false },
-    { name: "Settings", href: "/settings", icon: Cog8ToothIcon, current: false },
-]
+const menulist = (config) => {
+    return [
+        { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
+        { name: "Cashering", href: isYes(config.simplifiedcashering) ? "/cashering" : "/complex-cashering", icon: CalculatorIcon, current: false },
+        { name: "Credits", href: "/credits", icon: ReceiptRefundIcon, current: false },
+        { name: "Cheque Monitor", href: "/cheque-monitor", icon: DocumentTextIcon, current: false },
+        {
+            name: "Stocks",
+            icon: ShoppingCartIcon,
+            cascade: false,
+            children: [
+                { name: "Purchase Order", href: "/purchase-order" },
+                { name: "Delivery", href: "/delivery" },
+                { name: "Inventory", href: "/inventory" },
+                // { name: "Adjustment", href: "/stock-adjustment" },
+                { name: "Stock Transfer", href: "/stock-transfer" },
+                { name: "Receiving", href: "/receiving" },
+            ]
+        },
+        {
+            name: "Libraries",
+            icon: NewspaperIcon,
+            cascade: false,
+            children: [
+                { name: "Branches", href: "/branches" },
+                { name: "Suppliers", href: "/suppliers" },
+                { name: "Customers", href: "/customers" },
+                { name: "Categories", href: "/categories" },
+                { name: "Masterlist", href: "/masterlist" },
+                { name: "Options", href: "/options" },
+                { name: "Inclusions", href: "/inclusions" },
+                { name: "Permissions", href: "/permissions" },
+            ]
+        },
+        { name: "Expenses", href: "/expenses", icon: BanknotesIcon, current: false },
+        { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
+        { name: "Roles", href: "/roles", icon: UserGroupIcon, current: false },
+        { name: "Accounts", href: "/accounts", icon: UsersIcon, current: false },
+        { name: "Settings", href: "/settings", icon: Cog8ToothIcon, current: false },
+    ]
+}
 
 const AppIndex = () => {
+    const configSelector = useSelector(state => state.settings)
     const permissionSelector = useSelector(state => state.permission)
     const roleSelector = useSelector(state => state.roles)
     const authSelector = useSelector(state => state.roles)
@@ -87,6 +90,7 @@ const AppIndex = () => {
     const [instance, setInstance] = useState(true)
     const [noDev, setNoDev] = useState(false)
     const { trail } = useClientContext()
+    const [menus, setMenus] = useState()
     const authenticate = useAuthenticate()
     const dispatch = useDispatch()
     const { logout } = useLogout()
@@ -96,7 +100,14 @@ const AppIndex = () => {
     const [allPermissions] = useFetchAllPermissionMutation()
     const [createRole] = useCreateRolesMutation()
     const [updateAccount] = useUpdateAccountMutation()
-    const [accountConfig] = useByAccountConfigMutation()
+    const [accountConfig, { isSuccess }] = useByAccountConfigMutation()
+
+    useEffect(() => {
+        if (configSelector.updater) {
+            dispatch(setSettingsMenus(menulist(configSelector.config)))
+            // setMenus(menulist(configSelector.config))
+        }
+    }, [configSelector.updater])
 
     const formatToJSONObject = (array) => {
         let jsonObject = {}
@@ -153,6 +164,9 @@ const AppIndex = () => {
                         if (res.distinctResult.data?.length) {
                             let config = res.distinctResult.data[0]
                             dispatch(setSettingsConfig(JSON.parse(config.json)))
+                            dispatch(setSettingsMenus((menulist(JSON.parse(config.json)))))
+                            // setMenus(menulist(JSON.parse(config.json)))
+                            dispatch(setSettingsNotifier(true))
                         }
                         if (!res.distinctResult.data?.length) {
                             dispatch(resetSettingsConfig())
@@ -167,12 +181,11 @@ const AppIndex = () => {
                 logout()
             }
 
+            await config()
             await roleauth()
             await permissions()
-            await config()
             setInstance(false)
         }
-
         if (instance) instantiate()
     }, [instance])
 
@@ -220,7 +233,7 @@ const AppIndex = () => {
     return (
         <div className="flex h-screen flex-col">
             <AppSideBar
-                menulist={menulist}
+                menulist={menus}
                 sidebarSideMenu={sidebarSideMenu}
                 setSidebarSideMenu={setSidebarSideMenu}
                 setSideMenuItems={setSideMenuItems}

@@ -197,7 +197,7 @@ const PaymentCustomer = () => {
                 leaveTo="translate-y-full"
                 className="flex items-center justify-center h-full w-full lg:w-[550px]"
             >
-                <div className="flex flex-col gap-2 bg-white p-3 w-[90%] lg:w-[600px] h-fit text-lg mt-1 transition ease-in-out duration-300">
+                <div className="flex flex-col gap-2 bg-white p-3 w-screen lg:w-[600px] h-fit text-lg mt-1 transition ease-in-out duration-300">
                     <div className="flex items-center justify-between">
                         <div>PAYMENT OPTIONS</div>
                         <div onClick={() => onClose()}>
@@ -221,7 +221,7 @@ const PaymentCustomer = () => {
                         <div className="flex flex-col border border-secondary-500 p-0.5 items-center h-[200px] text-lg overflow-y-scroll">
                             {
                                 libCustomers?.filter(f => f?.key?.toLowerCase()?.includes(search?.toLowerCase())).map(lib => (
-                                    <div key={lib.value} className="flex items-center w-full px-2 cursor-pointer hover:bg-primary-200 py-2" onClick={() => onSelect(lib)}>
+                                    <div key={lib.value} className="flex items-center w-full px-2 cursor-pointer hover:bg-primary-200 py-3 lg:py-2 text-base" onClick={() => onSelect(lib)}>
                                         {lib.key}
                                         <button type="button" className="ml-auto button-link py-1 no-select">Select</button>
                                     </div>
@@ -295,7 +295,7 @@ const PaymentCustomer = () => {
                         <div className={`${newCustomer ? "hidden" : ""} text-xs ml-auto`}>
                             **Note: Add Customer button will apply the very first customer in the list above.
                         </div>
-                        <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end">
+                        <div className="flex flex-col-reverse md:flex-row gap-2 lg:gap-0 justify-end">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit disabled:bg-gray-400" disabled={newCustomer}>Add Customer</button>
                         </div>

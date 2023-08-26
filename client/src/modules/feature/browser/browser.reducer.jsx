@@ -11,6 +11,8 @@ const initialState = {
     settle: {},
     method: "",
     balance: 0,
+    product: {},
+    category: "",
     manager: false,
     notifier: false,
     viewcart: false,
@@ -59,6 +61,9 @@ const browserSlice = createSlice({
         setBrowserSearchCount: (state, action) => {
             state.found = action.payload
         },
+        setBrowserCategory: (state, action) => {
+            state.category = action.payload
+        },
         setBrowserData: (state, action) => {
             state.data = action.payload?.map(data => {
                 return { ...data, quantity: 0, remaining: data.stocks }
@@ -70,6 +75,12 @@ const browserSlice = createSlice({
                     return action.payload
                 return data
             })
+        },
+        setBrowserProduct: (state, action) => {
+            state.product = action.payload
+        },
+        resetBrowserProduct: (state) => {
+            state.product = {}
         },
         setBrowserItem: (state, action) => {
             state.item = action.payload
@@ -191,6 +202,8 @@ export const {
     resetBrowserCart,
     setBrowserData,
     updateBrowserData,
+    setBrowserProduct,
+    resetBrowserProduct,
     setBrowserItem,
     resetBrowserItem,
     setBrowserPaid,
@@ -217,6 +230,7 @@ export const {
     removeBrowserDraft,
     setBrowserMethod,
     setBrowserBalance,
+    setBrowserCategory,
     setBrowserSearchCount,
     resetBrowserTransaction,
     resetBrowser

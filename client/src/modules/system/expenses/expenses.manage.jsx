@@ -40,7 +40,6 @@ const ExpensesManage = () => {
                 .then(res => {
                     if (res.success) {
                         let branchArr = FormatOptionsWithEmptyLabel(res?.arrayResult, "code", "name", "Select a branch")
-                        console.log(branchArr)
                         setLibBranches(FormatOptionsWithNewOption(branchArr, [{
                             value: "BACK-OFFICE",
                             key: "Back Office",

@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react"
-import { ArrowLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
+import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import moment from "moment"
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
@@ -258,13 +258,13 @@ const CasheringLedger = () => {
                     leave="transition ease-in-out duration-500 transform"
                     leaveFrom="translate-y-0"
                     leaveTo="translate-y-full"
-                    className="flex flex-col gap-2 bg-white px-3 w-full h-full text-sm mt-1 pr-20 lg:pr-60 pb-48"
+                    className="flex flex-col gap-2 bg-white px-3 w-full h-full text-sm mt-1 pr-20 lg:pr-60 pb-32"
                 >
                     <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffLedger()} />
                         <span>Transaction Ledger</span>
                     </div>
-                    <div className="px-1 flex flex-wrap justify-start lg:justify-center my-4 gap-2 lg:gap-3">
+                    <div className="px-1 flex flex-wrap justify-start lg:justify-start my-4 gap-2 lg:gap-3">
                         <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
                             <span className="text-[13px] lg:text-sm text-gray-500 no-select">
                                 Transaction No.
@@ -314,7 +314,7 @@ const CasheringLedger = () => {
                             <div>{(amount(dataSelector.item.discount) * 100).toFixed(2)?.toString().replaceAll(".00", "")}%</div>
                         </div>
                     </div>
-                    <div className={`flex w-[100% - 40px] isolate relative no-select ${tab === "RETURN" ? "pt-5" : "pb-5"}`}>
+                    {/* <div className={`flex w-[100% - 40px] isolate relative no-select ${tab === "RETURN" ? "pt-5" : "pb-5"}`}>
                         <div className={`flex w-full justify-between items-center px-3 py-4 border border-secondary-500 bg-primary-400 transition ease-in-out duration-300 ${tab === "RETURN" ? "absolute left-0 top-0 w-full z-2 hover:bg-primary-300 bg-gradient-to-b from-white via-white to-primary-300 cursor-pointer" : "mx-5"}`} onClick={() => setTab("DISPENSE")}>
                             <div className="flex items-center gap-3">
                                 <ChevronRightIcon className="w-4 h-4 text-secondary-500" />
@@ -337,8 +337,14 @@ const CasheringLedger = () => {
                                 {NumFn.currency(dataSelector.item.return)}
                             </span>
                         </div>
+                    </div> */}
+                    <div className="w-full h-full overflow-y-scroll px-5 bg-gray-300">
+                        <div className="pt-5 px-3">Returned:</div>
+                        <CasheringLedgerReturned />
+                        <div className="pt-5 px-3">Purchased:</div>
+                        <CasheringLedgerPurchase />
                     </div>
-                    {
+                    {/* {
                         (tab === "DISPENSE") ? (
                             <>
                                 <div className="p-1 text-sm font-bold">
@@ -376,7 +382,7 @@ const CasheringLedger = () => {
                                 <CasheringLedgerReturned />
                             </>
                         )
-                    }
+                    } */}
 
                 </Transition.Child>
             </Transition >

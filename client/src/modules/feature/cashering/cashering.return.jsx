@@ -95,7 +95,7 @@ const CasheringReturn = () => {
                 leave="transition ease-in-out duration-500 transform"
                 // leaveFrom="translate-y-0"
                 // leaveTo="-translate-y-full"
-                className="flex flex-col gap-2 bg-white p-3 w-[80%] lg:w-[550px] h-fit text-sm mt-1"
+                className="flex flex-col gap-2 bg-white p-3 w-screen lg:w-[550px] h-fit text-sm mt-1"
             >
                 <div className="flex items-center justify-between">
                     <div>RETURN QUANTITY</div>
@@ -158,8 +158,8 @@ const CasheringReturn = () => {
                             <span className="text-gray-400">balance after commit</span>
                         </div>
                     </div>
-                    <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-0 justify-end mt-5">
-                        <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black p-2.5" onClick={() => onClose()}>Cancel</button>
+                    <div className="flex gap-2 justify-end mt-5">
+                        <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black" onClick={() => onClose()}>Cancel</button>
                         <button type="submit" className="button-submit">Add Return</button>
                     </div>
                 </form>

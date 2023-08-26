@@ -5,8 +5,10 @@ const initialState = {
     data: [],
     item: {},
     config: {},
+    menus: [],
     manager: false,
     notifier: false,
+    updater: false,
     perpage: 150,
     display: {
         name: "User Configuration",
@@ -39,8 +41,14 @@ const settingsSlice = createSlice({
         resetSettingsManager: (state) => {
             state.manager = false
         },
+        setSettingsMenus: (state, action) => {
+            state.menus = action.payload
+        },
         setSettingsNotifier: (state, action) => {
             state.notifier = action.payload
+        },
+        setSettingsUpdater: (state, action) => {
+            state.updater = action.payload
         },
         resetSettings: (state) => {
             state.data = []
@@ -59,7 +67,9 @@ export const {
     resetSettingsItem,
     setSettingsConfig,
     resetSettingsConfig,
+    setSettingsMenus,
     setSettingsNotifier,
+    setSettingsUpdater,
     showSettingsManager,
     resetSettingsManager,
     resetSettings

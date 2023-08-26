@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Routes } from "react-router-dom"
 import AppIndex from "./modules/app/app.index"
 import CasheringIndex from "./modules/feature/cashering/cashering.index"
+import CasheringComplexIndex from "./modules/feature/cashering_complex/cashering.complex.index"
 import ChequeIndex from "./modules/feature/cheque/cheque.index"
 import CreditIndex from "./modules/feature/credit/credit.index"
 import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
@@ -45,6 +46,7 @@ const AppRoute = () => {
                 <Route element={<AppIndex />}>
                     <Route path="/dashboard" element={<DashboardIndex />} />
                     <Route path="/cashering" element={<CasheringIndex />} />
+                    <Route path="/complex-cashering" element={<CasheringComplexIndex />} />
                     <Route path="/purchase-order" element={<PurchaseIndex />} />
                     <Route path="/delivery" element={<DeliveryIndex />} />
                     <Route path="/inventory" element={<InventoryIndex />} />

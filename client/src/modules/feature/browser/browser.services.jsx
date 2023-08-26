@@ -7,6 +7,14 @@ const COMPLEX_SQL_URL = `${BASE_URL}/app/complex`
 
 export const browserApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
+        fetchAllProductByCategory: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/inventory/byproduct`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['browser']
+        }),
         fetchAllBrowserByBranch: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/inventory/branch`,
@@ -59,6 +67,7 @@ export const browserApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
+    useFetchAllProductByCategoryMutation,
     useFetchAllBrowserByBranchMutation,
     useByCodeDispensingMutation,
     useByCodeReturnedMutation,
