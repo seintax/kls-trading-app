@@ -296,7 +296,7 @@ const PaymentCustomer = () => {
                             **Note: Add Customer button will apply the very first customer in the list above.
                         </div>
                         <div className="flex flex-col-reverse md:flex-row gap-2 lg:gap-0 justify-end">
-                            <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
+                            <button type="button" tabIndex={-1} className="button-cancel w-full md:w-fit" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit disabled:bg-gray-400" disabled={newCustomer}>Add Customer</button>
                         </div>
                     </form>

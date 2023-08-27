@@ -278,8 +278,8 @@ const PaymentBrowser = () => {
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1 disabled:bg-gray-300"
                             />
                         </div>
-                        <div className="flex flex-col-reverse lg:flex-row gap-2 justify-end mt-5">
-                            <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
+                        <div className="flex flex-col-reverse md:flex-row gap-2 justify-end mt-5">
+                            <button type="button" tabIndex={-1} className="button-cancel w-full md:w-fit" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit">Add Option</button>
                         </div>
                     </form>

@@ -258,57 +258,57 @@ const CasheringLedger = () => {
                     leave="transition ease-in-out duration-500 transform"
                     leaveFrom="translate-y-0"
                     leaveTo="translate-y-full"
-                    className="flex flex-col gap-2 bg-white px-3 w-full h-full text-sm mt-1 pr-20 lg:pr-60 pb-32"
+                    className="flex flex-col gap-2 bg-white px-3 w-full h-full text-sm mt-1 pr-20 lg:pr-60 pb-[70px]"
                 >
                     <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffLedger()} />
                         <span>Transaction Ledger</span>
                     </div>
                     <div className="px-1 flex flex-wrap justify-start lg:justify-start my-4 gap-2 lg:gap-3">
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Transaction No.
                             </span>
                             <div>{dataSelector.item.code}</div>
                         </div>
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Type
                             </span>
                             <div>{dataSelector.item.method}</div>
                         </div>
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Status
                             </span>
                             <div>{dataSelector.item.status}</div>
                         </div>
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Total
                             </span>
                             <div>{NumFn.currency(dataSelector.item.total)}</div>
                         </div>
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Less
                             </span>
                             <div>{NumFn.currency(dataSelector.item.less + dataSelector.item.markdown)}</div>
                         </div>
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Net
                             </span>
                             <div>{NumFn.currency(dataSelector.item.net)}</div>
                         </div>
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Date
                             </span>
                             <div>{longDate(dataSelector.item.date)}</div>
                         </div>
-                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-4 py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-sm lg:text-lg">
-                            <span className="text-[13px] lg:text-sm text-gray-500 no-select">
+                        <div className="lg:min-w-[200px] lg:w-1/5 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-lg">
+                            <span className="text-[10px] md:text-sm text-gray-500 no-select">
                                 Discount Rate
                             </span>
                             <div>{(amount(dataSelector.item.discount) * 100).toFixed(2)?.toString().replaceAll(".00", "")}%</div>

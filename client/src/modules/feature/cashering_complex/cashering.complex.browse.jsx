@@ -45,7 +45,7 @@ const CasheringComplexBrowse = () => {
     }
 
     return (
-        <div className="flex flex-col w-full gap-0 py-5 text-base">
+        <div className="flex flex-col w-full gap-0 py-5 text-sm md:text-base">
             {
                 records?.map(item => (
                     <div key={item?.id} className="flex justify-between py-4 lg:py-2 hover:bg-gray-200 cursor-pointer px-5" onClick={() => selectProduct(item)} >
