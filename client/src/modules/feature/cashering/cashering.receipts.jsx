@@ -160,8 +160,8 @@ const CasheringReceipts = () => {
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOffReceipts()} />
                         <span>Receipts</span>
                     </div>
-                    <div className="flex border border-secondary-500 p-0.5 items-center mt-4">
-                        <MagnifyingGlassIcon className="w-8 h-8 ml-1 text-secondary-500 hidden lg:flex" />
+                    <div className="flex flex-col md:flex-row border border-secondary-500 p-0.5 items-center mt-4">
+                        <MagnifyingGlassIcon className="w-8 h-8 ml-1 text-secondary-500 hidden md:flex" />
                         <input
                             type="search"
                             value={search}
@@ -169,13 +169,15 @@ const CasheringReceipts = () => {
                             placeholder="Search receipts here"
                             className="w-full text-xs lg:text-sm border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                         />
-                        <input
-                            type="date"
-                            value={range}
-                            onChange={onRangeChange}
-                            className="w-[120px] lg:w-[150px] text-xs lg:text-sm flex-none border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
-                        />
-                        <button className="button-link text-xs lg:text-sm ml-auto px-4 lg:px-9 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onSearch()}>Search</button>
+                        <div className="flex w-full md:w-fit">
+                            <input
+                                type="date"
+                                value={range}
+                                onChange={onRangeChange}
+                                className="w-[120px] lg:w-[150px] text-xs lg:text-sm flex-none border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
+                            />
+                            <button className="button-link text-xs lg:text-sm ml-auto px-4 lg:px-9 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 focus:ring-0" onClick={() => onSearch()}>Search</button>
+                        </div>
                     </div>
                     <DataRecords
                         page={startpage}

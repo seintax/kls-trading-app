@@ -97,7 +97,7 @@ const DataInputs = ({ formData, fields, change, submit, closed, listing, mutatio
                         </div>
                     </div>
                     <div className={`${submit ? "" : "hidden"}`}>
-                        <div className=" py-4 flex flex-col gap-2 lg:gap-0 lg:flex-row justify-end">
+                        <div className="py-4 flex flex-col gap-2 lg:flex-row justify-end">
                             <button
                                 type="button"
                                 className="button-blue lg:mr-auto"

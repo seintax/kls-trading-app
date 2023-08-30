@@ -158,8 +158,8 @@ const CasheringReturn = () => {
                             <span className="text-gray-400">balance after commit</span>
                         </div>
                     </div>
-                    <div className="flex gap-2 justify-end mt-5">
-                        <button type="button" tabIndex={-1} className="button-cancel text-white lg:text-black" onClick={() => onClose()}>Cancel</button>
+                    <div className="flex flex-col-reverse md:flex-row gap-2 justify-end mt-5">
+                        <button type="button" tabIndex={-1} className="button-cancel w-full md:w-fit" onClick={() => onClose()}>Cancel</button>
                         <button type="submit" className="button-submit">Add Return</button>
                     </div>
                 </form>

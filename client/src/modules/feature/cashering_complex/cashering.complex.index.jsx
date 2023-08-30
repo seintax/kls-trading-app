@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon, ReceiptRefundIcon, TrashIcon, UserCircleIcon, UserPlusIcon } from "@heroicons/react/24/outline"
+import { BanknotesIcon, CloudArrowUpIcon, DocumentCheckIcon, DocumentTextIcon, MagnifyingGlassIcon, PrinterIcon, ReceiptRefundIcon, ShoppingCartIcon, TrashIcon, UserCircleIcon, UserPlusIcon } from "@heroicons/react/24/outline"
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
@@ -440,11 +440,11 @@ const CasheringComplexIndex = () => {
     return (
         <div id="no-print" className="flex flex-col w-full mb-[4rem] lg:mb-0 pb-0 lg:pb-[4rem] min-h-full relative">
             <div className="flex flex-col sticky top-0 lg:top-[-21px] bg-white">
-                <div className="flex border border-secondary-500 py-3 px-3 items-center bg-[#4baf4f]">
+                <div className="flex flex-col md:flex-row border border-secondary-500 py-3 px-3 items-center bg-[#4baf4f]">
                     <select
                         value={category}
                         onChange={onCategory}
-                        className="text-sm border-[#4baf4f] outline-none ring-0 focus:ring-0 focus:outline-none grow-1 bg-[#4baf4f] focus:border-[#4baf4f] focus:border-b-gray-200 text-white border border-b-gray-200 border border-b-gray-200"
+                        className="w-full md:w-fit text-xs md:text-sm border-[#4baf4f] outline-none ring-0 focus:ring-0 focus:outline-none grow-1 bg-[#4baf4f] focus:border-[#4baf4f] focus:border-b-gray-200 text-white border border-b-gray-200 border border-b-gray-200"
                     >
                         {
                             libCategories?.map(item => (
@@ -452,8 +452,8 @@ const CasheringComplexIndex = () => {
                             ))
                         }
                     </select>
-                    <div className="w-full flex items-center relative px-3">
-                        <MagnifyingGlassIcon className="w-5 h-5 text-white hidden lg:block absolute" />
+                    <div className="w-full flex items-center relative md:px-3">
+                        <MagnifyingGlassIcon className="w-5 h-5 text-white hidden md:block absolute" />
                         <input
                             type="search"
                             value={search}
@@ -462,27 +462,50 @@ const CasheringComplexIndex = () => {
                             className="w-full text-sm border-[#4baf4f] outline-none ring-0 focus:ring-0 focus:outline-none focus:border-[#4baf4f] focus:border-b-gray-200 grow-1 bg-[#4baf4f] text-white placeholder:text-white border border-b-gray-200 lg:pl-8"
                         />
                     </div>
-                    <button
-                        className="flex items-center justify-center h-full w-12 shadow-md border border-grap-200 rounded-md ml-3 hover:bg-[#3d9e40] flex-none disabled:bg-gray-300 disabled:text-gray-400"
-                        onClick={() => toggleCustomer()}
-                        disabled={processing}
-                    >
-                        <UserPlusIcon className="w-5 h-5 cursor-pointer text-white" />
-                    </button>
+                    <div className="flex w-full md:w-fit justify-center gap-2">
+                        <button
+                            className="flex items-center justify-center mt-2 md:mt-0 p-2 md:p-3 w-12 shadow-md border border-grap-200 rounded-md hover:bg-[#3d9e40] flex-none disabled:bg-gray-300 disabled:text-gray-400"
+                            onClick={() => toggleDiscard()}
+                            disabled={processing || !browserSelector?.cart?.length}
+                        >
+                            <TrashIcon className="w-4 md:w-5 h-4 md:h-5 cursor-pointer text-white" />
+                        </button>
+                        <button
+                            className="flex items-center justify-center mt-2 md:mt-0 p-2 md:p-3 w-12 shadow-md border border-grap-200 rounded-md hover:bg-[#3d9e40] flex-none disabled:bg-gray-300 disabled:text-gray-400"
+                            onClick={() => toggleCustomer()}
+                            disabled={processing}
+                        >
+                            <UserPlusIcon className="w-4 md:w-5 h-4 md:h-5 cursor-pointer text-white" />
+                        </button>
+                        <button
+                            className="flex md:hidden items-center justify-center mt-2 md:mt-0 p-2 md:p-3 w-12 shadow-md border border-grap-200 rounded-md hover:bg-[#3d9e40] flex-none disabled:bg-gray-300 disabled:text-gray-400"
+                            onClick={() => togglePayments()}
+                            disabled={processing || !browserSelector?.cart?.length}
+                        >
+                            <BanknotesIcon className="w-4 md:w-5 h-4 md:h-5 cursor-pointer text-white" />
+                        </button>
+                        <button
+                            className="flex md:hidden items-center justify-center mt-2 md:mt-0 p-2 md:p-3 w-12 shadow-md border border-grap-200 rounded-md hover:bg-[#3d9e40] flex-none disabled:bg-gray-300 disabled:text-gray-400"
+                            onClick={() => processTransaction()}
+                            disabled={isPaid || processing || !browserSelector?.cart?.length}
+                        >
+                            <CloudArrowUpIcon className="w-4 md:w-5 h-4 md:h-5 cursor-pointer text-white" />
+                        </button>
+                    </div>
                 </div>
                 <div className="flex flex-col items-center w-full bg-full border border-b border-b-gray-400 no-select relative">
-                    <div className="flex w-full gap-3 lg:gap-0 lg:justify-between lg:items-center py-5">
-                        <div className="text-sm lg:text-lg flex flex-col gap-2 justify-center px-5 w-full">
+                    <div className="flex flex-col-reverse md:flex-row w-full gap-3 lg:gap-0 lg:justify-between lg:items-center py-5">
+                        <div className="text-sm lg:text-lg flex flex-row md:flex-col gap-2 justify-between md:justify-center px-5 w-full">
                             <div className="flex gap-2">
-                                <span className="text-base">Ticket</span>
-                                <span className="font-bold text-base">
+                                <span className="text-sm md:text-base">Ticket</span>
+                                <span className="font-bold text-sm md:text-base">
                                     #{count}
                                 </span>
                             </div>
                             <div className="flex flex-col">
                                 <div className="flex gap-2">
-                                    <span className="text-base">Total:</span>
-                                    <span className="font-bold text-base">
+                                    <span className="text-sm md:text-base">Total:</span>
+                                    <span className="font-bold text-sm md:text-base">
                                         {currency(browserSelector.cart?.reduce((prev, curr) => prev + curr.price, 0))}
                                     </span>
                                 </div>
@@ -492,36 +515,31 @@ const CasheringComplexIndex = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex gap-2 h-full justify-center px-5">
+                        <div className="hidden md:flex gap-2 h-full justify-center px-5">
                             <button
-                                className="text-white h-[35px] bg-red-600 hover:bg-red-700 px-4 text-base disabled:bg-gray-300 disabled:text-gray-400"
-                                onClick={() => toggleDiscard()}
-                                disabled={processing || !browserSelector?.cart?.length}
-                            >
-                                <TrashIcon className="w-5 h-5" />
-                            </button>
-
-                            <button
-                                className="text-white h-[35px] bg-[#4baf4f] hover:bg-[#3d9e40] px-7 text-base disabled:bg-gray-300 disabled:text-gray-400"
+                                className="flex items-center gap-2 text-white h-[30px] md:h-[35px] bg-[#4baf4f] hover:bg-[#3d9e40] px-3 rounded-md text-sm md:text-base disabled:bg-gray-300 disabled:text-gray-400"
                                 onClick={() => togglePayments()}
                                 disabled={processing || !browserSelector?.cart?.length}
                             >
+                                <BanknotesIcon className="w-5 h-5" />
                                 Payment
                             </button>
 
                             <button
-                                className="text-white h-[35px] bg-[#4baf4f] hover:bg-[#3d9e40] px-7 text-base disabled:bg-gray-300 disabled:text-gray-400"
-                                disabled={isPaid || processing || !browserSelector?.cart?.length}
+                                className="flex items-center gap-2 text-white h-[30px] md:h-[35px] bg-[#4baf4f] hover:bg-[#3d9e40] px-3 rounded-md text-sm md:text-base disabled:bg-gray-300 disabled:text-gray-400"
                                 onClick={() => processTransaction()}
+                                disabled={isPaid || processing || !browserSelector?.cart?.length}
                             >
+                                <CloudArrowUpIcon className="w-5 h-5" />
                                 {processing ? "Processing" : "Save"}
                             </button>{
                                 isDev(auth) || isAdmin(auth) ? (
                                     <button
-                                        className="text-white h-[35px] bg-[#4baf4f] hover:bg-[#3d9e40] px-7 text-base disabled:bg-gray-300 disabled:text-gray-400"
+                                        className="flex items-center gap-2 text-white h-[30px] md:h-[35px] bg-[#4baf4f] hover:bg-[#3d9e40] px-3 rounded-md text-sm md:text-base disabled:bg-gray-300 disabled:text-gray-400"
                                         onClick={() => mockPrint()}
                                         disabled={processing}
                                     >
+                                        <PrinterIcon className="w-5 h-5" />
                                         Print
                                     </button>
                                 ) : null
@@ -531,12 +549,12 @@ const CasheringComplexIndex = () => {
                     <div className={`${cascade ? "flex" : "hidden"} flex-col w-full px-5 py-5 gap-5`}>
                         {
                             browserSelector.cart?.map(item => (
-                                <div key={item.id} className="flex justify-between text-base">
-                                    <div className="flex flex-col">
+                                <div key={item.id} className="flex flex-col md:flex-row justify-between text-sm md:text-base">
+                                    <div className="flex flex-col-reverse md:flex-row">
                                         <span className="font-semibold">{item.product_name} x {item.quantity}</span>
-                                        <span className="text-sm text-gray-500">{`${item.variant_serial || "-"}/${item.variant_model || "-"}/${item.variant_brand || "-"}`}</span>
+                                        <span className="text-xs md:text-sm text-gray-500">{`${item.variant_serial || "-"}/${item.variant_model || "-"}/${item.variant_brand || "-"}`}</span>
                                     </div>
-                                    <div className="flex font-semibold items-center gap-5">
+                                    <div className="flex font-semibold items-center justify-between md:justify-start gap-5">
                                         <span className="">
                                             {currency(item.price * item.quantity)}
                                         </span>
@@ -545,24 +563,24 @@ const CasheringComplexIndex = () => {
                                 </div>
                             ))
                         }
-                        <div className="flex justify-between text-base">
+                        <div className="flex justify-between text-sm md:text-base">
                             <div className="flex flex-col">
-                                <span className="text-base">Discounts</span>
+                                <span>Discounts</span>
                             </div>
                             <div className="font-semibold pr-10">
                                 {currency(browserSelector?.cart?.reduce((prev, curr) => prev + curr?.markdown, 0))}
                             </div>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between text-sm md:text-base">
                             <div className="flex flex-col">
-                                <span className="font-bold text-base">Net Total</span>
+                                <span className="font-bold">Net Total</span>
                             </div>
-                            <div className="text-base font-bold pr-10">
+                            <div className="font-bold pr-10">
                                 {currency(browserSelector?.cart?.reduce((prev, curr) => prev + ((curr?.price * curr?.quantity) - curr?.markdown), 0))}
                             </div>
                         </div>
                     </div>
-                    <div className="border border-white border-b-gray-400 border-dashed w-full"></div>
+                    <div className="border border-white border-b-gray-400 border-dashed w-full mt-5"></div>
                     <div className={`${paymentSelector.paid?.length ? "flex" : "hidden"} flex-col w-full px-5 py-5 gap-5`}>
                         <div className="flex justify-between text-base">
                             <div className="flex flex-col">
@@ -652,8 +670,19 @@ const CasheringComplexIndex = () => {
             <CasheringComplexVariant />
             <PaymentCustomer />
             <PaymentBrowser />
-            <div className="w-fit p-4 lg:p-3 cursor-pointer rounded-full shadow-md fixed bottom-12 right-6 bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
-                <ReceiptRefundIcon className="w-7 h-7" />
+            <div className="flex flex-col fixed bottom-12 right-6 gap-2">
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
+                    <ShoppingCartIcon className="w-5 md:w-7 w-5 md:h-7" />
+                </div>
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
+                    <ReceiptRefundIcon className="w-5 md:w-7 w-5 md:h-7" />
+                </div>
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
+                    <DocumentCheckIcon className="w-5 md:w-7 w-5 md:h-7" />
+                </div>
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
+                    <DocumentTextIcon className="w-5 md:w-7 w-5 md:h-7" />
+                </div>
             </div>
             <CasheringReceipts />
             <CasheringLedger />

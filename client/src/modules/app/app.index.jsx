@@ -26,7 +26,7 @@ import AppSideMenu from "../../utilities/interface/application/navigation/app.si
 import NotificationContainer from "../../utilities/interface/notification/notification.container"
 import { defaultRole } from "../../utilities/variables/string.variables"
 import { useUpdateAccountMutation } from "../system/account/account.services"
-import { resetSettingsConfig, setSettingsConfig, setSettingsMenus, setSettingsNotifier } from "../system/config/config.reducer"
+import { setSettingsConfig, setSettingsMenus, setSettingsNotifier } from "../system/config/config.reducer"
 import { useByAccountConfigMutation } from "../system/config/config.services"
 import { setPermissionCache } from "../system/permission/permission.reducer"
 import { useFetchAllPermissionMutation } from "../system/permission/permission.services"
@@ -101,11 +101,16 @@ const AppIndex = () => {
     const [createRole] = useCreateRolesMutation()
     const [updateAccount] = useUpdateAccountMutation()
     const [accountConfig, { isSuccess }] = useByAccountConfigMutation()
+    const defaultConfig = {
+        discount: "Amount",
+        ratelimit: 100,
+        shownetdiscount: "Yes",
+        simplifiedcashering: "No"
+    }
 
     useEffect(() => {
         if (configSelector.updater) {
             dispatch(setSettingsMenus(menulist(configSelector.config)))
-            // setMenus(menulist(configSelector.config))
         }
     }, [configSelector.updater])
 
@@ -165,11 +170,12 @@ const AppIndex = () => {
                             let config = res.distinctResult.data[0]
                             dispatch(setSettingsConfig(JSON.parse(config.json)))
                             dispatch(setSettingsMenus((menulist(JSON.parse(config.json)))))
-                            // setMenus(menulist(JSON.parse(config.json)))
                             dispatch(setSettingsNotifier(true))
                         }
                         if (!res.distinctResult.data?.length) {
-                            dispatch(resetSettingsConfig())
+                            dispatch(setSettingsConfig(defaultConfig))
+                            dispatch(setSettingsMenus((menulist(defaultConfig))))
+                            dispatch(setSettingsNotifier(true))
                         }
                     }
                 })
@@ -241,7 +247,7 @@ const AppIndex = () => {
             <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5 bg-red-200">
                 <AppBreadcrumbs pages={trail} />
                 <div className="p-0 lg:p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md relative">
-                    <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-4 lg:p-6 text-xs min-h-full flex-none shadow-md bg-red-200">
+                    <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-0 md:p-4 lg:p-6 text-xs min-h-full flex-none shadow-md bg-red-200">
                         <Outlet />
                     </div>
                     <AppSideMenu sidebarSideMenu={sidebarSideMenu} setSidebarSideMenu={setSidebarSideMenu} sideMenuItems={sideMenuItems} />

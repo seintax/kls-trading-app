@@ -96,30 +96,32 @@ const CasheringComplexVariant = () => {
 
     return (
         <div className={`${browserSelector.manager ? "flex" : "hidden"} items-center fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-40 z-20`}>
-            <div className="w-full h-[75vh] bg-white overflow-y-auto relative pb-10">
-                <div className="sticky top-0 bg-white flex px-3 py-5 gap-8">
-                    <span onClick={() => onClose()}>
-                        <XMarkIcon className="w-7 h-7 cursor-pointer" />
-                    </span>
-                    <span className="text-lg font-bold">
-                        {browserSelector.product.name}
-                    </span>
-                    <div className="flex gap-2">
-                        <span className={`${selected?.price ? "" : "hidden"} text-lg font-bold`}>
+            <div className="w-full h-[95vh] md:h-[75vh] bg-white overflow-y-auto relative pb-10">
+                <div className="sticky top-0 bg-white flex flex-col md:flex-row px-3 py-5 gap-2 md:gap-8 border-b border-b-gray-500 border-dashed">
+                    <div className="flex gap-8">
+                        <span onClick={() => onClose()}>
+                            <XMarkIcon className="w-5 md:w-7 w-5 md:h-7 cursor-pointer" />
+                        </span>
+                        <span className="text-sm md:text-lg font-bold">
+                            {browserSelector.product.name}
+                        </span>
+                    </div>
+                    <div className="flex gap-2 ml-14 md:ml-0">
+                        <span className={`${selected?.price ? "" : "hidden"} text-sm md:text-lg font-bold`}>
                             {currency(selected?.price * quantity || 0)}
                         </span>
-                        <span className={`${discount > 0 ? "" : "hidden"} text-lg font-bold`}>
+                        <span className={`${discount > 0 ? "" : "hidden"} text-sm md:text-lg font-bold`}>
                             ({currency(selected?.price * discount || 0)})
                         </span>
                     </div>
-                    <span className={`${selected?.price ? "" : "hidden"} text-lg font-bold ml-auto cursor-pointer px-3 no-select bg-gray-300 shadow-md rounded-md`} onClick={() => onSave()}>
+                    <span className={`${selected?.price ? "flex" : "hidden"} items-center text-sm md:text-lg font-bold ml-auto cursor-pointer px-3 no-select bg-gray-300 shadow-md rounded-md`} onClick={() => onSave()}>
                         SAVE
                     </span>
                 </div>
                 <div className="flex flex-wrap w-full px-5">
                     {
                         records?.map(item => (
-                            <div key={item.id} className="w-1/2 p-2 cursor-pointer" onClick={() => selectProduct(item)}>
+                            <div key={item.id} className="w-full md:w-1/2 p-2 cursor-pointer" onClick={() => selectProduct(item)}>
                                 <div className={`flex justify-between p-3 border border-gray-200 hover:bg-gray-200 ${selected.id === item.id ? "border-gray-500 bg-gray-200" : ""}`}>
                                     <div className="flex flex-col">
                                         <span className="text-base font-semibold">

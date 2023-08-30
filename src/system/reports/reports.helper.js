@@ -105,8 +105,8 @@ const reports = {
             expn_account=acct_id AND 
             expn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             expn_store LIKE '%@store%' 
-        GROUP BY DATE(expn_time),expn_store
-        ORDER BY DATE(expn_time),expn_store
+        GROUP BY DATE(expn_time),expn_store,expn_inclusion
+        ORDER BY DATE(expn_time),expn_store,expn_inclusion
         `
     ),
     purchases: new Query("purchases", `
