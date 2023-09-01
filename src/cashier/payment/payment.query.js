@@ -1,6 +1,7 @@
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
 const helper = require('./payment.helper')
+const getcredit = require('./payment.credit')
 const { Param, Field } = require("../../utilities/builder.utility")
 
 function p(object) {
@@ -102,6 +103,20 @@ const byCheque = handler(async (req, res) => {
     })
 })
 
+const bySettled = handler(async (req, res) => {
+    const param = getcredit.parameters(req.query)
+    const { customer, code, type, store, id } = getcredit.fields
+    let params = [p(param.customer).Exactly(), "CREDIT", p(param.store).Contains()]
+    let clause = [f(customer).IsEqual(), f(type).IsEqual(), f(store).Like(), f(code).IsNull()]
+    let series = [f(id).Desc()]
+    let limits = undefined
+    const builder = getcredit.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -112,4 +127,5 @@ module.exports = {
     _findone,
     byCode,
     byCheque,
+    bySettled,
 }

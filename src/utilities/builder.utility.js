@@ -26,6 +26,30 @@ class Field {
         return this.value ? `${this.value} DESC` : ""
     }
 
+    CompareEQ(field) {
+        return `${this.value} = ${field}`
+    }
+
+    CompareGT(field) {
+        return `${this.value} > ${field}`
+    }
+
+    CompareGTE(field) {
+        return `${this.value} >= ${field}`
+    }
+
+    CompareLT(field) {
+        return `${this.value} < ${field}`
+    }
+
+    CompareLTE(field) {
+        return `${this.value} <= ${field}`
+    }
+
+    CompareNE(field) {
+        return `${this.value} <> ${field}`
+    }
+
     Either(arr) {
         let option = arr?.map(opt => {
             return `${this.value} = ${opt ? `'${opt}'` : "?"}`
@@ -259,6 +283,27 @@ class Table {
             : `${table} `
     }
 
+    leftjoin(sibling, clausearray, paramarray, orderarray, limitcount, grouparray = undefined) {
+        let clause = clausearray?.filter(f => f !== undefined).join(" AND ")
+        let order = orderarray && orderarray.length ? ` ORDER BY ${orderarray.join(", ")}` : ""
+        let limit = limitcount ? ` LIMIT ${limitcount}` : ""
+        let group = grouparray && grouparray.length ? ` GROUP BY ${grouparray.join(", ")}` : ""
+        let strindex = "bcdefghijklmnopqrstuvwxyz".split("")
+        let table = `${this.name} a`
+        if (sibling?.length) {
+            sibling?.map((item, i) => {
+                table = `${table} LEFT JOIN ${item.reference.table} ${strindex[i]} ON ${strindex[i]}.${item.reference.key} = a.${item.key}`
+            })
+        }
+        let enjoin = `${table} a WHERE ${clause ? ` AND ${clause}` : ""}`
+        return {
+            sql: `SELECT * FROM ${enjoin}${group}${order}${limit}`,
+            arr: paramarray,
+            aka: this.fields.alias_,
+            fnc: this.maskall
+        }
+    }
+
     insert(request) {
         const parameters = []
         const fields = []
@@ -382,13 +427,23 @@ class Table {
         }
     }
 
-    inquiry(clausearray, paramarray, orderarray, limitcount) {
+    inquiry(clausearray, paramarray, orderarray, limitcount, grouparray = undefined) {
         let clause = clausearray?.filter(f => f !== undefined).join(" AND ")
         let order = orderarray && orderarray.length ? ` ORDER BY ${orderarray.join(", ")}` : ""
         let limit = limitcount ? ` LIMIT ${limitcount}` : ""
+        let group = grouparray && grouparray.length ? ` GROUP BY ${grouparray.join(", ")}` : ""
         return {
-            sql: `SELECT * FROM ${this.conjoin(clause)}${order}${limit}`,
+            sql: `SELECT * FROM ${this.conjoin(clause)}${group}${order}${limit}`,
             arr: paramarray,
+            aka: this.fields.alias_,
+            fnc: this.maskall
+        }
+    }
+
+    format(sql) {
+        // use with Query.statement().inject()
+        return {
+            sql: sql,
             aka: this.fields.alias_,
             fnc: this.maskall
         }
@@ -508,7 +563,7 @@ class Table {
                         }
                         continue
                     }
-                    alter = { ...alter, prop: data[prop] }
+                    alter = { ...alter, [prop]: data[prop] }
                 }
                 return alter
             })

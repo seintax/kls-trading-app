@@ -220,7 +220,7 @@ const PaymentBrowser = () => {
                                 <option value="CHEQUE" className="text-sm">Cheque</option>
                                 <option value="GCASH" className="text-sm">GCash</option>
                                 <option value="BANK TRANSFER" className="text-sm">Bank Transfer</option>
-                                {
+                                {/* {
                                     (dataSelector.settlement) ? (
                                         <>
                                             <option value="WAIVE" className="text-sm">
@@ -231,7 +231,7 @@ const PaymentBrowser = () => {
                                             </option>
                                         </>
                                     ) : null
-                                }
+                                } */}
                             </select>
                         </div>
                         <div className="flex border border-secondary-500 p-0.5 items-center">
@@ -259,7 +259,6 @@ const PaymentBrowser = () => {
                                 onChange={onChange}
                                 autoComplete="off"
                                 required
-                                // disabled={settle.method !== "GCASH" && settle.method !== "CHEQUE" && settle.method !== "BANK TRANSFER"}
                                 disabled={eitherNot(settle.method, ["GCASH", "CHEQUE", "BANK TRANSFER"])}
                                 placeholder="Enter reference/cheque no."
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1 disabled:bg-gray-300"

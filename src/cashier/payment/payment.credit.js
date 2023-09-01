@@ -18,26 +18,6 @@ const payment = new Table("pos_payment_collection", {
     store: 'paym_store'
 }, [
     {
-        key: "paym_trans",
-        reference: { table: "pos_sales_transaction", key: "trns_code" },
-        include: {
-            transaction_id: 'trns_id',
-            transaction_time: 'trns_time',
-            transaction_vat: 'trns_vat',
-            transaction_total: 'trns_total',
-            transaction_less: 'trns_less',
-            transaction_net: 'trns_net',
-            transaction_return: 'trns_return',
-            transaction_discount: 'trns_discount',
-            transaction_tended: 'trns_tended',
-            transaction_change: 'trns_change',
-            transaction_method: 'trns_method',
-            transaction_status: 'trns_status',
-            transaction_account: 'trns_account',
-            transaction_date: 'trns_date',
-        }
-    },
-    {
         key: "paym_customer",
         reference: { table: "pos_archive_customer", key: "cust_id" },
         include: {
@@ -59,7 +39,7 @@ const payment = new Table("pos_payment_collection", {
             account_name: 'acct_fullname',
             account_store: 'acct_store',
         }
-    }
+    },
 ])
 
 module.exports = payment

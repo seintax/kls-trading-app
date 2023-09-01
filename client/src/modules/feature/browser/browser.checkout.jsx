@@ -309,6 +309,7 @@ const BrowserCheckout = () => {
                             ?.map(pay => {
                                 return {
                                     code: code,
+                                    customer: paymentSelector.customer.id,
                                     type: pay.type,
                                     method: pay.method,
                                     total: amount(pay.amount),
@@ -316,7 +317,8 @@ const BrowserCheckout = () => {
                                     refcode: pay.refcode,
                                     refdate: pay.method === "CHEQUE" ? pay.refdate : undefined,
                                     refstat: pay.refstat,
-                                    account: auth.id
+                                    account: auth.id,
+                                    store: auth.store
                                 }
                             }),
                         credit: paymentSelector.paid
@@ -324,6 +326,7 @@ const BrowserCheckout = () => {
                             ?.map(cred => {
                                 let payment = {
                                     code: code,
+                                    customer: paymentSelector.customer.id,
                                     type: cred.type,
                                     method: cred.method,
                                     total: amount(cred.amount),
@@ -331,7 +334,8 @@ const BrowserCheckout = () => {
                                     refcode: cred.refcode,
                                     refdate: cred.method === "CHEQUE" ? cred.refdate : undefined,
                                     refstat: cred.refstat,
-                                    account: auth.id
+                                    account: auth.id,
+                                    store: auth.store
                                 }
                                 return {
                                     code: code,
@@ -342,6 +346,7 @@ const BrowserCheckout = () => {
                                     outstand: amount(cred.credit),
                                     status: "ON-GOING",
                                     account: auth.id,
+                                    store: auth.store,
                                     credit_payment: amount(cred.amount) > 0
                                         ? payment
                                         : undefined

@@ -14,6 +14,7 @@ router.get('/payment/search', secure, service._search)
 router.post('/payment/specify', service._specify)
 router.get('/payment/bycode', service.byCode)
 router.get('/payment/bycheque', service.byCheque)
+router.get('/payment/bysettled', service.bySettled)
 
 router.post('/payment/sqlchequepayment', complex.sqlChequePayment)
 

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { getBranch } from "../../../utilities/functions/string.functions"
+import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import { resetBrowserPayments } from "../browser/browser.reducer"
+import CreditLedger from "./credit.ledger"
 import CreditManage from "./credit.manage"
+import CreditPayment from "./credit.payments"
 import CreditRecords from "./credit.records"
-import { resetCreditItem, resetCreditManager, setCreditData, setCreditNotifier, showCreditManager } from "./credit.reducer"
-import { useByAllOngoingCreditMutation } from "./credit.services"
+import { resetCreditManager, setCreditData, setCreditNotifier } from "./credit.reducer"
+import { useByUnsettledCreditMutation } from "./credit.services"
 
 const CreditIndex = () => {
     const auth = useAuth()
-    const [allCredit, { isLoading, isError, isSuccess }] = useByAllOngoingCreditMutation()
+    const [allCredit, { isLoading, isError, isSuccess }] = useByUnsettledCreditMutation()
     const dataSelector = useSelector(state => state.credit)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
@@ -43,33 +45,34 @@ const CreditIndex = () => {
         if (dataSelector.data.length === 0 || dataSelector.notifier) {
             instantiate()
         }
-    }, [dataSelector.notifier, auth.store])
-
-    const toggleNewEntry = () => {
-        dispatch(resetCreditItem())
-        dispatch(showCreditManager())
-    }
+    }, [dataSelector.notifier])
 
     const actions = () => {
-        return [
-            // { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry },
-        ]
+        return []
     }
 
     return (
-        (dataSelector.manager) ? (
-            <CreditManage name={dataSelector.display.name} />
+        (isEmpty(dataSelector.history)) ? (
+            (dataSelector.manager) ? (
+                <CreditManage name={dataSelector.display.name} />
+            ) : (
+                <DataIndex
+                    display={dataSelector.display}
+                    actions={actions()}
+                    data={dataSelector.data}
+                    isError={isError}
+                    isLoading={isLoading}
+                    plain={true}
+                >
+                    <CreditRecords />
+                </DataIndex >
+            )
         ) : (
-            <DataIndex
-                display={dataSelector.display}
-                actions={actions()}
-                data={dataSelector.data}
-                isError={isError}
-                isLoading={isLoading}
-                plain={true}
-            >
-                <CreditRecords />
-            </DataIndex >
+            (dataSelector.history === "Credit") ? (
+                <CreditLedger />
+            ) : (
+                <CreditPayment />
+            )
         )
     )
 }

@@ -4,13 +4,26 @@ const initialState = {
     name: "credit",
     data: [],
     item: {},
+    shown: false,
     manager: false,
     notifier: false,
+    customer: undefined,
+    history: undefined,
     perpage: 150,
     display: {
         name: "Credit",
         text: "A list of all credits registered in the system.",
         show: true
+    },
+    columns: {
+        items: [
+            { name: 'Customer', stack: false, sort: 'customer_name' },
+            { name: 'Credit', stack: true, sort: 'value', size: 200 },
+            { name: 'Payment', stack: true, sort: 'paid', size: 200 },
+            { name: 'Balance', stack: true, size: 200 },
+            { name: '', sort: 'store', stack: true, size: 100, position: 'right' },
+            { name: '', stack: false, screenreader: 'Action', size: 450 }
+        ]
     },
     header: {
         items: [
@@ -41,6 +54,18 @@ const creditSlice = createSlice({
         resetCreditItem: (state) => {
             state.item = {}
         },
+        setCreditCustomer: (state, action) => {
+            state.customer = action.payload
+        },
+        setCreditHistory: (state, action) => {
+            state.history = action.payload
+        },
+        setCreditShown: (state) => {
+            state.shown = true
+        },
+        resetCreditShown: (state) => {
+            state.shown = false
+        },
         showCreditManager: (state) => {
             state.manager = true
         },
@@ -49,6 +74,12 @@ const creditSlice = createSlice({
         },
         setCreditNotifier: (state, action) => {
             state.notifier = action.payload
+        },
+        setCreditDisplay: (state, action) => {
+            state.display = {
+                ...state.display,
+                show: action.payload
+            }
         },
         resetCredit: (state) => {
             state.data = []
@@ -65,9 +96,14 @@ export const {
     setCreditData,
     setCreditItem,
     resetCreditItem,
+    setCreditCustomer,
+    setCreditHistory,
+    setCreditShown,
+    resetCreditShown,
     setCreditNotifier,
     showCreditManager,
     resetCreditManager,
+    setCreditDisplay,
     resetCredit
 } = creditSlice.actions
 

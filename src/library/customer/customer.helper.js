@@ -10,6 +10,7 @@ const customer = new Table("pos_archive_customer", {
     recent: 'cust_recent',
     count: 'cust_count',
     value: 'cust_value',
+    paid: 'cust_paid',
     waive: 'cust_waive',
     sales: 'cust_sales',
     status: 'cust_status',
@@ -28,6 +29,17 @@ customer.register("customer_update_credit",
                 FROM pos_sales_credit 
                 WHERE cred_creditor=cust_id 
                     AND cred_status='ON-GOING'
+            )
+        WHERE cust_id=@id`)
+
+customer.register("customer_update_settle",
+    `UPDATE pos_archive_customer SET 
+        cust_paid=(
+                SELECT IFNULL(SUM(paym_amount),0) 
+                FROM pos_payment_collection 
+                WHERE paym_customer=cust_id 
+                    AND paym_type='CREDIT' 
+                    AND paym_trans IS NULL
             )
         WHERE cust_id=@id`)
 
