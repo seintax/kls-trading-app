@@ -38,10 +38,11 @@ const InventoryIndex = () => {
                 .catch(err => console.error(err))
             return
         }
-        if (dataSelector.data.length === 0 || dataSelector.notifier || auth?.store) {
+
+        if (dataSelector.data.length === 0 || dataSelector.notifier) {
             instantiate()
         }
-    }, [dataSelector.notifier, auth])
+    }, [dataSelector.notifier])
 
     const toggleNewEntry = () => {
         dispatch(resetInventoryItem())

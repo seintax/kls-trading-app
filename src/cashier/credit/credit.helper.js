@@ -17,7 +17,8 @@ const credit = new Table("pos_sales_credit", {
     reimburse: 'cred_reimburse',
     status: 'cred_status',
     settledon: 'cred_settledon',
-    account: 'cred_account'
+    account: 'cred_account',
+    store: 'cred_store'
 }, [
     {
         key: "cred_creditor",
@@ -31,6 +32,7 @@ const credit = new Table("pos_sales_credit", {
             customer_recent: 'cust_recent',
             customer_count: 'cust_count',
             customer_value: 'cust_value',
+            customer_paid: 'cust_paid',
             customer_waive: 'cust_waive',
             customer_status: 'cust_status',
         }
@@ -64,5 +66,40 @@ const credit = new Table("pos_sales_credit", {
         }
     }
 ])
+
+credit.register("credit_unsettled",
+    `SELECT
+            cred_creditor,
+            cust_name,
+            cred_store,
+            SUM(cred_balance) AS value,
+            paid
+        FROM 
+            pos_sales_credit a
+                LEFT JOIN pos_archive_customer b
+                    ON b.cust_id = a.cred_creditor 
+                LEFT JOIN (
+                    SELECT 
+                        paym_customer,
+                        SUM(paym_amount) AS paid
+                    FROM  
+                        pos_payment_collection
+                    WHERE 
+                        paym_type = 'CREDIT' AND
+                        paym_trans IS NULL AND
+                        paym_store LIKE '%@store%'
+                    GROUP BY
+                        paym_customer
+                ) c                
+                    ON c.paym_customer = a.cred_creditor 
+        WHERE 
+            cred_store LIKE '%@store%' AND 
+            cust_paid <> cust_value
+        GROUP BY 
+            cred_creditor,
+            cust_name,
+            cred_store,
+            paid;`
+)
 
 module.exports = credit

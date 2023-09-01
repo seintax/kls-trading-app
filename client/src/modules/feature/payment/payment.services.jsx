@@ -70,6 +70,14 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['payment']
         }),
+        bySettledPayment: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bysettled`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['payment']
+        }),
         sqlChequePayment: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}/sqlchequepayment`,
@@ -90,5 +98,6 @@ export const {
     useSearchPaymentMutation,
     useSpecifyPaymentMutation,
     useByChequePaymentMutation,
+    useBySettledPaymentMutation,
     useSqlChequePaymentMutation,
 } = paymentApiSlice

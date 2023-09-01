@@ -4,6 +4,7 @@ const initialState = {
     name: "cheque",
     data: [],
     item: {},
+    shown: false,
     manager: false,
     notifier: false,
     perpage: 150,
@@ -39,6 +40,12 @@ const chequeSlice = createSlice({
         resetChequeItem: (state) => {
             state.item = {}
         },
+        setChequeShown: (state) => {
+            state.shown = true
+        },
+        resetChequeShown: (state) => {
+            state.shown = false
+        },
         showChequeManager: (state) => {
             state.manager = true
         },
@@ -47,6 +54,12 @@ const chequeSlice = createSlice({
         },
         setChequeNotifier: (state, action) => {
             state.notifier = action.payload
+        },
+        setChequeDisplay: (state, action) => {
+            state.display = {
+                ...state.display,
+                show: action.payload
+            }
         },
         resetCheque: (state) => {
             state.data = []
@@ -63,9 +76,12 @@ export const {
     setChequeData,
     setChequeItem,
     resetChequeItem,
+    setChequeShown,
+    resetChequeShown,
     setChequeNotifier,
     showChequeManager,
     resetChequeManager,
+    setChequeDisplay,
     resetCheque
 } = chequeSlice.actions
 

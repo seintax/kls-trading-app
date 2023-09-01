@@ -90,10 +90,13 @@ CREATE TABLE pos_archive_customer (
     cust_recent      datetime,
     cust_count       int DEFAULT 0 COMMENT 'running count',
     cust_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
+    cust_paid        decimal(30,2) DEFAULT 0 COMMENT 'running value',
     cust_waive       decimal(30,2) DEFAULT 0,
     cust_sales       decimal(30,2) DEFAULT 0,
     cust_status      varchar(1) DEFAULT "A"
 );
+
+ALTER TABLE pos_archive_customer ADD COLUMN cust_paid decimal(30,2) DEFAULT 0 AFTER cust_value;
 
 ALTER TABLE pos_archive_customer ADD COLUMN cust_sales decimal(30,2) DEFAULT 0 AFTER cust_waive;
 
@@ -406,8 +409,11 @@ CREATE TABLE pos_sales_credit (
     cred_reimburse   decimal(30,2) DEFAULT 0,
     cred_status      varchar(30) DEFAULT "ON-GOING",
     cred_settledon   timestamp,
-    cred_account     int
+    cred_account     int,
+    cred_store       varchar(50)
 );
+
+ALTER TABLE pos_sales_credit ADD COLUMN cred_store varchar(50);
 
 ALTER TABLE pos_sales_credit ADD COLUMN cred_account int;
 
@@ -417,6 +423,7 @@ DROP TABLE pos_payment_collection;
 CREATE TABLE pos_payment_collection (
     paym_id          int auto_increment primary key,
     paym_trans       varchar(99),
+    paym_customer    int,
     paym_time        timestamp DEFAULT now(),
     paym_type        varchar(20) DEFAULT 'SALES',
     paym_method      varchar(30),
@@ -425,10 +432,15 @@ CREATE TABLE pos_payment_collection (
     paym_refcode     varchar(50),
     paym_refdate     date,
     paym_refstat     varchar(30) DEFAULT 'NOT APPLICABLE',
-    paym_returned    decimal(30,2) DEFAULT 0,  
+    paym_returned    decimal(30,2) DEFAULT 0,
     paym_reimburse   int DEFAULT 0 COMMENT 'boolean value either 1 or 0',
-    paym_account     int
+    paym_account     int,
+    paym_store       varchar(50)  
 );
+
+ALTER TABLE pos_payment_collection ADD COLUMN paym_store varchar(50);
+
+ALTER TABLE pos_payment_collection ADD COLUMN paym_customer int AFTER paym_trans;
 
 CREATE TABLE pos_payment_cheque (
     chqe_id          int auto_increment primary key,

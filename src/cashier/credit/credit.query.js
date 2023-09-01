@@ -90,12 +90,42 @@ const byOngoing = handler(async (req, res) => {
 const byAllOngoing = handler(async (req, res) => {
     const param = helper.parameters(req.query)
     const { status, id } = helper.fields
-    const { account_store } = helper.included
+    const { customer_value, customer_paid, account_store } = helper.included
     let params = ["ON-GOING", p(param.store).Contains()]
-    let clause = [f(status).IsEqual(), f(account_store).Like()]
+    let clause = [
+        f(status).IsEqual(),
+        f(account_store).Like(),
+        f(customer_paid).CompareNE(f(customer_value).value)
+    ]
     let series = [f(id).Asc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
+const byCustomer = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { creditor, store, id } = helper.fields
+    let params = [p(param.customer).Exactly(), p(param.store).Contains()]
+    let clause = [f(creditor).IsEqual(), f(store).Like()]
+    let series = [f(id).Asc()]
+    let limits = undefined
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
+const byUnsettled = handler(async (req, res) => {
+    const { store } = req.query
+    let sql = helper
+        .statement("credit_unsettled")
+        .inject({ store: store })
+    const builder = helper.format(sql)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
@@ -140,6 +170,8 @@ module.exports = {
     _findone,
     byOngoing,
     byAllOngoing,
+    byCustomer,
+    byUnsettled,
     byTransaction,
     byFirst
 }

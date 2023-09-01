@@ -1,50 +1,48 @@
 import { ArrowLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { longDate, sqlDate, sqlTimestamp } from "../../../utilities/functions/datetime.functions"
-import { NumFn, amount, currency } from "../../../utilities/functions/number.funtions"
-import { eitherIs, isEmpty } from "../../../utilities/functions/string.functions"
+import { longDate, sqlTimestamp } from "../../../utilities/functions/datetime.functions"
+import { amount, currency } from "../../../utilities/functions/number.funtions"
+import { eitherIs } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
-import useYup from "../../../utilities/hooks/useYup"
-import DataRecords from "../../../utilities/interface/datastack/data.records"
 import PaymentBrowser from "../payment/payment.browser"
-import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, showPaymentManager } from "../payment/payment.reducer"
+import { removePaymentPaid, resetPaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, showPaymentManager } from "../payment/payment.reducer"
 import { resetCreditManager, setCreditNotifier } from "./credit.reducer"
-import { useByTransactionCreditMutation, useCreateCreditMutation, useSqlSettleCreditMutation } from "./credit.services"
+import { useSqlSettleCreditMutation } from "./credit.services"
 
 const CreditManage = () => {
     const auth = useAuth()
+    const toast = useToast()
     const dataSelector = useSelector(state => state.credit)
     const paymentSelector = useSelector(state => state.payment)
     const dispatch = useDispatch()
-    const [instantiated, setInstantiated] = useState(false)
-    const [transaction, setTransaction] = useState()
-    const [records, setrecords] = useState()
-    const [values, setValues] = useState()
-    const { yup } = useYup()
-    const toast = useToast()
 
     const [balance, setBalance] = useState(0)
     const [tended, setTended] = useState(0)
     const [change, setChange] = useState(0)
     const [payment, setPayment] = useState(0)
-    const columns = {
-        items: [
-            { name: 'Partial', stack: true, sort: 'partial', size: 130 },
-            { name: 'Balance', stack: true, sort: 'balance', size: 130 },
-            { name: 'Payment', stack: true, sort: 'payment', size: 130 },
-            { name: 'Waived', stack: true, sort: 'waived', size: 120 },
-            { name: 'Returned', stack: true, sort: 'returned', size: 120 },
-            { name: 'Reimbursed', stack: true, sort: 'reimburse', size: 120 },
-            { name: 'Status', stack: false, sort: 'status', size: 100 },
-            { name: 'Settled On', stack: false, sort: 'status', size: 150 },
-        ]
-    }
+    const [mounted, setMounted] = useState(false)
 
-    const [createCredit] = useCreateCreditMutation()
-    const [transactionCredit] = useByTransactionCreditMutation()
+    // const [createCredit] = useCreateCreditMutation()
     const [sqlSettleCredit] = useSqlSettleCreditMutation()
+
+    useEffect(() => {
+        if (dataSelector.manager) {
+            setMounted(true)
+            setPayment(0)
+            setTended(0)
+            setChange(0)
+        }
+    }, [dataSelector.manager])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+                dispatch(resetPaymentPaid())
+            }
+        }
+    }, [mounted])
 
     useEffect(() => {
         const instantiate = async () => {
@@ -58,66 +56,19 @@ const CreditManage = () => {
                     })
                     .catch(err => console.error(err))
             }
-            setInstantiated(true)
         }
 
         instantiate()
     }, [dataSelector.item.code])
 
-    const init = (value, initial = "") => {
-        if (!isEmpty(value)) {
-            return value
-        }
-        return initial
-    }
-
     useEffect(() => {
-        if (instantiated) {
-            let item = dataSelector.item
-            setValues({
-                customer_name: init(item.customer_name),
-                code: init(item.code),
-                name: init(item.name),
-                total: init(NumFn.currency(item.total)),
-                partial: init(NumFn.currency(item.partial)),
-                outstand: init(item.outstand),
-            })
-        }
-    }, [instantiated])
-
-    const items = (item) => {
-        return [
-            { value: currency(item.partial) },
-            { value: currency(item.balance) },
-            { value: currency(item.payment) },
-            { value: currency(item.waived) },
-            { value: currency(item.returned) },
-            { value: currency(item.reimburse) },
-            { value: item.status },
-            { value: sqlDate(item.settledon, "") },
-        ]
-    }
-
-    useEffect(() => {
-        if (transaction?.length) {
-            let data = transaction
-            setrecords(data?.map((item, i) => {
-                return {
-                    key: item.id,
-                    items: items(item),
-                    ondoubleclick: () => { },
-                }
-            }))
-        }
-    }, [transaction])
-
-    useEffect(() => {
-        if (dataSelector.item.balance > 0) {
+        let outstand = amount(dataSelector.item.value) - amount(dataSelector.item.paid)
+        if (outstand > 0) {
             let totalpaid = paymentSelector?.paid?.reduce((prev, curr) => prev + amount(curr.amount), 0)
             let totalnoncash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method !== "CASH" ? amount(curr.amount) : 0), 0)
             let totalcash = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.method === "CASH" ? amount(curr.amount) : 0), 0)
             let totalpartial = paymentSelector?.paid?.reduce((prev, curr) => prev + (curr.type === "CREDIT" ? amount(curr.partial) : 0), 0)
-            let total = amount(dataSelector.item.outstand)
+            let total = amount(outstand)
             let settled = amount(total) - amount(totalnoncash)
             let change = totalcash - settled
             let balance = amount(total) - amount(totalpaid) - amount(totalpartial)
@@ -127,13 +78,7 @@ const CreditManage = () => {
             setBalance(balance < 0 ? 0 : balance)
             setPayment(totalpayment)
         }
-    }, [paymentSelector?.paid, dataSelector.item.balance, paymentSelector?.less])
-
-    const onSchema = yup.object().shape({
-        name: yup
-            .string()
-            .required('Field is required.'),
-    })
+    }, [paymentSelector?.paid, dataSelector.item.value, dataSelector.item.paid, paymentSelector?.less])
 
     const onCompleted = () => {
         dispatch(setCreditNotifier(true))
@@ -141,7 +86,7 @@ const CreditManage = () => {
         dispatch(resetCreditManager())
     }
 
-    const processTransaction = async () => {
+    const processOldTransaction = async () => {
         if (balance !== 0) {
             toast.showWarning("Please settle the checkout balance.")
             return
@@ -205,6 +150,46 @@ const CreditManage = () => {
             .catch(err => console.error(err))
     }
 
+    const processTransaction = async () => {
+        let inclusion = ["CASH", "CHEQUE", "GCASH", "BANK TRANSFER"]
+        let payment = paymentSelector.paid.reduce((prev, curr) => prev + amount(eitherIs(curr.method, inclusion) ? curr.amount : 0), 0)
+        if (payment === 0) {
+            toast.showWarning("Please enter a payment amount.")
+            return
+        }
+        let data = {
+            payment: paymentSelector.paid
+                ?.filter(f => eitherIs(f.method, inclusion))
+                ?.map(pay => {
+                    return {
+                        customer: dataSelector.item.creditor,
+                        type: pay.type,
+                        method: pay.method,
+                        total: amount(pay.amount),
+                        amount: amount(pay.amount),
+                        refcode: pay.refcode,
+                        refdate: pay.method === "CHEQUE" ? pay.refdate : undefined,
+                        refstat: pay.refstat,
+                        account: auth.id,
+                        store: auth.store
+                    }
+                }),
+            customer: {
+                id: dataSelector.item.creditor
+            }
+        }
+
+        await sqlSettleCredit(data)
+            .unwrap()
+            .then(res => {
+                if (res.success) {
+                    toast.showCreate("Credit settlement successfully completed.")
+                    onCompleted()
+                }
+            })
+            .catch(err => console.error(err))
+    }
+
     const togglePayments = () => {
         if (balance > 0) {
             dispatch(setPaymentBalance(balance))
@@ -235,29 +220,29 @@ const CreditManage = () => {
                 />
                 <span>Credit Settlement</span>
             </div>
-            <DataRecords
-                columns={columns}
-                records={records}
-                itemsperpage={20}
-                page={1}
-            />
-            <div className="flex flex-col">
+            <div className="flex flex-col mt-10">
                 <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
-                    <span>Creditor: {dataSelector.item.customer_name}</span>
-                    <span className="ml-auto text-gray-800">
-                        {dataSelector.item.code}
+                    <span>Customer: </span>
+                    <span className="ml-auto text-gray-800 font-bold">
+                        {dataSelector.item.customer_name}
                     </span>
                 </div>
                 <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
-                    <span>Total Purchase:</span>
+                    <span>Total Credit: </span>
                     <span className="ml-auto text-gray-800">
-                        {currency(dataSelector.item.total)}
+                        {currency(dataSelector.item.value)}
+                    </span>
+                </div>
+                <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
+                    <span>Total Settled:</span>
+                    <span className="ml-auto text-gray-800">
+                        {currency(dataSelector.item.paid)}
                     </span>
                 </div>
                 <div className="flex justify-between items-center p-3 border-t border-t-gray-400">
                     <span>Outstanding Balance:</span>
-                    <span className="ml-auto text-secondary-500 font-bold">
-                        {currency(dataSelector.item.outstand)}
+                    <span className="ml-auto font-bold">
+                        {currency(amount(dataSelector.item.value) - amount(dataSelector.item.paid))}
                     </span>
                 </div>
                 <div className="flex flex-col py-1 pl-3 border-t border-t-gray-400">
@@ -305,7 +290,7 @@ const CreditManage = () => {
                         <div className="flex flex-col justify-end items-start">
                             <div className="text-sm flex gap-2">
                                 Balance:
-                                <span className="text-secondary-500 font-bold">
+                                <span className="text-orange-500 font-bold">
                                     {currency(balance)}
                                 </span>
                             </div>
@@ -315,19 +300,19 @@ const CreditManage = () => {
                         <div className="flex flex-col justify-end items-end">
                             <div className="text-sm flex gap-2">
                                 Tended Cash:
-                                <span className="text-secondary-500 font-bold">
+                                <span className="text-orange-500 font-bold">
                                     {currency(tended)}
                                 </span>
                             </div>
                             <div className="flex gap-2 text-xs">
                                 Change:
-                                <span className="text-secondary-500 font-bold">
+                                <span className="text-orange-500 font-bold">
                                     {currency(change)}
                                 </span>
                             </div>
                         </div>
                         <button
-                            className="button-link bg-gradient-to-b from-primary-500 via-secondary-500 to-secondary-600 px-7"
+                            className="button-link text-base bg-gradient-to-b from-blue-400 via-blue-600 to-blue-600 px-7 disabled:from-gray-400 disabled:via-gray-600 disabled:to-gray-600"
                             onClick={() => processTransaction()}
                         >
                             Process Transaction

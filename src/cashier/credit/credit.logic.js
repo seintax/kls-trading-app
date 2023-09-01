@@ -9,29 +9,29 @@ const sqlSettleCredit = handler(async (req, res) => {
         con.beginTransaction(async (err) => {
             if (err) return err
 
-            let credit = await new Promise(async (resolve, reject) => {
-                const builder = getservice.update(req.body.credit)
-                await con.query(builder.sql, builder.arr, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({
-                        occurence: "updateCredit",
-                        updateResult: { id: req.body.credit.id }
-                    })
-                })
-            })
+            // let credit = await new Promise(async (resolve, reject) => {
+            //     const builder = getservice.update(req.body.credit)
+            //     await con.query(builder.sql, builder.arr, async (err, ans) => {
+            //         if (err) con.rollback(() => reject(err))
+            //         resolve({
+            //             occurence: "updateCredit",
+            //             updateResult: { id: req.body.credit.id }
+            //         })
+            //     })
+            // })
 
-            if (req.body?.outstanding?.code) {
-                var outstanding = await new Promise(async (resolve, reject) => {
-                    const builder = getservice.insert(req.body.outstanding)
-                    await con.query(builder.sql, builder.arr, async (err, ans) => {
-                        if (err) con.rollback(() => reject(err))
-                        resolve({
-                            occurence: "createOutstandingCredit",
-                            insertResult: { id: ans.insertId ? ans.insertId : undefined }
-                        })
-                    })
-                })
-            }
+            // if (req.body?.outstanding?.code) {
+            //     var outstanding = await new Promise(async (resolve, reject) => {
+            //         const builder = getservice.insert(req.body.outstanding)
+            //         await con.query(builder.sql, builder.arr, async (err, ans) => {
+            //             if (err) con.rollback(() => reject(err))
+            //             resolve({
+            //                 occurence: "createOutstandingCredit",
+            //                 insertResult: { id: ans.insertId ? ans.insertId : undefined }
+            //             })
+            //         })
+            //     })
+            // }
 
             let payments = await Promise.all(req.body.payment
                 ?.map(async (pay) => {
@@ -52,7 +52,7 @@ const sqlSettleCredit = handler(async (req, res) => {
             let runningCustomer = await new Promise(async (resolve, reject) => {
                 let id = req.body.customer.id
                 const sql = getcustomer
-                    .statement("customer_update_credit")
+                    .statement("customer_update_settle")
                     .inject({
                         id: id,
                     })
@@ -66,8 +66,8 @@ const sqlSettleCredit = handler(async (req, res) => {
             })
 
             let result = {
-                credit,
-                outstanding,
+                // credit,
+                // outstanding,
                 payments,
                 runningCustomer,
                 data: req.body

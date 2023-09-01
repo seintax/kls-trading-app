@@ -6,7 +6,8 @@ import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import { useByCodePaymentMutation, useCreateReturnBySqlTransactionMutation } from "../browser/browser.services"
-import { setTransactionNotifier } from "./cashering.reducer"
+import { setChequeNotifier } from "../cheque/cheque.reducer"
+import { setCreditNotifier } from "../credit/credit.reducer"
 import { setDispensingNotifier } from "./dispensing.reducer"
 import { resetReimburseManager } from "./reimburse.reducer"
 import { setReturnedNotifier } from "./returned.reducer"
@@ -97,9 +98,11 @@ const CasheringReimburse = () => {
     }
 
     const onCompleted = () => {
+        dispatch(setCreditNotifier(true))
+        dispatch(setChequeNotifier(true))
         dispatch(setDispensingNotifier(true))
         dispatch(setReturnedNotifier(true))
-        dispatch(setTransactionNotifier(true))
+        // dispatch(setTransactionNotifier(true))
         dispatch(resetReimburseManager())
     }
 

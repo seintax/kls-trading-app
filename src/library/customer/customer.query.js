@@ -1,6 +1,7 @@
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
 const helper = require('./customer.helper')
+const getcredit = require('../../cashier/credit/credit.helper')
 const { Param, Field } = require("../../utilities/builder.utility")
 
 function p(object) {

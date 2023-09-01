@@ -5,6 +5,7 @@ const initialState = {
     data: [],
     item: {},
     receive: [],
+    shown: false,
     manager: false,
     notifier: false,
     perpage: 150,
@@ -39,6 +40,12 @@ const inventorySlice = createSlice({
         resetInventoryItem: (state) => {
             state.item = {}
         },
+        setInventoryShown: (state) => {
+            state.shown = true
+        },
+        resetInventoryShown: (state) => {
+            state.shown = false
+        },
         setInventoryReceive: (state, action) => {
             state.receive = action.payload
         },
@@ -50,6 +57,12 @@ const inventorySlice = createSlice({
         },
         setInventoryNotifier: (state, action) => {
             state.notifier = action.payload
+        },
+        setInventoryDisplay: (state, action) => {
+            state.display = {
+                ...state.display,
+                show: action.payload
+            }
         },
         resetInventory: (state) => {
             state.data = []
@@ -67,10 +80,13 @@ export const {
     setInventoryData,
     setInventoryItem,
     resetInventoryItem,
+    setInventoryShown,
+    resetInventoryShown,
     setInventoryReceive,
     setInventoryNotifier,
     showInventoryManager,
     resetInventoryManager,
+    setInventoryDisplay,
     resetInventory
 } = inventorySlice.actions
 

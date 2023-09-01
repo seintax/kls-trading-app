@@ -20,10 +20,16 @@ import { resetTransactionReceipts, showTransactionReceipts } from "../cashering/
 import CasheringReimburse from "../cashering/cashering.reimburse"
 import CasheringReturn from "../cashering/cashering.return"
 import { useByCountTransactionMutation, useByMaxAccountTransactionMutation } from "../cashering/cashering.services"
+import { setChequeDisplay, setChequeNotifier, setChequeShown } from "../cheque/cheque.reducer"
+import { setCreditDisplay, setCreditNotifier, setCreditShown } from "../credit/credit.reducer"
+import { setInventoryDisplay, setInventoryNotifier, setInventoryShown } from "../inventory/inventory.reducer"
 import PaymentBrowser from "../payment/payment.browser"
 import PaymentCustomer from "../payment/payment.customer"
 import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, showPaymentManager, showPaymentPayor } from "../payment/payment.reducer"
 import CasheringComplexBrowse from "./cashering.complex.browse"
+import CasheringComplexCheque from "./cashering.complex.cheque"
+import CasheringComplexCredits from "./cashering.complex.credits"
+import CasheringComplexInventory from "./cashering.complex.inventory"
 import CasheringComplexVariant from "./cashering.complex.variant"
 
 const CasheringComplexIndex = () => {
@@ -172,12 +178,27 @@ const CasheringComplexIndex = () => {
         }
     }
 
+    const toggleViewInventory = () => {
+        dispatch(setInventoryDisplay(false))
+        dispatch(setInventoryShown())
+    }
+
     const toggleViewReceipts = () => {
         if (transactionSelector.receipts) {
             dispatch(resetTransactionReceipts())
             return
         }
         dispatch(showTransactionReceipts())
+    }
+
+    const toggleViewCheque = () => {
+        dispatch(setChequeDisplay(false))
+        dispatch(setChequeShown())
+    }
+
+    const toggleViewCredits = () => {
+        dispatch(setCreditDisplay(false))
+        dispatch(setCreditShown())
     }
 
     useEffect(() => {
@@ -330,6 +351,7 @@ const CasheringComplexIndex = () => {
                             ?.map(pay => {
                                 return {
                                     code: code,
+                                    customer: paymentSelector.customer.id,
                                     type: pay.type,
                                     method: pay.method,
                                     total: amount(pay.amount),
@@ -337,7 +359,8 @@ const CasheringComplexIndex = () => {
                                     refcode: pay.refcode,
                                     refdate: pay.method === "CHEQUE" ? pay.refdate : undefined,
                                     refstat: pay.refstat,
-                                    account: auth.id
+                                    account: auth.id,
+                                    store: auth.store
                                 }
                             }),
                         credit: paymentSelector.paid
@@ -345,6 +368,7 @@ const CasheringComplexIndex = () => {
                             ?.map(cred => {
                                 let payment = {
                                     code: code,
+                                    customer: paymentSelector.customer.id,
                                     type: cred.type,
                                     method: cred.method,
                                     total: amount(cred.amount),
@@ -352,7 +376,8 @@ const CasheringComplexIndex = () => {
                                     refcode: cred.refcode,
                                     refdate: cred.method === "CHEQUE" ? cred.refdate : undefined,
                                     refstat: cred.refstat,
-                                    account: auth.id
+                                    account: auth.id,
+                                    store: auth.store
                                 }
                                 return {
                                     code: code,
@@ -363,6 +388,7 @@ const CasheringComplexIndex = () => {
                                     outstand: amount(cred.credit),
                                     status: "ON-GOING",
                                     account: auth.id,
+                                    store: auth.store,
                                     credit_payment: amount(cred.amount) > 0
                                         ? payment
                                         : undefined
@@ -381,6 +407,9 @@ const CasheringComplexIndex = () => {
                                 let credit = paymentSelector.paid
                                     ?.filter(f => f.type === "CREDIT")
                                     ?.reduce((prev, curr) => prev + amount(curr.credit), 0)
+                                let cheque = paymentSelector.paid
+                                    ?.filter(f => f.method === "CHEQUE")
+                                    ?.reduce((prev, curr) => prev + amount(curr.amount), 0)
                                 let printdata = {
                                     branch: branch?.data?.name || printingSelector.defaults.branch,
                                     address: branch?.data?.address || printingSelector.defaults.address,
@@ -414,6 +443,9 @@ const CasheringComplexIndex = () => {
                                     change: change,
                                     credit: credit
                                 }
+                                if (credit > 0) dispatch(setCreditNotifier(true))
+                                if (cheque > 0) dispatch(setChequeNotifier(true))
+                                dispatch(setInventoryNotifier(true))
                                 localStorage.setItem("rcpt", JSON.stringify(printdata))
                                 window.open(`/#/print/receipt/${code}${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
                                 toast.showCreate("Transaction successfully completed.")
@@ -671,16 +703,16 @@ const CasheringComplexIndex = () => {
             <PaymentCustomer />
             <PaymentBrowser />
             <div className="flex flex-col fixed bottom-12 right-6 gap-2">
-                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewInventory()}>
                     <ShoppingCartIcon className="w-5 md:w-7 w-5 md:h-7" />
                 </div>
                 <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
                     <ReceiptRefundIcon className="w-5 md:w-7 w-5 md:h-7" />
                 </div>
-                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewCheque()}>
                     <DocumentCheckIcon className="w-5 md:w-7 w-5 md:h-7" />
                 </div>
-                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewCredits()}>
                     <DocumentTextIcon className="w-5 md:w-7 w-5 md:h-7" />
                 </div>
             </div>
@@ -688,6 +720,9 @@ const CasheringComplexIndex = () => {
             <CasheringLedger />
             <CasheringReturn />
             <CasheringReimburse />
+            <CasheringComplexInventory />
+            <CasheringComplexCredits />
+            <CasheringComplexCheque />
         </div>
     )
 }
