@@ -582,7 +582,7 @@ const CasheringComplexIndex = () => {
                         {
                             browserSelector.cart?.map(item => (
                                 <div key={item.id} className="flex flex-col md:flex-row justify-between text-sm md:text-base">
-                                    <div className="flex flex-col-reverse md:flex-row">
+                                    <div className="flex flex-col">
                                         <span className="font-semibold">{item.product_name} x {item.quantity}</span>
                                         <span className="text-xs md:text-sm text-gray-500">{`${item.variant_serial || "-"}/${item.variant_model || "-"}/${item.variant_brand || "-"}`}</span>
                                     </div>
