@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { currency } from "../../../utilities/functions/number.funtions"
+import { amount, currency } from "../../../utilities/functions/number.funtions"
 import { StrFn, getBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
@@ -17,6 +17,7 @@ const CasheringComplexVariant = () => {
     const [selected, setSelected] = useState()
     const [quantity, setQuantity] = useState(1)
     const [discount, setDiscount] = useState(0)
+    const [amtDiscount, setAmtDiscount] = useState("")
     const discountList = [0.35, 0.30, 0.25, 0.20, 0.18, 0.15, 0.12, 0.10, 0.09, 0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.02, 0.01, 0]
 
     useEffect(() => {
@@ -26,6 +27,7 @@ const CasheringComplexVariant = () => {
                 setRecords()
                 setSelected()
                 setDiscount(0)
+                setAmtDiscount("")
             }
         }
     }, [browserSelector.manager])
@@ -61,10 +63,18 @@ const CasheringComplexVariant = () => {
 
     const selectDiscount = (item) => {
         setDiscount(item)
+        if (amount(discount) > 0) setAmtDiscount("")
     }
 
     const onQuantityChange = (e) => {
         setQuantity(e.target.value)
+    }
+
+    const onDiscountChange = (e) => {
+        let discount = e.target.value
+        console.log(discount)
+        setAmtDiscount(discount)
+        if (amount(discount) > 0) setDiscount(0)
     }
 
     const addQuantity = () => {
@@ -87,7 +97,7 @@ const CasheringComplexVariant = () => {
             ...selected,
             quantity: quantity,
             remaining: balance,
-            markdown: selected?.price * discount
+            markdown: amtDiscount ? amount(amtDiscount) : selected?.price * discount
         }
         dispatch(setBrowserCart(newItem))
         dispatch(updateBrowserData(newItem))
@@ -110,8 +120,8 @@ const CasheringComplexVariant = () => {
                         <span className={`${selected?.price ? "" : "hidden"} text-sm md:text-lg font-bold`}>
                             {currency(selected?.price * quantity || 0)}
                         </span>
-                        <span className={`${discount > 0 ? "" : "hidden"} text-sm md:text-lg font-bold`}>
-                            ({currency(selected?.price * discount || 0)})
+                        <span className={`${discount || Number(amtDiscount) > 0 ? "" : "hidden"} text-sm md:text-lg font-bold`}>
+                            ({amtDiscount ? currency(amtDiscount) : currency(selected?.price * discount || 0)})
                         </span>
                     </div>
                     <span className={`${selected?.price ? "flex" : "hidden"} items-center text-sm md:text-lg font-bold ml-auto cursor-pointer px-3 no-select bg-gray-300 shadow-md rounded-md`} onClick={() => onSave()}>
@@ -165,7 +175,7 @@ const CasheringComplexVariant = () => {
                     </div>
                 </div>
                 <div className={`${records?.length ? "flex" : "hidden"} flex-col w-full p-5 gap-1`}>
-                    <span className="text-base text-gray-500">Discount</span>
+                    <span className="text-base text-gray-500">Discount (%)</span>
                     <div className="w-full flex flex-wrap">
                         {
                             discountList?.map(item => (
@@ -180,6 +190,20 @@ const CasheringComplexVariant = () => {
                                 </div>
                             ))
                         }
+                    </div>
+                </div>
+
+                <div className={`${records?.length ? "flex" : "hidden"} flex-col w-full p-5 gap-1`}>
+                    <span className="text-base text-gray-500">Discount (0.00)</span>
+                    <div className="w-full flex gap-3">
+                        <input
+                            type="number"
+                            min={1}
+                            value={amtDiscount}
+                            onChange={onDiscountChange}
+                            placeholder="0.00"
+                            className="w-full border border-white border-b-gray-500 outline-none ring-0 focus:outline-none focus:border-white focus:border-b-gray-500 focus:ring-0 text-center plain-input"
+                        />
                     </div>
                 </div>
             </div>
