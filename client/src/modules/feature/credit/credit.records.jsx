@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -11,7 +10,7 @@ import { useDeleteCreditMutation } from "./credit.services"
 
 const CreditRecords = () => {
     const dataSelector = useSelector(state => state.credit)
-    const { assignDeleteCallback } = useModalContext()
+    const searchSelector = useSelector(state => state.search)
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
@@ -61,7 +60,14 @@ const CreditRecords = () => {
 
     useEffect(() => {
         if (dataSelector?.data) {
-            let data = sorted ? sortBy(dataSelector?.data, sorted) : dataSelector?.data
+            let temp = dataSelector?.data
+            if (searchSelector.searchKey) {
+                let sought = searchSelector.searchKey
+                temp = dataSelector?.data?.filter(f => (
+                    f.customer_name?.toLowerCase()?.includes(sought)
+                ))
+            }
+            let data = sorted ? sortBy(temp, sorted) : temp
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
@@ -70,7 +76,7 @@ const CreditRecords = () => {
                 }
             }))
         }
-    }, [dataSelector?.data, sorted])
+    }, [dataSelector?.data, sorted, searchSelector.searchKey])
 
     return (
         <>

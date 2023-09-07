@@ -285,7 +285,7 @@ const CreditManage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex border-t border-t-gray-400">
+                <div className="flex flex-col md:flex-row border-t border-t-gray-400">
                     <div className="flex flex-col py-3 pl-3">
                         <div className="flex flex-col justify-end items-start">
                             <div className="text-sm flex gap-2">
@@ -296,8 +296,8 @@ const CreditManage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex gap-4 ml-auto py-3">
-                        <div className="flex flex-col justify-end items-end">
+                    <div className="flex flex-col md:flex-row gap-4 md:ml-auto py-3">
+                        <div className="flex flex-col md:justify-end md:items-end px-3 md:px-0">
                             <div className="text-sm flex gap-2">
                                 Tended Cash:
                                 <span className="text-orange-500 font-bold">

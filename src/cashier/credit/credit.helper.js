@@ -94,7 +94,7 @@ credit.register("credit_unsettled",
                     ON c.paym_customer = a.cred_creditor 
         WHERE 
             cred_store LIKE '%@store%' AND 
-            cust_paid <> cust_value
+            cust_value > 0
         GROUP BY 
             cred_creditor,
             cust_name,
