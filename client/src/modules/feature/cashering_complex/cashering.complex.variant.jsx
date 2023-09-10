@@ -72,7 +72,6 @@ const CasheringComplexVariant = () => {
 
     const onDiscountChange = (e) => {
         let discount = e.target.value
-        console.log(discount)
         setAmtDiscount(discount)
         if (amount(discount) > 0) setDiscount(0)
     }
@@ -88,9 +87,15 @@ const CasheringComplexVariant = () => {
     }
 
     const onSave = () => {
+        let total = selected?.price * quantity || 0
+        let less = amtDiscount ? amount(amtDiscount) : selected?.price * discount
         let balance = selected.stocks - quantity
         if (balance < 0) {
             toast.showError("Cannot process input that can result to negative stock values.")
+            return
+        }
+        if (less > total) {
+            toast.showError("Discount cannot be greater than total purchase.")
             return
         }
         let newItem = {

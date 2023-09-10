@@ -12,7 +12,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { setCategoryData } from "../../library/category/category.reducer"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
-import { removeBrowserCart, resetBrowserCart, resetBrowserTransaction, setBrowserCategory, setBrowserSearch } from "../browser/browser.reducer"
+import { reloadBrowserDraftCart, removeBrowserCart, resetBrowserCart, resetBrowserTransaction, setBrowserCategory, setBrowserSearch } from "../browser/browser.reducer"
 import { useCreateBrowserBySqlTransactionMutation } from "../browser/browser.services"
 import CasheringLedger from "../cashering/cashering.ledger"
 import CasheringReceipts from "../cashering/cashering.receipts"
@@ -68,6 +68,24 @@ const CasheringComplexIndex = () => {
     const [allCategory] = useFetchAllCategoryMutation()
     const [maxAccountTransaction] = useByMaxAccountTransactionMutation()
     const [createTransaction] = useCreateBrowserBySqlTransactionMutation()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            let draft = localStorage.getItem("draft")
+            if (!isEmpty(draft)) {
+                if (confirm("A cart has been retrieved after an unexpected page crash or reload. Do you wish to load the cached data?")) {
+                    let draftCart = JSON.parse(draft)
+                    dispatch(reloadBrowserDraftCart(draftCart))
+                }
+            }
+            return () => {
+
+            }
+        }
+    }, [mounted])
 
     useEffect(() => {
         const instantiate = async () => {
@@ -98,7 +116,6 @@ const CasheringComplexIndex = () => {
                 setCategory(categorySelector.data[0].name)
                 dispatch(setBrowserCategory(categorySelector.data[0].name))
             }
-
             return
         }
 
@@ -119,6 +136,7 @@ const CasheringComplexIndex = () => {
 
         if (isEmpty(browserSelector.cart.length)) {
             instantiate()
+            setCascade(false)
         }
     }, [browserSelector.cart])
 
@@ -449,6 +467,7 @@ const CasheringComplexIndex = () => {
                                 localStorage.setItem("rcpt", JSON.stringify(printdata))
                                 window.open(`/#/print/receipt/${code}${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
                                 toast.showCreate("Transaction successfully completed.")
+                                localStorage.removeItem("draft")
                                 // onCompleted()
                             }
                         })

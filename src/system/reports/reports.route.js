@@ -7,5 +7,7 @@ router.get('/reports/salesbycategory', secure, service.sales_by_category)
 router.get('/reports/salesbycollection', secure, service.sales_collection)
 router.get('/reports/salessummary', secure, service.sales_summary)
 router.get('/reports/expenses', secure, service.expenses)
+router.get('/reports/expenses', secure, service.expenses)
+router.get('/reports/expensessummary', secure, service.expenses_summary)
 
 module.exports = router

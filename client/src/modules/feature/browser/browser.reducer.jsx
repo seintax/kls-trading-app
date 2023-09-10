@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { isEmpty } from "../../../utilities/functions/string.functions"
 
 const initialState = {
     name: "browser",
@@ -41,6 +42,7 @@ const browserSlice = createSlice({
     reducers: {
         setBrowserCart: (state, action) => {
             state.cart = [...state.cart, action.payload]
+            localStorage.setItem("draft", JSON.stringify(state.cart))
         },
         removeBrowserCart: (state, action) => {
             state.cart = state.cart.filter(f => f.id !== action.payload.id)
@@ -54,9 +56,19 @@ const browserSlice = createSlice({
                     }
                 return data
             })
+            if (isEmpty(state.cart.length)) {
+                localStorage.removeItem("draft")
+                return
+            }
+            localStorage.setItem("draft", JSON.stringify(state.cart))
+            return
+        },
+        reloadBrowserDraftCart: (state, action) => {
+            state.cart = action.payload
         },
         resetBrowserCart: (state) => {
             state.cart = []
+            localStorage.removeItem("draft")
         },
         setBrowserSearchCount: (state, action) => {
             state.found = action.payload
@@ -233,6 +245,7 @@ export const {
     setBrowserCategory,
     setBrowserSearchCount,
     resetBrowserTransaction,
+    reloadBrowserDraftCart,
     resetBrowser
 } = browserSlice.actions
 

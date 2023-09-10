@@ -2,14 +2,14 @@ import { ArrowPathIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicon
 import moment from "moment"
 import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
-import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
+import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
-import { useExpensesReportMutation } from "./reports.services"
+import { useExpensesSummaryReportMutation } from "./reports.services"
 
-const ReportsFormExpenses = () => {
+const ReportsFormExpensesSummary = () => {
     const reportSelector = useSelector(state => state.reports)
     const [refetch, setRefetch] = useState(false)
     const [data, setdata] = useState()
@@ -40,7 +40,7 @@ const ReportsFormExpenses = () => {
     const [libBranchers, setLibBranches] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
-    const [expensesReport] = useExpensesReportMutation()
+    const [expensesReport] = useExpensesSummaryReportMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -57,7 +57,7 @@ const ReportsFormExpenses = () => {
                     }
                 })
                 .catch(err => console.error(err))
-            if (reportSelector.report === "Expenses") {
+            if (reportSelector.report === "Expenses Summary") {
                 await expensesReport({ fr: filters.fr, to: filters.to, store: filters.store })
                     .unwrap()
                     .then(res => {
@@ -77,8 +77,7 @@ const ReportsFormExpenses = () => {
     const columns = {
         style: '',
         items: [
-            { name: 'Account', stack: false, sort: 'expense_name' },
-            { name: 'Date', stack: false, sort: 'expense_date', size: 200 },
+            { name: 'Date', stack: false, sort: 'day' },
             { name: 'No. of Entries', stack: true, sort: 'expense_count', size: 150 },
             { name: 'Net Total', stack: true, sort: 'expense_value', size: 150 },
             { name: 'Branch', stack: true, sort: 'branch_name', size: 150 },
@@ -88,7 +87,6 @@ const ReportsFormExpenses = () => {
     const items = (item) => {
         return [
             { value: item.expense_name },
-            { value: longDate(item.expense_date) },
             { value: item.expense_count },
             { value: currency(item.expense_value) },
             { value: item.branch_name },
@@ -125,7 +123,7 @@ const ReportsFormExpenses = () => {
     }
 
     return (
-        (reportSelector.manager && reportSelector.report === "Expenses") ? (
+        (reportSelector.manager && reportSelector.report === "Expenses Summary") ? (
             <>
                 <div className="w-full text-lg uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select">
                     <div className="flex gap-4">
@@ -165,4 +163,4 @@ const ReportsFormExpenses = () => {
     )
 }
 
-export default ReportsFormExpenses
+export default ReportsFormExpensesSummary
