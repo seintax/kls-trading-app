@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
 import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
-import { isEmpty } from "../../../utilities/functions/string.functions"
+import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useSalesSummaryReportMutation } from "./reports.services"
 
 const ReportsFormSummary = () => {
+    const auth = useAuth()
     const reportSelector = useSelector(state => state.reports)
     const [refetch, setRefetch] = useState(false)
     const [data, setdata] = useState()
@@ -17,7 +19,7 @@ const ReportsFormSummary = () => {
     const [sorted, setsorted] = useState()
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
-    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: "" })
+    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: isEmpty(getBranch(auth)) ? "" : auth.store })
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])
 
@@ -142,11 +144,20 @@ const ReportsFormSummary = () => {
                         <input name="fr" type="date" className="text-sm" value={filters.fr} onChange={onChange} />
                         <input name="to" type="date" className="text-sm" value={filters.to} onChange={onChange} />
                         <select name="store" className="text-sm" value={filters.store} onChange={onChange}>
-                            <option value="">All</option>
                             {
-                                libBranchers?.map(branch => (
-                                    <option key={branch.key} value={branch.value}>{branch.key}</option>
-                                ))
+                                isEmpty(getBranch(auth))
+                                    ? <option value="">All</option>
+                                    : null
+                            }
+                            {
+                                isEmpty(getBranch(auth))
+                                    ? (
+                                        libBranchers?.map(branch => (
+                                            <option key={branch.key} value={branch.value}>{branch.key}</option>
+                                        ))
+                                    )
+                                    : <option key={auth.store} value={auth.store}>{auth.store}</option>
+
                             }
                         </select>
                         <button className="button-red py-2" onClick={() => reLoad()}>

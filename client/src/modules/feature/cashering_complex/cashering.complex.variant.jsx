@@ -118,7 +118,7 @@ const CasheringComplexVariant = () => {
                             <XMarkIcon className="w-5 md:w-7 w-5 md:h-7 cursor-pointer" />
                         </span>
                         <span className="text-sm md:text-lg font-bold">
-                            {browserSelector.product.name}
+                            {browserSelector.product.product}
                         </span>
                     </div>
                     <div className="flex gap-2 ml-14 md:ml-0">

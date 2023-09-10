@@ -5,6 +5,7 @@ const initialState = {
     report: "",
     manager: false,
     notifier: false,
+    cashier: false,
     perpage: 150,
     display: {
         name: "Report",
@@ -21,6 +22,12 @@ const reportsSlice = createSlice({
         },
         resetReportName: (state) => {
             state.report = ""
+        },
+        showReportCashier: (state) => {
+            state.cashier = true
+        },
+        resetReportCashier: (state) => {
+            state.cashier = false
         },
         showReportManager: (state) => {
             state.manager = true
@@ -44,6 +51,8 @@ const reportsReducer = reportsSlice.reducer
 export const {
     setReportName,
     resetReportName,
+    showReportCashier,
+    resetReportCashier,
     showReportManager,
     resetReportManager,
     setReportNotifier,
