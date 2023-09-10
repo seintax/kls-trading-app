@@ -14,5 +14,6 @@ router.post('/variant/specify', service._specify)
 
 router.get('/variant/byproduct', service.byProduct)
 router.get('/variant/bycategory', service.byCategory)
+router.get('/variant/byallproducts', service.byAllProducts)
 
 module.exports = router
