@@ -78,6 +78,14 @@ export const variantApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['variant']
         }),
+        byAllProductVariant: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byallproducts`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['variant']
+        }),
     })
 })
 
@@ -91,4 +99,5 @@ export const {
     useSpecifyVariantMutation,
     useByProductVariantMutation,
     useByCategoryVariantMutation,
+    useByAllProductVariantMutation,
 } = variantApiSlice

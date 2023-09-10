@@ -10,6 +10,14 @@ const variant = new Table("lib_variant", {
     option2: 'vrnt_option2',
     brand: 'vrnt_brand',
     option3: 'vrnt_option3',
-})
+}, [
+    {
+        key: "vrnt_product",
+        reference: { table: "pos_stock_masterlist", key: "prod_id" },
+        include: {
+            product_name: 'prod_name',
+        }
+    },
+])
 
 module.exports = variant

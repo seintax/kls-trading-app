@@ -62,7 +62,4 @@ const inventory = new Table("pos_stock_inventory", {
     },
 ])
 
-inventory.register("branch_inventory_by_category", "")
-inventory.register("remove_sold_total", "")
-
 module.exports = inventory
