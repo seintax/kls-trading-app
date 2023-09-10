@@ -62,10 +62,23 @@ const expenses = handler(async (req, res) => {
     })
 })
 
+const expenses_summary = handler(async (req, res) => {
+    const sql = helper.expenses_summary.inject({
+        fr: req.query.fr,
+        to: req.query.to,
+        store: req.query.store,
+    })
+    await mysqlpool.query(sql, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed({ data: ans }, req))
+    })
+})
+
 module.exports = {
     sales_by_item,
     sales_by_category,
     sales_collection,
     sales_summary,
-    expenses
+    expenses,
+    expenses_summary
 }

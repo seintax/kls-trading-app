@@ -33,6 +33,7 @@ const CasheringComplexBrowse = () => {
 
     useEffect(() => {
         if (categorySelector?.data) {
+            console.log(categorySelector?.data)
             setRecords(categorySelector?.data?.filter(f => f.category === browserSelector?.category && (
                 f.name?.toLowerCase()?.startsWith(browserSelector?.search?.toLowerCase())
             )))
