@@ -131,6 +131,21 @@ const byProduct = handler(async (req, res) => {
     })
 })
 
+const byAllProducts = handler(async (req, res) => {
+    const param = getbranch.parameters(req.query)
+    const { product, category, acquisition, store, stocks } = getbranch.fields
+    const { variant_serial, variant_model, variant_brand } = getbranch.included
+    let params = [p(param.product).Exactly(), p(param.category).Exactly(), p(param.branch).Contains(), "0", "PROCUREMENT", "TRANSFER", "MIGRATION"]
+    let clause = [f(product).IsEqual(), f(category).IsEqual(), f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", "", ""])]
+    let series = [f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc()]
+    let limits = undefined
+    const builder = getbranch.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
