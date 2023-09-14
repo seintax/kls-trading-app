@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
 import DataPrint from "../../../utilities/interface/datastack/data.print"
 
@@ -31,6 +31,18 @@ const PrintReports = () => {
     //     settotal(storage?.data?.reduce((prev, curr) => prev + Number(curr?.items[5]?.value?.startsWith("-") ? 0 : Number(curr?.items[3]?.value.replaceAll(",", ""))), 0))
     //     setexpired(storage?.data?.reduce((prev, curr) => prev + Number(curr?.items[5]?.value?.startsWith("-") ? Number(curr?.items[3]?.value.replaceAll(",", "")) : 0), 0))
     // }, [localStorage.getItem(reportname)])
+
+    useLayoutEffect(() => {
+        if (records?.length) {
+            setTimeout(function () { window.print() }, 500)
+            window.onafterprint = function () {
+                setTimeout(function () {
+                    localStorage.removeItem(reportname)
+                    window.close()
+                }, 500)
+            }
+        }
+    }, [records])
 
     const trigger = () => {
         var css = '@page { size: portrait; }',

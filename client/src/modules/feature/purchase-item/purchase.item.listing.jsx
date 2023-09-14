@@ -96,7 +96,7 @@ const ReceivableListing = () => {
 
     const items = (item) => {
         return [
-            { value: `${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` },
+            { value: item.product_name, subtext: `${item.variant_serial}/${item.variant_model}/${item.variant_brand}` },
             { value: item.ordered, subtext: "Quantity" },
             { value: item.received, subtext: "Received" },
             { value: NumFn.currency(item.costing), subtext: "Costing" },

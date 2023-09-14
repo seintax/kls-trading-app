@@ -53,7 +53,7 @@ export default function ModalProvider({ children }) {
     }
 
     useEffect(() => {
-        if (import.meta.env.MODE === "development")
+        if (import.meta.env.MODE === "development" && currentModal)
             console.info("current modal is: ", currentModal)
     }, [currentModal])
 

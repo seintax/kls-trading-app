@@ -96,7 +96,7 @@ const CasheringComplexVariant = () => {
 
     const onSave = () => {
         let total = selected?.price * quantity || 0
-        let less = amtDiscount ? amount(amtDiscount) : selected?.price * discount
+        let less = amtDiscount ? amount(amtDiscount) : total * discount
         let balance = selected.stocks - quantity
         if (balance < 0) {
             toast.showError("Cannot process input that can result to negative stock values.")
@@ -110,7 +110,7 @@ const CasheringComplexVariant = () => {
             ...selected,
             quantity: quantity,
             remaining: balance,
-            markdown: amtDiscount ? amount(amtDiscount) : selected?.price * discount
+            markdown: amtDiscount ? amount(amtDiscount) : total * discount
         }
         dispatch(setBrowserCart(newItem))
         dispatch(updateBrowserData(newItem))
@@ -134,7 +134,7 @@ const CasheringComplexVariant = () => {
                             {currency(selected?.price * quantity || 0)}
                         </span>
                         <span className={`${discount || Number(amtDiscount) > 0 ? "" : "hidden"} text-sm md:text-lg font-bold`}>
-                            ({amtDiscount ? currency(amtDiscount) : currency(selected?.price * discount || 0)})
+                            ({amtDiscount ? currency(amtDiscount) : currency((selected?.price * quantity || 0) * discount || 0)})
                         </span>
                     </div>
                     <span className={`${selected?.price ? "flex" : "hidden"} items-center text-sm md:text-lg font-bold ml-auto cursor-pointer px-3 no-select bg-gray-300 shadow-md rounded-md`} onClick={() => onSave()}>

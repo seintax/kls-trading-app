@@ -1,6 +1,7 @@
+import { PrinterIcon } from "@heroicons/react/24/solid"
 import React from 'react'
 
-const DataHeader = ({ label, name, movecallback, returncallback }) => {
+const DataHeader = ({ label, name, printcallback, movecallback, returncallback }) => {
     return (
         <div className="text-sm lg:text-lg w-full py-2 px-8 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-2 justify-between items-center bg-gray-200 border border-b-1 border-b-gray-400 shadow-md rounded-md">
             <div className="flex flex-col gap-2">
@@ -8,6 +9,19 @@ const DataHeader = ({ label, name, movecallback, returncallback }) => {
                 <span className="font-bold">{name}</span>
             </div>
             <div className="flex gap-3">
+                {
+                    (printcallback) ? (
+                        <button
+                            type="button"
+                            className="button-back h-10 ease-in duration-100 flex items-center"
+                            tabIndex={-1}
+                            onClick={printcallback}
+                        >
+                            <PrinterIcon className="w-4 h-4 mr-3" />
+                            Print
+                        </button>
+                    ) : null
+                }
                 {
                     (movecallback) ? (
                         <button
