@@ -11,6 +11,7 @@ const initialState = {
     found: 0,
     settle: {},
     method: "",
+    sought: "",
     balance: 0,
     product: {},
     category: "",
@@ -157,6 +158,12 @@ const browserSlice = createSlice({
         resetBrowserSearch: (state) => {
             state.search = ""
         },
+        setBrowserSought: (state, action) => {
+            state.sought = action.payload
+        },
+        resetBrowserSought: (state) => {
+            state.sought = ""
+        },
         setBrowserNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -238,6 +245,8 @@ export const {
     resetBrowserManager,
     setBrowserSearch,
     resetBrowserSearch,
+    setBrowserSought,
+    resetBrowserSought,
     setBrowserDraft,
     removeBrowserDraft,
     setBrowserMethod,

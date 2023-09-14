@@ -29,7 +29,15 @@ const purchase = new Table("pos_purchase_order", {
             supplier_rating: 'supp_rating',
             supplier_status: 'supp_status',
         }
-    }
+    },
+    {
+        key: "pord_by",
+        reference: { table: "sys_account", key: "acct_id" },
+        include: {
+            account_name: 'acct_fullname',
+            account_store: 'acct_store',
+        }
+    },
 ])
 
 purchase.register("purchase_update_receivable",

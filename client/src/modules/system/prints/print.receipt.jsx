@@ -37,14 +37,14 @@ const PrintReceipt = () => {
     }, [dataSelector.print?.transaction, mounted])
 
     return (
-        <div id="receipt" className="w-[58mm] min-h-screen bg-blue-900 bg-opacity-50 flex justify-center items-center">
+        <div id="receipt" className="w-[52mm] min-h-screen bg-blue-900 bg-opacity-50 flex justify-center items-center">
             {
                 (dataSelector.print?.transaction) ? (
-                    <div className="w-[56mm] bg-white h-fit pt-8 text-[11px]">
+                    <div className="w-[50mm] bg-white h-fit pt-8 text-[11px]">
                         <div className="grayscale">
                             <AppLogo />
                         </div>
-                        <div className="flex flex-col w-full items-center mt-5 px-3">
+                        <div className="flex flex-col w-full items-center mt-5 px-0">
                             <div className="font-bold text-center">
                                 {dataSelector.print?.branch}
                             </div>
@@ -86,7 +86,7 @@ const PrintReceipt = () => {
                                 **Note: This is a reprinted copy.
                             </div>
                             <div className="w-full border border-b-black border-dashed mt-3"></div>
-                            <div className="w-[56mm] flex flex-col gap-3 py-2 text-[11px] px-3">
+                            <div className="w-[50mm] flex flex-col gap-3 py-2 text-[11px] pr-3">
                                 {
                                     (dataSelector.print?.items?.map((item, index) => (
                                         <div key={index} className="flex flex-col">
@@ -111,25 +111,25 @@ const PrintReceipt = () => {
                                 }
                             </div>
                             <div className="w-full border border-t-black border-dashed"></div>
-                            <div className={`${dataSelector.print.discount.amount > 0 ? "flex" : "hidden"} w-full justify-between font-normal my-3`}>
+                            <div className={`${dataSelector.print.discount.amount > 0 ? "flex" : "hidden"} w-full justify-between font-normal my-3 pr-3`}>
                                 {/* <span>Discount ({dataSelector.print.discount.rate}%)</span> */}
                                 <span>Discount</span>
                                 <span>{currency(dataSelector.print.discount.amount || 0)}</span>
                             </div>
                             <div className="w-full border border-t-black border-dashed"></div>
-                            <div className="w-full flex justify-between my-3 text-sm font-bold">
+                            <div className="w-full flex justify-between my-3 text-sm font-bold pr-3">
                                 <span>Total</span>
                                 <span>{currency(dataSelector.print.total)}</span>
                             </div>
-                            <div className="w-full flex justify-between my1 text-xs">
+                            <div className="w-full flex justify-between my1 text-xs pr-3">
                                 <span>Cash</span>
                                 <span>{currency(dataSelector.print.cash)}</span>
                             </div>
-                            <div className="w-full flex justify-between my-1 text-xs">
+                            <div className="w-full flex justify-between my-1 text-xs pr-3">
                                 <span>Change</span>
                                 <span>{currency(dataSelector.print.change)}</span>
                             </div>
-                            <div className="w-full flex justify-between my-1 mb-3 text-xs">
+                            <div className="w-full flex justify-between my-1 mb-3 text-xs pr-3">
                                 <span>Credit</span>
                                 <span>{currency(dataSelector.print.credit)}</span>
                             </div>

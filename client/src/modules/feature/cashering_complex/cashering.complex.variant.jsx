@@ -2,7 +2,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { amount, currency } from "../../../utilities/functions/number.funtions"
-import { StrFn, getBranch } from "../../../utilities/functions/string.functions"
+import { StrFn, getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import { resetBrowserManager, setBrowserCart, updateBrowserData } from "../browser/browser.reducer"
@@ -13,6 +13,7 @@ const CasheringComplexVariant = () => {
     const auth = useAuth()
     const dispatch = useDispatch()
     const browserSelector = useSelector(state => state.browser)
+    const [data, setData] = useState()
     const [records, setRecords] = useState()
     const [selected, setSelected] = useState()
     const [quantity, setQuantity] = useState(1)
@@ -43,6 +44,13 @@ const CasheringComplexVariant = () => {
                         setRecords(res?.arrayResult)
                         if (res?.arrayResult?.length > 0) {
                             setSelected(res?.arrayResult[0])
+                            if (!isEmpty(browserSelector.search)) {
+                                let selection = res?.arrayResult?.filter(f => f.variant_serial?.toLowerCase()?.includes(browserSelector?.search?.toLowerCase()) ||
+                                    f.variant_model?.toLowerCase()?.includes(browserSelector?.search?.toLowerCase() ||
+                                        f.variant_brand?.toLowerCase()?.includes(browserSelector?.search?.toLowerCase())?.length > 0
+                                    ))
+                                if (selection.length) setSelected(selection[0])
+                            }
                         }
                     }
                 })
@@ -88,7 +96,7 @@ const CasheringComplexVariant = () => {
 
     const onSave = () => {
         let total = selected?.price * quantity || 0
-        let less = amtDiscount ? amount(amtDiscount) : selected?.price * discount
+        let less = amtDiscount ? amount(amtDiscount) : total * discount
         let balance = selected.stocks - quantity
         if (balance < 0) {
             toast.showError("Cannot process input that can result to negative stock values.")
@@ -102,7 +110,7 @@ const CasheringComplexVariant = () => {
             ...selected,
             quantity: quantity,
             remaining: balance,
-            markdown: amtDiscount ? amount(amtDiscount) : selected?.price * discount
+            markdown: amtDiscount ? amount(amtDiscount) : total * discount
         }
         dispatch(setBrowserCart(newItem))
         dispatch(updateBrowserData(newItem))
@@ -118,7 +126,7 @@ const CasheringComplexVariant = () => {
                             <XMarkIcon className="w-5 md:w-7 w-5 md:h-7 cursor-pointer" />
                         </span>
                         <span className="text-sm md:text-lg font-bold">
-                            {browserSelector.product.name}
+                            {browserSelector.product.product}
                         </span>
                     </div>
                     <div className="flex gap-2 ml-14 md:ml-0">
@@ -126,7 +134,7 @@ const CasheringComplexVariant = () => {
                             {currency(selected?.price * quantity || 0)}
                         </span>
                         <span className={`${discount || Number(amtDiscount) > 0 ? "" : "hidden"} text-sm md:text-lg font-bold`}>
-                            ({amtDiscount ? currency(amtDiscount) : currency(selected?.price * discount || 0)})
+                            ({amtDiscount ? currency(amtDiscount) : currency((selected?.price * quantity || 0) * discount || 0)})
                         </span>
                     </div>
                     <span className={`${selected?.price ? "flex" : "hidden"} items-center text-sm md:text-lg font-bold ml-auto cursor-pointer px-3 no-select bg-gray-300 shadow-md rounded-md`} onClick={() => onSave()}>

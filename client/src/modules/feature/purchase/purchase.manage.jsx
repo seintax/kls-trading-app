@@ -1,9 +1,10 @@
 import { PencilSquareIcon } from "@heroicons/react/20/solid"
+import moment from "moment"
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
-import { isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
@@ -203,6 +204,17 @@ const PurchaseManage = () => {
         dispatch(resetPurchaseManager())
     }, [])
 
+    const printOrder = useCallback(() => {
+        if (receivableSelector.data?.length) {
+            localStorage.setItem("purchase", JSON.stringify({
+                title: `Purchase Order PO-${StrFn.formatWithZeros(dataSelector.item.id, 5)}`,
+                info: dataSelector.item,
+                data: receivableSelector.data
+            }))
+            window.open(`/#/print/purchase/${moment(new Date()).format("MMDDYYYY")}${StrFn.formatWithZeros(dataSelector.item.id, 5)}`, '_blank')
+        }
+    }, [receivableSelector.data, dataSelector.item])
+
     const onEdit = () => {
         setEditMode(true)
     }
@@ -219,7 +231,7 @@ const PurchaseManage = () => {
     return (
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
             <div className="w-full sticky -top-5 pt-5 lg:pt-0 z-10">
-                <DataHeader name="Purchase Order" returncallback={returnToList} />
+                <DataHeader name="Purchase Order" returncallback={returnToList} printcallback={printOrder} />
             </div>
 
             <div className="w-full border border-b-1 border-b-gray-400">

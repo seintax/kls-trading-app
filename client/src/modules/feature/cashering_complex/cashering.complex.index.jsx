@@ -1,4 +1,4 @@
-import { BanknotesIcon, CloudArrowUpIcon, DocumentCheckIcon, DocumentTextIcon, MagnifyingGlassIcon, PrinterIcon, ReceiptRefundIcon, ShoppingCartIcon, TrashIcon, UserCircleIcon, UserPlusIcon } from "@heroicons/react/24/outline"
+import { BanknotesIcon, CloudArrowUpIcon, DocumentChartBarIcon, DocumentCheckIcon, DocumentTextIcon, MagnifyingGlassIcon, PrinterIcon, ReceiptRefundIcon, ShoppingCartIcon, TrashIcon, UserCircleIcon, UserPlusIcon } from "@heroicons/react/24/outline"
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
@@ -12,6 +12,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { setCategoryData } from "../../library/category/category.reducer"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
+import { showReportCashier } from "../../system/reports/reports.reducer"
 import { reloadBrowserDraftCart, removeBrowserCart, resetBrowserCart, resetBrowserTransaction, setBrowserCategory, setBrowserSearch } from "../browser/browser.reducer"
 import { useCreateBrowserBySqlTransactionMutation } from "../browser/browser.services"
 import CasheringLedger from "../cashering/cashering.ledger"
@@ -31,6 +32,7 @@ import CasheringComplexCheque from "./cashering.complex.cheque"
 import CasheringComplexCredits from "./cashering.complex.credits"
 import CasheringComplexInventory from "./cashering.complex.inventory"
 import CasheringComplexVariant from "./cashering.complex.variant"
+import CasheringComplexReport from "./cashering.complext.report"
 
 const CasheringComplexIndex = () => {
     const auth = useAuth()
@@ -217,6 +219,10 @@ const CasheringComplexIndex = () => {
     const toggleViewCredits = () => {
         dispatch(setCreditDisplay(false))
         dispatch(setCreditShown())
+    }
+
+    const toggleViewReports = () => {
+        dispatch(showReportCashier())
     }
 
     useEffect(() => {
@@ -734,6 +740,9 @@ const CasheringComplexIndex = () => {
                 <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewCredits()}>
                     <DocumentTextIcon className="w-5 md:w-7 w-5 md:h-7" />
                 </div>
+                <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReports()}>
+                    <DocumentChartBarIcon className="w-5 md:w-7 w-5 md:h-7" />
+                </div>
             </div>
             <CasheringReceipts />
             <CasheringLedger />
@@ -742,6 +751,7 @@ const CasheringComplexIndex = () => {
             <CasheringComplexInventory />
             <CasheringComplexCredits />
             <CasheringComplexCheque />
+            <CasheringComplexReport />
         </div>
     )
 }
