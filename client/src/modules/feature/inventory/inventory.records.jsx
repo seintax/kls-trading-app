@@ -87,7 +87,7 @@ const InventoryRecords = () => {
         if (dataSelector?.data) {
             let temp = dataSelector?.data
             if (searchSelector.searchKey) {
-                let sought = searchSelector.searchKey
+                let sought = searchSelector.searchKey?.toLowerCase()
                 temp = dataSelector?.data?.filter(f => (
                     f.product_name?.toLowerCase()?.includes(sought) ||
                     `${f.variant_serial}/${f.variant_model}/${f.variant_brand}`?.toLowerCase()?.includes(sought) ||
