@@ -2,7 +2,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { amount, currency } from "../../../utilities/functions/number.funtions"
-import { StrFn, getBranch } from "../../../utilities/functions/string.functions"
+import { StrFn, getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import { resetBrowserManager, setBrowserCart, updateBrowserData } from "../browser/browser.reducer"
@@ -13,6 +13,7 @@ const CasheringComplexVariant = () => {
     const auth = useAuth()
     const dispatch = useDispatch()
     const browserSelector = useSelector(state => state.browser)
+    const [data, setData] = useState()
     const [records, setRecords] = useState()
     const [selected, setSelected] = useState()
     const [quantity, setQuantity] = useState(1)
@@ -43,6 +44,13 @@ const CasheringComplexVariant = () => {
                         setRecords(res?.arrayResult)
                         if (res?.arrayResult?.length > 0) {
                             setSelected(res?.arrayResult[0])
+                            if (!isEmpty(browserSelector.search)) {
+                                let selection = res?.arrayResult?.filter(f => f.variant_serial?.toLowerCase()?.includes(browserSelector?.search?.toLowerCase()) ||
+                                    f.variant_model?.toLowerCase()?.includes(browserSelector?.search?.toLowerCase() ||
+                                        f.variant_brand?.toLowerCase()?.includes(browserSelector?.search?.toLowerCase())?.length > 0
+                                    ))
+                                if (selection.length) setSelected(selection[0])
+                            }
                         }
                     }
                 })
