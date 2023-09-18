@@ -340,6 +340,7 @@ const CasheringLedger = () => {
                         <CasheringLedgerPurchase />
                         <div className="py-1 w-full flex flex-col gap-2 lg:gap-0 lg:flex-row justify-between mt-3">
                             <button className="button-blue w-full lg:w-fit text-lg" onClick={() => onPrint()}>Reprint Receipt</button>
+                            <button className="button-link w-full lg:w-fit text-lg" onClick={() => onSubmit()}>Save Changes</button>
                         </div>
                     </div>
                     {/* {
