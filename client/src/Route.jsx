@@ -29,6 +29,7 @@ import PrintBase from "./modules/system/prints/print.base"
 import PrintPurchase from "./modules/system/prints/print.purchase"
 import PrintReceipt from "./modules/system/prints/print.receipt"
 import PrintReports from "./modules/system/prints/print.reports"
+import PrintTransfer from "./modules/system/prints/print.transfer"
 import ReportsIndex from "./modules/system/reports/reports.index"
 import RolesIndex from "./modules/system/roles/roles.index"
 import usePrivate from "./utilities/hooks/usePrivate"
@@ -93,6 +94,11 @@ const AppRoute = () => {
                 <Route path="purchase" >
                     <Route index element={<PrintPurchase />} />
                     <Route path=":id" element={<PrintPurchase />} />
+                </Route>
+
+                <Route path="transfer" >
+                    <Route index element={<PrintTransfer />} />
+                    <Route path=":id" element={<PrintTransfer />} />
                 </Route>
             </Route>
             <Route path="/error" element={<AppErrorFallback />} />

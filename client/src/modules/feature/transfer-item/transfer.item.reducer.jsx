@@ -30,7 +30,7 @@ const initialState = {
             showsubtext: true,
             sizes: [
                 { size: "w-full" },
-                { size: "w-[150px]" },
+                { size: "w-[220px]" },
                 { size: "w-[150px]" },
                 { size: "w-[150px]" },
                 { size: "w-[150px]" },
