@@ -89,11 +89,12 @@ const _specify = handler(async (req, res) => {
 })
 
 const byStocks = handler(async (req, res) => {
-    const param = helper.parameters(req.query)
-    const { stocks, id } = getbranch.fields
-    let params = ["0"]
-    let clause = [f(stocks).Greater()]
-    let series = [f(id).Asc()]
+    const param = getbranch.parameters(req.query)
+    const { store, category, stocks, id } = getbranch.fields
+    const { product_name, variant_serial, variant_model, variant_brand } = getbranch.included
+    let params = ["0", p(param.branch).Contains(), p(param.category).Exactly()]
+    let clause = [f(stocks).Greater(), f(store).Like(), f(category).IsEqual()]
+    let series = [f(product_name).Asc(), f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc()]
     let limits = undefined
     const builder = getbranch.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {

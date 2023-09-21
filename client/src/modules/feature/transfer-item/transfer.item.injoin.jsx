@@ -34,14 +34,21 @@ const TransmitInjoin = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            await stockedInventory()
+            await stockedInventory({ branch: transferSelector.item.source, category: transferSelector.item.category })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        let array = res?.arrayResult?.filter(arr => arr.store === transferSelector.item.source && arr.category === transferSelector.item.category)?.map(arr => {
+                        // let array = res?.arrayResult?.filter(arr => arr.store === transferSelector.item.source && arr.category === transferSelector.item.category)?.map(arr => {
+                        //     return {
+                        //         value: arr.id,
+                        //         key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial}/${arr.variant_model}/${arr.variant_brand}`,
+                        //         data: arr
+                        //     }
+                        // })
+                        let array = res?.arrayResult?.map(arr => {
                             return {
                                 value: arr.id,
-                                key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial}/${arr.variant_model}/${arr.variant_brand}`,
+                                key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial || "-"}/${arr.variant_model || "-"}/${arr.variant_brand || "-"}`,
                                 data: arr
                             }
                         })

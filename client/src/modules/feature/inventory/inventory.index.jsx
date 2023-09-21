@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { getBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import AdjustmentIndex from "../inventory-item/inventory.item.index"
 import InventoryRecords from "./inventory.records"
 import { resetInventoryItem, resetInventoryManager, setInventoryData, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
@@ -14,6 +14,10 @@ const InventoryIndex = () => {
     const dataSelector = useSelector(state => state.inventory)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
+    const [currentBranch, setCurrentBranch] = useState("JT-MAIN")
+    const [libBranches, setLibBranches] = useState()
+
+    const [allBranches] = useFetchAllBranchMutation()
 
     useEffect(() => { setMounted(true) }, [])
 
@@ -27,12 +31,25 @@ const InventoryIndex = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            await allInventory({ branch: getBranch(auth) })
+            await allInventory({ branch: currentBranch })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
                         dispatch(setInventoryData(res?.arrayResult))
                         dispatch(setInventoryNotifier(false))
+                    }
+                })
+                .catch(err => console.error(err))
+            await allBranches()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setLibBranches(res?.arrayResult.map(item => {
+                            return {
+                                key: item.name,
+                                value: item.code
+                            }
+                        }))
                     }
                 })
                 .catch(err => console.error(err))
@@ -42,7 +59,7 @@ const InventoryIndex = () => {
         if (dataSelector.data.length === 0 || dataSelector.notifier) {
             instantiate()
         }
-    }, [dataSelector.notifier])
+    }, [dataSelector.notifier, currentBranch])
 
     const toggleNewEntry = () => {
         dispatch(resetInventoryItem())
@@ -55,6 +72,11 @@ const InventoryIndex = () => {
         ]
     }
 
+    const sortcallback = (option) => {
+        setCurrentBranch(option.value)
+        dispatch(setInventoryNotifier(true))
+    }
+
     return (
         (dataSelector.manager) ? (
             <AdjustmentIndex />
@@ -62,6 +84,8 @@ const InventoryIndex = () => {
             <DataIndex
                 display={dataSelector.display}
                 actions={actions()}
+                sorts={libBranches}
+                sortcallback={sortcallback}
                 data={dataSelector.data}
                 isError={isError}
                 isLoading={isLoading}

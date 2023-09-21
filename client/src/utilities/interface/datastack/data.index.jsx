@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { Link, useLocation } from "react-router-dom"
 import { useClientContext } from "../../context/client.context"
+import MenuSelect from "../forminput/menu.select"
 import DataError from "./data.error"
 import DataLoading from "./data.loading"
 import DataNoRecord from "./data.norecord"
 
-const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, children, plain = false }) => {
+const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, isError, inputLink, children, plain = false }) => {
     const location = useLocation()
     const { handleTrail } = useClientContext()
 
@@ -33,6 +34,11 @@ const DataIndex = ({ display, actions, data, isLoading, isError, inputLink, chil
                     </p>
                 </div>
                 <div className={`flex flex-row-reverse gap-3 mt-4 sm:mt-0 sm:flex-none ${display.show ? "sm:ml-16" : "ml-auto"}`}>
+                    {
+                        sorts?.length
+                            ? <MenuSelect options={sorts} callback={sortcallback} />
+                            : null
+                    }
                     {
                         (actions?.map((action, index) => (
                             <div key={index} className="">

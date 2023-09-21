@@ -1,9 +1,10 @@
 import { PencilSquareIcon } from "@heroicons/react/20/solid"
+import moment from "moment"
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
-import { isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
@@ -19,7 +20,7 @@ import { useCreateTransferMutation, useUpdateTransferMutation } from "./transfer
 const TransferManage = () => {
     const auth = useAuth()
     const dataSelector = useSelector(state => state.transfer)
-    // const transmitSelector = useSelector(state => state.transmit)
+    const transmitSelector = useSelector(state => state.transmit)
     const dispatch = useDispatch()
     const [instantiated, setInstantiated] = useState(false)
     const [listener, setListener] = useState()
@@ -193,6 +194,17 @@ const TransferManage = () => {
         dispatch(resetTransferManager())
     }, [])
 
+    const printOrder = useCallback(() => {
+        if (transmitSelector.data?.length) {
+            localStorage.setItem("transfer", JSON.stringify({
+                title: `Stock Transfer TRN-${StrFn.formatWithZeros(dataSelector.item.id, 5)}`,
+                info: dataSelector.item,
+                data: transmitSelector.data
+            }))
+            window.open(`/#/print/transfer/${moment(new Date()).format("MMDDYYYY")}${StrFn.formatWithZeros(dataSelector.item.id, 5)}`, '_blank')
+        }
+    }, [transmitSelector.data, dataSelector.item])
+
     const onEdit = () => {
         setEditMode(true)
     }
@@ -209,7 +221,7 @@ const TransferManage = () => {
     return (
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
             <div className="w-full sticky -top-5 mt-5 pt-5 lg:pt-0 z-10">
-                <DataHeader name="Stock Transfer" returncallback={returnToList} />
+                <DataHeader name="Stock Transfer" returncallback={returnToList} printcallback={printOrder} />
             </div>
 
             <div className="w-full border border-b-1 border-b-gray-400">
@@ -238,7 +250,7 @@ const TransferManage = () => {
                                     style="text-sm lg:w-1/2"
                                 />
                                 <FormEl.Item
-                                    label="Supplier"
+                                    label="Destination"
                                     value={provideValueFromLib(libDestinations, dataSelector?.item?.destination)}
                                     style="text-sm lg:w-1/2"
                                 />
