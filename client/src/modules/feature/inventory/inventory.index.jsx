@@ -4,6 +4,7 @@ import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import AdjustmentIndex from "../inventory-item/inventory.item.index"
+import PriceIndex from "../price/price.index"
 import InventoryRecords from "./inventory.records"
 import { resetInventoryItem, resetInventoryManager, setInventoryData, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
 import { useFetchAllInventoryBranchMutation } from "./inventory.services"
@@ -12,6 +13,7 @@ const InventoryIndex = () => {
     const auth = useAuth()
     const [allInventory, { isLoading, isError, isSuccess }] = useFetchAllInventoryBranchMutation()
     const dataSelector = useSelector(state => state.inventory)
+    const priceSelector = useSelector(state => state.price)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
     const [currentBranch, setCurrentBranch] = useState("JT-MAIN")
@@ -78,21 +80,26 @@ const InventoryIndex = () => {
     }
 
     return (
-        (dataSelector.manager) ? (
-            <AdjustmentIndex />
+        (priceSelector.shown) ? (
+            <PriceIndex />
         ) : (
-            <DataIndex
-                display={dataSelector.display}
-                actions={actions()}
-                sorts={libBranches}
-                sortcallback={sortcallback}
-                data={dataSelector.data}
-                isError={isError}
-                isLoading={isLoading}
-            >
-                <InventoryRecords />
-            </DataIndex >
+            (dataSelector.manager) ? (
+                <AdjustmentIndex />
+            ) : (
+                <DataIndex
+                    display={dataSelector.display}
+                    actions={actions()}
+                    sorts={libBranches}
+                    sortcallback={sortcallback}
+                    data={dataSelector.data}
+                    isError={isError}
+                    isLoading={isLoading}
+                >
+                    <InventoryRecords />
+                </DataIndex >
+            )
         )
+
     )
 }
 

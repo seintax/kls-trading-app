@@ -8,6 +8,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
+import { setPriceShown } from "../price/price.reducer"
 import { setInventoryItem, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
 import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
 
@@ -43,6 +44,11 @@ const InventoryRecords = () => {
         dispatch(showInventoryManager())
     }
 
+    const togglePrices = (item) => {
+        dispatch(setInventoryItem(item))
+        dispatch(setPriceShown(true))
+    }
+
     const toggleDelete = (item) => {
         assignDeleteCallback({ item: item, callback: handleDelete })
         dispatch(showDelete({ description: "Product Name", reference: item.product_name }))
@@ -66,7 +72,8 @@ const InventoryRecords = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => toggleView(item), label: 'View' }
+            { type: 'button', trigger: () => toggleView(item), label: 'View' },
+            { type: 'button', trigger: () => togglePrices(item), label: 'Prices' },
             // { type: 'button', trigger: () => toggleView(item), label: 'View', hidden: roleSelector.access.permission["inventory"]?.show }
         ]
     }
