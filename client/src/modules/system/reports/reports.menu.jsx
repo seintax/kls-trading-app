@@ -41,6 +41,12 @@ const ReportsMenu = () => {
             </span>
             <span
                 className={menuStyle}
+                onClick={() => onSelectReport("Receipts Summary")}
+            >
+                Receipts Summary
+            </span>
+            <span
+                className={menuStyle}
                 onClick={() => onSelectReport("Expenses")}
             >
                 Expenses
@@ -51,12 +57,12 @@ const ReportsMenu = () => {
             >
                 Expenses Summary
             </span>
-            <span
+            {/* <span
                 className={menuStyle}
                 onClick={() => onSelectReport("Income Statement")}
             >
                 Income Statement
-            </span>
+            </span> */}
         </div>
     )
 }
