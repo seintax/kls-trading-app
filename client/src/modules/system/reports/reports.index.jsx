@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from "react-redux"
 import ReportsFormExpenses from "./reports.form.expenses"
 import ReportsFormExpensesSummary from "./reports.form.expenses-summary"
+import ReportsFormReceipts from "./reports.form.receipts"
 import ReportsFormSales from "./reports.form.sales"
 import ReportsFormSummary from "./reports.form.summary"
 import ReportsMenu from "./reports.menu"
@@ -19,6 +20,7 @@ const ReportsIndex = () => {
                 <ReportsFormSummary />
                 <ReportsFormExpenses />
                 <ReportsFormExpensesSummary />
+                <ReportsFormReceipts />
             </div>
         </div>
     )
