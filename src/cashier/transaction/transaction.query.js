@@ -141,6 +141,18 @@ const byCount = handler(async (req, res) => {
     })
 })
 
+const byAllCount = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { account } = helper.fields
+    let params = [p(param.account).Exactly()]
+    let clause = [f(account).IsEqual()]
+    const builder = helper.count(clause, params)
+    await poolwrap(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -153,5 +165,6 @@ module.exports = {
     byAdmin,
     byDateRange,
     byMaxAccount,
-    byCount
+    byCount,
+    byAllCount,
 }

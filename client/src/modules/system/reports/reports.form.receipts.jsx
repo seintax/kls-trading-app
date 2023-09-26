@@ -63,7 +63,6 @@ const ReportsFormReceipts = () => {
                 await receiptSummary({ fr: filters.fr, to: filters.to, branch: filters.store })
                     .unwrap()
                     .then(res => {
-                        console.log(res)
                         if (res.success) {
                             setdata(res.arrayResult)
                         }

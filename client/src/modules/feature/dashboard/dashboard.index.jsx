@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
 import { useClientContext } from "../../../utilities/context/client.context"
 import useToast from "../../../utilities/hooks/useToast"
+import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
 import DashboardCards from "./dashboard.cards"
 import DashboardFilters from "./dashboard.filters"
-import DashboardGraphCollection from "./dashboard.graph.collection"
 import DashboardGraphSales from "./dashboard.graph.sales"
 import { resetDashboardSummary } from "./dashboard.reducer"
 
@@ -43,7 +43,8 @@ const DashboardIndex = ({ id }) => {
                         </div>
                     </div>
                     <div className="w-full min-h-[500px] transition ease-in-out duration-300 p-5 border border-gray-300 rounded-[20px]">
-                        <DashboardGraphCollection />
+                        {/* <DashboardGraphCollection /> */}
+                        <AppLogo style="h-full" />
                     </div>
                 </div>
             </div>

@@ -102,6 +102,14 @@ export const transactionApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['transaction/count']
         }),
+        byAllCountTransaction: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byallcount`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['transaction/count']
+        }),
     })
 })
 
@@ -117,5 +125,6 @@ export const {
     useByAdminTransactionMutation,
     useByDateRangeTransactionMutation,
     useByMaxAccountTransactionMutation,
-    useByCountTransactionMutation
+    useByCountTransactionMutation,
+    useByAllCountTransactionMutation,
 } = transactionApiSlice
