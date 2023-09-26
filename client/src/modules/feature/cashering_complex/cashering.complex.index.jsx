@@ -20,7 +20,7 @@ import CasheringReceipts from "../cashering/cashering.receipts"
 import { resetTransactionReceipts, showTransactionReceipts } from "../cashering/cashering.reducer"
 import CasheringReimburse from "../cashering/cashering.reimburse"
 import CasheringReturn from "../cashering/cashering.return"
-import { useByCountTransactionMutation, useByMaxAccountTransactionMutation } from "../cashering/cashering.services"
+import { useByAllCountTransactionMutation, useByMaxAccountTransactionMutation } from "../cashering/cashering.services"
 import { setChequeDisplay, setChequeNotifier, setChequeShown } from "../cheque/cheque.reducer"
 import { setCreditDisplay, setCreditNotifier, setCreditShown } from "../credit/credit.reducer"
 import { setInventoryDisplay, setInventoryNotifier, setInventoryShown } from "../inventory/inventory.reducer"
@@ -66,7 +66,7 @@ const CasheringComplexIndex = () => {
     const [libCategories, setLibCategories] = useState()
 
     const [distinctBranch] = useDistinctBranchMutation()
-    const [countTransaction] = useByCountTransactionMutation()
+    const [countTransaction] = useByAllCountTransactionMutation()
     const [allCategory] = useFetchAllCategoryMutation()
     const [maxAccountTransaction] = useByMaxAccountTransactionMutation()
     const [createTransaction] = useCreateBrowserBySqlTransactionMutation()
@@ -126,7 +126,7 @@ const CasheringComplexIndex = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            await countTransaction({ account: auth.id, date: sqlDate() })
+            await countTransaction({ account: auth.id })
                 .unwrap()
                 .then(res => {
                     if (res.success) {

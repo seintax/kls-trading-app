@@ -16,5 +16,6 @@ router.get('/transaction/byadmin', service.byAdmin)
 router.get('/transaction/bydaterange', service.byDateRange)
 router.get('/transaction/bymaxaccount', service.byMaxAccount)
 router.get('/transaction/bycount', service.byCount)
+router.get('/transaction/byallcount', service.byAllCount)
 
 module.exports = router

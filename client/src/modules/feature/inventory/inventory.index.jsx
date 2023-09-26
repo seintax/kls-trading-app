@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { sortBy } from "../../../utilities/functions/array.functions"
+import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
@@ -16,7 +18,7 @@ const InventoryIndex = () => {
     const priceSelector = useSelector(state => state.price)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
-    const [currentBranch, setCurrentBranch] = useState("JT-MAIN")
+    const [currentBranch, setCurrentBranch] = useState(auth.store)
     const [libBranches, setLibBranches] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
@@ -25,6 +27,12 @@ const InventoryIndex = () => {
 
     useEffect(() => {
         if (mounted) {
+            if (!isDev(auth) && !isAdmin(auth)) {
+                setCurrentBranch(auth.store)
+            }
+            if (isDev(auth) || isAdmin(auth)) {
+                setCurrentBranch("JT-MAIN")
+            }
             return () => {
                 dispatch(resetInventoryManager())
             }
@@ -42,19 +50,6 @@ const InventoryIndex = () => {
                     }
                 })
                 .catch(err => console.error(err))
-            await allBranches()
-                .unwrap()
-                .then(res => {
-                    if (res.success) {
-                        setLibBranches(res?.arrayResult.map(item => {
-                            return {
-                                key: item.name,
-                                value: item.code
-                            }
-                        }))
-                    }
-                })
-                .catch(err => console.error(err))
             return
         }
 
@@ -62,6 +57,38 @@ const InventoryIndex = () => {
             instantiate()
         }
     }, [dataSelector.notifier, currentBranch])
+
+    useEffect(() => {
+        const instantiate = async () => {
+            await allBranches()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        if (!isDev(auth) && !isAdmin(auth)) {
+                            setLibBranches(sortBy(res?.arrayResult?.filter(f => f.code === "JT-MAIN" || f.code === auth.store).map((item, index) => {
+                                return {
+                                    id: index,
+                                    key: item.name,
+                                    value: item.code
+                                }
+                            }), { prop: "id", desc: true }))
+                        }
+                        if (isDev(auth) || isAdmin(auth)) {
+                            setLibBranches(res?.arrayResult.map(item => {
+                                return {
+                                    key: item.name,
+                                    value: item.code
+                                }
+                            }))
+                        }
+                    }
+                })
+                .catch(err => console.error(err))
+            return
+        }
+
+        instantiate()
+    }, [auth])
 
     const toggleNewEntry = () => {
         dispatch(resetInventoryItem())

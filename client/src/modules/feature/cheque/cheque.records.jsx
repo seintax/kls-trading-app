@@ -57,7 +57,7 @@ const ChequeRecords = () => {
 
     const items = (item) => {
         return [
-            { value: item.code },
+            { value: item.code ? item.code : "-" },
             { value: item.refcode },
             { value: longDate(item.refdate) },
             { value: NumFn.currency(item.amount) },
