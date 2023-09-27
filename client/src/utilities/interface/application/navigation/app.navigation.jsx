@@ -116,7 +116,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
                     </div>
                 ) : null}
                 <div className="ml-auto flex items-center mr-3 lg:mr-0">
-                    <div className="hidden lg:flex flex-1">
+                    <div className="flex flex-1">
                         <form className="flex items-center w-full md:ml-0" onSubmit={onSubmit} method="GET">
                             <label htmlFor="search-field" className="sr-only">
                                 Search
@@ -127,7 +127,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen }) {
                                 </div>
                                 <input
                                     id="search-field"
-                                    className="block w-[350px] rounded-[10px] text-black bg-primary-400 my-2 focus:bg-primary-500 border-white py-2 pl-8 pr-3 placeholder-gray-500 focus:border-primary-300 focus:placeholder-[#32395e] focus:outline-none focus:ring-0 text-xs"
+                                    className="block w-full md:w-[350px] rounded-[10px] text-black bg-primary-400 my-2 focus:bg-primary-500 border-white py-2 pl-8 pr-3 placeholder-gray-500 focus:border-primary-300 focus:placeholder-[#32395e] focus:outline-none focus:ring-0 text-xs"
                                     placeholder="Search product, supplier or transaction"
                                     autoComplete="off"
                                     type="search"

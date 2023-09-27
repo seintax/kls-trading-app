@@ -102,6 +102,8 @@ const CasheringReceipts = () => {
             { value: short12Time(item.time) },
             { value: item.method },
             { value: item.status },
+            { value: NumFn.currency(item.markdown + item.less) },
+            { value: NumFn.currency(item.partial) },
             { value: NumFn.currency(item.net) },
             { value: item.customer_name },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.account_store}</span> },
@@ -121,6 +123,7 @@ const CasheringReceipts = () => {
                 exactSearch(sought, f.code)
             )
             let data = sorted ? sortBy(browsed, sorted) : browsed
+            console.log(data)
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,

@@ -352,6 +352,7 @@ CREATE TABLE pos_sales_transaction (
     trns_net         decimal(30,2),
     trns_return      decimal(30,2) DEFAULT 0,
     trns_discount    decimal(20,15) DEFAULT 0,
+    trns_partial     decimal(30,2) DEFAULT 0,
     trns_tended      decimal(30,2) DEFAULT 0,
     trns_change      decimal(30,2) DEFAULT 0,
     trns_method      varchar(30),
@@ -360,6 +361,8 @@ CREATE TABLE pos_sales_transaction (
     trns_customer    int.
     trns_date        date
 );
+
+ALTER TABLE pos_sales_transaction ADD COLUMN trns_partial decimal(30,2) DEFAULT 0 AFTER trns_discount;
 
 ALTER TABLE pos_sales_transaction ADD COLUMN trns_markdown decimal(30,2) DEFAULT 0 AFTER trns_less;
 

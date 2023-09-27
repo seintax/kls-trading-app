@@ -61,6 +61,7 @@ const CasheringLedger = () => {
 
     useEffect(() => {
         const instantiate = async () => {
+            console.log(dataSelector.item)
             await byCodeDispensing({ code: dataSelector.item.code })
                 .unwrap()
                 .then(res => {
@@ -307,6 +308,12 @@ const CasheringLedger = () => {
                                 Date
                             </span>
                             <div>{longDate(dataSelector.item.date)}</div>
+                        </div>
+                        <div className="lg:min-w-[200px] lg:w-1/7 flex flex-col px-2 md:px-4 py-0.5 md:py-2 lg:px-3 bg-gradient-to-b from-white via-white to-primary-200 border border-secondary-500 gap-1 rounded-md text-xs md:text-base">
+                            <span className="text-[10px] md:text-xs text-gray-500 no-select">
+                                Partial (For Credit)
+                            </span>
+                            <div>{NumFn.currency(dataSelector.item.partial)}</div>
                         </div>
                     </div>
                     {/* <div className={`flex w-[100% - 40px] isolate relative no-select ${tab === "RETURN" ? "pt-5" : "pb-5"}`}>
