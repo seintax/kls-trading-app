@@ -11,6 +11,7 @@ const transaction = new Table("pos_sales_transaction", {
     net: 'trns_net',
     return: 'trns_return',
     discount: 'trns_discount',
+    partial: 'trns_partial',
     tended: 'trns_tended',
     change: 'trns_change',
     method: 'trns_method',

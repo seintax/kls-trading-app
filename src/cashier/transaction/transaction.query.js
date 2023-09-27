@@ -119,8 +119,8 @@ const byDateRange = handler(async (req, res) => {
 const byMaxAccount = handler(async (req, res) => {
     const param = helper.parameters(req.query)
     const { code, account, date } = helper.fields
-    let params = [p(param.account).Exactly(), p(param.date).Exactly()]
-    let clause = [f(account).IsEqual(), f(date).IsEqual()]
+    let params = [p(param.account).Exactly()]
+    let clause = [f(account).IsEqual()]
     let field = [f(code).parameter()]
     const builder = helper.max(field, clause, params)
     await poolwrap(builder, (err, ans) => {

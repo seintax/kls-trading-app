@@ -319,7 +319,7 @@ const CasheringComplexIndex = () => {
             return
         }
         setProcessing(true)
-        await maxAccountTransaction({ account: auth.id, date: sqlDate() })
+        await maxAccountTransaction({ account: auth.id })
             .unwrap()
             .then(async (res) => {
                 if (res.success) {
@@ -329,6 +329,11 @@ const CasheringComplexIndex = () => {
                         ? "000001"
                         : StrFn.formatWithZeros(destructCode(res.distinctResult?.data?.max), 6)
                     let code = `${datetag}-${usertag}-${codetag}`
+                    let partial = 0
+                    if (paymentSelector.paid?.filter(f => f.type === "CREDIT")?.length) {
+                        partial = paymentSelector.paid
+                            ?.filter(f => f.type === "CREDIT")?.reduce((prev, curr) => prev + (curr.amount || 0), 0)
+                    }
                     let data = {
                         transaction: {
                             code: code,
@@ -344,6 +349,7 @@ const CasheringComplexIndex = () => {
                             status: "COMPLETED",
                             account: auth.id,
                             customer: paymentSelector.customer.id,
+                            partial: partial,
                             date: sqlDate()
                         },
                         dispensing: browserSelector.cart?.map(item => {
