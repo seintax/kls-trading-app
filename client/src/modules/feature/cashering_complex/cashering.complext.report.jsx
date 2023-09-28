@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import ReportsFormSummary from "../../system/reports/reports.form.summary"
+import ReportsFormCashierSummary from "../../system/reports/reports.form.cashier-summary"
 import { resetReportCashier, setReportName, showReportManager } from "../../system/reports/reports.reducer"
 
 const CasheringComplexReport = () => {
@@ -16,7 +16,7 @@ const CasheringComplexReport = () => {
 
     useEffect(() => {
         if (mounted) {
-            dispatch(setReportName("Daily Summary"))
+            dispatch(setReportName("Cashier Summary"))
             dispatch(showReportManager())
 
             return () => { }
@@ -52,7 +52,8 @@ const CasheringComplexReport = () => {
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOff()} />
                         <span>Report</span>
                     </div>
-                    <ReportsFormSummary />
+                    {/* <ReportsFormSummary /> */}
+                    <ReportsFormCashierSummary />
                 </Transition.Child>
             </Transition>
         </>

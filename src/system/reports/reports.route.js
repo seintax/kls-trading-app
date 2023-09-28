@@ -9,5 +9,6 @@ router.get('/reports/salessummary', secure, service.sales_summary)
 router.get('/reports/expenses', secure, service.expenses)
 router.get('/reports/expenses', secure, service.expenses)
 router.get('/reports/expensessummary', secure, service.expenses_summary)
+router.get('/reports/cashiersummary', secure, service.cashier_summary)
 
 module.exports = router

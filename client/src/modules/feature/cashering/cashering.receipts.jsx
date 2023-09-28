@@ -123,7 +123,6 @@ const CasheringReceipts = () => {
                 exactSearch(sought, f.code)
             )
             let data = sorted ? sortBy(browsed, sorted) : browsed
-            console.log(data)
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
