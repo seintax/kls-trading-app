@@ -2,15 +2,18 @@ import { XMarkIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
+import Banner from "../../../assets/jally_banner.png"
 import { useClientContext } from "../../../utilities/context/client.context"
+import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
-import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
 import DashboardCards from "./dashboard.cards"
 import DashboardFilters from "./dashboard.filters"
 import DashboardGraphSales from "./dashboard.graph.sales"
 import { resetDashboardSummary } from "./dashboard.reducer"
 
 const DashboardIndex = ({ id }) => {
+    const auth = useAuth()
     const dashboardSelector = useSelector(state => state.dashboard)
     const dispatch = useDispatch()
     const location = useLocation()
@@ -30,7 +33,7 @@ const DashboardIndex = ({ id }) => {
     return (
         <div className="h-full flex-none w-full">
             <div className="flex flex-col gap-3 w-full h-full">
-                <div className="flex w-full">
+                <div className={isDev(auth) || isAdmin(auth) ? `flex w-full` : "hidden"}>
                     <DashboardCards />
                 </div>
                 <div className="flex flex-col lg:flex-row w-full h-full gap-4">
@@ -42,9 +45,10 @@ const DashboardIndex = ({ id }) => {
                             <DashboardGraphSales />
                         </div>
                     </div>
-                    <div className="w-full min-h-[500px] transition ease-in-out duration-300 p-5 border border-gray-300 rounded-[20px]">
+                    <div className={`w-full transition ease-in-out duration-300 p-5 rounded-[20px] ${isDev(auth) || isAdmin(auth) ? "mt-auto" : "flex items-center justify-center"}`}>
                         {/* <DashboardGraphCollection /> */}
-                        <AppLogo style="h-full" />
+                        <img src={Banner} alt="" />
+                        {/* <AppLogo style="h-full" /> */}
                     </div>
                 </div>
             </div>

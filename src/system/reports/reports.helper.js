@@ -143,6 +143,62 @@ const reports = {
         ORDER BY DATE(expn_time)
         `
     ),
+    cashier_summary: new Query("cashier_summary", `
+        SELECT
+            DATE(sale_time) AS day,
+            SUM(sale_total) AS gross_sales,
+            SUM(sale_less) AS discounts,
+            SUM(sale_price * sale_returned) AS refunds,
+            SUM(sale_net) AS net_sales,
+            invt_store AS branch,
+            (
+                SELECT 
+                    SUM(paym_amount)
+                FROM pos_payment_collection 
+                WHERE 
+                    paym_type='SALES' 
+                        AND
+                    paym_store=invt_store
+                        AND
+                    DATE(paym_time)=DATE(sale_time)
+            ) AS cash_sales,
+            (
+                SELECT 
+                    SUM(cred_balance) 
+                FROM pos_sales_credit
+                WHERE 
+                    cred_store=invt_store
+                        AND
+                    DATE(cred_time)=DATE(sale_time)
+            ) AS credit_sales,
+            (
+                SELECT 
+                    SUM(trns_partial) 
+                FROM 
+                    pos_sales_transaction,
+                    sys_account 
+                WHERE 
+                    acct_id=trns_account 
+                        AND
+                    acct_store=invt_store
+                        AND
+                    DATE(trns_time)=DATE(sale_time)
+            ) AS partial
+        FROM 
+            pos_sales_dispensing
+                LEFT JOIN pos_sales_transaction
+                    ON trns_code=sale_trans,
+            pos_stock_inventory
+        WHERE 
+            sale_item=invt_id 
+                AND 
+            sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                AND
+            invt_store LIKE '%@store%' 
+        GROUP BY DATE(sale_time),invt_store,cash_sales,credit_sales,partial
+        ORDER BY DATE(sale_time)
+        `
+    ),
 }
 
 module.exports = reports

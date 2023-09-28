@@ -61,7 +61,6 @@ const CasheringLedger = () => {
 
     useEffect(() => {
         const instantiate = async () => {
-            console.log(dataSelector.item)
             await byCodeDispensing({ code: dataSelector.item.code })
                 .unwrap()
                 .then(res => {
