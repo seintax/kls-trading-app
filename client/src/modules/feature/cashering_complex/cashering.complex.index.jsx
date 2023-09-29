@@ -376,23 +376,21 @@ const CasheringComplexIndex = () => {
                                 taxrated: 0.12
                             }
                         }),
-                        payment: paymentSelector.paid
-                            ?.filter(f => f.type === "SALES")
-                            ?.map(pay => {
-                                return {
-                                    code: code,
-                                    customer: paymentSelector.customer.id,
-                                    type: pay.type,
-                                    method: pay.method,
-                                    total: amount(pay.amount),
-                                    amount: amount(pay.amount),
-                                    refcode: pay.refcode,
-                                    refdate: pay.method === "CHEQUE" ? pay.refdate : undefined,
-                                    refstat: pay.refstat,
-                                    account: auth.id,
-                                    store: auth.store
-                                }
-                            }),
+                        payment: payments?.map(pay => {
+                            return {
+                                code: code,
+                                customer: paymentSelector.customer.id,
+                                type: pay.type,
+                                method: pay.method,
+                                total: pay.method === "CASH" ? amount(pay.amount) - change : amount(pay.amount),
+                                amount: pay.method === "CASH" ? amount(pay.amount) - change : amount(pay.amount),
+                                refcode: pay.refcode,
+                                refdate: pay.method === "CHEQUE" ? pay.refdate : undefined,
+                                refstat: pay.refstat,
+                                account: auth.id,
+                                store: auth.store
+                            }
+                        }),
                         credit: paymentSelector.paid
                             ?.filter(f => f.type === "CREDIT")
                             ?.map(cred => {
@@ -707,7 +705,7 @@ const CasheringComplexIndex = () => {
                         </div>
                         <div className={`${tended > 0 ? "flex" : "hidden"} justify-between`}>
                             <div className="flex flex-col">
-                                <span className="text-sm">Change {balance}</span>
+                                <span className="text-sm">Change</span>
                             </div>
                             <div className="text-sm mr-10">
                                 {currency(change)}
