@@ -376,21 +376,23 @@ const CasheringComplexIndex = () => {
                                 taxrated: 0.12
                             }
                         }),
-                        payment: payments?.map(pay => {
-                            return {
-                                code: code,
-                                customer: paymentSelector.customer.id,
-                                type: pay.type,
-                                method: pay.method,
-                                total: pay.method === "CASH" ? amount(pay.amount) - change : amount(pay.amount),
-                                amount: pay.method === "CASH" ? amount(pay.amount) - change : amount(pay.amount),
-                                refcode: pay.refcode,
-                                refdate: pay.method === "CHEQUE" ? pay.refdate : undefined,
-                                refstat: pay.refstat,
-                                account: auth.id,
-                                store: auth.store
-                            }
-                        }),
+                        payment: paymentSelector.paid
+                            ?.filter(f => f.type === "SALES")
+                            ?.map(pay => {
+                                return {
+                                    code: code,
+                                    customer: paymentSelector.customer.id,
+                                    type: pay.type,
+                                    method: pay.method,
+                                    total: pay.method === "CASH" ? amount(pay.amount) - change : amount(pay.amount),
+                                    amount: pay.method === "CASH" ? amount(pay.amount) - change : amount(pay.amount),
+                                    refcode: pay.refcode,
+                                    refdate: pay.method === "CHEQUE" ? pay.refdate : undefined,
+                                    refstat: pay.refstat,
+                                    account: auth.id,
+                                    store: auth.store
+                                }
+                            }),
                         credit: paymentSelector.paid
                             ?.filter(f => f.type === "CREDIT")
                             ?.map(cred => {
@@ -399,8 +401,8 @@ const CasheringComplexIndex = () => {
                                     customer: paymentSelector.customer.id,
                                     type: cred.type,
                                     method: cred.method,
-                                    total: amount(cred.amount),
-                                    amount: amount(cred.amount),
+                                    total: cred.method === "CASH" ? amount(cred.amount) - change : amount(cred.amount),
+                                    amount: cred.method === "CASH" ? amount(cred.amount) - change : amount(cred.amount),
                                     refcode: cred.refcode,
                                     refdate: cred.method === "CHEQUE" ? cred.refdate : undefined,
                                     refstat: cred.refstat,
