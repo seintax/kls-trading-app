@@ -176,12 +176,18 @@ const reports = {
             ) AS cash_sales,
             (
                 SELECT 
-                    SUM(cred_balance) 
-                FROM pos_sales_credit
+                    SUM(trns_net - trns_partial) 
+                FROM 
+                    pos_sales_transaction,
+                    sys_account
                 WHERE 
-                    cred_store=invt_store
+                    acct_id=trns_account 
                         AND
-                    DATE(cred_time)=DATE(sale_time)
+                    trns_method='CREDIT'
+                        AND
+                    acct_store=invt_store
+                        AND
+                    DATE(trns_time)=DATE(sale_time)
             ) AS credit_sales,
             (
                 SELECT 
@@ -214,3 +220,13 @@ const reports = {
 }
 
 module.exports = reports
+
+// (
+//     SELECT
+//         SUM(cred_balance)
+//     FROM pos_sales_credit
+//     WHERE
+//         cred_store=invt_store
+//             AND
+//         DATE(cred_time)=DATE(sale_time)
+// ) AS credit_sales,
