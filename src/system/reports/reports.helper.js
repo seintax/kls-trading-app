@@ -74,7 +74,7 @@ const reports = {
             DATE(sale_time) AS day,
             SUM(sale_total) AS gross_sales,
             SUM(sale_price * sale_returned) AS refunds,
-            SUM(sale_less) AS discounts,
+            SUM(sale_less + sale_markdown) AS discounts,
             SUM(sale_net) AS net_sales,
             SUM(sale_dispense * invt_cost) AS goods_cost,
             SUM(sale_net - (sale_dispense * invt_cost)) AS gross_profit,
@@ -147,10 +147,22 @@ const reports = {
         SELECT
             DATE(sale_time) AS day,
             SUM(sale_total) AS gross_sales,
-            SUM(sale_less) AS discounts,
-            SUM(sale_price * sale_returned) AS refunds,
+            SUM(sale_less + sale_markdown) AS discounts,
             SUM(sale_net) AS net_sales,
             invt_store AS branch,
+            (
+                SELECT 
+                    SUM(rtrn_r_net)
+                FROM 
+                    pos_return_transaction,
+                    sys_account  
+                WHERE 
+                    acct_id=rtrn_account 
+                        AND
+                    acct_store=invt_store
+                        AND
+                    DATE(rtrn_time)=DATE(sale_time)
+            ) AS refunds,
             (
                 SELECT 
                     SUM(paym_amount)
@@ -195,7 +207,7 @@ const reports = {
             sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
                 AND
             invt_store LIKE '%@store%' 
-        GROUP BY DATE(sale_time),invt_store,cash_sales,credit_sales,partial
+        GROUP BY DATE(sale_time),refunds,invt_store,cash_sales,credit_sales,partial
         ORDER BY DATE(sale_time)
         `
     ),
