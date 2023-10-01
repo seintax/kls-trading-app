@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
 import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
-import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
+import { getBranch, isDev, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
@@ -80,28 +80,49 @@ const ReportsFormCashierSummary = () => {
         style: '',
         items: [
             { name: 'Date', stack: false, sort: 'day' },
+            { name: 'Branch', stack: true, sort: 'branch', size: 150 },
             { name: 'Gross Sales', stack: true, sort: 'gross_sales', size: 150 },
             { name: 'Discounts', stack: true, sort: 'discounts', size: 150 },
-            { name: 'Refunds', stack: true, sort: 'refunds', size: 150 },
             { name: 'Net Sales', stack: true, sort: 'net_sales', size: 150 },
             { name: 'Cash Sales', stack: true, sort: 'cash_sales', size: 150 },
             { name: 'Credit Sales', stack: true, sort: 'credit_sales', size: 150 },
             { name: 'Partial', stack: true, sort: 'partial', size: 150 },
-            { name: 'Branch', stack: true, sort: 'branch', size: 150 },
+            { name: 'Refunds', stack: true, sort: 'refunds', size: 150 },
+            isDev(auth) ? { name: 'Income', stack: true, size: 150 } : null,
         ]
     }
 
     const items = (item) => {
         return [
             { value: longDate(item.day) },
+            { value: item.branch },
             { value: currency(item.gross_sales) },
             { value: currency(item.discounts) },
-            { value: currency(item.refunds) },
             { value: currency(item.net_sales) },
             { value: currency(item.cash_sales) },
             { value: currency(item.credit_sales) },
             { value: currency(item.partial) },
-            { value: item.branch },
+            { value: currency(item.refunds) },
+            isDev(auth) ? {
+                value: <div className={currency(item.net_sales) === currency(item.cash_sales + item.credit_sales + item.partial) ? "" : "text-red-500"}>
+                    {currency(item.cash_sales + item.credit_sales + item.partial)}
+                </div>
+            } : null,
+        ]
+    }
+
+    const total = (item) => {
+        return [
+            { value: "TOTAL" },
+            { value: null },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.gross_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.discounts || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.net_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.cash_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.credit_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.partial || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.refunds || 0), 0)) },
+            isDev(auth) ? { value: currency(item?.reduce((prev, curr) => prev + (curr.cash_sales + curr.credit_sales + curr.partial), 0)) } : null,
         ]
     }
 
@@ -124,6 +145,7 @@ const ReportsFormCashierSummary = () => {
                 subtext1: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")} - ${moment(filters.to).format("MMMM DD, YYYY")}`,
                 subtext2: `Branch: ${filters.store || "All"}`,
                 columns: columns,
+                total: total(data),
                 data: records
             }))
             window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYY")}-${moment(filters.to).format("MMDDYYYY")}-${filters.store || "All"}`, '_blank')
@@ -140,7 +162,7 @@ const ReportsFormCashierSummary = () => {
                 <div className="w-full text-lg uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select">
                     <div className="flex gap-4">
                         <PresentationChartLineIcon className="w-6 h-6" />
-                        {/* {reportSelector.report} */} DAILY SUMMARY
+                        {/* {reportSelector.report} */} CASHIER SUMMARY
                     </div>
                     <div className="flex items-center gap-2">
                         <input name="fr" type="date" className="text-sm" value={filters.fr} onChange={onChange} />

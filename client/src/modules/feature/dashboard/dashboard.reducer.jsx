@@ -9,6 +9,7 @@ const initialState = {
     store: "",
     branch: "",
     summary: "",
+    shown: false,
     filters: false,
     manager: false,
     notifier: false,
@@ -29,6 +30,9 @@ const dashboardSlice = createSlice({
         },
         setDashboardStore: (state, action) => {
             state.store = action.payload
+        },
+        setDashboardShown: (state, action) => {
+            state.shown = action.payload
         },
         setDashboardBranch: (state, action) => {
             state.branch = action.payload
@@ -58,6 +62,7 @@ const dashboardSlice = createSlice({
             state.data = []
             state.start = sqlDate(new Date())
             state.summary = ""
+            state.shown = false
             state.manager = false
             state.notifier = false
         }
@@ -72,6 +77,7 @@ export const {
     setDashboardRange,
     setDashboardStore,
     setDashboardBranch,
+    setDashboardShown,
     setDashboardSummary,
     resetDashboardSummary,
     setDashboardNotifier,

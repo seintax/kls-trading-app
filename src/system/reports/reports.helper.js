@@ -143,7 +143,7 @@ const reports = {
         ORDER BY DATE(expn_time)
         `
     ),
-    cashier_summary: new Query("cashier_summary", `
+    old_cashier_summary: new Query("cashier_summary", `
         SELECT
             DATE(sale_time) AS day,
             SUM(sale_total) AS gross_sales,
@@ -215,6 +215,63 @@ const reports = {
             invt_store LIKE '%@store%' 
         GROUP BY DATE(sale_time),refunds,invt_store,cash_sales,credit_sales,partial
         ORDER BY DATE(sale_time)
+        `
+    ),
+    cashier_summary: new Query("cashier_summary", `
+        SELECT
+            DATE(trns_time) AS day,
+            SUM(IFNULL(rtrn_p_total, trns_total)) AS gross_sales,
+            SUM(IFNULL(rtrn_p_less, trns_less) + IFNULL(rtrn_p_markdown, trns_markdown)) AS discounts,
+            SUM(IFNULL(rtrn_p_net, trns_net)) AS net_sales,
+            SUM(IF(trns_method='CREDIT', IFNULL(rtrn_p_net, trns_net) - trns_partial, 0)) AS credit_sales,
+            SUM(trns_partial) AS partial,
+            acct_store AS branch,
+            (
+                SELECT 
+                    SUM(rtrn_r_net)
+                FROM 
+                    pos_return_transaction,
+                    sys_account  
+                WHERE 
+                    acct_id=rtrn_account 
+                        AND
+                    acct_store=branch
+                        AND
+                    DATE(rtrn_time)=DATE(trns_time)
+            ) AS refunds,
+            (
+                SELECT 
+                    SUM(paym_amount)
+                FROM pos_payment_collection 
+                WHERE 
+                    paym_type='SALES' 
+                        AND
+                    paym_store=branch
+                        AND
+                    DATE(paym_time)=DATE(trns_time)
+            ) AS cash_sales 
+        FROM 
+            pos_sales_transaction
+                LEFT JOIN (
+                    SELECT 
+                        rtrn_trans,
+                        rtrn_p_total,
+                        rtrn_p_less,
+                        rtrn_p_markdown,
+                        rtrn_p_net,
+                        MIN(rtrn_id)
+                    FROM pos_return_transaction 
+                    GROUP BY rtrn_trans,rtrn_p_total,rtrn_p_less,rtrn_p_markdown,rtrn_p_net
+                ) a ON a.rtrn_trans=trns_code,
+            sys_account
+        WHERE 
+            trns_account=acct_id 
+                AND 
+            trns_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                AND
+            acct_store LIKE '%@store%' 
+        GROUP BY DATE(trns_time),refunds,acct_store,cash_sales
+        ORDER BY DATE(trns_time)
         `
     ),
 }

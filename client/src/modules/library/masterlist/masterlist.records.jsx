@@ -77,8 +77,8 @@ const MasterlistRecords = () => {
             if (searchSelector.searchKey) {
                 let sought = searchSelector.searchKey
                 temp = dataSelector?.data?.filter(f => (
-                    f.name?.toLowerCase()?.includes(sought) ||
-                    f.address?.toLowerCase()?.includes(sought)
+                    f.name?.toLowerCase()?.includes(sought.toLowerCase()) ||
+                    f.address?.toLowerCase()?.includes(sought.toLowerCase())
                 ))
             }
             let data = sorted ? sortBy(temp, sorted) : temp

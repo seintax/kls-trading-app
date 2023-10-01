@@ -176,6 +176,41 @@ const ReportsFormSales = () => {
         }
     }
 
+    const totalItem = (item) => {
+        return [
+            { value: "TOTAL" },
+            { value: null },
+            { value: item?.reduce((prev, curr) => prev + (curr.item_sold || 0), 0) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.net_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.goods_cost || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.gross_profit || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.sales_type_net || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.credit_type_net || 0), 0)) },
+        ]
+    }
+
+    const totalCategory = (item) => {
+        return [
+            { value: "TOTAL" },
+            { value: item?.reduce((prev, curr) => prev + (curr.item_sold || 0), 0) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.net_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.goods_cost || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.gross_profit || 0), 0)) },
+        ]
+    }
+
+    const totalCollection = (item) => {
+        return [
+            { value: "TOTAL" },
+            { value: null },
+            { value: item?.reduce((prev, curr) => prev + (curr.transaction_count || 0), 0) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.payment_total || 0), 0)) },
+            { value: item?.reduce((prev, curr) => prev + (curr.refund_count || 0), 0) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.payment_refund || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.payment_net || 0), 0)) },
+        ]
+    }
+
     useEffect(() => {
         if (data) {
             let tempdata = sorted ? sortBy(data, sorted) : data
@@ -194,6 +229,12 @@ const ReportsFormSales = () => {
         if (reportSelector.report === "Daily Sales by Collection") return byCollectionColumn
     }
 
+    const totalRow = () => {
+        if (reportSelector.report === "Daily Sales by Item") return totalItem(data)
+        if (reportSelector.report === "Daily Sales by Category") return totalCategory(data)
+        if (reportSelector.report === "Daily Sales by Collection") return totalCollection(data)
+    }
+
     const printData = () => {
         if (records?.length) {
             localStorage.setItem("reports", JSON.stringify({
@@ -201,6 +242,7 @@ const ReportsFormSales = () => {
                 subtext1: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")} - ${moment(filters.to).format("MMMM DD, YYYY")}`,
                 subtext2: `Branch: ${filters.store || "All"}`,
                 columns: reportColumn(),
+                total: totalRow(),
                 data: records
             }))
             window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYY")}-${moment(filters.to).format("MMDDYYYY")}-${filters.store || "All"}`, '_blank')

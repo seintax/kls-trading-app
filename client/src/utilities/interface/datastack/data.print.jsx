@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const DataPrint = ({ columns, records, header, heading, trigger, rowstyle, itemstyle }) => {
+const DataPrint = ({ columns, records, total, header, heading, trigger, rowstyle, itemstyle }) => {
     const [data, setData] = useState()
     const [order, setOrder] = useState()
     const [pages, setPages] = useState(1)
@@ -77,6 +77,27 @@ const DataPrint = ({ columns, records, header, heading, trigger, rowstyle, items
                                 </tr>
                             ))
 
+                        }
+                        {
+                            (total?.length) && (
+                                <tr
+                                    className={`hover:bg-gray-100 ${rowstyle}`}
+                                >
+                                    <td className="border-b border-gray-200 px-2 py-4 text-xs text-gray-500 no-select">-</td>
+                                    {
+                                        (total?.length) ? (
+                                            total?.map((item, totalindex) => (
+                                                <td
+                                                    key={totalindex}
+                                                    className={`w-auto py-4 border-b border-gray-200 px-2 text-xs text-gray-900 font-bold ${itemstyle}`}
+                                                >
+                                                    {item.value}
+                                                </td>
+                                            ))
+                                        ) : null
+                                    }
+                                </tr>
+                            )
                         }
                         {
                             (!data?.length) && (
