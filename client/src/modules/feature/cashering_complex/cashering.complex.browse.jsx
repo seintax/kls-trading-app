@@ -22,39 +22,6 @@ const CasheringComplexBrowse = () => {
     useEffect(() => {
         const instantiate = async () => {
             if (categorySelector.data.length === 0) {
-                // await allMasterlist()
-                //     .unwrap()
-                //     .then(res => {
-                //         if (res.success) {
-                //             dispatch(setMasterlistData(res?.arrayResult))
-                //         }
-                //     })
-                //     .catch(err => console.error(err))
-                // await allVariants()
-                // .unwrap()
-                // .then(res => {
-                //     if (res.success) {
-                //         let productArr = []
-                //         let result = res.arrayResult?.map(prod => {
-                //             let exist = productArr.findIndex(farr => farr.product === prod.product_name)
-                //             if (exist > -1) {
-                //                 productArr[exist] = {
-                //                     ...productArr[exist],
-                //                     variants: [...productArr[exist].variants, prod]
-                //                 }
-                //                 return prod
-                //             }
-                //             productArr.push({
-                //                 id: prod.product,
-                //                 product: prod.product_name,
-                //                 category: prod.category,
-                //                 variants: [prod]
-                //             })
-                //         })
-                //         dispatch(setMasterlistData(productArr))
-                //     }
-                // })
-                // .catch(err => console.error(err))
                 await allBrowser({ branch: forBranch(auth) })
                     .unwrap()
                     .then(res => {
@@ -91,6 +58,7 @@ const CasheringComplexBrowse = () => {
                                     }]
                                 })
                             })
+                            console.log(productArr)
                             dispatch(setMasterlistData(productArr))
                         }
                     })
