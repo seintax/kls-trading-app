@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { exactSearch } from "../../../utilities/functions/string.functions"
+import { exactSearch, isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
@@ -13,6 +14,7 @@ import { setInventoryItem, setInventoryNotifier, showInventoryManager } from "./
 import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
 
 const InventoryRecords = () => {
+    const auth = useAuth()
     const dataSelector = useSelector(state => state.inventory)
     const roleSelector = useSelector(state => state.roles)
     const searchSelector = useSelector(state => state.search)
@@ -84,7 +86,7 @@ const InventoryRecords = () => {
             { value: item.supplier_name },
             { value: item.category },
             { value: item.stocks },
-            { value: NumFn.currency(item.price) },
+            { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? NumFn.currency(item.price) : item.store === "JT-MAIN" ? "" : NumFn.currency(item.price) },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]

@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from "react-redux"
+import ReportsFormCashierSummary from "./reports.form.cashier-summary"
 import ReportsFormExpenses from "./reports.form.expenses"
 import ReportsFormExpensesSummary from "./reports.form.expenses-summary"
 import ReportsFormReceipts from "./reports.form.receipts"
@@ -21,6 +22,7 @@ const ReportsIndex = () => {
                 <ReportsFormExpenses />
                 <ReportsFormExpensesSummary />
                 <ReportsFormReceipts />
+                <ReportsFormCashierSummary />
             </div>
         </div>
     )

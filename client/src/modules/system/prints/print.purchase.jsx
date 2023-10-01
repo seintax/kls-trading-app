@@ -77,7 +77,7 @@ const PrintPurchase = () => {
                     <div className="w-full flex font-bold border-b border-b-black py-2">
                         <div className="w-full">Item Name</div>
                         <div className="w-[300px] text-right">Quantity</div>
-                        <div className="w-[300px] text-right">Price</div>
+                        <div className="w-[300px] text-right">Cost</div>
                         <div className="w-[300px] text-right">Amount</div>
                     </div>
                     {
@@ -86,9 +86,9 @@ const PrintPurchase = () => {
                                 <div className="w-full flex">
                                     {item.product_name} (<span className="text-gray-500">{item.variant_serial}/{item.variant_model}/{item.variant_brand}</span>)
                                 </div>
-                                <div className="w-[300px] text-right">{item.purchase_ordertotal}</div>
+                                <div className="w-[300px] text-right">{item.received}</div>
                                 <div className="w-[300px] text-right">{NumFn.acctg.currency(item.costing)}</div>
-                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.purchase_ordertotal * item.costing)}</div>
+                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.received * item.costing)}</div>
                             </div>
                         ))
                     }

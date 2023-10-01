@@ -7,6 +7,7 @@ const PrintReports = () => {
     const [print, setprint] = useState({})
     const [records, setrecords] = useState([])
     const [columns, setcolumns] = useState()
+    const [totals, settotals] = useState()
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => { setMounted(true) }, [])
@@ -17,20 +18,12 @@ const PrintReports = () => {
             setprint(storage)
             setcolumns(storage?.columns)
             setrecords(storage?.data)
-
+            settotals(storage?.total)
             return () => {
                 localStorage.removeItem(reportname)
             }
         }
     }, [mounted])
-
-    // useEffect(() => {
-    //     const storage = JSON.parse(localStorage.getItem(reportname))
-    //     setprint(storage)
-    //     setrecords(storage?.data)
-    //     settotal(storage?.data?.reduce((prev, curr) => prev + Number(curr?.items[5]?.value?.startsWith("-") ? 0 : Number(curr?.items[3]?.value.replaceAll(",", ""))), 0))
-    //     setexpired(storage?.data?.reduce((prev, curr) => prev + Number(curr?.items[5]?.value?.startsWith("-") ? Number(curr?.items[3]?.value.replaceAll(",", "")) : 0), 0))
-    // }, [localStorage.getItem(reportname)])
 
     useLayoutEffect(() => {
         if (records?.length) {
@@ -45,21 +38,20 @@ const PrintReports = () => {
     }, [records])
 
     const trigger = () => {
-        var css = '@page { size: portrait; }',
-            head = document.head || document.getElementsByTagName('head')[0],
-            style = document.createElement('style')
+        // var css = '@page { size: portrait; }',
+        //     head = document.head || document.getElementsByTagName('head')[0],
+        //     style = document.createElement('style')
 
-        style.type = 'text/css'
-        style.media = 'print'
+        // style.type = 'text/css'
+        // style.media = 'print'
 
-        if (style.styleSheet) {
-            style.styleSheet.cssText = css
-        } else {
-            style.appendChild(document.createTextNode(css))
-        }
+        // if (style.styleSheet) {
+        //     style.styleSheet.cssText = css
+        // } else {
+        //     style.appendChild(document.createTextNode(css))
+        // }
 
-        head.appendChild(style)
-        // window.print()
+        // head.appendChild(style)
     }
 
     const header = () => {
@@ -86,6 +78,7 @@ const PrintReports = () => {
                 records={records}
                 header={header}
                 trigger={trigger}
+                total={totals}
             />
             {/* <div className="w-full mt-5 font-bold flex gap-10">
                 <span>Total Claimable: {currencyFormat.format(total)}</span>

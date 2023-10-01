@@ -80,26 +80,39 @@ const ReportsFormSummary = () => {
         style: '',
         items: [
             { name: 'Date', stack: false, sort: 'day' },
+            { name: 'Branch', stack: true, sort: 'branch', size: 150 },
             { name: 'Gross Sales', stack: true, sort: 'gross_sales', size: 150 },
             { name: 'Refunds', stack: true, sort: 'refunds', size: 150 },
             { name: 'Discounts', stack: true, sort: 'discounts', size: 150 },
             { name: 'Net Sales', stack: true, sort: 'net_sales', size: 150 },
             { name: 'Cost of Goods', stack: true, sort: 'goods_cost', size: 150 },
             { name: 'Gross Profit', stack: true, sort: 'gross_profit', size: 150 },
-            { name: 'Branch', stack: true, sort: 'branch', size: 150 },
         ]
     }
 
     const items = (item) => {
         return [
             { value: longDate(item.day) },
+            { value: item.branch },
             { value: currency(item.gross_sales) },
             { value: currency(item.refunds) },
             { value: currency(item.discounts) },
             { value: currency(item.net_sales) },
             { value: currency(item.goods_cost) },
             { value: currency(item.gross_profit) },
-            { value: item.branch },
+        ]
+    }
+
+    const total = (item) => {
+        return [
+            { value: "TOTAL" },
+            { value: null },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.gross_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.refunds || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.discounts || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.net_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.goods_cost || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.gross_profit || 0), 0)) },
         ]
     }
 
@@ -122,6 +135,7 @@ const ReportsFormSummary = () => {
                 subtext1: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")} - ${moment(filters.to).format("MMMM DD, YYYY")}`,
                 subtext2: `Branch: ${filters.store || "All"}`,
                 columns: columns,
+                total: total(data),
                 data: records
             }))
             window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYY")}-${moment(filters.to).format("MMDDYYYY")}-${filters.store || "All"}`, '_blank')

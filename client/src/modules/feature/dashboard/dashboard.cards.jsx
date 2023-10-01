@@ -152,8 +152,8 @@ const DashboardCards = () => {
                 })
                 .catch(err => console.error(err))
         }
-        if (dashboardSelector.start) weeklyCards()
-    }, [dashboardSelector.start, dashboardSelector.store])
+        if (dashboardSelector.start && dashboardSelector.shown) weeklyCards()
+    }, [dashboardSelector.start, dashboardSelector.store, dashboardSelector.shown])
 
     const onClick = (summary) => {
         dispatch(setDashboardSummary(summary))
@@ -174,7 +174,7 @@ const DashboardCards = () => {
     }
 
     return (
-        <div className="w-full flex flex-col gap-5">
+        <div className={`${dashboardSelector.shown ? "flex" : "hidden"} w-full flex-col gap-5`}>
             <div className="flex justify-center text-black font-bold border border-1 border-gray-300 text-[12px] card-font relative items-center no-select">
                 <div className="w-full text-center items-center py-3 bg-gray-200 font-mono text-[14px] flex flex-col gap-0.5">
                     <span className="text-xs">
@@ -210,14 +210,18 @@ const DashboardCards = () => {
             <div className="w-full flex flex-col lg:flex-row flex-wrap items-center justify-center gap-2">
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Collectibles")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Collectibles",
-                                data: [1, totalCollectibles],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Collectibles",
+                                        data: [1, totalCollectibles],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
@@ -230,14 +234,18 @@ const DashboardCards = () => {
                 </div>
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Credit Sales")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Credit Sales",
-                                data: [(totalCreditSales + totalGrossSales) | 1, totalCreditSales],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Credit Sales",
+                                        data: [(totalCreditSales + totalGrossSales) | 1, totalCreditSales],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
@@ -250,14 +258,18 @@ const DashboardCards = () => {
                 </div>
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Credit Collection")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Credit Collection",
-                                data: [(totalCollectibles + totalCreditCollection) | 1, totalCreditCollection],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Credit Collection",
+                                        data: [(totalCollectibles + totalCreditCollection) | 1, totalCreditCollection],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
@@ -270,14 +282,18 @@ const DashboardCards = () => {
                 </div>
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Gross Sales")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Gross Sales",
-                                data: [(totalCreditSales + totalGrossSales) | 1, totalGrossSales],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Gross Sales",
+                                        data: [(totalCreditSales + totalGrossSales) | 1, totalGrossSales],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
@@ -290,14 +306,18 @@ const DashboardCards = () => {
                 </div>
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Refunds")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Refunds",
-                                data: [(totalCreditSales + totalGrossSales) | 1, totalRefunds],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Refunds",
+                                        data: [(totalCreditSales + totalGrossSales) | 1, totalRefunds],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
@@ -310,14 +330,18 @@ const DashboardCards = () => {
                 </div>
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Discounts")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Discounts",
-                                data: [(totalCreditSales + totalGrossSales) | 1, totalDiscounts],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Discounts",
+                                        data: [(totalCreditSales + totalGrossSales) | 1, totalDiscounts],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
@@ -330,14 +354,18 @@ const DashboardCards = () => {
                 </div>
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Net Sales")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Net Sales",
-                                data: [(totalGrossProfit + totalNetSales) | 1, totalNetSales],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Net Sales",
+                                        data: [(totalGrossProfit + totalNetSales) | 1, totalNetSales],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">
@@ -350,14 +378,18 @@ const DashboardCards = () => {
                 </div>
                 <div className="w-full lg:w-[350px] h-32 flex gap-[5px] cursor-pointer p-2 bg-white border border-1 border-gray-300 rounded-[20px] hover:border-secondary-500 transition ease-in-out duration-300" onClick={() => onClick("Gross Profit")}>
                     <div className="text-xs bg-gradient-to-bl rounded-tl-[10px] rounded-tr-[10px] text-left py-2 px-1 font-mono no-select">
-                        <AppDoughnutChart data={{
-                            labels: [],
-                            datasets: [{
-                                label: "Gross Profit",
-                                data: [(totalGrossProfit + totalNetSales) | 1, totalGrossProfit],
-                                backgroundColor: ["#8ff5ae", "#fa5e04"]
-                            }]
-                        }} />
+                        {
+                            dashboardSelector.shown ? (
+                                <AppDoughnutChart data={{
+                                    labels: [],
+                                    datasets: [{
+                                        label: "Gross Profit",
+                                        data: [(totalGrossProfit + totalNetSales) | 1, totalGrossProfit],
+                                        backgroundColor: ["#8ff5ae", "#fa5e04"]
+                                    }]
+                                }} />
+                            ) : null
+                        }
                     </div>
                     <div className="w-full py-3 px-3 bg-white rounded-tr-[10px] rounded-br-[10px] flex flex-col gap-[10px] h-full">
                         <div className="flex flex-col gap-[5px]">

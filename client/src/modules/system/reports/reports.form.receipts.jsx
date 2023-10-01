@@ -107,6 +107,18 @@ const ReportsFormReceipts = () => {
         ]
     }
 
+    const total = (item) => {
+        return [
+            { value: "TOTAL" },
+            { value: null },
+            { value: null },
+            { value: null },
+            { value: null },
+            { value: null },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.total || 0), 0)) },
+        ]
+    }
+
     useEffect(() => {
         if (data) {
             let tempdata = sorted ? sortBy(data, sorted) : data
@@ -126,6 +138,7 @@ const ReportsFormReceipts = () => {
                 subtext1: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")} - ${moment(filters.to).format("MMMM DD, YYYY")}`,
                 subtext2: `Branch: ${filters.store || "All"}`,
                 columns: columns,
+                total: total(data),
                 data: records
             }))
             window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYY")}-${moment(filters.to).format("MMDDYYYY")}-${filters.store || "All"}`, '_blank')

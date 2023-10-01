@@ -78,7 +78,7 @@ const PrintTransfer = () => {
                         <div className="w-full">Item Name</div>
                         <div className="w-[300px] text-right">Quantity</div>
                         <div className="w-[300px] text-right">Received</div>
-                        <div className="w-[300px] text-right">Base Price</div>
+                        <div className="w-[300px] text-right">Cost</div>
                         <div className="w-[300px] text-right">Amount</div>
                     </div>
                     {

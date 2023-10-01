@@ -10,7 +10,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import DashboardCards from "./dashboard.cards"
 import DashboardFilters from "./dashboard.filters"
 import DashboardGraphSales from "./dashboard.graph.sales"
-import { resetDashboardSummary } from "./dashboard.reducer"
+import { resetDashboardSummary, setDashboardShown } from "./dashboard.reducer"
 
 const DashboardIndex = ({ id }) => {
     const auth = useAuth()
@@ -19,8 +19,18 @@ const DashboardIndex = ({ id }) => {
     const location = useLocation()
     const { handleTrail, user } = useClientContext()
     const toast = useToast()
-    const [loadId, setLoadId] = useState()
-    // const { data, isLoading, isError, refetch } = useQuery(`${name.toLowerCase()}-index`, () => fetchDailySummary(moment(new Date()).subtract(3, 'days').format("YYYY-MM-DD"), moment(new Date()).format("YYYY-MM-DD")))
+    const [showStats, setShowStats] = useState(false)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => { setMounted(true) }, [])
+
+    useEffect(() => {
+        if (mounted) {
+            return () => {
+                setShowStats(false)
+            }
+        }
+    }, [mounted])
 
     useEffect(() => {
         handleTrail(location.pathname.split("/").filter(path => path !== id).join("/"))
@@ -30,12 +40,14 @@ const DashboardIndex = ({ id }) => {
         dispatch(resetDashboardSummary())
     }
 
+    const toggleStatistics = () => {
+        setShowStats(prev => !prev)
+        dispatch(setDashboardShown(!showStats))
+    }
+
     return (
         <div className="h-full flex-none w-full">
-            <div className="flex flex-col gap-3 w-full h-full">
-                <div className={isDev(auth) || isAdmin(auth) ? `flex w-full` : "hidden"}>
-                    <DashboardCards />
-                </div>
+            <div className="flex flex-col w-full h-full">
                 <div className="flex flex-col lg:flex-row w-full h-full gap-4">
                     <div className={`${dashboardSelector.summary ? "" : "hidden"} flex items-center justify-center fixed top-0 left-0 w-screen h-screen transition ease-in-out duration-300 z-20 bg-black bg-opacity-20`}>
                         <div className="w-[90%] lg:w-2/3 h-2/3 p-5 border border-gray-300 rounded-[20px] relative bg-white">
@@ -45,11 +57,17 @@ const DashboardIndex = ({ id }) => {
                             <DashboardGraphSales />
                         </div>
                     </div>
-                    <div className={`w-full transition ease-in-out duration-300 p-5 rounded-[20px] ${isDev(auth) || isAdmin(auth) ? "mt-auto" : "flex items-center justify-center"}`}>
+                    <div className="w-full transition ease-in-out duration-300 p-5 rounded-[20px] flex flex-col items-center justify-center">
                         {/* <DashboardGraphCollection /> */}
                         <img src={Banner} alt="" />
                         {/* <AppLogo style="h-full" /> */}
+                        <div className={`${isDev(auth) || isAdmin(auth) ? "" : "hidden"} mt-5 text-base text-blue-600 cursor-pointer hover:underline no-select`} onClick={() => toggleStatistics()}>
+                            {showStats ? "Hide" : "Show"} Statistics
+                        </div>
                     </div>
+                </div>
+                <div className={showStats ? `flex w-full py-10` : "hidden"}>
+                    <DashboardCards />
                 </div>
             </div>
             <DashboardFilters />

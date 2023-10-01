@@ -79,9 +79,9 @@ const ReportsFormExpenses = () => {
         items: [
             { name: 'Account', stack: false, sort: 'expense_name' },
             { name: 'Date', stack: false, sort: 'expense_date', size: 200 },
+            { name: 'Branch', stack: true, sort: 'branch_name', size: 150 },
             { name: 'No. of Entries', stack: true, sort: 'expense_count', size: 150 },
             { name: 'Net Total', stack: true, sort: 'expense_value', size: 150 },
-            { name: 'Branch', stack: true, sort: 'branch_name', size: 150 },
         ]
     }
 
@@ -89,9 +89,19 @@ const ReportsFormExpenses = () => {
         return [
             { value: item.expense_name },
             { value: longDate(item.expense_date) },
+            { value: item.branch_name },
             { value: item.expense_count },
             { value: currency(item.expense_value) },
-            { value: item.branch_name },
+        ]
+    }
+
+    const total = (item) => {
+        return [
+            { value: "TOTAL" },
+            { value: null },
+            { value: null },
+            { value: item?.reduce((prev, curr) => prev + (curr.expense_count || 0), 0) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.expense_value || 0), 0)) },
         ]
     }
 
@@ -114,6 +124,7 @@ const ReportsFormExpenses = () => {
                 subtext1: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")} - ${moment(filters.to).format("MMMM DD, YYYY")}`,
                 subtext2: `Branch: ${filters.store || "All"}`,
                 columns: columns,
+                total: total(data),
                 data: records
             }))
             window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYY")}-${moment(filters.to).format("MMDDYYYY")}-${filters.store || "All"}`, '_blank')

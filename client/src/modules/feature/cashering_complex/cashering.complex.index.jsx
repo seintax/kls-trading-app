@@ -12,8 +12,8 @@ import useToast from "../../../utilities/hooks/useToast"
 import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { setCategoryData } from "../../library/category/category.reducer"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
-import { showReportCashier } from "../../system/reports/reports.reducer"
-import { reloadBrowserDraftCart, removeBrowserCart, resetBrowserCart, resetBrowserTransaction, setBrowserCategory, setBrowserSearch } from "../browser/browser.reducer"
+import { resetReportCashier, showReportCashier } from "../../system/reports/reports.reducer"
+import { reloadBrowserDraftCart, removeBrowserCart, resetBrowserCart, resetBrowserManager, resetBrowserTransaction, setBrowserCategory, setBrowserSearch } from "../browser/browser.reducer"
 import { useCreateBrowserBySqlTransactionMutation } from "../browser/browser.services"
 import CasheringLedger from "../cashering/cashering.ledger"
 import CasheringReceipts from "../cashering/cashering.receipts"
@@ -21,9 +21,9 @@ import { resetTransactionReceipts, showTransactionReceipts } from "../cashering/
 import CasheringReimburse from "../cashering/cashering.reimburse"
 import CasheringReturn from "../cashering/cashering.return"
 import { useByAllCountTransactionMutation, useByMaxAccountTransactionMutation } from "../cashering/cashering.services"
-import { setChequeDisplay, setChequeNotifier, setChequeShown } from "../cheque/cheque.reducer"
-import { setCreditDisplay, setCreditNotifier, setCreditShown } from "../credit/credit.reducer"
-import { setInventoryDisplay, setInventoryNotifier, setInventoryShown } from "../inventory/inventory.reducer"
+import { resetChequeShown, setChequeDisplay, setChequeNotifier, setChequeShown } from "../cheque/cheque.reducer"
+import { resetCreditShown, setCreditDisplay, setCreditNotifier, setCreditShown } from "../credit/credit.reducer"
+import { resetInventoryShown, setInventoryDisplay, setInventoryNotifier, setInventoryShown } from "../inventory/inventory.reducer"
 import PaymentBrowser from "../payment/payment.browser"
 import PaymentCustomer from "../payment/payment.customer"
 import { removePaymentPaid, resetPaymentTransaction, setPaymentBalance, setPaymentEnableCredit, setPaymentSettlement, showPaymentManager, showPaymentPayor } from "../payment/payment.reducer"
@@ -84,7 +84,12 @@ const CasheringComplexIndex = () => {
                 }
             }
             return () => {
-
+                dispatch(resetInventoryShown())
+                dispatch(resetBrowserManager())
+                dispatch(resetReportCashier())
+                dispatch(resetChequeShown())
+                dispatch(resetCreditShown())
+                dispatch(resetTransactionReceipts())
             }
         }
     }, [mounted])
