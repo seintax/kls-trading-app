@@ -83,12 +83,13 @@ const PrintPurchase = () => {
                     {
                         records?.map((item) => (
                             <div key={item.id} className="w-full flex py-2">
-                                <div className="w-full flex">
-                                    {item.product_name} (<span className="text-gray-500">{item.variant_serial}/{item.variant_model}/{item.variant_brand}</span>)
+                                <div className="w-full flex flex-col">
+                                    {item.product_name}
+                                    <span className="text-gray-500 text-xs">{item.variant_serial}/{item.variant_model}/{item.variant_brand}</span>
                                 </div>
-                                <div className="w-[300px] text-right">{item.received}</div>
+                                <div className="w-[300px] text-right">{item.ordered}</div>
                                 <div className="w-[300px] text-right">{NumFn.acctg.currency(item.costing)}</div>
-                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.received * item.costing)}</div>
+                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.ordered * item.costing)}</div>
                             </div>
                         ))
                     }
