@@ -121,8 +121,10 @@ const byProduct = handler(async (req, res) => {
     const param = getbranch.parameters(req.query)
     const { product, category, acquisition, store, stocks } = getbranch.fields
     const { variant_serial, variant_model, variant_brand } = getbranch.included
-    let params = [p(param.product).Exactly(), p(param.category).Exactly(), p(param.branch).Contains(), "0", "PROCUREMENT", "TRANSFER", "MIGRATION"]
-    let clause = [f(product).IsEqual(), f(category).IsEqual(), f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", "", ""])]
+    // let params = [p(param.product).Exactly(), p(param.category).Exactly(), p(param.branch).Contains(), "0", "PROCUREMENT", "TRANSFER", "MIGRATION"]
+    // let clause = [f(product).IsEqual(), f(category).IsEqual(), f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", "", ""])]
+    let params = [p(param.product).Exactly(), p(param.category).Exactly(), p(param.branch).Contains(), "0"]
+    let clause = [f(product).IsEqual(), f(category).IsEqual(), f(store).Like(), f(stocks).Greater()]
     let series = [f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc()]
     let limits = undefined
     const builder = getbranch.inquiry(clause, params, series, limits)
