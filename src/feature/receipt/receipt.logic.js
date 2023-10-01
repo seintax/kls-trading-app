@@ -113,22 +113,6 @@ const sqlReceipt = handler(async (req, res) => {
             })
 
             let inventory = await new Promise(async (resolve, reject) => {
-                // let data = {
-                //     product: req.body.product,
-                //     variant: req.body.variant,
-                //     category: req.body.purchase_category,
-                //     delivery: req.body.delivery,
-                //     purchase: req.body.purchase,
-                //     receipt: receipt.insertResult.id,
-                //     supplier: req.body.supplier,
-                //     store: req.body.store,
-                //     received: req.body.quantity,
-                //     stocks: req.body.quantity,
-                //     cost: req.body.costing,
-                //     base: req.body.pricing,
-                //     price: req.body.pricing,
-                //     acquisition: "PROCUREMENT"
-                // }
                 if (!req.body.inventory.id) {
                     let data = {
                         ...req.body.inventory,
