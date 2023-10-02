@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
 import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
-import { getBranch, isDev, isEmpty } from "../../../utilities/functions/string.functions"
+import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
@@ -52,8 +52,8 @@ const ReportsFormCashierSummary = () => {
                     if (res.success) {
                         setLibBranches(res?.arrayResult.map(item => {
                             return {
-                                key: item.code,
-                                value: item.code
+                                key: item?.code,
+                                value: item?.code
                             }
                         }))
                     }
@@ -88,26 +88,26 @@ const ReportsFormCashierSummary = () => {
             { name: 'Credit Sales', stack: true, sort: 'credit_sales', size: 150 },
             { name: 'Partial', stack: true, sort: 'partial', size: 150 },
             { name: 'Refunds', stack: true, sort: 'refunds', size: 150 },
-            isDev(auth) ? { name: 'Income', stack: true, size: 150 } : null,
+            // isDev(auth) ? { name: 'Income', stack: true, size: 150 } : null,
         ]
     }
 
     const items = (item) => {
         return [
-            { value: longDate(item.day) },
-            { value: item.branch },
-            { value: currency(item.gross_sales) },
-            { value: currency(item.discounts) },
-            { value: currency(item.net_sales) },
-            { value: currency(item.cash_sales) },
-            { value: currency(item.credit_sales) },
-            { value: currency(item.partial) },
-            { value: currency(item.refunds) },
-            isDev(auth) ? {
-                value: <div className={currency(item.net_sales) === currency(item.cash_sales + item.credit_sales + item.partial) ? "" : "text-red-500"}>
-                    {currency(item.cash_sales + item.credit_sales + item.partial)}
-                </div>
-            } : null,
+            { value: longDate(item?.day) },
+            { value: item?.branch },
+            { value: currency(item?.gross_sales) },
+            { value: currency(item?.discounts) },
+            { value: currency(item?.net_sales) },
+            { value: currency(item?.cash_sales) },
+            { value: currency(item?.credit_sales) },
+            { value: currency(item?.partial) },
+            { value: currency(item?.refunds) },
+            // isDev(auth) ? {
+            //     value: <div className={currency(item?.net_sales) === currency((item?.cash_sales || 0) + (item?.credit_sales || 0) + (item?.partial || 0)) ? "" : "text-red-500"}>
+            //         {currency((item?.cash_sales || 0) + (item?.credit_sales || 0) + (item?.partial || 0))}
+            //     </div>
+            // } : null,
         ]
     }
 
@@ -115,14 +115,14 @@ const ReportsFormCashierSummary = () => {
         return [
             { value: "TOTAL" },
             { value: null },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.gross_sales || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.discounts || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.net_sales || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.cash_sales || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.credit_sales || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.partial || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.refunds || 0), 0)) },
-            isDev(auth) ? { value: currency(item?.reduce((prev, curr) => prev + (curr.cash_sales + curr.credit_sales + curr.partial), 0)) } : null,
+            { value: currency(item?.reduce((prev, curr) => prev + (curr?.gross_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr?.discounts || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr?.net_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr?.cash_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr?.credit_sales || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr?.partial || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr?.refunds || 0), 0)) },
+            // isDev(auth) ? { value: currency(item?.reduce((prev, curr) => prev + ((curr?.cash_sales || 0) + (curr?.credit_sales || 0) + (curr?.partial || 0)), 0)) } : null,
         ]
     }
 
@@ -131,7 +131,7 @@ const ReportsFormCashierSummary = () => {
             let tempdata = sorted ? sortBy(data, sorted) : data
             setrecords(tempdata?.map((item, i) => {
                 return {
-                    key: item.id,
+                    key: item?.id,
                     items: items(item)
                 }
             }))
