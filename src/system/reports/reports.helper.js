@@ -25,7 +25,7 @@ const reports = {
                     ON vrnt_id=invt_variant
         WHERE 
             sale_item=invt_id AND 
-            sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
+            (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             invt_store LIKE '%@store%' 
         GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category,invt_store
         ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category
@@ -43,7 +43,7 @@ const reports = {
             pos_stock_inventory 
         WHERE 
             sale_item=invt_id AND 
-            sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+            (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
             invt_store LIKE '%@store%' 
         GROUP BY invt_category,invt_store
         ORDER BY invt_category
@@ -63,7 +63,7 @@ const reports = {
             sys_account
         WHERE 
             paym_account=acct_id AND 
-            paym_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+            (paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
             acct_store LIKE '%@store%'
         GROUP BY paym_type,paym_method,acct_store
         ORDER BY paym_type,paym_method
@@ -71,7 +71,7 @@ const reports = {
     ),
     sales_summary: new Query("sales_summary", `
         SELECT
-            DATE(sale_time) AS day,
+            DATE(sale_time + INTERVAL 8 HOUR) AS day,
             SUM(sale_total) AS gross_sales,
             SUM(sale_price * sale_returned) AS refunds,
             SUM(sale_less + sale_markdown) AS discounts,
@@ -86,10 +86,10 @@ const reports = {
             pos_stock_inventory
         WHERE 
             sale_item=invt_id AND 
-            sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
+            (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             invt_store LIKE '%@store%' 
-        GROUP BY DATE(sale_time),invt_store
-        ORDER BY DATE(sale_time)
+        GROUP BY DATE(sale_time + INTERVAL 8 HOUR),invt_store
+        ORDER BY DATE(sale_time + INTERVAL 8 HOUR)
         `
     ),
     expenses: new Query("expenses", `
@@ -98,16 +98,16 @@ const reports = {
             expn_store AS branch_name,
             COUNT(expn_id) AS expense_count,
             SUM(expn_purchase) AS expense_value,
-            DATE(expn_time) AS expense_date
+            DATE(expn_time + INTERVAL 8 HOUR) AS expense_date
         FROM 
             pos_archive_expenses,
             sys_account
         WHERE 
             expn_account=acct_id AND 
-            expn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
+            (expn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             expn_store LIKE '%@store%' 
-        GROUP BY DATE(expn_time),expn_store,expn_inclusion
-        ORDER BY DATE(expn_time),expn_store,expn_inclusion
+        GROUP BY DATE(expn_time + INTERVAL 8 HOUR),expn_store,expn_inclusion
+        ORDER BY DATE(expn_time + INTERVAL 8 HOUR),expn_store,expn_inclusion
         `
     ),
     expenses_summary: new Query("expenses_summary", `
@@ -121,7 +121,7 @@ const reports = {
             sys_account
         WHERE 
             expn_account=acct_id AND 
-            expn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
+            (expn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             expn_store LIKE '%@store%' 
         GROUP BY expn_store,expn_inclusion
         ORDER BY expn_store,expn_inclusion
@@ -137,89 +137,15 @@ const reports = {
             sys_account
         WHERE 
             expn_account=acct_id AND 
-            expn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
+            (expn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             acct_store LIKE '%@store%' 
-        GROUP BY DATE(expn_time),acct_store
-        ORDER BY DATE(expn_time)
-        `
-    ),
-    old_cashier_summary: new Query("cashier_summary", `
-        SELECT
-            DATE(sale_time) AS day,
-            SUM(sale_total) AS gross_sales,
-            SUM(sale_less + sale_markdown) AS discounts,
-            SUM(sale_net) AS net_sales,
-            invt_store AS branch,
-            (
-                SELECT 
-                    SUM(rtrn_r_net)
-                FROM 
-                    pos_return_transaction,
-                    sys_account  
-                WHERE 
-                    acct_id=rtrn_account 
-                        AND
-                    acct_store=invt_store
-                        AND
-                    DATE(rtrn_time)=DATE(sale_time)
-            ) AS refunds,
-            (
-                SELECT 
-                    SUM(paym_amount)
-                FROM pos_payment_collection 
-                WHERE 
-                    paym_type='SALES' 
-                        AND
-                    paym_store=invt_store
-                        AND
-                    DATE(paym_time)=DATE(sale_time)
-            ) AS cash_sales,
-            (
-                SELECT 
-                    SUM(trns_net - trns_partial) 
-                FROM 
-                    pos_sales_transaction,
-                    sys_account
-                WHERE 
-                    acct_id=trns_account 
-                        AND
-                    trns_method='CREDIT'
-                        AND
-                    acct_store=invt_store
-                        AND
-                    DATE(trns_time)=DATE(sale_time)
-            ) AS credit_sales,
-            (
-                SELECT 
-                    SUM(trns_partial) 
-                FROM 
-                    pos_sales_transaction,
-                    sys_account 
-                WHERE 
-                    acct_id=trns_account 
-                        AND
-                    acct_store=invt_store
-                        AND
-                    DATE(trns_time)=DATE(sale_time)
-            ) AS partial
-        FROM 
-            pos_sales_dispensing
-                LEFT JOIN pos_sales_transaction
-                    ON trns_code=sale_trans,
-            pos_stock_inventory
-        WHERE 
-            sale_item=invt_id 
-                AND 
-            sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
-                AND
-            invt_store LIKE '%@store%' 
-        GROUP BY DATE(sale_time),refunds,invt_store,cash_sales,credit_sales,partial
-        ORDER BY DATE(sale_time)
+        GROUP BY DATE(expn_time + INTERVAL 8 HOUR),acct_store
+        ORDER BY DATE(expn_time + INTERVAL 8 HOUR)
         `
     ),
     cashier_summary: new Query("cashier_summary", `
         SELECT
-            DATE(trns_time) AS day,
+            DATE(trns_time + INTERVAL 8 HOUR) AS day,
             SUM(IFNULL(rtrn_p_total, trns_total)) AS gross_sales,
             SUM(IFNULL(rtrn_p_less, trns_less) + IFNULL(rtrn_p_markdown, trns_markdown)) AS discounts,
             SUM(IFNULL(rtrn_p_net, trns_net)) AS net_sales,
@@ -237,7 +163,7 @@ const reports = {
                         AND
                     acct_store=branch
                         AND
-                    DATE(rtrn_time)=DATE(trns_time)
+                    DATE(rtrn_time + INTERVAL 8 HOUR)=DATE(trns_time + INTERVAL 8 HOUR)
             ) AS refunds,
             (
                 SELECT 
@@ -248,7 +174,7 @@ const reports = {
                         AND
                     paym_store=branch
                         AND
-                    DATE(paym_time)=DATE(trns_time)
+                    DATE(paym_time + INTERVAL 8 HOUR)=DATE(trns_time + INTERVAL 8 HOUR)
             ) AS cash_sales 
         FROM 
             pos_sales_transaction
@@ -267,11 +193,11 @@ const reports = {
         WHERE 
             trns_account=acct_id 
                 AND 
-            trns_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+            (trns_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
                 AND
             acct_store LIKE '%@store%' 
-        GROUP BY DATE(trns_time),refunds,acct_store,cash_sales
-        ORDER BY DATE(trns_time)
+        GROUP BY DATE(trns_time + INTERVAL 8 HOUR),refunds,acct_store,cash_sales
+        ORDER BY DATE(trns_time + INTERVAL 8 HOUR)
         `
     ),
 }
