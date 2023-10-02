@@ -58,7 +58,6 @@ const CasheringComplexBrowse = () => {
                                     }]
                                 })
                             })
-                            console.log(productArr)
                             dispatch(setMasterlistData(productArr))
                         }
                     })

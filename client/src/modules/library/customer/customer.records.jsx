@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { NumFn } from "../../../utilities/functions/number.funtions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
@@ -11,6 +12,7 @@ import { setCustomerItem, setCustomerNotifier, showCustomerManager } from "./cus
 import { useDeleteCustomerMutation } from "./customer.services"
 
 const CustomerRecords = () => {
+    const auth = useAuth()
     const dataSelector = useSelector(state => state.customer)
     const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
@@ -68,7 +70,7 @@ const CustomerRecords = () => {
             { value: item.email },
             { value: item.count },
             { value: NumFn.currency(item.value) },
-            { value: <DataOperation actions={actions(item)} /> }
+            { value: (isDev(auth) || isAdmin(auth)) ? <DataOperation actions={actions(item)} /> : null },
         ]
     }
 
