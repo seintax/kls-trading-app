@@ -66,9 +66,9 @@ const CustomerRecords = () => {
     const items = (item) => {
         return [
             { value: item.name },
-            { value: item.address },
-            { value: item.cellphone },
-            { value: item.email },
+            { value: item.address || "-" },
+            { value: item.cellphone || "-" },
+            { value: item.email || "-" },
             { value: item.count },
             { value: NumFn.currency(item.value) },
             { value: (isDev(auth) || isAdmin(auth)) ? <DataOperation actions={actions(item)} /> : null },
