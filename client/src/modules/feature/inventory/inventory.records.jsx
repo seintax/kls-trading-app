@@ -88,7 +88,7 @@ const InventoryRecords = () => {
             { value: item.stocks },
             { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? NumFn.currency(item.price) : item.store === "JT-MAIN" ? "" : NumFn.currency(item.price) },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
-            { value: <DataOperation actions={actions(item)} /> }
+            { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? <DataOperation actions={actions(item)} /> : item.store === "JT-MAIN" ? "" : <DataOperation actions={actions(item)} /> },
         ]
     }
 
