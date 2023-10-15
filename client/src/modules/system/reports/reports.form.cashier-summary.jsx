@@ -63,6 +63,7 @@ const ReportsFormCashierSummary = () => {
                 await cashierSummary({ fr: filters.fr, to: filters.to, store: filters.store })
                     .unwrap()
                     .then(res => {
+                        console.log(res)
                         if (res.success) {
                             setdata(res.data)
                         }
@@ -87,6 +88,7 @@ const ReportsFormCashierSummary = () => {
             { name: 'Cash Sales', stack: true, sort: 'cash_sales', size: 150 },
             { name: 'Credit Sales', stack: true, sort: 'credit_sales', size: 150 },
             { name: 'Partial', stack: true, sort: 'partial', size: 150 },
+            { name: 'Credit Collection', stack: true, sort: 'credit_collection', size: 150 },
             { name: 'Refunds', stack: true, sort: 'refunds', size: 150 },
             // isDev(auth) ? { name: 'Income', stack: true, size: 150 } : null,
         ]
@@ -102,6 +104,7 @@ const ReportsFormCashierSummary = () => {
             { value: currency(item?.cash_sales) },
             { value: currency(item?.credit_sales) },
             { value: currency(item?.partial) },
+            { value: currency((item?.credit_collection - item?.partial) > 0 ? item?.credit_collection - item?.partial : 0) },
             { value: currency(item?.refunds) },
             // isDev(auth) ? {
             //     value: <div className={currency(item?.net_sales) === currency((item?.cash_sales || 0) + (item?.credit_sales || 0) + (item?.partial || 0)) ? "" : "text-red-500"}>

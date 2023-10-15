@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import { resetInventoryManager } from "../inventory/inventory.reducer"
@@ -9,6 +11,7 @@ import { resetAdjustmentItem, resetAdjustmentManager, setAdjustmentData, setAdju
 import { useByInventoryAdjustmentMutation } from "./inventory.item.services"
 
 const AdjustmentIndex = () => {
+    const auth = useAuth()
     const [allAdjustment, { isLoading, isError, isSuccess }] = useByInventoryAdjustmentMutation()
     const dataSelector = useSelector(state => state.adjustment)
     const inventorySelector = useSelector(state => state.inventory)
@@ -80,7 +83,7 @@ const AdjustmentIndex = () => {
                 ) : (
                     <DataIndex
                         display={dataSelector.display}
-                        actions={actions()}
+                        actions={(isDev(auth) || isAdmin(auth)) ? actions() : []}
                         data={dataSelector.data}
                         isError={isError}
                         isLoading={isLoading}
