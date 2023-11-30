@@ -42,7 +42,7 @@ const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, isE
                     {
                         (actions?.map((action, index) => (
                             <div key={index} className="">
-                                <Link onClick={action?.callback} className="button-link">
+                                <Link onClick={action?.callback} className={`${action?.hidden ? "hidden" : "button-link"}`}>
                                     {action.label}
                                 </Link>
                             </div>

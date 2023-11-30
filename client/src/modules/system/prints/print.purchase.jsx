@@ -97,7 +97,7 @@ const PrintPurchase = () => {
                         <div className="w-full">&nbsp;</div>
                         <div className="w-[300px] text-right">&nbsp;</div>
                         <div className="w-[300px] text-right font-bold">Total</div>
-                        <div className="w-[300px] text-right">{NumFn.acctg.currency(records?.reduce((prev, curr) => prev + ((curr.purchase_ordertotal || 0) * (curr.costing || 0)), 0))}</div>
+                        <div className="w-[300px] text-right">{NumFn.acctg.currency(records?.reduce((prev, curr) => prev + ((curr.ordered || 0) * (curr.costing || 0)), 0))}</div>
                     </div>
                 </div>
             </div>

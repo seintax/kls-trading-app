@@ -63,7 +63,6 @@ const ReportsFormCashierSummary = () => {
                 await cashierSummary({ fr: filters.fr, to: filters.to, store: filters.store })
                     .unwrap()
                     .then(res => {
-                        console.log(res)
                         if (res.success) {
                             setdata(res.data)
                         }

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import CategoryManage from "./category.manage"
 import CategoryRecords from "./category.records"
@@ -7,6 +9,7 @@ import { resetCategoryItem, setCategoryData, setCategoryNotifier, showCategoryMa
 import { useFetchAllCategoryMutation } from "./category.services"
 
 const CategoryIndex = () => {
+    const auth = useAuth()
     const [allCategory, { isLoading, isError, isSuccess }] = useFetchAllCategoryMutation()
     const dataSelector = useSelector(state => state.category)
     const dispatch = useDispatch()
@@ -36,7 +39,7 @@ const CategoryIndex = () => {
 
     const actions = () => {
         return [
-            { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry },
+            { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry, hidden: !isDev(auth) && !isAdmin(auth) },
         ]
     }
 

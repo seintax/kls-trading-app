@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import moment from "moment"
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
@@ -8,7 +9,7 @@ import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import AdjustmentIndex from "../inventory-item/inventory.item.index"
 import PriceIndex from "../price/price.index"
 import InventoryRecords from "./inventory.records"
-import { resetInventoryItem, resetInventoryManager, setInventoryData, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
+import { resetInventoryManager, setInventoryData, setInventoryNotifier } from "./inventory.reducer"
 import { useFetchAllInventoryBranchMutation } from "./inventory.services"
 
 const InventoryIndex = () => {
@@ -90,14 +91,22 @@ const InventoryIndex = () => {
         instantiate()
     }, [auth])
 
-    const toggleNewEntry = () => {
-        dispatch(resetInventoryItem())
-        dispatch(showInventoryManager())
-    }
+    const printInventory = useCallback(() => {
+        if (dataSelector.print?.length) {
+            localStorage.setItem("inventory", JSON.stringify({
+                title: `Inventory`,
+                subtext1: `as of ${moment(new Date()).format("MMMM DD, YYYY")}`,
+                subtext2: `Branch: ${currentBranch} `,
+                columns: dataSelector.printable,
+                data: dataSelector.print
+            }))
+            window.open(`/#/print/inventory/${moment(new Date()).format("MMDDYYYYHHmmss")}`, '_blank')
+        }
+    }, [dataSelector.data, dataSelector.print])
 
     const actions = () => {
         return [
-            // { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry },
+            { label: `Print Inventory`, callback: printInventory },
         ]
     }
 

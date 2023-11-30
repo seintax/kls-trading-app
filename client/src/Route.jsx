@@ -26,6 +26,7 @@ import ConfigIndex from "./modules/system/config/config.index"
 import ExpensesIndex from "./modules/system/expenses/expenses.index"
 import PermissionIndex from "./modules/system/permission/permission.index"
 import PrintBase from "./modules/system/prints/print.base"
+import PrintInventory from "./modules/system/prints/print.inventory"
 import PrintPurchase from "./modules/system/prints/print.purchase"
 import PrintReceipt from "./modules/system/prints/print.receipt"
 import PrintReports from "./modules/system/prints/print.reports"
@@ -80,6 +81,11 @@ const AppRoute = () => {
 
             <Route path="/print" element={<PrintBase />} >
                 <Route index element={<AppEmpty />} />
+
+                <Route path="inventory" >
+                    <Route index element={<PrintInventory />} />
+                    <Route path=":id" element={<PrintInventory />} />
+                </Route>
 
                 <Route path="receipt" >
                     <Route index element={<PrintReceipt />} />
