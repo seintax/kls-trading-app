@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import { isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import CategoryManage from "./category.manage"
@@ -39,7 +39,7 @@ const CategoryIndex = () => {
 
     const actions = () => {
         return [
-            { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry, hidden: !isDev(auth) && !isAdmin(auth) },
+            { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry, hidden: !isDev(auth) },
         ]
     }
 

@@ -20,6 +20,7 @@ const initialState = {
             { name: 'Supplier', stack: true, sort: 'supplier_name', size: 250 },
             { name: 'Category', stack: true, sort: 'category', size: 150 },
             { name: 'Stocks', stack: true, sort: 'stocks', size: 150, position: "center" },
+            { name: 'Cost', stack: true, sort: 'cost', size: 150, position: "center" },
             { name: 'Price', stack: true, sort: 'price', size: 150, position: "center" },
             { name: '', stack: true, sort: 'store', size: 160, position: "right" },
             { name: '', stack: false, screenreader: 'Action', size: 100 }
@@ -31,8 +32,8 @@ const initialState = {
             { name: 'Supplier', stack: true, sort: 'supplier_name', size: 250 },
             { name: 'Category', stack: true, sort: 'category', size: 150 },
             { name: 'Stocks', stack: true, sort: 'stocks', size: 150 },
-            { name: 'Price', stack: true, sort: 'price', size: 150 },
-            { name: 'Branch', stack: true, sort: 'store', size: 160 },
+            { name: 'Cost', stack: true, sort: 'cost', size: 160 },
+            { name: 'Price', stack: true, sort: 'price', size: 160 },
         ]
     },
     print: []

@@ -109,7 +109,7 @@ const ReportsFormReceipts = () => {
 
     const total = (item) => {
         return [
-            { value: "TOTAL" },
+            { value: "OVERALL TOTAL" },
             { value: null },
             { value: null },
             { value: null },
@@ -193,6 +193,7 @@ const ReportsFormReceipts = () => {
                     setPage={setstartpage}
                     itemsperpage={itemsperpage}
                     keeppagination={true}
+                    total={total(data)}
                 />
             </>
         ) : null

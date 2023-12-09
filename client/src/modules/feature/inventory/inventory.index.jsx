@@ -95,7 +95,7 @@ const InventoryIndex = () => {
         if (dataSelector.print?.length) {
             localStorage.setItem("inventory", JSON.stringify({
                 title: `Inventory`,
-                subtext1: `as of ${moment(new Date()).format("MMMM DD, YYYY")}`,
+                subtext1: `as of ${moment(new Date()).format("MMMM DD, YYYY hh:mm:ss a")}`,
                 subtext2: `Branch: ${currentBranch} `,
                 columns: dataSelector.printable,
                 data: dataSelector.print

@@ -98,7 +98,7 @@ const CasheringReceipts = () => {
 
     const items = (item) => {
         return [
-            { value: item.code },
+            { value: item.code?.split("-")[2] },
             { value: short12Time(item.time) },
             { value: item.method },
             { value: item.status },
