@@ -178,7 +178,7 @@ const ReportsFormSales = () => {
 
     const totalItem = (item) => {
         return [
-            { value: "TOTAL" },
+            { value: "OVERALL TOTAL" },
             { value: null },
             { value: item?.reduce((prev, curr) => prev + (curr.item_sold || 0), 0) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.net_sales || 0), 0)) },
@@ -191,7 +191,7 @@ const ReportsFormSales = () => {
 
     const totalCategory = (item) => {
         return [
-            { value: "TOTAL" },
+            { value: "OVERALL TOTAL" },
             { value: item?.reduce((prev, curr) => prev + (curr.item_sold || 0), 0) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.net_sales || 0), 0)) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.goods_cost || 0), 0)) },
@@ -201,7 +201,7 @@ const ReportsFormSales = () => {
 
     const totalCollection = (item) => {
         return [
-            { value: "TOTAL" },
+            { value: "OVERALL TOTAL" },
             { value: null },
             { value: item?.reduce((prev, curr) => prev + (curr.transaction_count || 0), 0) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.payment_total || 0), 0)) },
@@ -290,6 +290,7 @@ const ReportsFormSales = () => {
                             setPage={setstartpage}
                             itemsperpage={itemsperpage}
                             keeppagination={true}
+                            total={totalRow()}
                         />
                     ) : null
                 }
@@ -303,6 +304,7 @@ const ReportsFormSales = () => {
                             setPage={setstartpage}
                             itemsperpage={itemsperpage}
                             keeppagination={true}
+                            total={totalRow()}
                         />
                     ) : null
                 }
@@ -316,6 +318,7 @@ const ReportsFormSales = () => {
                             setPage={setstartpage}
                             itemsperpage={itemsperpage}
                             keeppagination={true}
+                            total={totalRow()}
                         />
                     ) : null
                 }

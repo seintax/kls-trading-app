@@ -554,3 +554,20 @@ CREATE TABLE pos_shift_rcd (
     crcd_php_0c      int DEFAULT 0,
     crcd_total       decimal(30,2)
 );
+
+DELETE FROM pos_sales_transaction;
+DELETE FROM pos_sales_dispensing;
+DELETE FROM pos_sales_credit;
+DELETE FROM pos_return_transaction;
+DELETE FROM pos_return_reimbursement;
+DELETE FROM pos_return_dispensing;
+DELETE FROM pos_purchase_receivable;
+DELETE FROM pos_purchase_order;
+DELETE FROM pos_purchase_billing;
+DELETE FROM pos_payment_collection;
+DELETE FROM pos_payment_cheque;
+DELETE FROM pos_delivery_receipt;
+DELETE FROM pos_delivery_request;
+DELETE FROM pos_stock_price;
+DELETE FROM pos_transfer_receipt;
+DELETE FROM pos_transfer_request;

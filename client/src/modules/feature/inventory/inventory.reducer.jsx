@@ -20,11 +20,23 @@ const initialState = {
             { name: 'Supplier', stack: true, sort: 'supplier_name', size: 250 },
             { name: 'Category', stack: true, sort: 'category', size: 150 },
             { name: 'Stocks', stack: true, sort: 'stocks', size: 150, position: "center" },
+            { name: 'Cost', stack: true, sort: 'cost', size: 150, position: "center" },
             { name: 'Price', stack: true, sort: 'price', size: 150, position: "center" },
             { name: '', stack: true, sort: 'store', size: 160, position: "right" },
             { name: '', stack: false, screenreader: 'Action', size: 100 }
         ]
-    }
+    },
+    printable: {
+        items: [
+            { name: 'Product Name', stack: false, sort: 'product_name' },
+            { name: 'Supplier', stack: true, sort: 'supplier_name', size: 250 },
+            { name: 'Category', stack: true, sort: 'category', size: 150 },
+            { name: 'Stocks', stack: true, sort: 'stocks', size: 150 },
+            { name: 'Cost', stack: true, sort: 'cost', size: 160 },
+            { name: 'Price', stack: true, sort: 'price', size: 160 },
+        ]
+    },
+    print: []
 }
 
 const inventorySlice = createSlice({
@@ -33,6 +45,9 @@ const inventorySlice = createSlice({
     reducers: {
         setInventoryData: (state, action) => {
             state.data = action.payload
+        },
+        setInventoryPrint: (state, action) => {
+            state.print = action.payload
         },
         setInventoryItem: (state, action) => {
             state.item = action.payload
@@ -78,6 +93,7 @@ const inventoryReducer = inventorySlice.reducer
 
 export const {
     setInventoryData,
+    setInventoryPrint,
     setInventoryItem,
     resetInventoryItem,
     setInventoryShown,

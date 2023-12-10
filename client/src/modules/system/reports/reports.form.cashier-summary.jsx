@@ -63,7 +63,6 @@ const ReportsFormCashierSummary = () => {
                 await cashierSummary({ fr: filters.fr, to: filters.to, store: filters.store })
                     .unwrap()
                     .then(res => {
-                        console.log(res)
                         if (res.success) {
                             setdata(res.data)
                         }
@@ -116,7 +115,7 @@ const ReportsFormCashierSummary = () => {
 
     const total = (item) => {
         return [
-            { value: "TOTAL" },
+            { value: "OVERALL TOTAL" },
             { value: null },
             { value: currency(item?.reduce((prev, curr) => prev + (curr?.gross_sales || 0), 0)) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr?.discounts || 0), 0)) },
@@ -124,6 +123,7 @@ const ReportsFormCashierSummary = () => {
             { value: currency(item?.reduce((prev, curr) => prev + (curr?.cash_sales || 0), 0)) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr?.credit_sales || 0), 0)) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr?.partial || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr?.credit_collection - curr?.partial) > 0 ? curr?.credit_collection - curr?.partial : 0), 0)) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr?.refunds || 0), 0)) },
             // isDev(auth) ? { value: currency(item?.reduce((prev, curr) => prev + ((curr?.cash_sales || 0) + (curr?.credit_sales || 0) + (curr?.partial || 0)), 0)) } : null,
         ]
@@ -203,6 +203,7 @@ const ReportsFormCashierSummary = () => {
                     setPage={setstartpage}
                     itemsperpage={itemsperpage}
                     keeppagination={true}
+                    total={total(data)}
                 />
             </>
         ) : null

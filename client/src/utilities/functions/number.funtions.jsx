@@ -49,7 +49,7 @@ const acctgCurrency = (value) => {
 }
 
 const acctgPercent = (value) => {
-    return value ? `${decimalFormat.format(amount(value || 0) * 100)}%` : "-"
+    return value ? `${Number(decimalFormat.format(amount(value || 0) * 100))?.toFixed(2)}%` : "-"
 }
 
 const Utils = {

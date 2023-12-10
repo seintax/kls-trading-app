@@ -95,7 +95,7 @@ const ReportsFormExpensesSummary = () => {
 
     const total = (item) => {
         return [
-            { value: "TOTAL" },
+            { value: "OVERALL TOTAL" },
             { value: null },
             { value: item?.reduce((prev, curr) => prev + (curr.expense_count || 0), 0) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.expense_value || 0), 0)) },
@@ -167,6 +167,7 @@ const ReportsFormExpensesSummary = () => {
                     setPage={setstartpage}
                     itemsperpage={itemsperpage}
                     keeppagination={true}
+                    total={total(data)}
                 />
             </>
         ) : null

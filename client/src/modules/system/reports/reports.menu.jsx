@@ -53,6 +53,12 @@ const ReportsMenu = () => {
             </span>
             <span
                 className={menuStyle}
+                onClick={() => onSelectReport("Inventory Valuation")}
+            >
+                Inventory Valuation
+            </span>
+            <span
+                className={menuStyle}
                 onClick={() => onSelectReport("Expenses")}
             >
                 Expenses

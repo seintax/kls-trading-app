@@ -1,4 +1,5 @@
 import {
+    ArchiveBoxIcon,
     BanknotesIcon,
     CalculatorIcon,
     Cog8ToothIcon,
@@ -41,6 +42,8 @@ export const userNavigation = [
 const menulist = (config) => {
     return [
         { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
+        { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
+        { name: "Inventory", href: "/inventory", icon: ArchiveBoxIcon, current: false },
         { name: "Cashering", href: isYes(config.simplifiedcashering) ? "/cashering" : "/complex-cashering", icon: CalculatorIcon, current: false },
         { name: "Credits", href: "/credits", icon: ReceiptRefundIcon, current: false },
         { name: "Cheque Monitor", href: "/cheque-monitor", icon: DocumentTextIcon, current: false },
@@ -51,8 +54,6 @@ const menulist = (config) => {
             children: [
                 { name: "Purchase Order", href: "/purchase-order" },
                 { name: "Delivery", href: "/delivery" },
-                { name: "Inventory", href: "/inventory" },
-                // { name: "Adjustment", href: "/stock-adjustment" },
                 { name: "Stock Transfer", href: "/stock-transfer" },
                 { name: "Receiving", href: "/receiving" },
             ]
@@ -73,7 +74,6 @@ const menulist = (config) => {
             ]
         },
         { name: "Expenses", href: "/expenses", icon: BanknotesIcon, current: false },
-        { name: "Reports", href: "/reports", icon: PresentationChartLineIcon, current: false },
         { name: "Roles", href: "/roles", icon: UserGroupIcon, current: false },
         { name: "Accounts", href: "/accounts", icon: UsersIcon, current: false },
         { name: "Settings", href: "/settings", icon: Cog8ToothIcon, current: false },

@@ -53,7 +53,6 @@ const ReceivingRecords = () => {
     }
 
     const items = (item) => {
-        console.log(item)
         return [
             { value: `${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}` },
             { value: item.supplier_name },

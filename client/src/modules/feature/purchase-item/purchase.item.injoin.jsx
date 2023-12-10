@@ -169,7 +169,7 @@ const ReceivableInjoin = () => {
             .min(1, "Quantity is required"),
         costing: yup
             .number()
-            .min(1, "Purchase cost is required")
+            .min(0, "Purchase cost is required. Minimum value of 0.")
     })
 
     const onCompleted = () => {

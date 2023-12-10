@@ -10,7 +10,7 @@ import DataOperation from '../../../utilities/interface/datastack/data.operation
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import { setPriceShown } from "../price/price.reducer"
-import { setInventoryItem, setInventoryNotifier, showInventoryManager } from "./inventory.reducer"
+import { setInventoryItem, setInventoryNotifier, setInventoryPrint, showInventoryManager } from "./inventory.reducer"
 import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
 
 const InventoryRecords = () => {
@@ -83,12 +83,24 @@ const InventoryRecords = () => {
     const items = (item) => {
         return [
             { value: `${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}` },
-            { value: item.supplier_name },
+            { value: item.supplier_name || "-" },
             { value: item.category },
             { value: item.stocks },
+            { value: (isDev(auth) || isAdmin(auth)) ? NumFn.currency(item.cost) : "-" },
             { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? NumFn.currency(item.price) : item.store === "JT-MAIN" ? "-" : NumFn.currency(item.price) },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? <DataOperation actions={actions(item)} /> : item.store === "JT-MAIN" ? "" : <DataOperation actions={actions(item)} /> },
+        ]
+    }
+
+    const print = (item) => {
+        return [
+            { value: `${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}` },
+            { value: item.supplier_name || "-" },
+            { value: item.category },
+            { value: item.stocks },
+            { value: (isDev(auth) || isAdmin(auth)) ? NumFn.currency(item.cost) : "-" },
+            { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? NumFn.currency(item.price) : item.store === "JT-MAIN" ? "-" : NumFn.currency(item.price) },
         ]
     }
 
@@ -114,6 +126,13 @@ const InventoryRecords = () => {
                     ondoubleclick: () => { },
                 }
             }))
+            dispatch(setInventoryPrint(data?.map((item, i) => {
+                return {
+                    key: item.id,
+                    items: print(item),
+                    ondoubleclick: () => { },
+                }
+            })))
         }
     }, [dataSelector?.data, sorted, searchSelector.searchKey])
 

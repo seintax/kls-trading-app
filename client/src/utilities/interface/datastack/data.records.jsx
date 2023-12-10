@@ -4,7 +4,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react'
 import DataPagination from "./data.pagination"
 
-const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading, fontsize = "sm" }) => {
+const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading, total, fontsize = "sm" }) => {
     const refList = useRef()
     const [data, setData] = useState()
     const [order, setOrder] = useState()
@@ -156,7 +156,27 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                     }
                                 </tr>
                             ))
-
+                        }
+                        {
+                            (total?.length) && (
+                                <tr
+                                    className={`hover:bg-gray-100 ${rowstyle}`}
+                                >
+                                    <td className="border-b border-gray-200 px-2 py-4 text-sm text-gray-500 no-select">&nbsp;</td>
+                                    {
+                                        (total?.length) ? (
+                                            total?.map((item, totalindex) => (
+                                                <td
+                                                    key={totalindex}
+                                                    className={`w-auto py-4 border-b border-gray-200 px-2 text-sm text-gray-900 font-bold ${itemstyle}`}
+                                                >
+                                                    {item.value}
+                                                </td>
+                                            ))
+                                        ) : null
+                                    }
+                                </tr>
+                            )
                         }
                         {
                             (!data?.length) && (
