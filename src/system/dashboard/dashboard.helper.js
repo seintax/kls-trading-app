@@ -3,7 +3,7 @@ const { Query } = require("../../utilities/builder.utility")
 const dashboard = {
     weekly: new Query("weekly", `
     SELECT 
-        DATE(paym_time) AS day, 
+        DATE(paym_time + INTERVAL 8 HOUR) AS day, 
         SUM(IF(paym_method='CASH',paym_amount,0)) AS cash,
         SUM(IF(paym_method='CHEQUE',paym_amount,0)) AS cheque,
         SUM(IF(paym_method='GCASH',paym_amount,0)) AS gcash
@@ -20,10 +20,10 @@ const dashboard = {
             ) a 
             ON a.trns_code = paym_trans
     WHERE 
-        paym_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
-    GROUP BY DATE(paym_time) 
-    ORDER BY DATE(paym_time) ASC
+    GROUP BY DATE(paym_time + INTERVAL 8 HOUR) 
+    ORDER BY DATE(paym_time + INTERVAL 8 HOUR) ASC
     `),
     weekly_credit_collection: new Query("weekly_credit_collection", `
     SELECT 
@@ -34,7 +34,7 @@ const dashboard = {
             LEFT JOIN sys_account 
                 ON acct_id = paym_account
     WHERE 
-        paym_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         paym_type = 'CREDIT' AND
         acct_store LIKE '%@store%'
     @group 
@@ -58,7 +58,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = sale_trans
     WHERE 
-        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         trns_method = 'SALES' AND
         acct_store LIKE '%@store%'
     @group 
@@ -73,7 +73,7 @@ const dashboard = {
             LEFT JOIN sys_account 
                 ON acct_id = rtrn_account
     WHERE 
-        rtrn_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (rtrn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -95,7 +95,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = sale_trans
     WHERE 
-        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -118,7 +118,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = sale_trans
     WHERE 
-        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         trns_method = 'SALES' AND 
         acct_store LIKE '%@store%'
     @group 
@@ -134,7 +134,7 @@ const dashboard = {
     WHERE 
         sale_item = invt_id AND 
         sale_net > 0 AND 
-        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         invt_store LIKE '%@store%'
     @group 
     @order
@@ -155,7 +155,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = cred_trans
     WHERE 
-        cred_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (cred_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         acct_store LIKE '%@store%'
     @group 
     @order
@@ -178,7 +178,7 @@ const dashboard = {
             ) a 
             ON a.trns_code = sale_trans
     WHERE 
-        sale_time BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
+        (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
         trns_method = 'CREDIT' AND 
         acct_store LIKE '%@store%'
     @group 

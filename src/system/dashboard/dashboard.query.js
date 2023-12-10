@@ -19,10 +19,10 @@ const weekly_gross_sales = handler(async (req, res) => {
     const sql = helper.weekly_gross_sales.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(sale_time) AS day, ",
+        date: req.query.total ? "" : "DATE(sale_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(sale_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(sale_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(sale_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(sale_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -42,10 +42,10 @@ const weekly_credit_sales = handler(async (req, res) => {
     const sql = helper.weekly_credit_sales.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(sale_time) AS day, ",
+        date: req.query.total ? "" : "DATE(sale_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(sale_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(sale_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(sale_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(sale_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -65,10 +65,10 @@ const weekly_refunds = handler(async (req, res) => {
     const sql = helper.weekly_refunds.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(rtrn_time) AS day, ",
+        date: req.query.total ? "" : "DATE(rtrn_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(rtrn_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(rtrn_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(rtrn_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(rtrn_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -88,10 +88,10 @@ const weekly_discounts = handler(async (req, res) => {
     const sql = helper.weekly_discounts.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(sale_time) AS day, ",
+        date: req.query.total ? "" : "DATE(sale_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(sale_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(sale_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(sale_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(sale_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -111,10 +111,10 @@ const weekly_net_sales = handler(async (req, res) => {
     const sql = helper.weekly_net_sales.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(sale_time) AS day, ",
+        date: req.query.total ? "" : "DATE(sale_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(sale_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(sale_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(sale_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(sale_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -134,10 +134,10 @@ const weekly_gross_profit = handler(async (req, res) => {
     const sql = helper.weekly_gross_profit.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(sale_time) AS day, ",
+        date: req.query.total ? "" : "DATE(sale_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(sale_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(sale_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(sale_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(sale_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -157,10 +157,10 @@ const weekly_collectibles = handler(async (req, res) => {
     const sql = helper.weekly_collectibles.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(cred_time) AS day, ",
+        date: req.query.total ? "" : "DATE(cred_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(cred_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(cred_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(cred_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(cred_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -180,10 +180,10 @@ const weekly_credit_collection = handler(async (req, res) => {
     const sql = helper.weekly_credit_collection.inject({
         fr: req.query.fr,
         to: req.query.to,
-        date: req.query.total ? "" : "DATE(paym_time) AS day, ",
+        date: req.query.total ? "" : "DATE(paym_time + INTERVAL 8 HOUR) AS day, ",
         store: req.query.store ? req.query.store : "",
-        group: req.query.total ? "" : "GROUP BY DATE(paym_time) ",
-        order: req.query.total ? "" : "ORDER BY DATE(paym_time)",
+        group: req.query.total ? "" : "GROUP BY DATE(paym_time + INTERVAL 8 HOUR) ",
+        order: req.query.total ? "" : "ORDER BY DATE(paym_time + INTERVAL 8 HOUR)",
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))

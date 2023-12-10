@@ -146,10 +146,10 @@ const reports = {
     cashier_summary: new Query("cashier_summary", `
         SELECT
             DATE(trns_time + INTERVAL 8 HOUR) AS day,
-            SUM(IFNULL(rtrn_p_total, trns_total)) AS gross_sales,
-            SUM(IFNULL(rtrn_p_less, trns_less) + IFNULL(rtrn_p_markdown, trns_markdown)) AS discounts,
-            SUM(IFNULL(rtrn_p_net, trns_net)) AS net_sales,
-            SUM(IF(trns_method='CREDIT', IFNULL(rtrn_p_net, trns_net) - trns_partial, 0)) AS credit_sales,
+            SUM(trns_total) AS gross_sales,
+            SUM(trns_less + trns_markdown) AS discounts,
+            SUM(trns_net) AS net_sales,
+            SUM(IF(trns_method='CREDIT', trns_net - trns_partial, 0)) AS credit_sales,
             SUM(trns_partial) AS partial,
             acct_store AS branch,
             (
@@ -163,7 +163,7 @@ const reports = {
                         AND
                     acct_store=branch
                         AND
-                    DATE(rtrn_time + INTERVAL 8 HOUR)=DATE(trns_time + INTERVAL 8 HOUR)
+                    DATE(rtrn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
             ) AS refunds,
             (
                 SELECT 
@@ -174,7 +174,7 @@ const reports = {
                         AND
                     paym_store=branch
                         AND
-                    DATE(paym_time + INTERVAL 8 HOUR)=DATE(trns_time + INTERVAL 8 HOUR)
+                    DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
             ) AS cash_sales,
             (
                 SELECT 
@@ -185,7 +185,7 @@ const reports = {
                         AND
                     paym_store=branch
                         AND
-                    DATE(paym_time + INTERVAL 8 HOUR)=DATE(trns_time + INTERVAL 8 HOUR)
+                    DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
             ) AS credit_collection
         FROM 
             pos_sales_transaction
@@ -211,6 +211,74 @@ const reports = {
         ORDER BY DATE(trns_time + INTERVAL 8 HOUR)
         `
     ),
+    // cashier_summary: new Query("cashier_summary", `
+    //     SELECT
+    //         DATE(trns_time + INTERVAL 8 HOUR) AS day,
+    //         SUM(IFNULL(rtrn_p_total, trns_total)) AS gross_sales,
+    //         SUM(IFNULL(rtrn_p_less, trns_less) + IFNULL(rtrn_p_markdown, trns_markdown)) AS discounts,
+    //         SUM(IFNULL(rtrn_p_net, trns_net)) AS net_sales,
+    //         SUM(IF(trns_method='CREDIT', IFNULL(rtrn_p_net, trns_net) - trns_partial, 0)) AS credit_sales,
+    //         SUM(trns_partial) AS partial,
+    //         acct_store AS branch,
+    //         (
+    //             SELECT 
+    //                 SUM(rtrn_r_net)
+    //             FROM 
+    //                 pos_return_transaction,
+    //                 sys_account  
+    //             WHERE 
+    //                 acct_id=rtrn_account 
+    //                     AND
+    //                 acct_store=branch
+    //                     AND
+    //                 DATE(rtrn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+    //         ) AS refunds,
+    //         (
+    //             SELECT 
+    //                 SUM(paym_amount)
+    //             FROM pos_payment_collection 
+    //             WHERE 
+    //                 paym_type='SALES' 
+    //                     AND
+    //                 paym_store=branch
+    //                     AND
+    //                 DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+    //         ) AS cash_sales,
+    //         (
+    //             SELECT 
+    //                 SUM(paym_amount)
+    //             FROM pos_payment_collection 
+    //             WHERE 
+    //                 paym_type='CREDIT' 
+    //                     AND
+    //                 paym_store=branch
+    //                     AND
+    //                 DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+    //         ) AS credit_collection
+    //     FROM 
+    //         pos_sales_transaction
+    //             LEFT JOIN (
+    //                 SELECT 
+    //                     rtrn_trans,
+    //                     rtrn_p_total,
+    //                     rtrn_p_less,
+    //                     rtrn_p_markdown,
+    //                     rtrn_p_net,
+    //                     MIN(rtrn_id)
+    //                 FROM pos_return_transaction 
+    //                 GROUP BY rtrn_trans,rtrn_p_total,rtrn_p_less,rtrn_p_markdown,rtrn_p_net
+    //             ) a ON a.rtrn_trans=trns_code,
+    //         sys_account
+    //     WHERE 
+    //         trns_account=acct_id 
+    //             AND 
+    //         (trns_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+    //             AND
+    //         acct_store LIKE '%@store%' 
+    //     GROUP BY DATE(trns_time + INTERVAL 8 HOUR),refunds,acct_store,cash_sales,credit_collection
+    //     ORDER BY DATE(trns_time + INTERVAL 8 HOUR)
+    //     `
+    // ),
 }
 
 module.exports = reports
