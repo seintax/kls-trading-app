@@ -34,16 +34,16 @@ const DataPagination = ({ itemsperpage, totalitems, itemcount, page, pages, setP
 
     return (
         <nav
-            className={`${totalitems > itemsperpage || keep ? "flex" : "hidden"} flex-none items-center justify-between border-t border-gray-200 bg-white px-0 py-3 sm:px-0 no-select`}
+            className={`${totalitems > itemsperpage || keep ? "flex" : "hidden"} flex-col lg:flex-row flex-none items-center justify-between border-t border-gray-200 bg-white px-0 py-3 sm:px-0 no-select`}
             aria-label="Pagination"
         >
-            <div className="hidden sm:block">
+            <div className="block mb-4 lg:mb-0">
                 <p className="text-sm text-gray-700">
                     Showing (<span className="font-medium">{totalitems ? firstItemIndex + 1 : 0}</span> to <span className="font-medium">{firstItemIndex + itemcount}</span>) out of{' '}
                     <span className="font-medium">{totalitems}</span> results
                 </p>
             </div>
-            <div className="flex flex-1 gap-[10px] justify-between sm:justify-end">
+            <div className="flex gap-2 lg:gap-[10px] lg:justify-between justify-center">
                 <span
                     className={`relative inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium ${(page === 1 ? "text-gray-400 bg-gray-300 cursor-default" : "text-gray-700 bg-white hover:bg-gray-200 cursor-pointer")}`}
                     onClick={firstPage}

@@ -73,7 +73,7 @@ const reports = {
         SELECT
             DATE(sale_time + INTERVAL 8 HOUR) AS day,
             SUM(sale_total) AS gross_sales,
-            SUM(sale_price * sale_returned) AS refunds,
+            SUM((sale_price * sale_returned) - (rtrn_r_less + rtrn_r_markdown)) AS refunds,
             SUM(sale_less + sale_markdown) AS discounts,
             SUM(sale_net) AS net_sales,
             SUM(sale_dispense * invt_cost) AS goods_cost,
@@ -82,7 +82,9 @@ const reports = {
         FROM 
             pos_sales_dispensing
                 LEFT JOIN pos_sales_transaction
-                    ON trns_code=sale_trans,
+                    ON trns_code=sale_trans
+                LEFT JOIN pos_return_transaction 
+                    ON rtrn_trans=sale_trans,
             pos_stock_inventory
         WHERE 
             sale_item=invt_id AND 
@@ -163,7 +165,7 @@ const reports = {
                         AND
                     acct_store=branch
                         AND
-                    DATE(rtrn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                    rtrn_time + INTERVAL 8 HOUR BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
             ) AS refunds,
             (
                 SELECT 
@@ -174,7 +176,7 @@ const reports = {
                         AND
                     paym_store=branch
                         AND
-                    DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                    (paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
             ) AS cash_sales,
             (
                 SELECT 
@@ -185,7 +187,7 @@ const reports = {
                         AND
                     paym_store=branch
                         AND
-                    DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                    (paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
             ) AS credit_collection
         FROM 
             pos_sales_transaction

@@ -6,7 +6,7 @@ const ReportsMenu = () => {
     const reportSelector = useSelector(state => state.reports)
     const dispatch = useDispatch()
 
-    const menuStyle = "text-black border border-transparent hover:bg-gradient-to-b hover:from-primary-300 hover:via-primary-300 hover:to-primary-400 hover:text-black hover:border-secondary-400 flex items-center px-1.5 px-2 py-2 text-xs font-medium rounded-md cursor-pointer flex-none"
+    const menuStyle = "text-black border border-transparent hover:bg-gradient-to-b hover:from-primary-300 hover:via-primary-300 hover:to-primary-400 hover:text-black hover:border-secondary-400 flex items-center px-0.5 lg:px-2 py-2 text-[11px] lg:text-xs font-medium rounded-md cursor-pointer flex-none bg-white"
 
     const onSelectReport = (reportName) => {
         dispatch(setReportName(reportName))
@@ -14,7 +14,7 @@ const ReportsMenu = () => {
     }
 
     return (
-        <div className="flex flex-row flex-wrap lg:flex-col absolute no-select gap-2">
+        <div className="flex flex-row flex-wrap px-3 lg:px-0 lg:flex-col no-select gap-x-2">
             <span
                 className={menuStyle}
                 onClick={() => onSelectReport("Daily Sales by Item")}
