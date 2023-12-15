@@ -80,16 +80,15 @@ const ReportsFormCashierSummary = () => {
         style: '',
         items: [
             { name: 'Date', stack: false, sort: 'day' },
-            { name: 'Branch', stack: true, sort: 'branch', size: 150 },
-            { name: 'Gross Sales', stack: true, sort: 'gross_sales', size: 150 },
-            { name: 'Discounts', stack: true, sort: 'discounts', size: 150 },
-            { name: 'Net Sales', stack: true, sort: 'net_sales', size: 150 },
-            { name: 'Cash Sales', stack: true, sort: 'cash_sales', size: 150 },
-            { name: 'Credit Sales', stack: true, sort: 'credit_sales', size: 150 },
-            { name: 'Partial', stack: true, sort: 'partial', size: 150 },
-            { name: 'Credit Collection', stack: true, sort: 'credit_collection', size: 150 },
-            { name: 'Refunds', stack: true, sort: 'refunds', size: 150 },
-            // isDev(auth) ? { name: 'Income', stack: true, size: 150 } : null,
+            { name: 'Branch', stack: true, sort: 'branch', size: 120 },
+            { name: 'Gross Sales', stack: true, sort: 'gross_sales', size: 130 },
+            { name: 'Discounts', stack: true, sort: 'discounts', size: 130 },
+            { name: 'Net Sales', stack: true, sort: 'net_sales', size: 130 },
+            { name: 'Cash Sales', stack: true, sort: 'cash_sales', size: 130 },
+            { name: 'Credit Sales', stack: true, sort: 'credit_sales', size: 130 },
+            { name: 'Partial', stack: true, sort: 'partial', size: 130 },
+            { name: 'Credit Collection', stack: true, sort: 'credit_collection', size: 130 },
+            { name: 'Refunds', stack: true, sort: 'refunds', size: 130 },
         ]
     }
 
@@ -162,15 +161,14 @@ const ReportsFormCashierSummary = () => {
     return (
         (reportSelector.manager && reportSelector.report === "Cashier Summary") ? (
             <>
-                <div className="w-full text-lg uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select">
+                <div className="w-full uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select text-base lg:text-lg px-3 lg:px-0">
                     <div className="flex gap-4">
-                        <PresentationChartLineIcon className="w-6 h-6" />
-                        {/* {reportSelector.report} */} CASHIER SUMMARY
+                        <PresentationChartLineIcon className="w-6 h-6" />CASHIER SUMMARY
                     </div>
-                    <div className="flex items-center gap-2">
-                        <input name="fr" type="date" className="text-sm" value={filters.fr} onChange={onChange} />
-                        <input name="to" type="date" className="text-sm" value={filters.to} onChange={onChange} />
-                        <select name="store" className="text-sm" value={filters.store} onChange={onChange}>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <input name="fr" type="date" className="text-sm w-3/4" value={filters.fr} onChange={onChange} />
+                        <input name="to" type="date" className="text-sm w-3/4" value={filters.to} onChange={onChange} />
+                        <select name="store" className="text-sm w-3/4" value={filters.store} onChange={onChange}>
                             {
                                 isEmpty(getBranch(auth))
                                     ? <option value="">All</option>
@@ -187,12 +185,14 @@ const ReportsFormCashierSummary = () => {
 
                             }
                         </select>
-                        <button className="button-red py-2" onClick={() => reLoad()}>
-                            <ArrowPathIcon className="w-5 h-5" />
-                        </button>
-                        <button className="button-red py-2" onClick={() => printData()}>
-                            <PrinterIcon className="w-5 h-5" />
-                        </button>
+                        <div className="flex gap-2">
+                            <button className="button-red py-2" onClick={() => reLoad()}>
+                                <ArrowPathIcon className="w-5 h-5" />
+                            </button>
+                            <button className="button-red py-2" onClick={() => printData()}>
+                                <PrinterIcon className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <DataRecords

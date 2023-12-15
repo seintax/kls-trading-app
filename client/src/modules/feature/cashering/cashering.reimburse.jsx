@@ -19,6 +19,7 @@ const CasheringReimburse = () => {
     const transactionSelector = useSelector(state => state.transaction)
     const dispensingSelector = useSelector(state => state.dispensing)
     const creditSelector = useSelector(state => state.credit)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const dispatch = useDispatch()
     const [total, setTotal] = useState(0)
     const [credit, setCredit] = useState(0)
@@ -64,6 +65,7 @@ const CasheringReimburse = () => {
         }
 
         if (dataSelector.manager && dispensingSelector.item) {
+            setIsSubmitting(false)
             instantiate()
         }
     }, [dataSelector.manager, dispensingSelector.item])
@@ -98,6 +100,7 @@ const CasheringReimburse = () => {
     }
 
     const onCompleted = () => {
+        setIsSubmitting(false)
         dispatch(setCreditNotifier(true))
         dispatch(setChequeNotifier(true))
         dispatch(setDispensingNotifier(true))
@@ -145,6 +148,7 @@ const CasheringReimburse = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault()
+        setIsSubmitting(true)
         let balance = total - (payments?.reduce((prev, curr) => prev + amount(curr.applyamt || 0), 0) + amount(credit))
         if (balance > 0) {
             toast.showWarning("Please apply the full returned amount.")
@@ -270,7 +274,10 @@ const CasheringReimburse = () => {
                         onCompleted()
                     }
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    console.error(err)
+                    setIsSubmitting(false)
+                })
         }
     }
 
@@ -417,7 +424,9 @@ const CasheringReimburse = () => {
                         </div> */}
                         <div className="flex justify-end mt-5">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
-                            <button type="submit" className="button-submit">Add Option</button>
+                            <button type="submit" className="button-submit" disabled={isSubmitting}>
+                                Add Option
+                            </button>
                         </div>
                     </form>
                 </div>

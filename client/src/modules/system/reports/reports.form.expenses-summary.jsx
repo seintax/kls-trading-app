@@ -135,15 +135,15 @@ const ReportsFormExpensesSummary = () => {
     return (
         (reportSelector.manager && reportSelector.report === "Expenses Summary") ? (
             <>
-                <div className="w-full text-lg uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select">
+                <div className="w-full uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select text-base lg:text-lg px-3 lg:px-0">
                     <div className="flex gap-4">
                         <PresentationChartLineIcon className="w-6 h-6" />
                         {reportSelector.report}
                     </div>
-                    <div className="flex items-center gap-2">
-                        <input name="fr" type="date" className="text-sm" value={filters.fr} onChange={onChange} />
-                        <input name="to" type="date" className="text-sm" value={filters.to} onChange={onChange} />
-                        <select name="store" className="text-sm" value={filters.store} onChange={onChange}>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <input name="fr" type="date" className="text-sm w-3/4" value={filters.fr} onChange={onChange} />
+                        <input name="to" type="date" className="text-sm w-3/4" value={filters.to} onChange={onChange} />
+                        <select name="store" className="text-sm w-3/4" value={filters.store} onChange={onChange}>
                             <option value="">All</option>
                             {
                                 libBranchers?.map(branch => (
@@ -151,12 +151,14 @@ const ReportsFormExpensesSummary = () => {
                                 ))
                             }
                         </select>
-                        <button className="button-red py-2" onClick={() => reLoad()}>
-                            <ArrowPathIcon className="w-5 h-5" />
-                        </button>
-                        <button className="button-red py-2" onClick={() => printData()}>
-                            <PrinterIcon className="w-5 h-5" />
-                        </button>
+                        <div className="flex gap-2">
+                            <button className="button-red py-2" onClick={() => reLoad()}>
+                                <ArrowPathIcon className="w-5 h-5" />
+                            </button>
+                            <button className="button-red py-2" onClick={() => printData()}>
+                                <PrinterIcon className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <DataRecords

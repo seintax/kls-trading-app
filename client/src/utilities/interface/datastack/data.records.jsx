@@ -2,6 +2,7 @@ import {
     ChevronUpDownIcon
 } from "@heroicons/react/24/outline"
 import React, { useEffect, useRef, useState } from 'react'
+import { isEmpty } from "../../functions/string.functions"
 import DataPagination from "./data.pagination"
 
 const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading, total, fontsize = "sm" }) => {
@@ -122,7 +123,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             row.items?.map((item, itemindex) => (
                                                 <td
                                                     key={itemindex}
-                                                    className={`w-full max-w-0 py-4 border-b border-gray-200 px-2 sm:pl-3 ${preferredFont(fontsize)} font-medium text-gray-900 sm:w-auto sm:max-w-none lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
+                                                    className={`w-full py-4 border-b border-gray-300 px-2 sm:pl-3 ${preferredFont(fontsize)} font-medium text-gray-900 sm:w-auto lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
                                                     onClick={item?.onclick}
                                                     onDoubleClick={item?.ondoubleclick}
                                                 >
@@ -131,17 +132,17 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                                     </span>
                                                     {
                                                         (itemindex === 0) ? (
-                                                            <dl className="font-normal lg:hidden">
+                                                            <dl className="font-normal flex flex-col lg:hidden w-full">
                                                                 {
                                                                     order?.map((col, colindex) => (
                                                                         <div
                                                                             key={colindex}
-                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "md:hidden") : "md:hidden"} flex flex-row items-start gap-1 lg:gap-3 text-sm mt-1`}
+                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "lg:hidden") : "lg:hidden"} flex flex-row items-start gap-1 text-sm mt-1 w-full`}
                                                                         >
-                                                                            <dt className={`text-gray-400 text-[10px] text-sm w-[100px] ${col.name ? "" : "hidden"}`}>
+                                                                            <dt className={`flex w-1/2 flex-none text-gray-400 text-[10px] text-sm ${col.name ? "" : "hidden"}`}>
                                                                                 {col.name ? `${col.name}:` : ""}
                                                                             </dt>
-                                                                            <dd className="truncate text-gray-500">
+                                                                            <dd className="flex w-1/2 flex-none text-gray-600 break-all">
                                                                                 {row.items[colindex]?.value}
                                                                             </dd>
                                                                         </div>
@@ -162,19 +163,38 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                 <tr
                                     className={`hover:bg-gray-100 ${rowstyle}`}
                                 >
-                                    <td className="border-b border-gray-200 px-2 py-4 text-sm text-gray-500 no-select">&nbsp;</td>
+                                    <td className="hidden lg:table-cell border-b border-gray-200 px-2 py-4 text-sm text-gray-500 no-select">&nbsp;</td>
                                     {
                                         (total?.length) ? (
                                             total?.map((item, totalindex) => (
                                                 <td
                                                     key={totalindex}
-                                                    className={`w-auto py-4 border-b border-gray-200 px-2 text-sm text-gray-900 font-bold ${itemstyle}`}
+                                                    className={`hidden lg:table-cell w-auto py-4 border-b border-gray-200 px-2 text-sm text-gray-900 font-bold ${itemstyle}`}
                                                 >
                                                     {item.value}
                                                 </td>
                                             ))
                                         ) : null
                                     }
+                                    <td colSpan={99} className="flex flex-col lg:hidden text-black px-3">
+                                        {
+                                            (total?.length && order?.length) ? (
+                                                total?.map((item, totalindex) => (
+                                                    <div
+                                                        key={totalindex}
+                                                        className={`flex flex-row w-full items-start gap-1 lg:gap-3 text-sm mt-1 ${isEmpty(item.value) ? "hidden" : ""}`}
+                                                    >
+                                                        <dt className={`text-gray-400 w-1/2 text-[10px] text-sm`}>
+                                                            {totalindex === 0 ? <b>{item?.value}</b> : `${order[totalindex]?.name}:`}
+                                                        </dt>
+                                                        <dd className="truncate text-gray-500 w-1/2">
+                                                            {totalindex > 0 ? <b>{item?.value}</b> : ""}
+                                                        </dd>
+                                                    </div>
+                                                ))
+                                            ) : null
+                                        }
+                                    </td>
                                 </tr>
                             )
                         }
