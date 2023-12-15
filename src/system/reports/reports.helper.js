@@ -84,7 +84,7 @@ const reports = {
                 LEFT JOIN pos_sales_transaction
                     ON trns_code=sale_trans
                 LEFT JOIN pos_return_transaction 
-                    ON rtrn_trans=sale_trans,
+                    ON rtrn_trans=sale_trans AND sale_returned>0,
             pos_stock_inventory
         WHERE 
             sale_item=invt_id AND 
@@ -165,7 +165,7 @@ const reports = {
                         AND
                     acct_store=branch
                         AND
-                    rtrn_time + INTERVAL 8 HOUR BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                    (rtrn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
             ) AS refunds,
             (
                 SELECT 
