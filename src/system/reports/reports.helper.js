@@ -73,7 +73,7 @@ const reports = {
         SELECT
             DATE(sale_time + INTERVAL 8 HOUR) AS day,
             SUM(sale_total) AS gross_sales,
-            SUM((sale_price * sale_returned) - (rtrn_r_less + rtrn_r_markdown)) AS refunds,
+            SUM(rtrn_r_net) AS refunds,
             SUM(sale_less + sale_markdown) AS discounts,
             SUM(sale_net) AS net_sales,
             SUM(sale_dispense * invt_cost) AS goods_cost,
@@ -149,7 +149,7 @@ const reports = {
         SELECT
             DATE(trns_time + INTERVAL 8 HOUR) AS day,
             SUM(trns_total) AS gross_sales,
-            SUM(trns_less + trns_markdown) AS discounts,
+            SUM(trns_less + trns_markdown + IFNULL(rtrn_r_less,0) + IFNULL(rtrn_r_markdown,0)) AS discounts,
             SUM(trns_net) AS net_sales,
             SUM(IF(trns_method='CREDIT', trns_net - trns_partial, 0)) AS credit_sales,
             SUM(trns_partial) AS partial,
@@ -198,16 +198,16 @@ const reports = {
                         rtrn_p_less,
                         rtrn_p_markdown,
                         rtrn_p_net,
+                        rtrn_r_less,
+                        rtrn_r_markdown,
                         MIN(rtrn_id)
                     FROM pos_return_transaction 
-                    GROUP BY rtrn_trans,rtrn_p_total,rtrn_p_less,rtrn_p_markdown,rtrn_p_net
+                    GROUP BY rtrn_trans,rtrn_p_total,rtrn_p_less,rtrn_p_markdown,rtrn_p_net,rtrn_r_less,rtrn_r_markdown
                 ) a ON a.rtrn_trans=trns_code,
             sys_account
         WHERE 
-            trns_account=acct_id 
-                AND 
-            (trns_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
-                AND
+            trns_account=acct_id AND 
+            (trns_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             acct_store LIKE '%@store%' 
         GROUP BY DATE(trns_time + INTERVAL 8 HOUR),refunds,acct_store,cash_sales,credit_collection
         ORDER BY DATE(trns_time + INTERVAL 8 HOUR)
