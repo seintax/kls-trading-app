@@ -33,6 +33,14 @@ const ReceivableInjoin = () => {
     const [sqlReceivable] = useSqlReceivableMutation()
 
     useEffect(() => {
+        if (dataSelector.injoiner.show) {
+            return () => {
+                dispatch(resetReceivableItem())
+            }
+        }
+    }, [dataSelector.injoiner.show])
+
+    useEffect(() => {
         const instantiate = async () => {
             await categoryProducts({ category: purchaseSelector?.item?.category })
                 .unwrap()
@@ -202,28 +210,10 @@ const ReceivableInjoin = () => {
                     onCompleted()
                 }
             })
-            .catch(err => console.error(err))
-        // if (dataSelector.item.id) {
-        //     await updateReceivable({ ...formData, id: dataSelector.item.id })
-        //         .unwrap()
-        //         .then(res => {
-        //             if (res.success) {
-        //                 toast.showUpdate("Purchase Order Item successfully updated.")
-        //                 onCompleted()
-        //             }
-        //         })
-        //         .catch(err => console.error(err))
-        //     return
-        // }
-        // await createReceivable(formData)
-        //     .unwrap()
-        //     .then(res => {
-        //         if (res.success) {
-        //             toast.showCreate("Purchase Order Item successfully added.")
-        //             onCompleted()
-        //         }
-        //     })
-        //     .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                toast.showError("Something went wrong while submitting the data.")
+            })
     }
 
     const closeAppender = useCallback(() => {

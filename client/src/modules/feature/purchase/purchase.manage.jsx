@@ -15,6 +15,7 @@ import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
 import ReceivableListing from "../purchase-item/purchase.item.listing"
+import { resetReceivableCache } from "../purchase-item/purchase.item.reducer"
 import { resetPurchaseManager, setPurchaseNotifier, showPurchaseSelector } from "./purchase.reducer"
 import { useCreatePurchaseMutation, useUpdatePurchaseMutation } from "./purchase.services"
 
@@ -202,6 +203,7 @@ const PurchaseManage = () => {
 
     const returnToList = useCallback(() => {
         dispatch(resetPurchaseManager())
+        dispatch(resetReceivableCache())
     }, [])
 
     const printOrder = useCallback(() => {

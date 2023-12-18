@@ -14,6 +14,7 @@ import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
 import TransmitListing from "../transfer-item/transfer.item.listing"
+import { resetTransmitCache } from "../transfer-item/transfer.item.reducer"
 import { resetTransferManager, setTransferNotifier, showTransferSelector } from "./transfer.reducer"
 import { useCreateTransferMutation, useUpdateTransferMutation } from "./transfer.services"
 
@@ -192,6 +193,7 @@ const TransferManage = () => {
 
     const returnToList = useCallback(() => {
         dispatch(resetTransferManager())
+        dispatch(resetTransmitCache())
     }, [])
 
     const printOrder = useCallback(() => {

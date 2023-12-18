@@ -13,7 +13,7 @@ const sqlTransmit = handler(async (req, res) => {
             if (err) return err
 
             var transmit
-            if (!req.body.transmit?.id) {
+            if (!req.body.transmit.id) {
                 transmit = await new Promise(async (resolve, reject) => {
                     const builder = getservice.insert(req.body.transmit)
                     await con.query(builder.sql, builder.arr, async (err, ans) => {
@@ -86,34 +86,9 @@ const sqlTransmit = handler(async (req, res) => {
                 })
             })
 
-            // let destination_inventory = await new Promise(async (resolve, reject) => {
-            //     let data = {
-            //         product: req.body.product,
-            //         variant: req.body.variant,
-            //         category: req.body.category,
-            //         delivery: req.body.delivery,
-            //         purchase: req.body.purchase,
-            //         supplier: req.body.supplier,
-            //         store: req.body.destination,
-            //         received: req.body.quantity,
-            //         stocks: req.body.quantity,
-            //         cost: req.body.cost,
-            //         base: req.body.pricing,
-            //         price: req.body.pricing,
-            //         acquisition: "TRANSMIT",
-            //         source: req.body.source,
-            //         transfer: req.body.transfer,
-            //         transmit: transmit.insertResult.id
-            //     }
-            //     const builder = getinventory.insert(data)
-            //     await con.query(builder.sql, builder.arr, async (err, ans) => {
-            //         if (err) con.rollback(() => reject(err))
-            //         resolve({ occurence: "destination inventory", insertResult: { id: ans.insertId ? ans.insertId : undefined } })
-            //     })
-            // })
-
-            let destination = await new Promise(async (resolve, reject) => {
-                if (!req.body.destination.id) {
+            var destination
+            if (!req.body.destination.id) {
+                destination = await new Promise(async (resolve, reject) => {
                     let data = {
                         ...req.body.destination,
                         transmit: transmit.insertResult.id
@@ -126,9 +101,11 @@ const sqlTransmit = handler(async (req, res) => {
                             insertResult: { id: ans.insertId ? ans.insertId : undefined }
                         })
                     })
-                }
+                })
+            }
 
-                if (req.body.destination.id) {
+            if (req.body.destination.id) {
+                destination = await new Promise(async (resolve, reject) => {
                     if (!req.body.destination.delete) {
                         const builder = getinventory.update(req.body.destination)
                         await con.query(builder.sql, builder.arr, async (err, ans) => {
@@ -150,8 +127,8 @@ const sqlTransmit = handler(async (req, res) => {
                             })
                         })
                     }
-                }
-            })
+                })
+            }
 
             let result = {
                 transmit,

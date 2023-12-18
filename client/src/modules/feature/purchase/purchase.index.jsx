@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import { resetReceivableCache, resetReceivableItem } from "../purchase-item/purchase.item.reducer"
 import PurchaseManage from "./purchase.manage"
 import PurchaseRecords from "./purchase.records"
 import { resetPurchaseItem, resetPurchaseManager, resetPurchaseSelector, setPurchaseData, setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
@@ -18,6 +19,8 @@ const PurchaseIndex = () => {
         if (mounted) {
             return () => {
                 dispatch(resetPurchaseManager())
+                dispatch(resetReceivableItem())
+                dispatch(resetReceivableCache())
             }
         }
     }, [mounted])

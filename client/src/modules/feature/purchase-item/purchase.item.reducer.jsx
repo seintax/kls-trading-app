@@ -75,6 +75,10 @@ const receivableSlice = createSlice({
         setReceivableNotifier: (state, action) => {
             state.notifier = action.payload
         },
+        resetReceivableCache: (state) => {
+            state.data = []
+            state.item = {}
+        },
         resetReceivable: (state) => {
             state.data = []
             state.item = {}
@@ -95,6 +99,7 @@ export const {
     resetReceivableManager,
     showReceivableInjoiner,
     resetReceivableInjoiner,
+    resetReceivableCache,
     resetReceivable
 } = receivableSlice.actions
 

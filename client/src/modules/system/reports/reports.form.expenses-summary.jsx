@@ -1,7 +1,11 @@
-import { ArrowPathIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicons/react/24/outline"
+import { ArchiveBoxArrowDownIcon, ArrowPathIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicons/react/24/outline"
+import { saveAs } from 'file-saver'
 import moment from "moment"
 import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
+import Datepicker from "react-tailwindcss-datepicker"
+import * as XLSX from 'xlsx'
+import { sortBy } from "../../../utilities/functions/array.functions"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
 import { isEmpty } from "../../../utilities/functions/string.functions"
@@ -18,6 +22,7 @@ const ReportsFormExpensesSummary = () => {
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
     const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: "" })
+    const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])
 
@@ -34,6 +39,15 @@ const ReportsFormExpensesSummary = () => {
         setFilters(prev => ({
             ...prev,
             [name]: value
+        }))
+    }
+
+    const onRangeChange = (newValue) => {
+        setRange(newValue)
+        setFilters(prev => ({
+            ...prev,
+            fr: newValue.startDate,
+            to: newValue.endDate
         }))
     }
 
@@ -128,6 +142,17 @@ const ReportsFormExpensesSummary = () => {
         }
     }
 
+    const exportData = () => {
+        if (data?.length) {
+            let type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+            const ws = XLSX.utils.json_to_sheet([{ ...filters, store: filters.store || "All" }, ...data])
+            const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
+            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+            const excelData = new Blob([excelBuffer], { type: type })
+            saveAs(excelData, `${reportSelector.report?.toLowerCase()?.replaceAll(" ", "_")}_export_on_${moment(new Date()).format('YYYY_MM_DD_HH_mm_ss')}.xlsx`)
+        }
+    }
+
     const reLoad = () => {
         setRefetch(true)
     }
@@ -136,14 +161,18 @@ const ReportsFormExpensesSummary = () => {
         (reportSelector.manager && reportSelector.report === "Expenses Summary") ? (
             <>
                 <div className="w-full uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select text-base lg:text-lg px-3 lg:px-0">
-                    <div className="flex gap-4">
-                        <PresentationChartLineIcon className="w-6 h-6" />
+                    <div className="flex gap-4 ml-14 items-center lg:ml-16 py-2 text-sm lg:text-base">
+                        <PresentationChartLineIcon className="w-8 h-8" />
                         {reportSelector.report}
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                        <input name="fr" type="date" className="text-sm w-3/4" value={filters.fr} onChange={onChange} />
-                        <input name="to" type="date" className="text-sm w-3/4" value={filters.to} onChange={onChange} />
-                        <select name="store" className="text-sm w-3/4" value={filters.store} onChange={onChange}>
+                    <div className="flex flex-wrap lg:flex-nowrap items-center gap-2">
+                        <Datepicker
+                            value={range}
+                            onChange={onRangeChange}
+                            showShortcuts={true}
+                            readOnly
+                        />
+                        <select name="store" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.store} onChange={onChange}>
                             <option value="">All</option>
                             {
                                 libBranchers?.map(branch => (
@@ -158,8 +187,25 @@ const ReportsFormExpensesSummary = () => {
                             <button className="button-red py-2" onClick={() => printData()}>
                                 <PrinterIcon className="w-5 h-5" />
                             </button>
+                            <button className="report-button py-2" onClick={() => exportData()}>
+                                <ArchiveBoxArrowDownIcon className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
+                </div>
+                <div className="flex w-full gap-2 mt-4 overflow-x-auto lg:overflow-x-none">
+                    {
+                        Array.from({ length: 2 }, (_, i) => i + 2)?.map(n => (
+                            <div key={n} className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
+                                <span className="text-gray-500 no-select">
+                                    {columns.items[n].name}
+                                </span>
+                                <span className="text-lg font-semibold">
+                                    {total(data)[n]?.value}
+                                </span>
+                            </div>
+                        ))
+                    }
                 </div>
                 <DataRecords
                     page={startpage}

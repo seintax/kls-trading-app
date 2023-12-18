@@ -13,6 +13,7 @@ import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
 import ReceiptListing from "../delivery-item/delivery.item.listing"
+import { resetReceiptCache } from "../delivery-item/delivery.item.reducer"
 import { resetDeliveryManager, setDeliveryNotifier, showDeliverySelector } from "./delivery.reducer"
 import { useCreateDeliveryMutation, useUpdateDeliveryMutation } from "./delivery.services"
 
@@ -192,6 +193,7 @@ const DeliveryManage = () => {
 
     const returnToList = useCallback(() => {
         dispatch(resetDeliveryManager())
+        dispatch(resetReceiptCache())
     }, [])
 
     const onEdit = () => {

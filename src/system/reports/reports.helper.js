@@ -28,7 +28,7 @@ const reports = {
             (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             invt_store LIKE '%@store%' 
         GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category,invt_store
-        ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category
+        ORDER BY item_sold,prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category
         `
     ),
     sales_by_category: new Query("sales_by_category", `
@@ -45,7 +45,7 @@ const reports = {
             sale_item=invt_id AND 
             (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND 
             invt_store LIKE '%@store%' 
-        GROUP BY invt_category,invt_store
+        GROUP BY invt_category
         ORDER BY invt_category
         `
     ),
@@ -211,6 +211,32 @@ const reports = {
             acct_store LIKE '%@store%' 
         GROUP BY DATE(trns_time + INTERVAL 8 HOUR),refunds,acct_store,cash_sales,credit_collection
         ORDER BY DATE(trns_time + INTERVAL 8 HOUR)
+        `
+    ),
+    inventory_valuation: new Query("inventory_valuation", `
+    SELECT
+        CONCAT(prod_name, ' - ', IFNULL(vrnt_serial,''), '/', IFNULL(vrnt_model,''), '/', IFNULL(vrnt_brand,'')) AS inventory,
+        prod_name AS product,
+        vrnt_serial AS variant1,
+        vrnt_model AS variant2,
+        vrnt_brand AS variant3,
+        invt_cost AS cost,
+        SUM(invt_stocks) AS stocks,
+        SUM(invt_stocks * IFNULL(invt_cost,0)) AS value,
+        SUM(invt_stocks * invt_price) AS retail,
+        SUM((invt_stocks * invt_price) - (invt_stocks * IFNULL(invt_cost,0))) AS profit
+    FROM 
+        pos_stock_inventory
+            LEFT JOIN 
+                pos_stock_masterlist
+                    ON prod_id=invt_product 
+            LEFT JOIN
+                lib_variant 
+                    ON vrnt_id=invt_variant
+    WHERE 
+        invt_store LIKE '%@store%'
+    GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost
+    ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost;
         `
     ),
     // cashier_summary: new Query("cashier_summary", `

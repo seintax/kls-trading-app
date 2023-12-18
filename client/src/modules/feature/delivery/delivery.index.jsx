@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import { resetReceiptCache } from "../delivery-item/delivery.item.reducer"
 import DeliveryManage from "./delivery.manage"
 import DeliveryRecords from "./delivery.records"
 import { resetDeliveryItem, resetDeliveryManager, resetDeliverySelector, setDeliveryData, setDeliveryItem, setDeliveryNotifier, showDeliveryManager } from "./delivery.reducer"
@@ -18,6 +19,8 @@ const DeliveryIndex = () => {
         if (mounted) {
             return () => {
                 dispatch(resetDeliveryManager())
+                dispatch(resetDeliveryItem())
+                dispatch(resetReceiptCache())
             }
         }
     }, [mounted])

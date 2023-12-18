@@ -94,4 +94,10 @@
     .input-quarter {
         @apply lg:w-1/4;
     }
+    .report-select-filter {
+        @apply border border-gray-300 rounded-[8px] h-[42px] border border-blue-200 focus:border-blue-200 focus:outline-[#0000ff20]
+    }
+    .report-button {
+        @apply inline-flex items-center justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:w-auto h-[42px];
+    }
 }

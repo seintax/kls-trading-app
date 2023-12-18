@@ -62,6 +62,14 @@ export const reportsApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['reports']
         }),
+        inventoryValuationReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/inventoryvaluation`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
     })
 })
 
@@ -73,4 +81,5 @@ export const {
     useExpensesReportMutation,
     useExpensesSummaryReportMutation,
     useCashierSummaryReportMutation,
+    useInventoryValuationReportMutation,
 } = reportsApiSlice

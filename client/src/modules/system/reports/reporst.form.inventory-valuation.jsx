@@ -1,14 +1,17 @@
-import { ArrowPathIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicons/react/24/outline"
+import { ArchiveBoxArrowDownIcon, ArrowPathIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicons/react/24/outline"
+import { saveAs } from 'file-saver'
 import moment from "moment"
 import { useEffect, useState } from 'react'
 import { useSelector } from "react-redux"
+import * as XLSX from 'xlsx'
+import { sortBy } from "../../../utilities/functions/array.functions"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, currency } from "../../../utilities/functions/number.funtions"
 import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
-import { useFetchAllInventoryBranchMutation } from "../../feature/inventory/inventory.services"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
+import { useInventoryValuationReportMutation } from "./reports.services"
 
 const ReportsFormInventoryValuation = () => {
     const auth = useAuth()
@@ -20,6 +23,7 @@ const ReportsFormInventoryValuation = () => {
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
     const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: "JT-MAIN" })
+    const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])
 
@@ -42,7 +46,8 @@ const ReportsFormInventoryValuation = () => {
     const [libBranchers, setLibBranches] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
-    const [allInventory] = useFetchAllInventoryBranchMutation()
+    // const [allInventory] = useFetchAllInventoryBranchMutation()
+    const [allInventory] = useInventoryValuationReportMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -60,11 +65,11 @@ const ReportsFormInventoryValuation = () => {
                 })
                 .catch(err => console.error(err))
             if (reportSelector.report === "Inventory Valuation") {
-                await allInventory({ branch: filters.store })
+                await allInventory({ store: filters.store })
                     .unwrap()
                     .then(res => {
                         if (res.success) {
-                            setdata(res.arrayResult)
+                            setdata(res.data)
                         }
                     })
                     .catch(err => console.error(err))
@@ -79,7 +84,7 @@ const ReportsFormInventoryValuation = () => {
     const columns = {
         style: '',
         items: [
-            { name: 'Item', stack: false, sort: 'code' },
+            { name: 'Item', stack: false, sort: 'inventory' },
             { name: 'In Stock', stack: true, sort: 'stocks', size: 120 },
             { name: 'Cost', stack: true, sort: 'cost', size: 150 },
             { name: 'Inventory Value', stack: true, size: 150 },
@@ -95,26 +100,43 @@ const ReportsFormInventoryValuation = () => {
         return codeArr.join("-").slice(3, 15)
     }
 
+    const cleanDisplay = (value) => {
+        let formatted = value
+        if (formatted?.includes("/-")) {
+            formatted = value.replaceAll("/-", "")
+        }
+        if (formatted?.includes("-/")) {
+            formatted = formatted.replaceAll("-/", "")
+        }
+        if (formatted?.slice(-2) === "//") {
+            return formatted.replace("//", "")
+        }
+        if (formatted?.slice(-1) === "/") {
+            return formatted.substring(0, formatted.length - 1)
+        }
+        return formatted
+    }
+
     const items = (item) => {
         return [
-            { value: `${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}` },
-            { value: item.stocks },
+            { value: cleanDisplay(item.inventory) },
+            { value: currency(item.stocks).replace(".00", "") },
             { value: currency(item.cost) },
-            { value: currency(item.stocks * item.cost) },
-            { value: currency(item.stocks * item.price) },
-            { value: currency((item.stocks * item.price) - (item.stocks * item.cost)) },
-            { value: NumFn.acctg.percent((((item.stocks * item.price) - (item.stocks * item.cost)) / (item.stocks * item.price))) },
+            { value: currency(item.value) },
+            { value: currency(item.retail) },
+            { value: currency(item.profit) },
+            { value: NumFn.acctg.percent(item.profit / item.retail) },
         ]
     }
 
     const total = (item) => {
-        let retail = item?.reduce((prev, curr) => prev + ((curr.stocks * curr.price) || 0), 0)
-        let profit = item?.reduce((prev, curr) => prev + (((curr.stocks * curr.price) - (curr.stocks * curr.cost)) || 0), 0)
+        let retail = item?.reduce((prev, curr) => prev + (curr.retail || 0), 0)
+        let profit = item?.reduce((prev, curr) => prev + (curr.profit || 0), 0)
         return [
             { value: "OVERALL SUMMARY" },
-            { value: item?.reduce((prev, curr) => prev + (curr.stocks || 0), 0) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.stocks || 0), 0)).replace(".00", "") },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.cost || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + ((curr.stocks * curr.cost) || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.value || 0), 0)) },
             { value: currency(retail) },
             { value: currency(profit) },
             { value: NumFn.acctg.percent(profit / retail) },
@@ -147,6 +169,17 @@ const ReportsFormInventoryValuation = () => {
         }
     }
 
+    const exportData = () => {
+        if (data?.length) {
+            let type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+            const ws = XLSX.utils.json_to_sheet([{ ...filters, store: filters.store || "All" }, ...data])
+            const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
+            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+            const excelData = new Blob([excelBuffer], { type: type })
+            saveAs(excelData, `${reportSelector.report?.toLowerCase()?.replaceAll(" ", "_")}_export_on_${moment(new Date()).format('YYYY_MM_DD_HH_mm_ss')}.xlsx`)
+        }
+    }
+
     const reLoad = () => {
         setRefetch(true)
     }
@@ -155,12 +188,12 @@ const ReportsFormInventoryValuation = () => {
         (reportSelector.manager && reportSelector.report === "Inventory Valuation") ? (
             <>
                 <div className="w-full uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select text-base lg:text-lg px-3 lg:px-0">
-                    <div className="flex gap-4">
-                        <PresentationChartLineIcon className="w-6 h-6" />
+                    <div className="flex gap-4 ml-14 items-center lg:ml-16 py-2 text-sm lg:text-base">
+                        <PresentationChartLineIcon className="w-8 h-8" />
                         {reportSelector.report}
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                        <select name="store" className="text-sm w-3/4" value={filters.store} onChange={onChange}>
+                    <div className="flex flex-wrap lg:flex-nowrap items-center gap-2">
+                        <select name="store" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.store} onChange={onChange}>
                             {
                                 isEmpty(getBranch(auth))
                                     ? (
@@ -179,8 +212,25 @@ const ReportsFormInventoryValuation = () => {
                             <button className="button-red py-2" onClick={() => printData()}>
                                 <PrinterIcon className="w-5 h-5" />
                             </button>
+                            <button className="report-button py-2" onClick={() => exportData()}>
+                                <ArchiveBoxArrowDownIcon className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
+                </div>
+                <div className="flex w-full gap-2 mt-4 overflow-x-auto lg:overflow-x-none">
+                    {
+                        Array.from({ length: 6 }, (_, i) => i + 1)?.map(n => (
+                            <div key={n} className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
+                                <span className="text-gray-500 no-select">
+                                    {columns.items[n].name}
+                                </span>
+                                <span className="text-lg font-semibold">
+                                    {total(data)[n]?.value}
+                                </span>
+                            </div>
+                        ))
+                    }
                 </div>
                 <DataRecords
                     page={startpage}

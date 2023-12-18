@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
+import { shortDate12TimePst } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import { exactSearch, isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -84,8 +85,9 @@ const InventoryRecords = () => {
         return [
             { value: `${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}` },
             { value: item.supplier_name || "-" },
+            { value: shortDate12TimePst(item.time) },
             { value: item.category },
-            { value: item.stocks },
+            { value: `${item.stocks}/${item.received}` },
             { value: (isDev(auth) || isAdmin(auth)) ? NumFn.currency(item.cost) : "-" },
             { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? NumFn.currency(item.price) : item.store === "JT-MAIN" ? "-" : NumFn.currency(item.price) },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
