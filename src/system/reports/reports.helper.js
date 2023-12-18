@@ -28,7 +28,7 @@ const reports = {
             (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             invt_store LIKE '%@store%' 
         GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category,invt_store
-        ORDER BY item_sold,prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category
+        ORDER BY item_sold DESC,prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category
         `
     ),
     sales_by_category: new Query("sales_by_category", `
