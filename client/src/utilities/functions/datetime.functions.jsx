@@ -58,6 +58,10 @@ export function shortDate12Time(datevalue) {
     if (datevalue) return moment(datevalue).format("MM-DD-YYYY hh:mm:ss A")
 }
 
+export function shortDate12TimePst(datevalue) {
+    if (datevalue) return moment(datevalue).add(8, 'hours').format("MM-DD-YYYY hh:mm A")
+}
+
 export function longDateTime(datevalue) {
     if (datevalue) return moment(datevalue).format("MMMM DD, YYYY hh:mm:ss A")
 }

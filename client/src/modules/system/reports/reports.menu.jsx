@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { setReportName, showReportManager } from "./reports.reducer"
+import { setReportName, showReportManager, showReportMenu } from "./reports.reducer"
 
 const ReportsMenu = () => {
     const reportSelector = useSelector(state => state.reports)
@@ -11,10 +11,11 @@ const ReportsMenu = () => {
     const onSelectReport = (reportName) => {
         dispatch(setReportName(reportName))
         dispatch(showReportManager())
+        dispatch(showReportMenu(false))
     }
 
     return (
-        <div className="flex flex-row flex-wrap px-3 lg:px-0 lg:flex-col no-select gap-x-2">
+        <div className="absolute mt-14 flex flex-col w-[300px] p-3 no-select gap-x-2 bg-white z-10 border border-gray-300">
             <span
                 className={menuStyle}
                 onClick={() => onSelectReport("Daily Sales by Item")}

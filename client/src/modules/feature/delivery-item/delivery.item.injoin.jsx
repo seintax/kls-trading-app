@@ -30,6 +30,14 @@ const ReceiptInjoin = () => {
     const [sqlReceipt] = useSqlReceiptMutation()
 
     useEffect(() => {
+        if (dataSelector.injoiner.show) {
+            return () => {
+                dispatch(resetReceiptItem())
+            }
+        }
+    }, [dataSelector.injoiner.show])
+
+    useEffect(() => {
         const instantiate = async () => {
             await balancedReceivables()
                 .unwrap()
@@ -301,7 +309,10 @@ const ReceiptInjoin = () => {
                     onCompleted()
                 }
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                toast.showError("Something went wrong while submitting the data.")
+            })
     }
 
     const closeAppender = useCallback(() => {

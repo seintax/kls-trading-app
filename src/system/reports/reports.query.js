@@ -86,6 +86,16 @@ const cashier_summary = handler(async (req, res) => {
     })
 })
 
+const inventory_valuation = handler(async (req, res) => {
+    const sql = helper.inventory_valuation.inject({
+        store: req.query.store,
+    })
+    await mysqlpool.query(sql, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed({ data: ans }, req))
+    })
+})
+
 module.exports = {
     sales_by_item,
     sales_by_category,
@@ -93,5 +103,6 @@ module.exports = {
     sales_summary,
     expenses,
     expenses_summary,
-    cashier_summary
+    cashier_summary,
+    inventory_valuation
 }

@@ -76,6 +76,10 @@ const receiptSlice = createSlice({
         setReceiptNotifier: (state, action) => {
             state.notifier = action.payload
         },
+        resetReceiptCache: (state) => {
+            state.data = []
+            state.item = {}
+        },
         resetReceipt: (state) => {
             state.data = []
             state.item = {}
@@ -96,6 +100,7 @@ export const {
     resetReceiptManager,
     showReceiptInjoiner,
     resetReceiptInjoiner,
+    resetReceiptCache,
     resetReceipt
 } = receiptSlice.actions
 

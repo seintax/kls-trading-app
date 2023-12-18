@@ -33,18 +33,19 @@ const TransmitInjoin = () => {
     const [sqlTransmit] = useSqlTransmitMutation()
 
     useEffect(() => {
+        if (dataSelector.injoiner.show) {
+            return () => {
+                dispatch(resetTransmitItem())
+            }
+        }
+    }, [dataSelector.injoiner.show])
+
+    useEffect(() => {
         const instantiate = async () => {
             await stockedInventory({ branch: transferSelector.item.source, category: transferSelector.item.category })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        // let array = res?.arrayResult?.filter(arr => arr.store === transferSelector.item.source && arr.category === transferSelector.item.category)?.map(arr => {
-                        //     return {
-                        //         value: arr.id,
-                        //         key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial}/${arr.variant_model}/${arr.variant_brand}`,
-                        //         data: arr
-                        //     }
-                        // })
                         let array = res?.arrayResult?.map(arr => {
                             return {
                                 value: arr.id,
@@ -294,41 +295,18 @@ const TransmitInjoin = () => {
                     : undefined
             }
         }
-        await sqlTransmit(formData)
-            .unwrap()
-            .then(res => {
-                if (res.success) {
-                    toast.showUpdate("Stock transfer successfully updated.")
-                    onCompleted()
-                }
-            })
-            .catch(err => console.error(err))
-        // let formData = {
-        //     ...data,
-        //     transfer: transferSelector.item.id,
-        //     variant: data.variety,
-        // }
-        // if (dataSelector.item.id) {
-        //     await updateTransmit({ ...formData, id: dataSelector.item.id })
-        //         .unwrap()
-        //         .then(res => {
-        //             if (res.success) {
-        //                 toast.showUpdate("Transmit successfully updated.")
-        //                 onCompleted()
-        //             }
-        //         })
-        //         .catch(err => console.error(err))
-        //     return
-        // }
-        // await createTransmit(formData)
+        // await sqlTransmit(formData)
         //     .unwrap()
         //     .then(res => {
         //         if (res.success) {
-        //             toast.showCreate("Transmit successfully created.")
+        //             toast.showUpdate("Stock transfer successfully updated.")
         //             onCompleted()
         //         }
         //     })
-        //     .catch(err => console.error(err))
+        //     .catch(err => {
+        //         console.error(err)
+        //         toast.showError("Something went wrong while submitting the data.")
+        //     })
     }
 
     const closeAppender = useCallback(() => {

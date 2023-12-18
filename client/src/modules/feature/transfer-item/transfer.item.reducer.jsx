@@ -73,6 +73,10 @@ const transmitSlice = createSlice({
         setTransmitNotifier: (state, action) => {
             state.notifier = action.payload
         },
+        resetTransmitCache: (state) => {
+            state.data = []
+            state.item = {}
+        },
         resetTransmit: (state) => {
             state.data = []
             state.item = {}
@@ -93,6 +97,7 @@ export const {
     resetTransmitManager,
     showTransmitInjoiner,
     resetTransmitInjoiner,
+    resetTransmitCache,
     resetTransmit
 } = transmitSlice.actions
 

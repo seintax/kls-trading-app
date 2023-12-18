@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import { resetTransmitCache } from "../transfer-item/transfer.item.reducer"
 import TransferManage from "./transfer.manage"
 import TransferRecords from "./transfer.records"
 import { resetTransferItem, resetTransferManager, resetTransferSelector, setTransferData, setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
@@ -22,6 +23,8 @@ const TransferIndex = () => {
         if (mounted) {
             return () => {
                 dispatch(resetTransferManager())
+                dispatch(resetTransferItem())
+                dispatch(resetTransmitCache())
             }
         }
     }, [mounted])
