@@ -2,6 +2,7 @@ import { BanknotesIcon, CloudArrowUpIcon, DocumentChartBarIcon, DocumentCheckIco
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useLocation } from "react-router-dom"
 import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { amount, currency } from "../../../utilities/functions/number.funtions"
@@ -9,6 +10,7 @@ import { StrFn, formatVariant, isAdmin, isDev, isEmpty } from "../../../utilitie
 import useAuth from "../../../utilities/hooks/useAuth"
 import { useDebounce } from "../../../utilities/hooks/useDebounce"
 import useToast from "../../../utilities/hooks/useToast"
+import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { setCategoryData } from "../../library/category/category.reducer"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
@@ -44,6 +46,7 @@ const CasheringComplexIndex = () => {
     const printingSelector = useSelector(state => state.printing)
     const transactionSelector = useSelector(state => state.transaction)
     const [isPaid, setIsPaid] = useState(false)
+    const location = useLocation()
     const dispatch = useDispatch()
     const [category, setCategory] = useState("")
     const [search, setSearch] = useState("")
@@ -62,6 +65,10 @@ const CasheringComplexIndex = () => {
         rate: 0,
         net: 0,
     })
+
+    useEffect(() => {
+        dispatch(setLocationPath(location?.pathname?.replace("complex-", "")))
+    }, [location])
 
     const [libCategories, setLibCategories] = useState()
 
@@ -527,7 +534,7 @@ const CasheringComplexIndex = () => {
                             value={search}
                             onChange={onChange}
                             placeholder="Search inventory item here"
-                            className="w-full text-sm border-[#4baf4f] outline-none ring-0 focus:ring-0 focus:outline-none focus:border-[#4baf4f] focus:border-b-gray-200 grow-1 bg-[#4baf4f] text-white placeholder:text-white border border-b-gray-200 lg:pl-8"
+                            className="w-full text-sm border-[#4baf4f] outline-none ring-0 focus:ring-0 focus:outline-none focus:border-[#4baf4f] focus:border-b-gray-200 grow-1 bg-[#4baf4f] text-white placeholder:text-white border border-b-gray-200 pl-6 lg:pl-8"
                         />
                     </div>
                     <div className="flex w-full md:w-fit justify-center gap-2">

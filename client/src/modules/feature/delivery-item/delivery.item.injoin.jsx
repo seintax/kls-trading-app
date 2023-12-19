@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
-import { StrFn, isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
@@ -25,8 +25,8 @@ const ReceiptInjoin = () => {
     const [libReceivables, setLibReceivables] = useState()
     const [libSuppliers, setLibSuppliers] = useState()
 
-    const [balancedReceivables] = useByBalanceReceivableMutation()
-    const [allSuppliers] = useFetchAllSupplierMutation()
+    const [balancedReceivables, { isLoading: receivableLoading }] = useByBalanceReceivableMutation()
+    const [allSuppliers, { isLoading: supplierLoading }] = useFetchAllSupplierMutation()
     const [sqlReceipt] = useSqlReceiptMutation()
 
     useEffect(() => {
@@ -46,11 +46,12 @@ const ReceiptInjoin = () => {
                         let array = res?.arrayResult?.filter(arr => parseInt(arr.purchase_supplier) === parseInt(deliverySelector.item.supplier) && arr.purchase_store === deliverySelector.item.store)?.map(arr => {
                             return {
                                 value: arr.id,
-                                key: `(PO#${StrFn.formatWithZeros(arr.purchase, 6)}) ${arr.product_name} | ${arr.variant_serial}/${arr.variant_model}/${arr.variant_brand}`,
+                                key: cleanDisplay(`(PO#${StrFn.formatWithZeros(arr.purchase, 6)}) ${arr.product_name} - ${arr.variant_serial}/${arr.variant_model}/${arr.variant_brand}`),
                                 data: arr
                             }
                         })
-                        setLibReceivables([{ value: "", key: "Select receivable", data: {} }, ...array])
+                        // setLibReceivables([{ value: "", key: "Select receivable", data: {} }, ...array])
+                        setLibReceivables(array)
                     }
                 })
                 .catch(err => console.error(err))
@@ -173,7 +174,7 @@ const ReceiptInjoin = () => {
 
         return (
             <>
-                <FormEl.Select
+                {/* <FormEl.Select
                     label='Receivable'
                     register={register}
                     name='receivable'
@@ -181,6 +182,18 @@ const ReceiptInjoin = () => {
                     options={libReceivables}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                /> */}
+                <FormEl.SearchBox
+                    label='Receivable'
+                    register={register}
+                    name='receivable'
+                    setter={setValue}
+                    values={values}
+                    errors={errors}
+                    style='vertical'
+                    items={libReceivables}
+                    loading={receivableLoading || supplierLoading}
+                    placeholder="Search for receivable item"
                 />
                 <FormEl.Display
                     label='Supplier'

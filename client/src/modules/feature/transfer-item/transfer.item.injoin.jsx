@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
 import { amount } from "../../../utilities/functions/number.funtions"
-import { StrFn, isEmpty } from "../../../utilities/functions/string.functions"
+import { cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
@@ -26,8 +26,8 @@ const TransmitInjoin = () => {
     const [libInventory, setLibInventory] = useState()
     const [libSuppliers, setLibSuppliers] = useState()
 
-    const [stockedInventory] = useByStocksInventoryMutation()
-    const [allSuppliers] = useFetchAllSupplierMutation()
+    const [stockedInventory, { isLoading: stockLoading }] = useByStocksInventoryMutation()
+    const [allSuppliers, { isLoading: supplierLoading }] = useFetchAllSupplierMutation()
     // const [createTransmit] = useCreateTransmitBySqlTransactionMutation()
     // const [updateTransmit] = useUpdateTransmitMutation()
     const [sqlTransmit] = useSqlTransmitMutation()
@@ -47,13 +47,16 @@ const TransmitInjoin = () => {
                 .then(res => {
                     if (res.success) {
                         let array = res?.arrayResult?.map(arr => {
+                            let invName = `${arr.product_name} - ${arr.variant_serial || "-"}/${arr.variant_model || "-"}/${arr.variant_brand || "-"}`
                             return {
                                 value: arr.id,
-                                key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial || "-"}/${arr.variant_model || "-"}/${arr.variant_brand || "-"}`,
+                                key: cleanDisplay(invName),
                                 data: arr
+                                // key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial || "-"}/${arr.variant_model || "-"}/${arr.variant_brand || "-"}`,
                             }
                         })
-                        setLibInventory([{ value: "", key: "Select inventory item", data: {} }, ...array])
+                        // setLibInventory([{ value: "", key: "Select inventory item", data: {} }, ...array])
+                        setLibInventory(array)
                     }
                 })
                 .catch(err => console.error(err))
@@ -166,7 +169,7 @@ const TransmitInjoin = () => {
     const onFields = (errors, register, values, setValue) => {
         return (
             <>
-                <FormEl.Select
+                {/* <FormEl.Select
                     label='Item Name'
                     register={register}
                     name='item'
@@ -174,6 +177,19 @@ const TransmitInjoin = () => {
                     options={libInventory}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                /> */}
+
+                <FormEl.SearchBox
+                    label='Item Name'
+                    register={register}
+                    name='item'
+                    setter={setValue}
+                    values={values}
+                    errors={errors}
+                    style='vertical'
+                    items={libInventory}
+                    loading={stockLoading || supplierLoading}
+                    placeholder="Search for inventory item"
                 />
                 <FormEl.Display
                     label='Category'
@@ -295,18 +311,18 @@ const TransmitInjoin = () => {
                     : undefined
             }
         }
-        // await sqlTransmit(formData)
-        //     .unwrap()
-        //     .then(res => {
-        //         if (res.success) {
-        //             toast.showUpdate("Stock transfer successfully updated.")
-        //             onCompleted()
-        //         }
-        //     })
-        //     .catch(err => {
-        //         console.error(err)
-        //         toast.showError("Something went wrong while submitting the data.")
-        //     })
+        await sqlTransmit(formData)
+            .unwrap()
+            .then(res => {
+                if (res.success) {
+                    toast.showUpdate("Stock transfer successfully updated.")
+                    onCompleted()
+                }
+            })
+            .catch(err => {
+                console.error(err)
+                toast.showError("Something went wrong while submitting the data.")
+            })
     }
 
     const closeAppender = useCallback(() => {

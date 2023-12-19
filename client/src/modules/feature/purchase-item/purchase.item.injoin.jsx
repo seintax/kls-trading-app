@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
-import { isEmpty } from "../../../utilities/functions/string.functions"
+import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
+import { cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
@@ -26,8 +26,8 @@ const ReceivableInjoin = () => {
     const [cacheVariants, setCacheVariants] = useState()
     const [libVariants, setLibVariants] = useState()
 
-    const [categoryProducts] = useByCategoryMasterlistMutation()
-    const [categoryVariants] = useByCategoryVariantMutation()
+    const [categoryProducts, { isLoading: productLoading }] = useByCategoryMasterlistMutation()
+    const [categoryVariants, { isLoading: variantLoading }] = useByCategoryVariantMutation()
     const [createReceivable] = useCreateReceivableMutation()
     const [updateReceivable] = useUpdateReceivableMutation()
     const [sqlReceivable] = useSqlReceivableMutation()
@@ -46,7 +46,8 @@ const ReceivableInjoin = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        setLibProducts(FormatOptionsWithEmptyLabel(res?.arrayResult, "id", "name", "Select product"))
+                        // setLibProducts(FormatOptionsWithEmptyLabel(res?.arrayResult, "id", "name", "Select product"))
+                        setLibProducts(FormatOptionsNoLabel(res?.arrayResult, "id", "name"))
                     }
                 })
                 .catch(err => console.error(err))
@@ -55,7 +56,8 @@ const ReceivableInjoin = () => {
                 .then(res => {
                     if (res.success) {
                         setCacheVariants(res?.arrayResult)
-                        setLibVariants([{ value: "", key: "Select variant", data: {} }])
+                        // setLibVariants([{ value: "", key: "Select variant", data: {} }])
+                        setLibVariants([])
                     }
                 })
                 .catch(err => console.error(err))
@@ -86,7 +88,8 @@ const ReceivableInjoin = () => {
                             data: arr
                         }
                     })
-                setLibVariants([{ value: "", key: "Select variant", data: {} }, ...array])
+                // setLibVariants([{ value: "", key: "Select variant", data: {} }, ...array])
+                setLibVariants(array)
             }
             setValues({
                 category: init(item.category, purchaseSelector?.item?.category),
@@ -104,12 +107,14 @@ const ReceivableInjoin = () => {
                 let product = listener[element]
                 if (product) {
                     let array = cacheVariants?.filter(arr => parseInt(arr.product) === parseInt(product))?.map(arr => {
-                        return { value: arr.id, key: `${arr.serial}/${arr.model}/${arr.brand}`, data: arr }
+                        return { value: arr.id, key: cleanDisplay(`${arr.serial}/${arr.model}/${arr.brand}`), data: arr }
                     })
-                    setLibVariants([{ value: "", key: "Select variant", data: {} }, ...array])
+                    // setLibVariants([{ value: "", key: "Select variant", data: {} }, ...array])
+                    setLibVariants(array)
                     return
                 }
-                setLibVariants([{ value: "", key: "Select variant", data: {} }])
+                // setLibVariants([{ value: "", key: "Select variant", data: {} }])
+                setLibVariants([])
             }
         }
     }, [listener, cacheVariants, setLibVariants])
@@ -122,7 +127,7 @@ const ReceivableInjoin = () => {
                     register={register}
                     name='category'
                 />
-                <FormEl.Select
+                {/* <FormEl.Select
                     label='Product Name'
                     register={register}
                     name='product'
@@ -130,8 +135,20 @@ const ReceivableInjoin = () => {
                     options={libProducts}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                /> */}
+                <FormEl.SearchBox
+                    label='Product Name'
+                    register={register}
+                    name='product'
+                    setter={setValue}
+                    values={values}
+                    errors={errors}
+                    style='vertical'
+                    items={libProducts}
+                    loading={productLoading}
+                    placeholder="Search for product name"
                 />
-                <FormEl.Select
+                {/* <FormEl.Select
                     label='Variant'
                     register={register}
                     name='variety'
@@ -139,6 +156,18 @@ const ReceivableInjoin = () => {
                     options={libVariants}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                /> */}
+                <FormEl.SearchBox
+                    label='Variant'
+                    register={register}
+                    name='variety'
+                    setter={setValue}
+                    values={values}
+                    errors={errors}
+                    style='vertical'
+                    items={libVariants}
+                    loading={variantLoading}
+                    placeholder="Search for variant"
                 />
                 <FormEl.Decimal
                     label='Quantity'
@@ -167,11 +196,13 @@ const ReceivableInjoin = () => {
 
     const onSchema = yup.object().shape({
         product: yup
-            .string()
-            .required('Product name is required.'),
+            .number()
+            .typeError("Product name is required")
+            .min(1, "Product name is required"),
         variety: yup
-            .string()
-            .required('Product variant is required.'),
+            .number()
+            .typeError("Product variant is required")
+            .min(1, "Product variant is required"),
         ordered: yup
             .number()
             .min(1, "Quantity is required"),

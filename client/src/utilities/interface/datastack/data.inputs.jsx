@@ -2,13 +2,14 @@ import { SquaresPlusIcon } from "@heroicons/react/20/solid"
 import { yupResolver } from "@hookform/resolvers/yup"
 import React, { useEffect } from 'react'
 import { useForm } from "react-hook-form"
+import { useDispatch } from "react-redux"
 import { useLocation } from "react-router-dom"
 import SpinnerIcon from "../../../assets/SpinnerIcon"
-import { useClientContext } from "../../context/client.context"
+import { setLocationPath } from "../../redux/slices/locateSlice"
 
 const DataInputs = ({ formData, fields, change, submit, closed, listing, mutation, header = true }) => {
     const location = useLocation()
-    const { handleTrail } = useClientContext()
+    const dispatch = useDispatch()
     const isEdit = !!formData.id
     const saveText = isEdit ? "Update" : "Save"
     const {
@@ -25,7 +26,7 @@ const DataInputs = ({ formData, fields, change, submit, closed, listing, mutatio
     })
 
     useEffect(() => {
-        handleTrail(location.pathname.split("/").filter(fvar => fvar !== formData.id).join("/"))
+        dispatch(setLocationPath(`${location?.pathname}/${isEdit ? "Edit" : "New"}`))
     }, [location])
 
     useEffect(() => {

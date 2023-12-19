@@ -45,9 +45,9 @@ const _record = handler(async (req, res) => {
 
 const _search = handler(async (req, res) => {
     const { search } = helper.parameters(req.query)
-    const { name, id } = helper.fields
+    const { particulars, id } = helper.fields
     let params = [p(search).Exactly()]
-    let clause = [f(name).IsEqual()]
+    let clause = [f(particulars).IsEqual()]
     let series = [f(id).Asc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
@@ -73,6 +73,20 @@ const _specify = handler(async (req, res) => {
     })
 })
 
+const allExpenses = handler(async (req, res) => {
+    const { search } = helper.parameters(req.query)
+    const { particulars, id } = helper.fields
+    let params = [p(search).Contains()]
+    let clause = [f(particulars).Like()]
+    let series = [f(id).Desc()]
+    let limits = undefined
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -81,4 +95,5 @@ module.exports = {
     _search,
     _specify,
     _findone,
+    allExpenses,
 }

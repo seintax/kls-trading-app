@@ -20,7 +20,7 @@ const initialState = {
             { name: 'Reference', stack: true, sort: 'refcode', size: 150 },
             { name: 'DR Date', stack: false, sort: 'date', size: 150 },
             { name: '', stack: true, sort: 'store', size: 180, position: 'right' },
-            { name: '', stack: false, screenreader: 'Action', size: 100 }
+            { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }
 }

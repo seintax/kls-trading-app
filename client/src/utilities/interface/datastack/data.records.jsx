@@ -113,7 +113,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                     key={row?.key || rowindex}
                                     onClick={row?.onclick}
                                     onDoubleClick={row?.ondoubleclick}
-                                    className={`hover:bg-gray-100 ${rowstyle}`}
+                                    className={`hover:bg-primary-200 transition ease-in-out duration-200 ${rowstyle}`}
                                 >
                                     <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
                                         {index + rowindex}.
@@ -123,26 +123,26 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             row.items?.map((item, itemindex) => (
                                                 <td
                                                     key={itemindex}
-                                                    className={`w-full py-4 border-b border-gray-300 px-2 sm:pl-3 ${preferredFont(fontsize)} font-medium text-gray-900 sm:w-auto lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
+                                                    className={`w-full py-1 lg:py-4 border-b border-gray-300 lg:px-2 sm:pl-0 ${preferredFont(fontsize)} font-medium text-gray-900 sm:w-auto lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
                                                     onClick={item?.onclick}
                                                     onDoubleClick={item?.ondoubleclick}
                                                 >
-                                                    <span className={`hidden md:flex ${setPosition(order && order[itemindex]?.position, false)}`}>
+                                                    <span className={`hidden lg:flex ${setPosition(order && order[itemindex]?.position, false)}`}>
                                                         {item.value}
                                                     </span>
                                                     {
                                                         (itemindex === 0) ? (
-                                                            <dl className="font-normal flex flex-col lg:hidden w-full">
+                                                            <dl className="font-normal flex flex-col lg:hidden w-full border border-black px-2 pb-1">
                                                                 {
                                                                     order?.map((col, colindex) => (
                                                                         <div
                                                                             key={colindex}
                                                                             className={`${col.stack ? (row.items[colindex]?.value ? "" : "lg:hidden") : "lg:hidden"} flex flex-row items-start gap-1 text-sm mt-1 w-full`}
                                                                         >
-                                                                            <dt className={`flex w-1/2 flex-none text-gray-400 text-[10px] text-sm ${col.name ? "" : "hidden"}`}>
+                                                                            <dt className={`${col?.screenreader ? "hidden" : "flex"} w-1/2 flex-none text-gray-400 text-[10px] text-sm ${col.name ? "" : "hidden"}`}>
                                                                                 {col.name ? `${col.name}:` : ""}
                                                                             </dt>
-                                                                            <dd className="flex w-1/2 flex-none text-gray-600 break-all">
+                                                                            <dd className={`flex ${col?.screenreader ? "w-full" : "w-1/2"} flex-none text-gray-600 break-all`}>
                                                                                 {row.items[colindex]?.value}
                                                                             </dd>
                                                                         </div>
@@ -176,7 +176,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             ))
                                         ) : null
                                     }
-                                    <td colSpan={99} className="flex flex-col lg:hidden text-black px-3">
+                                    <td colSpan={99} className="flex flex-col lg:hidden text-black border border-black border-t-4 px-2 pb-1">
                                         {
                                             (total?.length && order?.length) ? (
                                                 total?.map((item, totalindex) => (

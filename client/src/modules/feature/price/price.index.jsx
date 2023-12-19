@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useLocation } from "react-router-dom"
 import { isAdmin, isDev, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import PriceManage from "./price.manage"
 import PriceRecords from "./price.records"
 import { resetPriceItem, setPriceData, setPriceNotifier, setPriceShown, showPriceManager } from "./price.reducer"
@@ -14,6 +16,7 @@ const PriceIndex = () => {
     const [allPrice, { isLoading, isError, isSuccess }] = useByInventoryPriceMutation()
     const dataSelector = useSelector(state => state.price)
     const inventorySelector = useSelector(state => state.inventory)
+    const location = useLocation()
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
 
@@ -26,6 +29,10 @@ const PriceIndex = () => {
             }
         }
     }, [mounted])
+
+    useEffect(() => {
+        dispatch(setLocationPath(`${location?.pathname}/Prices`))
+    }, [location])
 
     useEffect(() => {
         const instantiate = async () => {

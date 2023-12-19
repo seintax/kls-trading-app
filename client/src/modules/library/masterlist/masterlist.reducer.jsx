@@ -16,7 +16,7 @@ const initialState = {
         items: [
             { name: 'Product Name', stack: false, sort: 'name' },
             { name: 'Category', stack: true, sort: 'category', size: 250 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: '', stack: false, screenreader: 'Action', size: 250 }
         ]
     }
 }

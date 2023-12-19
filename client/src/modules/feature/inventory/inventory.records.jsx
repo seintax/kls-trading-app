@@ -84,7 +84,8 @@ const InventoryRecords = () => {
     const items = (item) => {
         return [
             { value: `${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}` },
-            { value: item.supplier_name || "-" },
+            { value: item.variant_serial },
+            { value: item.acquisition === "MIGRATION" ? <span className="text-gray-400 italic">Beginning Inventory</span> : item.supplier_name || "-" },
             { value: shortDate12TimePst(item.time) },
             { value: item.category },
             { value: `${item.stocks}/${item.received}` },

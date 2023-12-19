@@ -21,7 +21,7 @@ const initialState = {
             { name: 'Category', stack: true, sort: 'category', size: 180 },
             { name: 'Status', stack: true, sort: 'status', size: 120 },
             { name: '', stack: true, sort: 'store', size: 180, position: 'right' },
-            { name: '', stack: false, screenreader: 'Action', size: 100 }
+            { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }
 }

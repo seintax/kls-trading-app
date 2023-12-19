@@ -100,16 +100,16 @@ const reports = {
             expn_store AS branch_name,
             COUNT(expn_id) AS expense_count,
             SUM(expn_purchase) AS expense_value,
-            DATE(expn_time + INTERVAL 8 HOUR) AS expense_date
+            expn_date AS expense_date
         FROM 
             pos_archive_expenses,
             sys_account
         WHERE 
             expn_account=acct_id AND 
-            (expn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
+            expn_date BETWEEN '@fr' AND '@to' AND
             expn_store LIKE '%@store%' 
-        GROUP BY DATE(expn_time + INTERVAL 8 HOUR),expn_store,expn_inclusion
-        ORDER BY DATE(expn_time + INTERVAL 8 HOUR),expn_store,expn_inclusion
+        GROUP BY expn_date,expn_store,expn_inclusion
+        ORDER BY expn_date DESC,expn_store,expn_inclusion
         `
     ),
     expenses_summary: new Query("expenses_summary", `
@@ -123,7 +123,7 @@ const reports = {
             sys_account
         WHERE 
             expn_account=acct_id AND 
-            (expn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
+            expn_date BETWEEN '@fr' AND '@to' AND
             expn_store LIKE '%@store%' 
         GROUP BY expn_store,expn_inclusion
         ORDER BY expn_store,expn_inclusion

@@ -4,16 +4,17 @@ import DataIndex from "../../../utilities/interface/datastack/data.index"
 import ExpensesManage from "./expenses.manage"
 import ExpensesRecords from "./expenses.records"
 import { resetExpensesItem, setExpensesData, setExpensesNotifier, showExpensesManager } from "./expenses.reducer"
-import { useFetchAllExpensesMutation } from "./expenses.services"
+import { useAllExpensesMutation } from "./expenses.services"
 
 const ExpensesIndex = () => {
-    const [allExpenses, { isLoading, isError, isSuccess }] = useFetchAllExpensesMutation()
+    // const [allExpenses, { isLoading, isError, isSuccess }] = useFetchAllExpensesMutation()
+    const [allExpenses, { isLoading, isError, isSuccess }] = useAllExpensesMutation()
     const dataSelector = useSelector(state => state.expenses)
     const dispatch = useDispatch()
 
     useEffect(() => {
         const instantiate = async () => {
-            await allExpenses()
+            await allExpenses({ search: "" })
                 .unwrap()
                 .then(res => {
                     if (res.success) {

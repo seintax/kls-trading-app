@@ -8,7 +8,7 @@ import { isEmpty } from "../../../functions/string.functions.jsx"
 import useAuth from "../../../hooks/useAuth.jsx"
 import AppNavigation from "./app.navigation.jsx"
 
-export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMenu, setSideMenuItems }) {
+export default function AppSideBar({ sidebarSideMenu, setSidebarSideMenu, setSideMenuItems }) {
     const auth = useAuth()
     const location = useLocation()
     const navigate = useNavigate()
@@ -37,8 +37,8 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
         dispatch(setSettingsUpdater(false))
     }, [configSelector.menus])
 
-    function handleSidebarOpen(isOpen) {
-        setSidebarOpen(isOpen)
+    function handleSidebarOpen() {
+        setSidebarOpen(prev => !prev)
     }
 
     useEffect(() => {
@@ -61,6 +61,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
     }, [location.pathname])
 
     function handleMenuSelect(item) {
+        setSidebarOpen(false)
         setSidebarMenu(sidebarMenu.map(nav => {
             if (nav.name === item.name) {
                 if (item.cascade !== undefined) {
@@ -80,7 +81,6 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
             return { ...nav, current: false }
         }))
         if (item.cascade === undefined) {
-            handleSidebarOpen(false)
             setSidebarSideMenu(item?.cascade || false)
             setCurrentCascade("")
             navigate(item.href)
@@ -121,7 +121,7 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
             return { ...nav, current: false }
         }))
         navigate(subitem.href)
-        handleSidebarOpen(true)
+        setSidebarOpen(false)
         setSidebarSideMenu(false)
     }
 
@@ -222,21 +222,44 @@ export default function AppSideBar({ menulist, sidebarSideMenu, setSidebarSideMe
         )
     }
 
+    const renderLabels = () => {
+        return (
+            <nav className="flex flex-col space-y-1 px-2 pb-4">
+                {sidebarMenu?.map((item) => (
+                    <div
+                        key={item.name}
+                        className={`flex items-center py-2 text-[10px] h-[42px] font-medium rounded-md cursor-pointer no-select blur-xs drop-shadow-lg`}
+                    >
+                        <span className="block bg-white border border-black px-1 py-1 rounded-[5px]">{item.name}</span>
+                    </div>
+                ))}
+            </nav>
+        )
+    }
+
     return (
         <>
             <div className="w-16 fixed inset-y-0 flex lg:w-56 no-select">
-                <div className="flex flex-grow flex-col overflow-y-auto border-r border-r-black text-white bg-white shadow-md border-shadow scroll-sm">
+                <div className="flex flex-grow flex-col overflow-y-auto border-r border-r-black text-white bg-white scroll-sm">
                     <div className="mt-20 px-1 flex flex-grow flex-col">
                         {renderNavigation()}
                     </div>
-                </div >
-            </div >
+                </div>
+            </div>
+            <div className={`w-fit absolute inset-y-0 flex z-50 ml-11 bg-transparent no-select ${sidebarOpen ? "" : "hidden"} lg:hidden`}>
+                <div className="flex flex-grow flex-col overflow-y-auto text-black bg-transparent scroll-sm">
+                    <div className="mt-20 px-1 flex flex-grow flex-col">
+                        {renderLabels()}
+                    </div>
+                </div>
+            </div>
             <div className="flex flex-0 flex-col no-select" >
                 <AppNavigation
                     userNavigation={userNavigation}
                     handleSidebarOpen={handleSidebarOpen}
+                    sidebarOpen={sidebarOpen}
                 />
-            </div >
+            </div>
         </>
     )
 }

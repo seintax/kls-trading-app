@@ -85,6 +85,7 @@ const ReportsFormInventoryValuation = () => {
         style: '',
         items: [
             { name: 'Item', stack: false, sort: 'inventory' },
+            { name: 'Part No.', stack: false, sort: 'variant1', size: 120 },
             { name: 'In Stock', stack: true, sort: 'stocks', size: 120 },
             { name: 'Cost', stack: true, sort: 'cost', size: 150 },
             { name: 'Inventory Value', stack: true, size: 150 },
@@ -120,6 +121,7 @@ const ReportsFormInventoryValuation = () => {
     const items = (item) => {
         return [
             { value: cleanDisplay(item.inventory) },
+            { value: item.variant1 },
             { value: currency(item.stocks).replace(".00", "") },
             { value: currency(item.cost) },
             { value: currency(item.value) },
@@ -212,7 +214,7 @@ const ReportsFormInventoryValuation = () => {
                             <button className="button-red py-2" onClick={() => printData()}>
                                 <PrinterIcon className="w-5 h-5" />
                             </button>
-                            <button className="report-button py-2" onClick={() => exportData()}>
+                            <button className="report-button py-2">
                                 <ArchiveBoxArrowDownIcon className="w-5 h-5" />
                             </button>
                         </div>

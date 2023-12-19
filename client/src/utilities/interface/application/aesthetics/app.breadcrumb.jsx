@@ -1,11 +1,28 @@
 import { HomeIcon } from "@heroicons/react/20/solid"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { StrFn } from "../../../functions/string.functions"
 
-const AppBreadcrumbs = ({ pages }) => {
+const AppBreadcrumbs = ({ location }) => {
+    const [pages, setPages] = useState([])
+
+    const chunkPages = (pathname) => {
+        let patharray = pathname.split("/").filter(path => path !== "")
+        return patharray.map((path, i) => {
+            if (path) return {
+                current: (patharray.length - 1) === i,
+                name: StrFn.properCase(path),
+                href: `/${path}`,
+            }
+        }) || []
+    }
+
+    useEffect(() => {
+        if (location) setPages(chunkPages(location))
+    }, [location])
 
     const formatPageName = (name) => {
-        if (name.includes("-")) {
+        if (name?.includes("-")) {
             return name?.split("-")?.map(f => { return StrFn.properCase(f) })?.join(" ")
         }
         return name

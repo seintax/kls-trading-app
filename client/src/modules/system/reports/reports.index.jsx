@@ -1,6 +1,8 @@
 import { Bars3Icon } from "@heroicons/react/24/outline"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useLocation } from "react-router-dom"
+import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import ReportsFormInventoryValuation from "./reporst.form.inventory-valuation"
 import ReportsFormCashierSummary from "./reports.form.cashier-summary"
 import ReportsFormExpenses from "./reports.form.expenses"
@@ -14,10 +16,15 @@ import { showReportMenu } from "./reports.reducer"
 const ReportsIndex = () => {
     const reportSelector = useSelector(state => state.reports)
     const dispatch = useDispatch()
+    const location = useLocation()
 
     const toggleMenu = () => {
         dispatch(showReportMenu(!reportSelector.showmenu))
     }
+
+    useEffect(() => {
+        dispatch(setLocationPath(location?.pathname))
+    }, [location])
 
     return (
         <div className="w-full flex flex-col lg:flex-row relative">

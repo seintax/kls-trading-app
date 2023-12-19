@@ -19,7 +19,7 @@ const initialState = {
             { name: 'Remarks', stack: true, sort: 'remarks', size: 200 },
             { name: 'Adjusted by', stack: true, sort: 'by', size: 150 },
             { name: 'Branch', stack: true, sort: 'store', size: 100 },
-            { name: '', stack: false, screenreader: 'Action', size: 100 }
+            { name: '', stack: false, screenreader: 'Action', size: 150 }
         ]
     }
 }

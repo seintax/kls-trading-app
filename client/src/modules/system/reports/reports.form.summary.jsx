@@ -210,7 +210,7 @@ const ReportsFormSummary = () => {
                             <button className="button-red py-2" onClick={() => printData()}>
                                 <PrinterIcon className="w-5 h-5" />
                             </button>
-                            <button className="report-button py-2" onClick={() => exportData()}>
+                            <button className="report-button py-2">
                                 <ArchiveBoxArrowDownIcon className="w-5 h-5" />
                             </button>
                         </div>

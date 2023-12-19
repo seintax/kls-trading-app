@@ -11,5 +11,6 @@ router
 router.get('/expenses/id', secure, service._findone)
 router.get('/expenses/search', secure, service._search)
 router.post('/expenses/specify', service._specify)
+router.get('/expenses/allexpenses', service.allExpenses)
 
 module.exports = router

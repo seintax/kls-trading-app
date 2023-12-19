@@ -36,6 +36,7 @@ import rolesReducer from "../../modules/system/roles/roles.reducer"
 import { apiSlice } from "./slices/apiSlice"
 import authReducer from './slices/authSlice'
 import deleteReducer from "./slices/deleteSlice"
+import locateReducer from "./slices/locateSlice"
 import searchReducer from "./slices/searchSlice"
 
 const store = configureStore({
@@ -43,6 +44,7 @@ const store = configureStore({
         [apiSlice.reducerPath]: apiSlice.reducer,
         auth: authReducer,
         search: searchReducer,
+        locate: locateReducer,
         deleteModal: deleteReducer,
         account: accountReducer,
         branch: branchReducer,

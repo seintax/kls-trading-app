@@ -62,6 +62,14 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['expenses']
         }),
+        allExpenses: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/allexpenses`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['expenses']
+        }),
     })
 })
 
@@ -73,4 +81,5 @@ export const {
     useFetchAllExpensesMutation,
     useSearchExpensesMutation,
     useSpecifyExpensesMutation,
+    useAllExpensesMutation,
 } = expensesApiSlice
