@@ -19,7 +19,7 @@ const initialState = {
             { name: 'Old Price', stack: false, sort: 'old_price', size: 150 },
             { name: 'New Price', stack: false, sort: 'new_price', size: 150 },
             { name: 'Adjusted By', stack: false, sort: 'account_name', size: 250 },
-            { name: 'Status', stack: false, sort: 'current', size: 150 },
+            { name: 'Status', stack: false, sort: 'current', size: 200 },
         ]
     }
 }

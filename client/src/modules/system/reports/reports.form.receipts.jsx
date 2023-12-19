@@ -2,20 +2,23 @@ import { ArchiveBoxArrowDownIcon, ArrowPathIcon, PresentationChartLineIcon, Prin
 import { saveAs } from 'file-saver'
 import moment from "moment"
 import { useEffect, useState } from 'react'
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import Datepicker from "react-tailwindcss-datepicker"
 import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
-import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
+import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
-import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useByDateRangeTransactionMutation } from "../../feature/cashering/cashering.services"
+import CasheringComplexReceipt from "../../feature/cashering_complex/cashering.complex.receipt"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
+import { setReportTransaction, showReportReceipt } from "./reports.reducer"
 
 const ReportsFormReceipts = () => {
     const auth = useAuth()
+    const dispatch = useDispatch()
     const reportSelector = useSelector(state => state.reports)
     const [refetch, setRefetch] = useState(false)
     const [data, setdata] = useState()
@@ -94,10 +97,10 @@ const ReportsFormReceipts = () => {
         style: '',
         items: [
             { name: 'Receipt No.', stack: false, sort: 'code' },
-            { name: 'Date', stack: true, sort: 'date', size: 170 },
+            { name: 'Date & Time', stack: true, sort: 'time', size: 190 },
             { name: 'Branch', stack: true, sort: 'account_store', size: 150 },
-            { name: 'Employee', stack: true, sort: 'account_name', size: 180 },
-            { name: 'Customer', stack: true, sort: 'customer_name', size: 250 },
+            { name: 'Employee', stack: true, sort: 'account_name', size: 200 },
+            { name: 'Customer', stack: true, sort: 'customer_name', size: 300 },
             { name: 'Type', stack: true, sort: 'method', size: 120 },
             { name: 'Total', stack: true, sort: 'total', size: 150 },
         ]
@@ -112,10 +115,10 @@ const ReportsFormReceipts = () => {
     const items = (item) => {
         return [
             { value: reformatCode(item.code) },
-            { value: longDate(item.date) },
+            { value: moment(item.time).add(8, "hours").format("MM-DD-YYYY hh:mm A") },
             { value: item.account_store },
-            { value: item.account_name },
-            { value: item.customer_name },
+            { value: StrFn.properCase(item.account_name) },
+            { value: item.customer_name?.toUpperCase() },
             { value: item.return > 0 ? "REFUND" : item.method },
             { value: currency(item.total) },
         ]
@@ -133,13 +136,19 @@ const ReportsFormReceipts = () => {
         ]
     }
 
+    const toggleReceipt = (item) => {
+        dispatch(setReportTransaction(item))
+        dispatch(showReportReceipt())
+    }
+
     useEffect(() => {
         if (data) {
             let tempdata = sorted ? sortBy(data, sorted) : data
             setrecords(tempdata?.map((item, i) => {
                 return {
                     key: item.id,
-                    items: items(item)
+                    items: items(item),
+                    onclick: () => toggleReceipt(item)
                 }
             }))
         }
@@ -213,7 +222,7 @@ const ReportsFormReceipts = () => {
                             <button className="button-red py-2" onClick={() => printData()}>
                                 <PrinterIcon className="w-5 h-5" />
                             </button>
-                            <button className="report-button py-2" onClick={() => exportData()}>
+                            <button className="report-button py-2">
                                 <ArchiveBoxArrowDownIcon className="w-5 h-5" />
                             </button>
                         </div>
@@ -225,7 +234,7 @@ const ReportsFormReceipts = () => {
                             All Receipts
                         </span>
                         <span className="text-lg font-semibold">
-                            {data.length}
+                            {data?.length || 0}
                         </span>
                     </div>
                     <div className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
@@ -233,7 +242,7 @@ const ReportsFormReceipts = () => {
                             Sales
                         </span>
                         <span className="text-lg font-semibold">
-                            {data.reduce((prev, curr) => prev + (curr.method === "SALES" && curr.return === 0 ? 1 : 0), 0)}
+                            {data?.reduce((prev, curr) => prev + (curr.method === "SALES" && curr.return === 0 ? 1 : 0), 0) || 0}
                         </span>
                     </div>
                     <div className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
@@ -241,7 +250,7 @@ const ReportsFormReceipts = () => {
                             Credit
                         </span>
                         <span className="text-lg font-semibold">
-                            {data.reduce((prev, curr) => prev + (curr.method === "CREDIT" && curr.return === 0 ? 1 : 0), 0)}
+                            {data?.reduce((prev, curr) => prev + (curr.method === "CREDIT" && curr.return === 0 ? 1 : 0), 0) || 0}
                         </span>
                     </div>
                     <div className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
@@ -249,7 +258,7 @@ const ReportsFormReceipts = () => {
                             Refunds
                         </span>
                         <span className="text-lg font-semibold">
-                            {data.reduce((prev, curr) => prev + (curr.return > 0 ? 1 : 0), 0)}
+                            {data?.reduce((prev, curr) => prev + (curr.return > 0 ? 1 : 0), 0) || 0}
                         </span>
                     </div>
                     {
@@ -275,6 +284,7 @@ const ReportsFormReceipts = () => {
                     keeppagination={true}
                     total={total(data)}
                 />
+                <CasheringComplexReceipt />
             </>
         ) : null
     )

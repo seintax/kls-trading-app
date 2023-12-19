@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
+import { useDispatch } from "react-redux"
 import { Link, useLocation } from "react-router-dom"
-import { useClientContext } from "../../context/client.context"
+import { setLocationPath } from "../../redux/slices/locateSlice"
 import MenuSelect from "../forminput/menu.select"
 import DataError from "./data.error"
 import DataLoading from "./data.loading"
@@ -8,10 +9,11 @@ import DataNoRecord from "./data.norecord"
 
 const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, isError, inputLink, children, plain = false }) => {
     const location = useLocation()
-    const { handleTrail } = useClientContext()
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        handleTrail(location?.pathname)
+        // handleTrail(location?.pathname)
+        dispatch(setLocationPath(location?.pathname))
     }, [location])
 
     if (!plain && data?.length === 0 && !isLoading) {

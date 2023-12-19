@@ -17,14 +17,15 @@ const initialState = {
     header: {
         items: [
             { name: 'Product Name', stack: false, sort: 'product_name' },
+            { name: 'Part No.', stack: true, sort: 'variant_serial', size: 100 },
             { name: 'Supplier', stack: true, sort: 'supplier_name', size: 220 },
             { name: 'Date', stack: true, sort: 'time', size: 100 },
             { name: 'Category', stack: true, sort: 'category', size: 140 },
-            { name: 'Stocks', stack: true, sort: 'stocks', size: 130, position: "center" },
-            { name: 'Cost', stack: true, sort: 'cost', size: 130, position: "center" },
-            { name: 'Price', stack: true, sort: 'price', size: 130, position: "center" },
-            { name: '', stack: true, sort: 'store', size: 160, position: "right" },
-            { name: '', stack: false, screenreader: 'Action', size: 100 }
+            { name: 'Stocks', stack: true, sort: 'stocks', size: 100, position: "center" },
+            { name: 'Cost', stack: true, sort: 'cost', size: 120, position: "center" },
+            { name: 'Price', stack: true, sort: 'price', size: 120, position: "center" },
+            { name: '', stack: true, sort: 'store', size: 120, position: "right" },
+            { name: '', stack: false, screenreader: 'Action', size: 180 }
         ]
     },
     printable: {

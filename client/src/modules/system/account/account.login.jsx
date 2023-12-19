@@ -21,7 +21,7 @@ const AccountLogin = () => {
 
     useEffect(() => {
         if (auth) navigate("/dashboard")
-    }, [navigate, auth])
+    }, [auth])
 
     const onChange = (e) => {
         const { name, value } = e.target
@@ -56,7 +56,7 @@ const AccountLogin = () => {
                 {error ? error : ""}
             </div>
             <div className="mt-1 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="py-10 px-4 shadow sm:rounded-lg sm:px-10 bg-gradient-to-b from-[#ffffff30] via-[#c7c6c610] to-[#ffffff90] border-shadow">
+                <div className="py-10 px-4 shadow sm:rounded-lg sm:px-10 bg-gradient-to-b from-[#ffffff30] via-[#c7c6c610] to-[#ffffff90]">
                     <AppLogo style="h-[15rem]" inverted={false} />
                     <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-primary-200">
                         Sign in to your account
@@ -132,7 +132,7 @@ const AccountLogin = () => {
                         </div>
                     </form>
                 </div>
-                <div className="flex flex-col gap-4 justify-start px-4 py-5 mt-5 text-blue-600 items-start bg-gradient-to-b from-[#ffffff50] via-[#c7c6c650] to-[#ffffff90] rounded-xl shadow border-shadow">
+                <div className="flex flex-col gap-4 justify-start px-4 py-5 mt-5 text-blue-600 items-start bg-gradient-to-b from-[#ffffff50] via-[#c7c6c650] to-[#ffffff90] rounded-xl shadow">
                     <span>In partnership with:</span>
                     <div className="w-full flex justify-center gap-3">
                         <img src={DevLogo} className="h-7 w-7 ml-3" />

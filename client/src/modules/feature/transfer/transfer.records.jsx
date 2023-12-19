@@ -76,7 +76,7 @@ const TransferRecords = () => {
             if (searchSelector.searchKey) {
                 let sought = searchSelector.searchKey
                 temp = dataSelector?.data?.filter(f => (
-                    f.id?.toLowerCase()?.includes(sought) ||
+                    String(f.id)?.toLowerCase()?.includes(sought) ||
                     f.source?.toLowerCase()?.includes(sought) ||
                     f.destination?.toLowerCase()?.includes(sought) ||
                     longDate(f.date)?.toLowerCase()?.includes(sought)

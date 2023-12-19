@@ -19,7 +19,7 @@ const initialState = {
         items: [
             { name: 'Role', stack: false, sort: 'name' },
             { name: 'Defined', stack: true, sort: 'permission', size: 200 },
-            { name: '', stack: false, screenreader: 'Action', size: 200 }
+            { name: '', stack: false, screenreader: 'Action', size: 280 }
         ]
     }
 }

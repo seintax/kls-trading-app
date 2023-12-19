@@ -21,7 +21,7 @@ const initialState = {
             { name: 'Status', stack: true, sort: 'Status', size: 150 },
             { name: 'Source', stack: true, sort: 'source', size: 150 },
             { name: 'Destination', stack: true, sort: 'destination', size: 150 },
-            { name: '', stack: false, screenreader: 'Action', size: 150 }
+            { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }
 }

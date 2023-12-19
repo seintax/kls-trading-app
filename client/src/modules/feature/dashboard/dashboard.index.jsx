@@ -3,10 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
 import Banner from "../../../assets/jally_banner.png"
-import { useClientContext } from "../../../utilities/context/client.context"
 import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
-import useToast from "../../../utilities/hooks/useToast"
+import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import DashboardCards from "./dashboard.cards"
 import DashboardFilters from "./dashboard.filters"
 import DashboardGraphSales from "./dashboard.graph.sales"
@@ -17,8 +16,6 @@ const DashboardIndex = ({ id }) => {
     const dashboardSelector = useSelector(state => state.dashboard)
     const dispatch = useDispatch()
     const location = useLocation()
-    const { handleTrail, user } = useClientContext()
-    const toast = useToast()
     const [showStats, setShowStats] = useState(false)
     const [mounted, setMounted] = useState(false)
 
@@ -33,7 +30,8 @@ const DashboardIndex = ({ id }) => {
     }, [mounted])
 
     useEffect(() => {
-        handleTrail(location.pathname.split("/").filter(path => path !== id).join("/"))
+        // handleTrail(location.pathname.split("/").filter(path => path !== id).join("/"))
+        dispatch(setLocationPath(location?.pathname))
     }, [location])
 
     const onClose = () => {

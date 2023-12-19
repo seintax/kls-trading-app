@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useLocation } from "react-router-dom"
 import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import { resetInventoryManager } from "../inventory/inventory.reducer"
 import AdjustmentManage from "./inventory.item.manage"
 import AdjustmentRecords from "./inventory.item.records"
@@ -16,6 +18,7 @@ const AdjustmentIndex = () => {
     const dataSelector = useSelector(state => state.adjustment)
     const inventorySelector = useSelector(state => state.inventory)
     const [product, setProduct] = useState("")
+    const location = useLocation()
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
 
@@ -28,6 +31,10 @@ const AdjustmentIndex = () => {
             }
         }
     }, [mounted])
+
+    useEffect(() => {
+        dispatch(setLocationPath(`${location?.pathname}/Adjustment`))
+    }, [location])
 
     useEffect(() => {
         const instantiate = async () => {

@@ -75,7 +75,7 @@ const DataInjoin = ({ display, formData, fields, change, submit, closecallback, 
 
     return (
         (display?.show) ? (
-            <div className="flex w-screen h-screen items-center justify-center fixed top-0 left-0 bg-black bg-opacity-[40%] overflow-y-auto z-10">
+            <div className="flex w-screen h-screen items-center justify-center fixed top-0 left-0 bg-black bg-opacity-[40%] overflow-y-auto z-20">
                 <div className={`flex flex-col pt-5 px-5 bg-white relative border border-1 border-gray-300 shadow-md rounded-md ${display?.size ? display?.size : "w-[400px] min-h-[400px]"}`}>
                     <div className="flex justify-between mb-3">
                         <div className="font-bold text-[15px]">{display?.title || ""}</div>
@@ -97,7 +97,7 @@ const DataInjoin = ({ display, formData, fields, change, submit, closecallback, 
                                     </div>
                                 </div>
                                 <div className={`${submit ? "" : "hidden"}`}>
-                                    <div className="py-2 flex justify-end">
+                                    <div className="py-2 flex justify-end gap-2">
                                         <button
                                             type="button"
                                             className="button-blue mr-auto"

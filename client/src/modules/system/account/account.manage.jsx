@@ -115,14 +115,36 @@ const AccountManage = () => {
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
-                <FormEl.Select
-                    label='Branch'
-                    register={register}
-                    name='store'
-                    errors={errors}
-                    options={libBranches}
-                    wrapper='lg:w-1/2'
-                />
+                {
+                    dataSelector.item.id
+                        ?
+                        <div>
+                            <FormEl.Display
+                                label='Branch'
+                                register={register}
+                                name='store'
+                            />
+                            <div className="flex w-full pb-2">
+                                <div className="w-1/2"></div>
+                                <div className="w-1/2 px-2">
+                                    <b>Note</b>: Account branch cannot be modified. <br /> In any case that a user needs access to <u>multiple</u> branches, create a <u>separate</u> account.
+                                    <br />
+                                    {isDev(auth) ? "Unique code given to users are directly linked to the auto-generated transaction no." : ""}
+                                    <br />
+                                    This rule is being observed as a precaution.
+                                </div>
+                            </div>
+                        </div>
+                        : <FormEl.Select
+                            label='Branch'
+                            register={register}
+                            name='store'
+                            errors={errors}
+                            options={libBranches}
+                            wrapper='lg:w-1/2'
+                        />
+                }
+
                 <FormEl.Password
                     label='Password'
                     register={register}

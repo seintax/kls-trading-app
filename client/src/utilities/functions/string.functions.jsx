@@ -73,6 +73,26 @@ export const removeWhiteSpaces = (string) => {
     return string.replace(/[\r\n]/gm, '').replaceAll(' ', '')
 }
 
+export const cleanDisplay = (value) => {
+    let formatted = value
+    if (formatted?.includes("/null")) {
+        formatted = value.replaceAll("/null", "")
+    }
+    if (formatted?.includes("/-")) {
+        formatted = value.replaceAll("/-", "")
+    }
+    if (formatted?.includes("-/")) {
+        formatted = formatted.replaceAll("-/", "")
+    }
+    if (formatted?.slice(-2) === "//") {
+        return formatted.replace("//", "")
+    }
+    if (formatted?.slice(-1) === "/") {
+        return formatted.substring(0, formatted.length - 1)
+    }
+    return formatted
+}
+
 const formatWithZeros = (str, maxcount) => {
     if (str) {
         let maxlen = Number(maxcount) - str?.toString().length

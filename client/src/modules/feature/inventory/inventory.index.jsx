@@ -1,6 +1,8 @@
+import { saveAs } from 'file-saver'
 import moment from "moment"
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -104,9 +106,21 @@ const InventoryIndex = () => {
         }
     }, [dataSelector.data, dataSelector.print])
 
+    const exportData = useCallback(() => {
+        if (dataSelector.data?.length) {
+            let type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+            const ws = XLSX.utils.json_to_sheet(dataSelector.data)
+            const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
+            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+            const excelData = new Blob([excelBuffer], { type: type })
+            saveAs(excelData, `${currentBranch.toLowerCase()?.replaceAll("-", "_")}_inventory_export_on_${moment(new Date()).format('YYYY_MM_DD_HH_mm_ss')}.xlsx`)
+        }
+    })
+
     const actions = () => {
         return [
             { label: `Print Inventory`, callback: printInventory },
+            { label: `Export Inventory`, callback: () => { } },
         ]
     }
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useLocation } from "react-router-dom"
 import useAuth from "../../../utilities/hooks/useAuth"
+import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import ConfigManage from "./config.manage"
 import { resetSettingsItem, setSettingsItem, setSettingsNotifier, showSettingsManager } from "./config.reducer"
 import { useByAccountConfigMutation } from "./config.services"
@@ -10,6 +12,7 @@ const ConfigIndex = () => {
     const [accountConfig] = useByAccountConfigMutation()
     const dataSelector = useSelector(state => state.settings)
     const dispatch = useDispatch()
+    const location = useLocation()
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])
 
@@ -18,6 +21,10 @@ const ConfigIndex = () => {
             return () => { }
         }
     }, [mounted])
+
+    useEffect(() => {
+        dispatch(setLocationPath(location?.pathname))
+    }, [location])
 
     useEffect(() => {
         const instantiate = async () => {

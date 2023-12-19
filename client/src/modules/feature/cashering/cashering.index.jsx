@@ -2,11 +2,11 @@ import { CubeIcon, DocumentPlusIcon, DocumentTextIcon, LockClosedIcon, Magnifyin
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
-import { useClientContext } from "../../../utilities/context/client.context"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, amount } from "../../../utilities/functions/number.funtions"
 import { StrFn, isBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
+import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import BrowserRecords from "../browser/browser.records"
 import { resetBrowserViewCart, setBrowserSearch, showBrowserCheckout, showBrowserViewCart } from "../browser/browser.reducer"
 import { resetTransactionReceipts, showTransactionReceipts } from "./cashering.reducer"
@@ -15,7 +15,6 @@ import { useByCountTransactionMutation } from "./cashering.services"
 const CasheringIndex = () => {
     const auth = useAuth()
     const location = useLocation()
-    const { handleTrail } = useClientContext()
     const [instantiated, setInstantiated] = useState(false)
     const [value, setValue] = useState(0)
     const [less, setLess] = useState(0)
@@ -28,7 +27,7 @@ const CasheringIndex = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        handleTrail(location?.pathname)
+        dispatch(setLocationPath(location?.pathname))
     }, [location])
 
     const [countTransaction] = useByCountTransactionMutation()

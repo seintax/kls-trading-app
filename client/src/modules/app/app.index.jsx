@@ -16,7 +16,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { Outlet } from "react-router-dom"
 import { version } from "../../../package.json"
-import { useClientContext } from "../../utilities/context/client.context"
 import { isDev, isEmpty, isYes } from "../../utilities/functions/string.functions"
 import useAuth from "../../utilities/hooks/useAuth"
 import useAuthenticate from "../../utilities/hooks/useAuthenticate"
@@ -35,8 +34,8 @@ import { setRolesAccess, setRolesCache } from "../system/roles/roles.reducer"
 import { useCreateRolesMutation, useFetchAllRolesMutation } from "../system/roles/roles.services"
 
 export const userNavigation = [
-    { name: "My Profile", href: "/profile" },
-    { name: "Activity", href: "/activity" },
+    { name: "My Profile", href: "/my-profile" },
+    { name: "Activity", href: "/my-activity" },
 ]
 
 const menulist = (config) => {
@@ -84,13 +83,11 @@ const AppIndex = () => {
     const configSelector = useSelector(state => state.settings)
     const permissionSelector = useSelector(state => state.permission)
     const roleSelector = useSelector(state => state.roles)
-    const authSelector = useSelector(state => state.roles)
+    const locationSelector = useSelector(state => state.locate)
     const [sidebarSideMenu, setSidebarSideMenu] = useState(false)
     const [sideMenuItems, setSideMenuItems] = useState()
     const [instance, setInstance] = useState(true)
     const [noDev, setNoDev] = useState(false)
-    const { trail } = useClientContext()
-    const [menus, setMenus] = useState()
     const authenticate = useAuthenticate()
     const dispatch = useDispatch()
     const { logout } = useLogout()
@@ -100,7 +97,7 @@ const AppIndex = () => {
     const [allPermissions] = useFetchAllPermissionMutation()
     const [createRole] = useCreateRolesMutation()
     const [updateAccount] = useUpdateAccountMutation()
-    const [accountConfig, { isSuccess }] = useByAccountConfigMutation()
+    const [accountConfig] = useByAccountConfigMutation()
     const defaultConfig = {
         discount: "Amount",
         ratelimit: 100,
@@ -239,18 +236,21 @@ const AppIndex = () => {
     return (
         <div className="flex h-screen flex-col">
             <AppSideBar
-                menulist={menus}
                 sidebarSideMenu={sidebarSideMenu}
                 setSidebarSideMenu={setSidebarSideMenu}
                 setSideMenuItems={setSideMenuItems}
             />
             <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5 bg-red-200">
-                <AppBreadcrumbs pages={trail} />
+                <AppBreadcrumbs location={locationSelector.location} />
                 <div className="p-0 lg:p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md relative">
                     <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-0 md:p-4 lg:p-6 text-xs min-h-full flex-none shadow-md bg-red-200">
                         <Outlet />
                     </div>
-                    <AppSideMenu sidebarSideMenu={sidebarSideMenu} setSidebarSideMenu={setSidebarSideMenu} sideMenuItems={sideMenuItems} />
+                    <AppSideMenu
+                        sidebarSideMenu={sidebarSideMenu}
+                        setSidebarSideMenu={setSidebarSideMenu}
+                        sideMenuItems={sideMenuItems}
+                    />
                 </div>
                 <div className="flex flex-none w-full h-[40px] bg-white border border-t-secondary-500 items-center px-3">
                     <span className="flex items-center gap-3 text-sm">

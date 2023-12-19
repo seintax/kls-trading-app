@@ -2,6 +2,7 @@ import { ExclamationCircleIcon, XCircleIcon } from "@heroicons/react/20/solid"
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { useEffect, useRef, useState } from "react"
 import { isEmpty } from "../../functions/string.functions"
+import StaticColumn from "./static.column"
 import StaticContainer from "./static.container"
 import StaticLabel from "./static.label"
 
@@ -12,6 +13,7 @@ export default function SearchBox(props) {
     const [key, setKey] = useState("")
     const [initialize, setInitialize] = useState(true)
     const [initValue, setInitValue] = useState(0)
+    const [keyMatch, setKeyMatch] = useState(true)
 
     const {
         name,
@@ -62,13 +64,14 @@ export default function SearchBox(props) {
     }
 
     const performAppend = async () => {
+        if (isEmpty(search)) return
         if (appendSearch) await appendSearch(search)
     }
 
     useEffect(() => {
         if (selected?.key) {
             setList(prev => prev?.map(f => {
-                if (f.value === selected.value) {
+                if (String(f.value) === String(selected.value)) {
                     return { ...f, selected: true }
                 }
                 return { ...f, selected: false }
@@ -79,17 +82,19 @@ export default function SearchBox(props) {
     }, [selected])
 
     useEffect(() => {
-        if (items.length) {
+        if (items?.length) {
+
+            // triggers on first initialization of the element
             if (initialize) {
                 let newList = items
                 setList(newList)
 
                 if (values?.hasOwnProperty(name)) {
                     if (values[name]) {
-                        let loaded = newList.filter(f => f.value === values[name])
-                        setter(name, loaded[0].value)
-                        setKey(loaded[0].key)
-                        setInitValue(loaded[0].value)
+                        let loaded = newList.filter(f => String(f.value) === String(values[name]))
+                        setter(name, loaded[0]?.value)
+                        setKey(loaded[0]?.key)
+                        setInitValue(loaded[0]?.value)
                         setList(loaded)
                     }
                 }
@@ -97,15 +102,26 @@ export default function SearchBox(props) {
                 setInitialize(false)
                 return
             }
+
             let newList = items.map(f => { return { ...f, selected: false } })
 
             setter(name, 0)
-            if (!search) {
+
+            // prevails when no record is selected and so search keyword is input
+            if (!search && !key) {
                 setList(newList)
                 return
             }
-            let similar = newList.filter(f => f.key?.toLowerCase()?.trim().includes(search?.toLowerCase()?.trim()))
-            setList(similar)
+
+            // prevails when no record is selected
+            if (!key) {
+                let similar = newList.filter(f => f.key?.toLowerCase()?.trim().includes(search?.toLowerCase()?.trim()))
+                setList(similar)
+                return
+            }
+
+            // prevails when the list changes considering the key of the selected record
+            setList(newList?.map(f => { return { ...f, selected: f.key === key } }))
         }
     }, [search, items, values])
 
@@ -116,7 +132,20 @@ export default function SearchBox(props) {
         if (exact?.length === 1) {
             setter(`${name}_exact`, 1)
         }
+        if (!isEmpty(key)) {
+            let match = list.filter(f => f.key === key).length > 0
+            setKeyMatch(match)
+        }
     }, [list])
+
+    useEffect(() => {
+        if (keyMatch)
+            setList(prev => prev?.map(f => {
+                if (f.key === key) return { ...f, selected: true }
+                return f
+            }))
+    }, [keyMatch])
+
 
     const selectItem = (item) => {
         setter(name, item.value)
@@ -147,14 +176,14 @@ export default function SearchBox(props) {
     }
 
     return (
-        <StaticContainer style={wrapper}>
+        <StaticContainer style="vertical">
             {label && (<StaticLabel name={name} label={label} optional={optional} />)}
-            <StaticWrapper>
-                <div className="flex relative items-center">
+            <StaticColumn>
+                <div className="flex w-full relative items-center">
                     <input
                         ref={searchRef}
                         type="text"
-                        className={`${errors?.[name] ? "input-field-error" : "input-field"} ${style}`}
+                        className={`${errors?.[name] ? "input-field-error" : "input-field"} ${keyMatch ? "" : "text-red-500"} ${style}`}
                         placeholder={placeholder}
                         id={`${name}_search`}
                         value={key ? key : search}
@@ -174,9 +203,9 @@ export default function SearchBox(props) {
                         />
                     </div>
                 </div>
-                <div className="w-full min-h-[150px] max-h-[170px] overflow-auto rounded border border-gray-300 flex flex-col mt-3">
+                <div className="w-full min-h-[120px] max-h-[120px] overflow-auto rounded border border-gray-300 flex flex-col mt-3">
                     <div
-                        className="text-sm py-2 px-3 text-blue-700 cursor-pointer hover:text-blue-800 hover:underline no-select"
+                        className={`text-sm py-2 px-3 text-blue-700 cursor-pointer hover:text-blue-800 hover:underline no-select ${appendSearch ? "" : "hidden"}`}
                         onClick={() => performAppend()}
                     >
                         Append search input to list
@@ -227,7 +256,7 @@ export default function SearchBox(props) {
                     id={name}
                     {...register(name)}
                 />
-            </StaticWrapper>
+            </StaticColumn>
             {errors?.[name] && (
                 <div className="flex pointer-events-none items-start mt-2 gap-2">
                     <ExclamationCircleIcon

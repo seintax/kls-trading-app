@@ -1,7 +1,17 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useDispatch } from "react-redux"
+import { useLocation } from "react-router-dom"
+import { setLocationPath } from "../../redux/slices/locateSlice"
 
 const DataListing = ({ reference, header, layout, records, appendcallback, savecallback }) => {
     const refList = useRef()
+    const location = useLocation()
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(setLocationPath(`${location?.pathname}/View`))
+    }, [location])
+
     return (
         <>
             <div ref={refList} className="flex flex-col justify-between mt-8 shadow overflow-auto ring-1 ring-black ring-opacity-5 md:mx-0 md:rounded-t-lg py-3 px-2 border border-b-1 border-b-gray-400 shadow-md rounded-md">
