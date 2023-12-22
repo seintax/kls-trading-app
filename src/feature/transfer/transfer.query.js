@@ -75,10 +75,10 @@ const _specify = handler(async (req, res) => {
 
 const byBranch = handler(async (req, res) => {
     const param = helper.parameters(req.query)
-    const { source, id } = helper.fields
+    const { source, time } = helper.fields
     let params = [p(param.source).Contains()]
     let clause = [f(source).Like()]
-    let series = [f(id).Asc()]
+    let series = [f(time).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {

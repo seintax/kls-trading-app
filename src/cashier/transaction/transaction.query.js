@@ -103,11 +103,11 @@ const byAdmin = handler(async (req, res) => {
 
 const byDateRange = handler(async (req, res) => {
     const param = helper.parameters(req.query)
-    const { date, id } = helper.fields
+    const { date, time } = helper.fields
     const { account_store } = helper.included
     let params = [p(param.branch).Contains(), p(param.fr).Exactly(), p(param.to).Exactly()]
     let clause = [f(account_store).Like(), f(date).Between()]
-    let series = [f(id).Asc()]
+    let series = [f(time).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {

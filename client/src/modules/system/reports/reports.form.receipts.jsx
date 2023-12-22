@@ -14,7 +14,7 @@ import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useByDateRangeTransactionMutation } from "../../feature/cashering/cashering.services"
 import CasheringComplexReceipt from "../../feature/cashering_complex/cashering.complex.receipt"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
-import { setReportTransaction, showReportReceipt } from "./reports.reducer"
+import { resetReportReceipt, setReportTransaction, showReportReceipt } from "./reports.reducer"
 
 const ReportsFormReceipts = () => {
     const auth = useAuth()
@@ -38,6 +38,17 @@ const ReportsFormReceipts = () => {
             }
         }
     }, [mounted])
+
+    useEffect(() => {
+        if (mounted && reportSelector.report === "Receipts Summary") {
+            return () => {
+                localStorage.removeItem("reports")
+                dispatch(resetReportReceipt())
+                dispatch(setReportTransaction({}))
+            }
+        }
+    }, [reportSelector.report])
+
 
     const onChange = (e) => {
         const { name, value } = e.target

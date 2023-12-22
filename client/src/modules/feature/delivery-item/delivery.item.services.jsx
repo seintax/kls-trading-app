@@ -71,6 +71,14 @@ export const receiptApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['receipt']
         }),
+        byRecentReceipt: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byrecent`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['receipt']
+        }),
         sqlReceipt: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}/sqlreceipt`,
@@ -99,6 +107,7 @@ export const {
     useSearchReceiptMutation,
     useSpecifyReceiptMutation,
     useByDeliveryReceiptMutation,
+    useByRecentReceiptMutation,
     useSqlReceiptMutation,
     useCreateReceiptBySqlTransactionMutation
 } = receiptApiSlice

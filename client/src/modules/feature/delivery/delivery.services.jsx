@@ -62,6 +62,14 @@ export const deliveryApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['delivery']
         }),
+        byDateDelivery: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bydate`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['delivery']
+        }),
     })
 })
 
@@ -73,4 +81,5 @@ export const {
     useFetchAllDeliveryMutation,
     useSearchDeliveryMutation,
     useSpecifyDeliveryMutation,
+    useByDateDeliveryMutation,
 } = deliveryApiSlice

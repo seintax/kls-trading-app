@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
+import { currency } from "../../../utilities/functions/number.funtions"
 import { StrFn, cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
@@ -9,7 +10,7 @@ import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
 import { useByBalanceReceivableMutation } from "../purchase-item/purchase.item.services"
 import { resetReceiptInjoiner, resetReceiptItem, setReceiptNotifier } from "./delivery.item.reducer"
-import { useSqlReceiptMutation } from "./delivery.item.services"
+import { useByRecentReceiptMutation, useSqlReceiptMutation } from "./delivery.item.services"
 
 const ReceiptInjoin = () => {
     const dataSelector = useSelector(state => state.receipt)
@@ -21,12 +22,14 @@ const ReceiptInjoin = () => {
     const [values, setValues] = useState()
     const { yup } = useYup()
     const toast = useToast()
+    const [recentPrice, setRecentPrice] = useState(null)
 
     const [libReceivables, setLibReceivables] = useState()
     const [libSuppliers, setLibSuppliers] = useState()
 
     const [balancedReceivables, { isLoading: receivableLoading }] = useByBalanceReceivableMutation()
     const [allSuppliers, { isLoading: supplierLoading }] = useFetchAllSupplierMutation()
+    const [recentReceivables, { isLoading: recentLoading }] = useByRecentReceiptMutation()
     const [sqlReceipt] = useSqlReceiptMutation()
 
     useEffect(() => {
@@ -92,6 +95,7 @@ const ReceiptInjoin = () => {
             let variant = item.variant
                 ? `${item.variant_serial}/${item.variant_model}/${item.variant_brand}`
                 : ""
+            setRecentPrice(null)
             setValues({
                 receivable: init(item.receivable, ""),
                 supplier_name: init(provideValueFromLib(libSuppliers, item.delivery_supplier)),
@@ -115,7 +119,22 @@ const ReceiptInjoin = () => {
         }
     }, [dataSelector.injoiner.show, instantiated])
 
+    const getRecentPrice = async (product, variant) => {
+        await recentReceivables({ product: product, variant: variant })
+            .unwrap()
+            .then(res => {
+                if (res.success && res.recordCount === 0) {
+                    setRecentPrice(0)
+                }
+                if (res.success && res.recordCount > 0) {
+                    setRecentPrice(res.arrayResult[0]?.pricing)
+                }
+            })
+            .catch(err => console.error(err))
+    }
+
     useEffect(() => {
+
         if (listener && dataSelector.injoiner.show) {
             if (element === "receivable") {
                 let receivable = listener[element]
@@ -140,6 +159,7 @@ const ReceiptInjoin = () => {
                             receivedtotal: parseInt(selected?.data?.purchase_receivedtotal) + parseInt(listener["quantity"] || 0),
                             purchase_category: selected?.data?.purchase_category,
                         })
+                        getRecentPrice(selected?.data?.product, selected?.data?.variant)
                         return
                     }
                 }
@@ -170,7 +190,12 @@ const ReceiptInjoin = () => {
         }
     }, [listener, dataSelector.injoiner.show])
 
+    const applyRecentPrice = () => {
+        if (recentPrice > 0) setValues({ pricing: recentPrice })
+    }
+
     const onFields = (errors, register, values, setValue) => {
+
 
         return (
             <>
@@ -238,6 +263,13 @@ const ReceiptInjoin = () => {
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
+                <div className="w-1/2 ml-auto text-sm">
+                    {recentLoading && "Retrieving previous prices..."}
+                    {!recentLoading && recentPrice === 0 && "There is no recent price recorded."}
+                    {!recentLoading && recentPrice > 0 && <div>
+                        Item's recent price is <span className="hover:bg-gray-200 cursor-pointer no-select text-blue-400 font-semibold border border-gray-400 px-1 rounded-[5px]" onClick={() => applyRecentPrice()}>{currency(recentPrice || 3200)}</span>
+                    </div>}
+                </div>
             </>
         )
     }

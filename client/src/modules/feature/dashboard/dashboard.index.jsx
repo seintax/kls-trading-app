@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
 import Banner from "../../../assets/jally_banner.png"
-import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import DashboardCards from "./dashboard.cards"
@@ -18,6 +17,7 @@ const DashboardIndex = ({ id }) => {
     const location = useLocation()
     const [showStats, setShowStats] = useState(false)
     const [mounted, setMounted] = useState(false)
+    const statisticsRoleInclusion = ["DevOp", "SysAd", "Admin"]
 
     useEffect(() => { setMounted(true) }, [])
 
@@ -59,7 +59,7 @@ const DashboardIndex = ({ id }) => {
                         {/* <DashboardGraphCollection /> */}
                         <img src={Banner} alt="" />
                         {/* <AppLogo style="h-full" /> */}
-                        <div className={`${isDev(auth) || isAdmin(auth) ? "" : "hidden"} mt-5 text-base text-blue-600 cursor-pointer hover:underline no-select`} onClick={() => toggleStatistics()}>
+                        <div className={`${statisticsRoleInclusion.includes(auth.role) ? "" : "hidden"} mt-5 text-base text-blue-600 cursor-pointer hover:underline no-select`} onClick={() => toggleStatistics()}>
                             {showStats ? "Hide" : "Show"} Statistics
                         </div>
                     </div>

@@ -5,10 +5,10 @@ import { resetReceiptCache } from "../delivery-item/delivery.item.reducer"
 import DeliveryManage from "./delivery.manage"
 import DeliveryRecords from "./delivery.records"
 import { resetDeliveryItem, resetDeliveryManager, resetDeliverySelector, setDeliveryData, setDeliveryItem, setDeliveryNotifier, showDeliveryManager } from "./delivery.reducer"
-import { useFetchAllDeliveryMutation } from "./delivery.services"
+import { useByDateDeliveryMutation } from "./delivery.services"
 
 const DeliveryIndex = () => {
-    const [allDelivery, { isLoading, isError }] = useFetchAllDeliveryMutation()
+    const [allDelivery, { isLoading, isError }] = useByDateDeliveryMutation()
     const dataSelector = useSelector(state => state.delivery)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)

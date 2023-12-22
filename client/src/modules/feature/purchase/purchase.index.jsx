@@ -5,10 +5,10 @@ import { resetReceivableCache, resetReceivableItem } from "../purchase-item/purc
 import PurchaseManage from "./purchase.manage"
 import PurchaseRecords from "./purchase.records"
 import { resetPurchaseItem, resetPurchaseManager, resetPurchaseSelector, setPurchaseData, setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
-import { useFetchAllPurchaseMutation } from "./purchase.services"
+import { useByDatePurchaseMutation } from "./purchase.services"
 
 const PurchaseIndex = () => {
-    const [allPurchase, { isLoading, isError }] = useFetchAllPurchaseMutation()
+    const [allPurchase, { isLoading, isError }] = useByDatePurchaseMutation()
     const dataSelector = useSelector(state => state.purchase)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)

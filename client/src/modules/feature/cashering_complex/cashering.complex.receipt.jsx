@@ -53,7 +53,7 @@ const CasheringComplexReceipt = () => {
                 leave="transition-opacity ease-linear duration-300"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-                className={`fixed left-16 lg:left-auto lg:right-0 top-12 lg:top-24 mt-[13px] h-full w-full lg:w-1/2 bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end border-l border-l-gray-500 border-t border-t-gray-500`}
+                className={`fixed left-16 lg:left-auto pr-16 lg:pr-0 lg:right-0 top-12 lg:top-24 mt-[13px] h-full w-full lg:w-1/2 bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end border-l border-l-gray-500 border-t border-t-gray-500`}
             >
                 <Transition.Child
                     enter="transition ease-in-out duration-500 transform"
@@ -106,7 +106,7 @@ const CasheringComplexReceipt = () => {
                                             </span>
                                             <span className="text-sm text-gray-500">
                                                 <span>({item.dispense} x {currency(item.price)})</span>
-                                                <span className={`${currency((item.less || 0) + (item.markdown || 0)) > 0 ? "" : "hidden"}`}> - {currency((item.less || 0) + (item.markdown || 0))}</span>
+                                                <span className={`${(item.less || 0) + (item.markdown || 0) > 0 ? "" : "hidden"}`}> - {currency((item.less || 0) + (item.markdown || 0))}</span>
                                             </span>
                                         </div>
                                         <span>₱{currency(item.net)}</span>
