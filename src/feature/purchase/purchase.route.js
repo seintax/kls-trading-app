@@ -10,6 +10,7 @@ router
     .delete(secure, service._delete)
 router.get('/purchase/id', secure, service._findone)
 router.get('/purchase/search', secure, service._search)
-router.post('/purchase/specify', service._specify)
+router.get('/purchase/specify', service._specify)
+router.get('/purchase/bydate', service.byDate)
 
 module.exports = router

@@ -51,9 +51,9 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
     }
 
     const branchDisplay = () => {
-        if (auth.role === "Admin" && auth.store === "SysAd") return "Back Office"
-        if (auth.role === "SysAd" && auth.store === "SysAd") return "System Administrator"
         if (auth.role === "DevOp" && auth.store === "DevOp") return "All Access"
+        if (auth.role === "SysAd" && auth.store === "SysAd") return "System Administrator"
+        if (auth.store === "SysAd") return "Back Office"
         if (auth.store.includes("JT-")) return `Jally Trading - ${StrFn.properCase(auth.store?.replace("JT-", ""))} Branch`
     }
 

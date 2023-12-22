@@ -11,8 +11,9 @@ router
     .delete(secure, service._delete)
 router.get('/receipt/id', secure, service._findone)
 router.get('/receipt/search', secure, service._search)
-router.post('/receipt/specify', service._specify)
+router.get('/receipt/specify', service._specify)
 router.get('/receipt/bydelivery', service.byDelivery)
+router.get('/receipt/byrecent', service.byRecent)
 
 router.post('/receipt/sqlreceipt', complex.sqlReceipt)
 

@@ -89,7 +89,7 @@ const DataInjoin = ({ display, formData, fields, change, submit, closecallback, 
                             >
                                 <div className="space-y-4 divide-y divide-gray-200 sm:space-y-3">
                                     <div className="space-y-6 sm:space-y-5 w-full">
-                                        <div className="flex flex-col gap-2">
+                                        <div className="flex flex-col gap-0">
 
                                             {fields(errors, register, formData?.values, setValue)}
 

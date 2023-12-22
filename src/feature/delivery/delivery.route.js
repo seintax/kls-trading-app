@@ -11,5 +11,6 @@ router
 router.get('/delivery/id', secure, service._findone)
 router.get('/delivery/search', secure, service._search)
 router.post('/delivery/specify', service._specify)
+router.get('/delivery/bydate', service.byDate)
 
 module.exports = router

@@ -105,7 +105,7 @@ export default function SearchBox(props) {
 
             let newList = items.map(f => { return { ...f, selected: false } })
 
-            setter(name, 0)
+            // setter(name, 0)
 
             // prevails when no record is selected and so search keyword is input
             if (!search && !key) {

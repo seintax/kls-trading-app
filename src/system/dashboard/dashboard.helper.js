@@ -127,7 +127,7 @@ const dashboard = {
     weekly_gross_profit: new Query("weekly_gross_profit", `
     SELECT 
         @date
-        SUM(sale_net - invt_cost) AS total
+        SUM(sale_net - (sale_dispense * invt_cost)) AS total
     FROM 
         pos_sales_dispensing, 
         pos_stock_inventory

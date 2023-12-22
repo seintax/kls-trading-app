@@ -91,7 +91,7 @@ const reports = {
             (sale_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             invt_store LIKE '%@store%' 
         GROUP BY DATE(sale_time + INTERVAL 8 HOUR),invt_store
-        ORDER BY DATE(sale_time + INTERVAL 8 HOUR)
+        ORDER BY DATE(sale_time + INTERVAL 8 HOUR) DESC
         `
     ),
     expenses: new Query("expenses", `
@@ -210,7 +210,7 @@ const reports = {
             (trns_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' AND
             acct_store LIKE '%@store%' 
         GROUP BY DATE(trns_time + INTERVAL 8 HOUR),refunds,acct_store,cash_sales,credit_collection
-        ORDER BY DATE(trns_time + INTERVAL 8 HOUR)
+        ORDER BY DATE(trns_time + INTERVAL 8 HOUR) DESC
         `
     ),
     inventory_valuation: new Query("inventory_valuation", `
