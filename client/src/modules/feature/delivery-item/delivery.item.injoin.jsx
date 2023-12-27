@@ -8,6 +8,7 @@ import useYup from "../../../utilities/hooks/useYup"
 import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
+import { useByItemInventoryMutation } from "../inventory/inventory.services"
 import { useByBalanceReceivableMutation } from "../purchase-item/purchase.item.services"
 import { resetReceiptInjoiner, resetReceiptItem, setReceiptNotifier } from "./delivery.item.reducer"
 import { useByRecentReceiptMutation, useSqlReceiptMutation } from "./delivery.item.services"
@@ -30,6 +31,7 @@ const ReceiptInjoin = () => {
     const [balancedReceivables, { isLoading: receivableLoading }] = useByBalanceReceivableMutation()
     const [allSuppliers, { isLoading: supplierLoading }] = useFetchAllSupplierMutation()
     const [recentReceivables, { isLoading: recentLoading }] = useByRecentReceiptMutation()
+    const [recentInventory, { isLoading: inventoryLoading }] = useByItemInventoryMutation()
     const [sqlReceipt] = useSqlReceiptMutation()
 
     useEffect(() => {
@@ -122,9 +124,22 @@ const ReceiptInjoin = () => {
     const getRecentPrice = async (product, variant) => {
         await recentReceivables({ product: product, variant: variant })
             .unwrap()
-            .then(res => {
+            .then(async (res) => {
                 if (res.success && res.recordCount === 0) {
                     setRecentPrice(0)
+                    await recentInventory({ product: product, variant: variant, branch: "JT-MAIN" })
+                        .unwrap()
+                        .then(res => {
+                            if (res.success) {
+                                if (res.success && res.recordCount === 0) {
+                                    setRecentPrice(0)
+                                }
+                                if (res.success && res.recordCount > 0) {
+                                    setRecentPrice(res.arrayResult[0]?.price)
+                                }
+                            }
+                        })
+                        .catch(err => console.error(err))
                 }
                 if (res.success && res.recordCount > 0) {
                     setRecentPrice(res.arrayResult[0]?.pricing)
@@ -264,9 +279,9 @@ const ReceiptInjoin = () => {
                     wrapper='lg:w-1/2'
                 />
                 <div className="w-1/2 ml-auto text-sm">
-                    {recentLoading && "Retrieving previous prices..."}
-                    {!recentLoading && recentPrice === 0 && "There is no recent price recorded."}
-                    {!recentLoading && recentPrice > 0 && <div>
+                    {(recentLoading || inventoryLoading) && "Retrieving previous prices..."}
+                    {!(recentLoading || inventoryLoading) && recentPrice === 0 && "There is no recent price recorded."}
+                    {!(recentLoading || inventoryLoading) && recentPrice > 0 && <div>
                         Item's recent price is <span className="hover:bg-gray-200 cursor-pointer no-select text-blue-400 font-semibold border border-gray-400 px-1 rounded-[5px]" onClick={() => applyRecentPrice()}>{currency(recentPrice || 3200)}</span>
                     </div>}
                 </div>

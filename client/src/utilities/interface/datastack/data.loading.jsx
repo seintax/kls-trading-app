@@ -5,6 +5,7 @@ const DataLoading = ({ loading }) => {
         // <div className="mt-5 mx-5 text-center">
         //     <PropagateIcon />
         // </div>
+
         (loading) ? (
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#81818190] to-[#00000090] bg-opacity-[50%] z-20 flex items-center justify-center flex-col">
                 <div className="w-[100px] h-[100px] bg-gradient-to-r from-[#8d8d8f] to-[#363536] flex items-center justify-center border border-2 border-[#ffffff]">
