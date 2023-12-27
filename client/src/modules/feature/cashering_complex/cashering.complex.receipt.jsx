@@ -1,8 +1,8 @@
 import { Transition } from "@headlessui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
-import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { momentPST } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
 import { StrFn, cleanDisplay } from "../../../utilities/functions/string.functions"
 import { resetReportReceipt } from "../../system/reports/reports.reducer"
@@ -138,7 +138,7 @@ const CasheringComplexReceipt = () => {
                         </div>
                         <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                         <div className="flex flex-col text-gray-500">
-                            <span>{moment(dataSelector?.transaction?.time).add(8, "hours").format("MMM DD, YYYY hh:mm A")}</span>
+                            <span>{momentPST(dataSelector?.transaction?.time, "MMM DD, YYYY hh:mm A")}</span>
                         </div>
                     </div>
                 </Transition.Child>

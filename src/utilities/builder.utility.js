@@ -73,6 +73,10 @@ class Field {
         return this.value ? `${this.value} NOT LIKE ${val ? val : "?"}` : ""
     }
 
+    PSTTimeStamp() {
+        return new Field(this.alias, `(${this.value} + INTERVAL 8 HOUR)`)
+    }
+
     Between(fr = undefined, to = undefined) {
         return this.value ? `(${this.value} BETWEEN ${fr ? `'${fr}'` : "?"} AND ${to ? `'${to}'` : "?"})` : ""
     }

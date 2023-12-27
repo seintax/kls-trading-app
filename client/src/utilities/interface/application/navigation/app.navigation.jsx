@@ -120,19 +120,19 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                                     </Menu.Items>
                                 </Transition>
                             </Menu>
-                            <span className="hidden lg:flex text-black text-sm ml-2 pr-2 font-semibold">
+                            <span className="hidden lg:flex text-black text-sm ml-2 pr-2 font-normal">
                                 {StrFn.properCase(auth?.name)}
                             </span>
                         </div>
                         <div className="flex items-center relative isolate w-fit group cursor-pointer h-fit mr-2 lg:mr-0">
-                            <div className="flex absolute z-[-1] right- lg:left-5 w-full">
+                            <div className="flex absolute z-[-1] lg:left-6 w-full">
                                 <div className="flex items-center bg-primary-400 py-4 w-full pl-0 pr-5 rounded-[10px] rounded-tl-[30px] rounded-br-[30px] border border-white group-hover:bg-primary-500">
                                 </div>
                             </div>
-                            <span className="hidden lg:flex text-black text-sm mr-3 lg:ml-12 pr-2 font-semibold px-5 lg:px-0">
+                            <span className="hidden lg:flex text-black text-sm mr-2 lg:ml-14 font-normal px-5 lg:px-0">
                                 {branchDisplay()}
                             </span>
-                            <span className="flex lg:hidden text-black text-sm mr-3 lg:ml-12 pr-2 font-semibold px-5 lg:px-0">
+                            <span className="flex lg:hidden text-black text-xs mr-3 lg:ml-12 pr-2 font-normal px-5 lg:px-0">
                                 {auth.store}
                             </span>
                         </div>

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux"
 import Datepicker from "react-tailwindcss-datepicker"
 import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
-import { sqlDate } from "../../../utilities/functions/datetime.functions"
+import { momentPST, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
 import { StrFn, getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -126,12 +126,12 @@ const ReportsFormReceipts = () => {
     const items = (item) => {
         return [
             { value: reformatCode(item.code) },
-            { value: moment(item.time).add(8, "hours").format("MM-DD-YYYY hh:mm A") },
+            { value: momentPST(item.time, "MM-DD-YYYY hh:mm A") },
             { value: item.account_store },
             { value: StrFn.properCase(item.account_name) },
             { value: item.customer_name?.toUpperCase() },
             { value: item.return > 0 ? "REFUND" : item.method },
-            { value: currency(item.total) },
+            { value: currency(item.net) },
         ]
     }
 

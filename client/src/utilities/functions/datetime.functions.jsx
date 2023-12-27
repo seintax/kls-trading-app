@@ -75,3 +75,10 @@ export function lastDayOfWeekByDate(datevalue, format = "") {
     let index = 6 - moment(datevalue).day()
     return moment(datevalue).add(index, 'days').format(format)
 }
+
+export const momentPST = (value, format = "YYYY-MM-DD HH:mm:ss") => {
+    // production timezone adjustment is based on the 
+    // default timezone of hostinger.com
+    const timeZone = import.meta.env.MODE === "development" ? 900 : 420
+    return moment(value).utcOffset(timeZone).format(format)
+}

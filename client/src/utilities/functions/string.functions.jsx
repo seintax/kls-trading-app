@@ -76,10 +76,10 @@ export const removeWhiteSpaces = (string) => {
 export const cleanDisplay = (value) => {
     let formatted = value
     if (formatted?.includes("/null")) {
-        formatted = value.replaceAll("/null", "")
+        formatted = formatted.replaceAll("/null", "")
     }
     if (formatted?.includes("/-")) {
-        formatted = value.replaceAll("/-", "")
+        formatted = formatted.replaceAll("/-", "")
     }
     if (formatted?.includes("-/")) {
         formatted = formatted.replaceAll("-/", "")
