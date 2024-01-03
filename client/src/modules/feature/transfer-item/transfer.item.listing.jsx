@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { StrFn } from "../../../utilities/functions/string.functions"
+import { StrFn, cleanDisplay } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataListing from "../../../utilities/interface/datastack/data.listing"
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
@@ -108,7 +108,7 @@ const TransmitListing = () => {
 
     const items = (item) => {
         return [
-            { value: `${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}` },
+            { value: cleanDisplay(`${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}`) },
             { value: `ITEM#${StrFn.formatWithZeros(item.item, 6)}`, subtext: "Inventory" },
             { value: NumFn.currency(item.invt_base), subtext: "Base Price" },
             { value: item.quantity, subtext: "Quantity" },

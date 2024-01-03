@@ -11,6 +11,7 @@ import { getBranch, isEmpty } from "../../../utilities/functions/string.function
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
+import { useFetchAllCategoryMutation } from "../../library/category/category.services"
 import { useInventoryValuationReportMutation } from "./reports.services"
 
 const ReportsFormInventoryValuation = () => {
@@ -22,7 +23,7 @@ const ReportsFormInventoryValuation = () => {
     const [sorted, setsorted] = useState()
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
-    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: "JT-MAIN" })
+    const [filters, setFilters] = useState({ asof: sqlDate(), store: "", category: "" })
     const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])
@@ -44,10 +45,11 @@ const ReportsFormInventoryValuation = () => {
     }
 
     const [libBranchers, setLibBranches] = useState()
+    const [libCategories, setLibCategoies] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
-    // const [allInventory] = useFetchAllInventoryBranchMutation()
     const [allInventory] = useInventoryValuationReportMutation()
+    const [allCategories] = useFetchAllCategoryMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -64,10 +66,24 @@ const ReportsFormInventoryValuation = () => {
                     }
                 })
                 .catch(err => console.error(err))
+            await allCategories()
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setLibCategoies(res?.arrayResult.map(item => {
+                            return {
+                                key: item.name,
+                                value: item.name
+                            }
+                        }))
+                    }
+                })
+                .catch(err => console.error(err))
             if (reportSelector.report === "Inventory Valuation") {
-                await allInventory({ store: filters.store })
+                await allInventory({ store: filters.store, category: filters.category, asof: filters.asof })
                     .unwrap()
                     .then(res => {
+                        console.log(res)
                         if (res.success) {
                             setdata(res.data)
                         }
@@ -196,7 +212,9 @@ const ReportsFormInventoryValuation = () => {
                         {reportSelector.report}
                     </div>
                     <div className="flex flex-wrap lg:flex-nowrap items-center gap-2">
+                        <input type="date" name="asof" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.asof} onChange={onChange} />
                         <select name="store" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.store} onChange={onChange}>
+                            <option value="" className="text-gray-500 font-bold">ALL STORES</option>
                             {
                                 isEmpty(getBranch(auth))
                                     ? (
@@ -205,6 +223,15 @@ const ReportsFormInventoryValuation = () => {
                                         ))
                                     )
                                     : <option key={auth.store} value={auth.store}>{auth.store}</option>
+
+                            }
+                        </select>
+                        <select name="category" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.category} onChange={onChange}>
+                            <option value="" className="text-gray-500 font-bold">ALL CATEGORIES</option>
+                            {
+                                libCategories?.map(category => (
+                                    <option key={category.value} value={category.value}>{category.key}</option>
+                                ))
 
                             }
                         </select>

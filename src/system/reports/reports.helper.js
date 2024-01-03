@@ -214,109 +214,61 @@ const reports = {
         `
     ),
     inventory_valuation: new Query("inventory_valuation", `
-    SELECT
-        CONCAT(prod_name, ' - ', IFNULL(vrnt_serial,''), '/', IFNULL(vrnt_model,''), '/', IFNULL(vrnt_brand,'')) AS inventory,
-        prod_name AS product,
-        vrnt_serial AS variant1,
-        vrnt_model AS variant2,
-        vrnt_brand AS variant3,
-        invt_cost AS cost,
-        SUM(invt_stocks) AS stocks,
-        SUM(invt_stocks * IFNULL(invt_cost,0)) AS value,
-        SUM(invt_stocks * invt_price) AS retail,
-        SUM((invt_stocks * invt_price) - (invt_stocks * IFNULL(invt_cost,0))) AS profit
-    FROM 
-        pos_stock_inventory
-            LEFT JOIN 
-                pos_stock_masterlist
-                    ON prod_id=invt_product 
-            LEFT JOIN
-                lib_variant 
-                    ON vrnt_id=invt_variant
-    WHERE 
-        invt_store LIKE '%@store%'
-    GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost
-    ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost;
+        SELECT
+            CONCAT(prod_name, ' - ', IFNULL(vrnt_serial,''), '/', IFNULL(vrnt_model,''), '/', IFNULL(vrnt_brand,'')) AS inventory,
+            prod_name AS product,
+            vrnt_serial AS variant1,
+            vrnt_model AS variant2,
+            vrnt_brand AS variant3,
+            invt_product AS productid,
+            invt_variant AS variantid,
+            invt_cost AS cost,
+            SUM(invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) AS stocks,
+            SUM((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0)) AS value,
+            SUM((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * invt_price) AS retail,
+            SUM(((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * invt_price) - ((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0))) AS profit
+        FROM 
+            pos_stock_inventory
+                LEFT JOIN 
+                    pos_stock_masterlist
+                        ON prod_id=invt_product 
+                LEFT JOIN
+                    lib_variant 
+                        ON vrnt_id=invt_variant
+                LEFT JOIN 
+                    (SELECT 
+                        sale_product,
+                        sale_variant,
+                        SUM(sale_dispense) AS dispensed
+                    FROM 
+                        pos_sales_dispensing
+                    WHERE
+                        (sale_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
+                        sale_store LIKE '%@store%'
+                    GROUP BY sale_product,sale_variant) b 
+                        ON invt_product=b.sale_product AND 
+                        invt_variant=b.sale_variant 
+                LEFT JOIN 
+                    (SELECT 
+                        rsal_product,
+                        rsal_variant,
+                        SUM(rsal_quantity) AS returned
+                    FROM 
+                        pos_return_dispensing
+                    WHERE
+                        (rsal_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
+                        rsal_store LIKE '%@store%'
+                    GROUP BY rsal_product,rsal_variant) c 
+                        ON invt_product=c.rsal_product AND 
+                        invt_variant=c.rsal_variant
+        WHERE 
+            invt_store LIKE '%@store%' AND
+            invt_category LIKE '%@category%' AND
+            (invt_time + INTERVAL 8 HOUR) < '@asof 23:59:59'
+        GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost,invt_product,invt_variant
+        ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost,invt_product,invt_variant;
         `
     ),
-    // cashier_summary: new Query("cashier_summary", `
-    //     SELECT
-    //         DATE(trns_time + INTERVAL 8 HOUR) AS day,
-    //         SUM(IFNULL(rtrn_p_total, trns_total)) AS gross_sales,
-    //         SUM(IFNULL(rtrn_p_less, trns_less) + IFNULL(rtrn_p_markdown, trns_markdown)) AS discounts,
-    //         SUM(IFNULL(rtrn_p_net, trns_net)) AS net_sales,
-    //         SUM(IF(trns_method='CREDIT', IFNULL(rtrn_p_net, trns_net) - trns_partial, 0)) AS credit_sales,
-    //         SUM(trns_partial) AS partial,
-    //         acct_store AS branch,
-    //         (
-    //             SELECT 
-    //                 SUM(rtrn_r_net)
-    //             FROM 
-    //                 pos_return_transaction,
-    //                 sys_account  
-    //             WHERE 
-    //                 acct_id=rtrn_account 
-    //                     AND
-    //                 acct_store=branch
-    //                     AND
-    //                 DATE(rtrn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
-    //         ) AS refunds,
-    //         (
-    //             SELECT 
-    //                 SUM(paym_amount)
-    //             FROM pos_payment_collection 
-    //             WHERE 
-    //                 paym_type='SALES' 
-    //                     AND
-    //                 paym_store=branch
-    //                     AND
-    //                 DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
-    //         ) AS cash_sales,
-    //         (
-    //             SELECT 
-    //                 SUM(paym_amount)
-    //             FROM pos_payment_collection 
-    //             WHERE 
-    //                 paym_type='CREDIT' 
-    //                     AND
-    //                 paym_store=branch
-    //                     AND
-    //                 DATE(paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
-    //         ) AS credit_collection
-    //     FROM 
-    //         pos_sales_transaction
-    //             LEFT JOIN (
-    //                 SELECT 
-    //                     rtrn_trans,
-    //                     rtrn_p_total,
-    //                     rtrn_p_less,
-    //                     rtrn_p_markdown,
-    //                     rtrn_p_net,
-    //                     MIN(rtrn_id)
-    //                 FROM pos_return_transaction 
-    //                 GROUP BY rtrn_trans,rtrn_p_total,rtrn_p_less,rtrn_p_markdown,rtrn_p_net
-    //             ) a ON a.rtrn_trans=trns_code,
-    //         sys_account
-    //     WHERE 
-    //         trns_account=acct_id 
-    //             AND 
-    //         (trns_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
-    //             AND
-    //         acct_store LIKE '%@store%' 
-    //     GROUP BY DATE(trns_time + INTERVAL 8 HOUR),refunds,acct_store,cash_sales,credit_collection
-    //     ORDER BY DATE(trns_time + INTERVAL 8 HOUR)
-    //     `
-    // ),
 }
 
 module.exports = reports
-
-// (
-//     SELECT
-//         SUM(cred_balance)
-//     FROM pos_sales_credit
-//     WHERE
-//         cred_store=invt_store
-//             AND
-//         DATE(cred_time)=DATE(sale_time)
-// ) AS credit_sales,

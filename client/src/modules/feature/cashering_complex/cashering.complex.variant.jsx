@@ -112,6 +112,7 @@ const CasheringComplexVariant = () => {
             remaining: balance,
             markdown: amtDiscount ? amount(amtDiscount) : total * discount
         }
+        console.log(newItem)
         dispatch(setBrowserCart(newItem))
         dispatch(updateBrowserData(newItem))
         dispatch(resetBrowserManager())

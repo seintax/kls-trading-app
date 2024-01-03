@@ -21,6 +21,7 @@ const dispensing = new Table("pos_sales_dispensing", {
     taxrated: 'sale_taxrated',
     toreturn: 'sale_toreturn',
     returned: 'sale_returned',
+    store: 'sale_store'
 }, [
     {
         key: "sale_trans",

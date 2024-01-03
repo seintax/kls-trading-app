@@ -89,6 +89,8 @@ const cashier_summary = handler(async (req, res) => {
 const inventory_valuation = handler(async (req, res) => {
     const sql = helper.inventory_valuation.inject({
         store: req.query.store,
+        category: req.query.category,
+        asof: req.query.asof
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
