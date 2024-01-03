@@ -95,7 +95,7 @@ const TransmitInjoin = () => {
         if (dataSelector.injoiner.show && instantiated && libInventory.length) {
             let item = dataSelector.item
             let variant = item.variant
-                ? `${item.variant_serial}/${item.variant_model}/${item.variant_brand}`
+                ? cleanDisplay(`${item.variant_serial}/${item.variant_model}/${item.variant_brand}`)
                 : ""
             let selection = libInventory?.filter(f => parseInt(f.value) === parseInt(item.item))
             let selected = selection?.length ? selection[0] : undefined
@@ -131,7 +131,7 @@ const TransmitInjoin = () => {
                             supplier: selected?.data?.supplier,
                             supplier_name: provideValueFromLib(libSuppliers, selected?.data?.supplier),
                             product: selected?.data?.product,
-                            variety_name: `${selected?.data?.variant_serial} / ${selected?.data?.variant_model} / ${selected?.data?.variant_brand}`,
+                            variety_name: cleanDisplay(`${selected?.data?.variant_serial} / ${selected?.data?.variant_model} / ${selected?.data?.variant_brand}`),
                             variety: selected?.data?.variant,
                             cost: selected?.data?.cost,
                             pricing: selected?.data?.base,

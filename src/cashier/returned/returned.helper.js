@@ -6,6 +6,7 @@ const returned = new Table("pos_return_dispensing", {
     time: 'rsal_time',
     item: 'rsal_item',
     product: 'rsal_product',
+    variant: 'rsal_variant',
     refund: 'rsal_refund',
     quantity: 'rsal_quantity',
     price: 'rsal_price',
@@ -16,6 +17,7 @@ const returned = new Table("pos_return_dispensing", {
     net: 'rsal_net',
     discount: 'rsal_discount',
     taxrated: 'rsal_taxrated',
+    store: 'rsal_store'
 }, [
     {
         key: "rsal_refund",

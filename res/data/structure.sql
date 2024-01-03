@@ -389,10 +389,14 @@ CREATE TABLE pos_sales_dispensing (
     sale_discount    decimal(20,15) DEFAULT 0,
     sale_taxrated    decimal(5,2) DEFAULT 0,
     sale_toreturn    decimal(10,2) DEFAULT 0,
-    sale_returned    decimal(10,2) DEFAULT 0
+    sale_returned    decimal(10,2) DEFAULT 0,
+    sale_store       varchar(50)
 );
 
 ALTER TABLE pos_sales_dispensing ADD COLUMN sale_markdown decimal(30,2) DEFAULT 0 AFTER sale_less;
+ALTER TABLE pos_sales_dispensing ADD COLUMN sale_store varchar(35);
+
+UPDATE pos_sales_dispensing SET sale_store=(SELECT invt_store FROM pos_stock_inventory WHERE invt_id=sale_item);
 
 DROP TABLE pos_sales_credit;
 CREATE TABLE pos_sales_credit (
@@ -487,7 +491,8 @@ CREATE TABLE pos_return_dispensing (
     rsal_time        timestamp DEFAULT now(),
     rsal_item        int,
     rsal_product     int,
-    rsal_refund     int,
+    rsal_variant     int
+    rsal_refund      int,
     rsal_quantity    decimal(10,2),
     rsal_price       decimal(30,2),
     rsal_vat         decimal(30,2),
@@ -496,10 +501,19 @@ CREATE TABLE pos_return_dispensing (
     rsal_markdown    decimal(30,2) DEFAULT 0, 
     rsal_net         decimal(30,2),
     rsal_discount    decimal(20,15) DEFAULT 0,
-    rsal_taxrated    decimal(5,2) DEFAULT 0
+    rsal_taxrated    decimal(5,2) DEFAULT 0,
+    rsal_store       varchar(50)
 );
 
 ALTER TABLE pos_return_dispensing ADD COLUMN rsal_markdown decimal(30,2) DEFAULT 0 AFTER rsal_less;
+
+ALTER TABLE pos_return_dispensing ADD COLUMN rsal_variant int AFTER rsal_product;
+
+ALTER TABLE pos_return_dispensing ADD COLUMN rsal_store varchar(50);
+
+UPDATE pos_return_dispensing SET rsal_variant=(SELECT invt_variant FROM pos_stock_inventory WHERE invt_id=rsal_item);
+
+UPDATE pos_return_dispensing SET rsal_store=(SELECT invt_store FROM pos_stock_inventory WHERE invt_id=rsal_item);
 
 DROP TABLE pos_return_reimbursement;
 CREATE TABLE pos_return_reimbursement (

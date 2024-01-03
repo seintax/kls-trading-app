@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
-import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import { cleanDisplay, isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
@@ -80,7 +80,7 @@ const AdjustmentIndex = () => {
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
             <div className="w-full sticky -top-5 pt-5 lg:pt-0 z-10">
                 <DataHeader
-                    name={`Inventory Adjustment for: ${product}`}
+                    name={`Inventory Adjustment for: ${cleanDisplay(product)}`}
                     returncallback={returnToList}
                 />
             </div>

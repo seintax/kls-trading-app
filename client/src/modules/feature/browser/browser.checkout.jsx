@@ -301,7 +301,8 @@ const BrowserCheckout = () => {
                                 markdown: item.markdown,
                                 net: net,
                                 discount: amount(summary.rate),
-                                taxrated: 0.12
+                                taxrated: 0.12,
+                                store: item.store,
                             }
                         }),
                         payment: paymentSelector.paid

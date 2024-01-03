@@ -21,6 +21,7 @@ const CasheringLedgerPurchase = () => {
     const toast = useToast()
 
     const selectItem = (item) => {
+        console.log(item)
         dispatch(setDispensingItem(item))
         dispatch(showDispensingManager())
         qtyRef.current && qtyRef.current?.focus()

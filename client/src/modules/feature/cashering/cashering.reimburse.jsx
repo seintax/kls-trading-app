@@ -223,6 +223,7 @@ const CasheringReimburse = () => {
                         net: item.returnnet,
                         discount: item.discount,
                         taxrated: 0.12,
+                        store: item.store,
                     }
                 }),
             }
