@@ -50,6 +50,13 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
         e.preventDefault()
     }
 
+    const onKeyDown = (e) => {
+        if (e.code === 'Enter') {
+            dispatch(setSearchKey(" "))
+            dispatch(setSearchKey(""))
+        }
+    }
+
     const branchDisplay = () => {
         if (auth.role === "DevOp" && auth.store === "DevOp") return "All Access"
         if (auth.role === "SysAd" && auth.store === "SysAd") return "System Administrator"
@@ -157,6 +164,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                                     name="search"
                                     value={text}
                                     onChange={onChange}
+                                    onKeyDown={onKeyDown}
                                 />
                             </div>
                         </form>

@@ -10,6 +10,7 @@ import DataIndex from "../../../utilities/interface/datastack/data.index"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import AdjustmentIndex from "../inventory-item/inventory.item.index"
 import PriceIndex from "../price/price.index"
+import HistoryIndex from "./inventory.history"
 import InventoryRecords from "./inventory.records"
 import { resetInventoryManager, setInventoryData, setInventoryNotifier } from "./inventory.reducer"
 import { useFetchAllInventoryBranchMutation } from "./inventory.services"
@@ -129,27 +130,23 @@ const InventoryIndex = () => {
         dispatch(setInventoryNotifier(true))
     }
 
-    return (
-        (priceSelector.shown) ? (
-            <PriceIndex />
-        ) : (
-            (dataSelector.manager) ? (
-                <AdjustmentIndex />
-            ) : (
-                <DataIndex
-                    display={dataSelector.display}
-                    actions={actions()}
-                    sorts={libBranches}
-                    sortcallback={sortcallback}
-                    data={dataSelector.data}
-                    isError={isError}
-                    isLoading={isLoading}
-                >
-                    <InventoryRecords />
-                </DataIndex >
-            )
-        )
+    if (priceSelector.shown) return <PriceIndex />
+    if (dataSelector.manager) return <AdjustmentIndex />
+    if (dataSelector.ledger) return <HistoryIndex />
 
+    return (
+        <DataIndex
+            display={dataSelector.display}
+            actions={actions()}
+            sorts={libBranches}
+            sortcallback={sortcallback}
+            data={dataSelector.data}
+            isError={isError}
+            isLoading={isLoading}
+            overrideLoading={true}
+        >
+            <InventoryRecords isLoading={isLoading} />
+        </DataIndex >
     )
 }
 

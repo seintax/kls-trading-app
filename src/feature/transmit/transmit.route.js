@@ -13,6 +13,7 @@ router.get('/transmit/id', secure, service._findone)
 router.get('/transmit/search', secure, service._search)
 router.post('/transmit/specify', service._specify)
 router.get('/transmit/bytransfer', service.byTransfer)
+router.get('/transmit/byinventory', service.byInventory)
 
 router.post('/transmit/sqltransmit', complex.sqlTransmit)
 

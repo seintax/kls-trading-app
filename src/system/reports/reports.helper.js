@@ -223,12 +223,12 @@ const reports = {
             invt_product AS productid,
             invt_variant AS variantid,
             invt_cost AS cost,
-            SUM(invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) AS stocks,
-            SUM((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0)) AS value,
-            SUM((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * invt_price) AS retail,
-            SUM(((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * invt_price) - ((invt_stocks + IFNULL(dispensed,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0))) AS profit
+            SUM(invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) AS stocks,
+            SUM((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0)) AS value,
+            SUM((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * invt_price) AS retail,
+            SUM(((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * invt_price) - ((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0))) AS profit
         FROM 
-            pos_stock_inventory
+            pos_stock_inventory a 
                 LEFT JOIN 
                     pos_stock_masterlist
                         ON prod_id=invt_product 
@@ -236,37 +236,88 @@ const reports = {
                     lib_variant 
                         ON vrnt_id=invt_variant
                 LEFT JOIN 
-                    (SELECT 
-                        sale_product,
-                        sale_variant,
-                        SUM(sale_dispense) AS dispensed
-                    FROM 
-                        pos_sales_dispensing
-                    WHERE
-                        (sale_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
-                        sale_store LIKE '%@store%'
-                    GROUP BY sale_product,sale_variant) b 
-                        ON invt_product=b.sale_product AND 
-                        invt_variant=b.sale_variant 
+                    (
+                        SELECT 
+                            sale_product, 
+                            sale_variant, 
+                            invt_cost AS sale_cost,
+                            SUM(sale_dispense) AS dispensed
+                        FROM 
+                            pos_sales_dispensing,
+                            pos_stock_inventory
+                        WHERE
+                            sale_item=invt_id AND 
+                            (sale_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
+                            invt_store='@store'
+                        GROUP BY sale_product,sale_variant,invt_cost
+                    ) b 
+                        ON b.sale_product=a.invt_product AND 
+                        b.sale_variant=a.invt_variant AND
+                        b.sale_cost=a.invt_cost
                 LEFT JOIN 
-                    (SELECT 
-                        rsal_product,
-                        rsal_variant,
-                        SUM(rsal_quantity) AS returned
-                    FROM 
-                        pos_return_dispensing
-                    WHERE
-                        (rsal_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
-                        rsal_store LIKE '%@store%'
-                    GROUP BY rsal_product,rsal_variant) c 
-                        ON invt_product=c.rsal_product AND 
-                        invt_variant=c.rsal_variant
+                    (
+                        SELECT 
+                            rsal_product, 
+                            rsal_variant, 
+                            invt_cost AS rsal_cost,
+                            SUM(rsal_quantity) AS returned
+                        FROM 
+                            pos_return_dispensing,
+                            pos_stock_inventory
+                        WHERE
+                            rsal_item=invt_id AND 
+                            (rsal_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
+                            invt_store='@store'
+                        GROUP BY rsal_product,rsal_variant,rsal_cost
+                    ) c 
+                        ON c.rsal_product=invt_product AND 
+                        c.rsal_variant=invt_variant AND 
+                        c.rsal_cost=invt_cost
+                LEFT JOIN 
+                    (
+                        SELECT 
+                            trni_product, 
+                            trni_variant,
+                            invt_cost AS trni_cost,
+                            SUM(trni_quantity) AS transfered
+                        FROM 
+                            pos_transfer_receipt,
+                            pos_stock_inventory
+                        WHERE
+                            trni_item=invt_id AND                                 
+                            (trni_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
+                            invt_store='@store'
+                        GROUP BY trni_product,trni_variant,trni_cost
+                    ) d 
+                        ON d.trni_product=invt_product AND 
+                        d.trni_variant=invt_variant AND 
+                        d.trni_cost=invt_cost
         WHERE 
             invt_store LIKE '%@store%' AND
             invt_category LIKE '%@category%' AND
             (invt_time + INTERVAL 8 HOUR) < '@asof 23:59:59'
-        GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost,invt_product,invt_variant
-        ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_cost,invt_product,invt_variant;
+        GROUP BY inventory,invt_cost,invt_product,invt_variant,dispensed,sale_cost
+        ORDER BY inventory,invt_cost,invt_product,invt_variant;
+        `
+    ),
+    by_store_item: new Query("inventory_stocks_by_store_item", `
+        SELECT
+            stre_code AS code,
+            stre_name AS name,
+            SUM(invt_stocks) AS stocks
+        FROM 
+            pos_archive_store
+            LEFT JOIN 
+                pos_stock_inventory
+                    ON
+                        invt_product='@product' AND
+                        invt_variant='@variant' AND
+                        invt_cost='@cost' AND
+                        invt_store=stre_code 
+        WHERE
+            stre_code<>'JT-TESTING'
+        GROUP BY stre_code,stre_name
+        ORDER BY stre_name;
         `
     ),
 }

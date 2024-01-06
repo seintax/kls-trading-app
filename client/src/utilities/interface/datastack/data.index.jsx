@@ -7,7 +7,7 @@ import DataError from "./data.error"
 import DataLoading from "./data.loading"
 import DataNoRecord from "./data.norecord"
 
-const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, isError, inputLink, children, plain = false }) => {
+const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, overrideLoading = false, isError, inputLink, children, plain = false }) => {
     const location = useLocation()
     const dispatch = useDispatch()
 
@@ -53,7 +53,7 @@ const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, isE
                 </div>
             </div>
             {children}
-            {(isLoading && (<DataLoading loading={isLoading} />))}
+            {(isLoading && !overrideLoading && (<DataLoading loading={isLoading} />))}
             {(isError && (<DataError />))}
         </div>
     )

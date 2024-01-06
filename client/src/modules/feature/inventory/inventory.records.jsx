@@ -4,17 +4,18 @@ import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { shortDate12TimePst } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { exactSearch, isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import { cleanDisplay, exactSearch, isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
+import { setSearchKey } from "../../../utilities/redux/slices/searchSlice"
 import { setPriceShown } from "../price/price.reducer"
-import { setInventoryItem, setInventoryNotifier, setInventoryPrint, showInventoryManager } from "./inventory.reducer"
+import { setInventoryItem, setInventoryNotifier, setInventoryPrint, showInventoryLedger, showInventoryManager } from "./inventory.reducer"
 import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
 
-const InventoryRecords = () => {
+const InventoryRecords = ({ isLoading }) => {
     const auth = useAuth()
     const dataSelector = useSelector(state => state.inventory)
     const roleSelector = useSelector(state => state.roles)
@@ -43,13 +44,24 @@ const InventoryRecords = () => {
     }
 
     const toggleView = (item) => {
+        const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
+        dispatch(setSearchKey(productName))
         dispatch(setInventoryItem(item))
         dispatch(showInventoryManager())
     }
 
     const togglePrices = (item) => {
+        const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
+        dispatch(setSearchKey(productName))
         dispatch(setInventoryItem(item))
         dispatch(setPriceShown(true))
+    }
+
+    const toggleHistory = (item) => {
+        const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
+        dispatch(setSearchKey(productName))
+        dispatch(setInventoryItem(item))
+        dispatch(showInventoryLedger(true))
     }
 
     const toggleDelete = (item) => {
@@ -83,7 +95,12 @@ const InventoryRecords = () => {
 
     const items = (item) => {
         return [
-            { value: `${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}` },
+            {
+                value: <span className="text-blue-500 hover:text-blue-700 cursor-pointer hover:underline">
+                    {cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)}
+                </span>,
+                onclick: () => toggleHistory(item)
+            },
             { value: item.variant_serial },
             { value: item.acquisition === "MIGRATION" ? <span className="text-gray-400 italic">Beginning Inventory</span> : item.supplier_name || "-" },
             { value: shortDate12TimePst(item.time) },
@@ -113,6 +130,7 @@ const InventoryRecords = () => {
             if (searchSelector.searchKey) {
                 let sought = searchSelector.searchKey?.toLowerCase()
                 temp = dataSelector?.data?.filter(f => (
+                    cleanDisplay(`${f.product_name} ${f.variant_serial} ${f?.variant_model || ""} ${f?.variant_brand || ""}`)?.toLowerCase()?.includes(sought) ||
                     f.product_name?.toLowerCase()?.includes(sought) ||
                     `${f.variant_serial}/${f.variant_model}/${f.variant_brand}`?.toLowerCase()?.includes(sought) ||
                     f.supplier_name?.toLowerCase()?.includes(sought) ||
@@ -147,6 +165,7 @@ const InventoryRecords = () => {
                 records={records}
                 setsorted={setsorted}
                 setPage={setstartpage}
+                loading={isLoading}
                 itemsperpage={dataSelector?.perpage}
             />
         </>

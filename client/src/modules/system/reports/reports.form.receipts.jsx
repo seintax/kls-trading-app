@@ -70,7 +70,21 @@ const ReportsFormReceipts = () => {
     const [libBranchers, setLibBranches] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
-    const [receiptSummary] = useByDateRangeTransactionMutation()
+    const [receiptSummary, { isLoading }] = useByDateRangeTransactionMutation()
+
+    const refetchInstance = async () => {
+        if (reportSelector.report === "Receipts Summary") {
+            await receiptSummary({ fr: filters.fr, to: filters.to, branch: filters.store })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setdata(res.arrayResult)
+                    }
+                })
+                .catch(err => console.error(err))
+        }
+        setRefetch(false)
+    }
 
     useEffect(() => {
         const instantiate = async () => {
@@ -87,22 +101,16 @@ const ReportsFormReceipts = () => {
                     }
                 })
                 .catch(err => console.error(err))
-            if (reportSelector.report === "Receipts Summary") {
-                await receiptSummary({ fr: filters.fr, to: filters.to, branch: filters.store })
-                    .unwrap()
-                    .then(res => {
-                        if (res.success) {
-                            setdata(res.arrayResult)
-                        }
-                    })
-                    .catch(err => console.error(err))
-            }
-            setRefetch(false)
+            refetchInstance()
         }
-        if (!isEmpty(reportSelector.report) || refetch) {
+        if (!isEmpty(reportSelector.report)) {
             instantiate()
         }
-    }, [reportSelector.report, refetch])
+    }, [reportSelector.report])
+
+    useEffect(() => {
+        if (refetch) refetchInstance()
+    }, [refetch])
 
     const columns = {
         style: '',
@@ -143,7 +151,7 @@ const ReportsFormReceipts = () => {
             { value: null },
             { value: null },
             { value: null },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.total || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + (curr.net || 0), 0)) },
         ]
     }
 
@@ -245,7 +253,9 @@ const ReportsFormReceipts = () => {
                             All Receipts
                         </span>
                         <span className="text-lg font-semibold">
-                            {data?.length || 0}
+                            {isLoading
+                                ? <div className="skeleton-loading w-1/2"></div>
+                                : data?.length || 0}
                         </span>
                     </div>
                     <div className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
@@ -253,7 +263,9 @@ const ReportsFormReceipts = () => {
                             Sales
                         </span>
                         <span className="text-lg font-semibold">
-                            {data?.reduce((prev, curr) => prev + (curr.method === "SALES" && curr.return === 0 ? 1 : 0), 0) || 0}
+                            {isLoading
+                                ? <div className="skeleton-loading w-1/2"></div>
+                                : data?.reduce((prev, curr) => prev + (curr.method === "SALES" && curr.return === 0 ? 1 : 0), 0) || 0}
                         </span>
                     </div>
                     <div className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
@@ -261,7 +273,9 @@ const ReportsFormReceipts = () => {
                             Credit
                         </span>
                         <span className="text-lg font-semibold">
-                            {data?.reduce((prev, curr) => prev + (curr.method === "CREDIT" && curr.return === 0 ? 1 : 0), 0) || 0}
+                            {isLoading
+                                ? <div className="skeleton-loading w-1/2"></div>
+                                : data?.reduce((prev, curr) => prev + (curr.method === "CREDIT" && curr.return === 0 ? 1 : 0), 0) || 0}
                         </span>
                     </div>
                     <div className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
@@ -269,7 +283,9 @@ const ReportsFormReceipts = () => {
                             Refunds
                         </span>
                         <span className="text-lg font-semibold">
-                            {data?.reduce((prev, curr) => prev + (curr.return > 0 ? 1 : 0), 0) || 0}
+                            {isLoading
+                                ? <div className="skeleton-loading w-1/2"></div>
+                                : data?.reduce((prev, curr) => prev + (curr.return > 0 ? 1 : 0), 0) || 0}
                         </span>
                     </div>
                     {
@@ -279,7 +295,9 @@ const ReportsFormReceipts = () => {
                                     {columns.items[n].name}
                                 </span>
                                 <span className="text-lg font-semibold">
-                                    {total(data)[n]?.value}
+                                    {isLoading
+                                        ? <div className="skeleton-loading w-1/2"></div>
+                                        : total(data)[n]?.value}
                                 </span>
                             </div>
                         ))
@@ -293,6 +311,7 @@ const ReportsFormReceipts = () => {
                     setPage={setstartpage}
                     itemsperpage={itemsperpage}
                     keeppagination={true}
+                    loading={isLoading}
                     total={total(data)}
                 />
                 <CasheringComplexReceipt />

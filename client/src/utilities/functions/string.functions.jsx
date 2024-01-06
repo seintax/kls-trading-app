@@ -78,6 +78,9 @@ export const cleanDisplay = (value) => {
     if (formatted?.includes("/null")) {
         formatted = formatted.replaceAll("/null", "")
     }
+    if (formatted?.includes(" null")) {
+        formatted = formatted.replaceAll(" null", "")
+    }
     if (formatted?.includes("/-")) {
         formatted = formatted.replaceAll("/-", "")
     }

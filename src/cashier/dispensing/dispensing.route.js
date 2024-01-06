@@ -12,5 +12,6 @@ router.get('/dispensing/id', secure, service._findone)
 router.get('/dispensing/search', secure, service._search)
 router.post('/dispensing/specify', service._specify)
 router.get('/dispensing/bycode', service.byCode)
+router.get('/dispensing/byinventory', service.byInventory)
 
 module.exports = router
