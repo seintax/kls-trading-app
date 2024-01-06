@@ -107,59 +107,111 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
+
                         {
-                            data?.map((row, rowindex) => (
-                                <tr
-                                    key={row?.key || rowindex}
-                                    onClick={row?.onclick}
-                                    onDoubleClick={row?.ondoubleclick}
-                                    className={`hover:bg-primary-200 transition ease-in-out duration-200 ${rowstyle}`}
-                                >
-                                    <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
-                                        {index + rowindex}.
-                                    </td>
-                                    {
-                                        (row.items?.length) ? (
-                                            row.items?.map((item, itemindex) => (
-                                                <td
-                                                    key={itemindex}
-                                                    className={`w-full py-1 lg:py-4 border-b border-gray-300 lg:px-2 sm:pl-0 ${preferredFont(fontsize)} font-medium text-gray-900 sm:w-auto lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
-                                                    onClick={item?.onclick}
-                                                    onDoubleClick={item?.ondoubleclick}
-                                                >
-                                                    <span className={`hidden lg:flex ${setPosition(order && order[itemindex]?.position, false)}`}>
-                                                        {item.value}
-                                                    </span>
-                                                    {
-                                                        (itemindex === 0) ? (
-                                                            <dl className="font-normal flex flex-col lg:hidden w-full border border-black px-2 pb-1">
-                                                                {
-                                                                    order?.map((col, colindex) => (
-                                                                        <div
-                                                                            key={colindex}
-                                                                            className={`${col.stack ? (row.items[colindex]?.value ? "" : "lg:hidden") : "lg:hidden"} flex flex-row items-start gap-1 text-sm mt-1 w-full`}
-                                                                        >
-                                                                            <dt className={`${col?.screenreader ? "hidden" : "flex"} w-1/2 flex-none text-gray-400 text-[10px] text-sm ${col.name ? "" : "hidden"}`}>
-                                                                                {col.name ? `${col.name}:` : ""}
-                                                                            </dt>
-                                                                            <dd className={`flex ${col?.screenreader ? "w-full" : "w-1/2"} flex-none text-gray-600 break-all`}>
-                                                                                {row.items[colindex]?.value}
-                                                                            </dd>
-                                                                        </div>
-                                                                    ))
-                                                                }
-                                                            </dl>
-                                                        ) : null
-                                                    }
-                                                </td>
-                                            ))
-                                        ) : null
-                                    }
-                                </tr>
-                            ))
+                            (loading) ? (
+                                Array.from({ length: 20 }, (_, i) => i)
+                                    ?.map((row) => (
+                                        <tr
+                                            key={`skeleton-${row}`}
+                                            className="transition ease-in-out duration-200"
+                                        >
+                                            <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
+                                                <div className="skeleton-loading-rounded"></div>
+                                            </td>
+                                            {
+                                                (order?.length) ? (
+                                                    order?.map((item, index) => (
+                                                        <td
+                                                            key={`skeleton-column-${index}`}
+                                                            className={`w-full py-1 lg:py-4 border-b border-gray-300 lg:px-2 sm:pl-0 font-medium text-gray-900 sm:w-auto lg:table-cell align-top ${item?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${item?.stack ? "hidden" : ""}`}
+                                                        >
+                                                            <div className="skeleton-loading"></div>
+                                                            {
+                                                                (index === 0) ? (
+                                                                    <dl className="font-normal flex flex-col lg:hidden w-full border border-black px-2 pb-1">
+                                                                        {
+                                                                            order?.map((col, colindex) => (
+                                                                                <div
+                                                                                    key={`skeleton-stack-${colindex}`}
+                                                                                    className="flex flex-row items-start gap-1 text-sm mt-1 w-full"
+                                                                                >
+                                                                                    <dt className={`${col?.screenreader ? "hidden" : "flex"} w-1/2 flex-none text-gray-400 text-[10px] text-sm ${col.name ? "" : "hidden"}`}>
+                                                                                        <div className="skeleton-loading"></div>
+                                                                                    </dt>
+                                                                                    <dd className={`flex ${col?.screenreader ? "w-full" : "w-1/2"} flex-none text-gray-600 break-all`}>
+                                                                                        <div className="skeleton-loading"></div>
+                                                                                    </dd>
+                                                                                </div>
+                                                                            ))
+                                                                        }
+                                                                    </dl>
+                                                                ) : null
+                                                            }
+                                                        </td>
+                                                    ))
+                                                ) : null
+                                            }
+                                        </tr>
+                                    ))
+
+                            ) : null
                         }
                         {
-                            (total?.length) && (
+                            (!loading && data?.length) ? (
+                                data?.map((row, rowindex) => (
+                                    <tr
+                                        key={row?.key || rowindex}
+                                        onClick={row?.onclick}
+                                        onDoubleClick={row?.ondoubleclick}
+                                        className={`hover:bg-primary-200 transition ease-in-out duration-200 ${rowstyle}`}
+                                    >
+                                        <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
+                                            {index + rowindex}.
+                                        </td>
+                                        {
+                                            (row.items?.length) ? (
+                                                row.items?.map((item, itemindex) => (
+                                                    <td
+                                                        key={itemindex}
+                                                        className={`w-full py-1 lg:py-4 border-b border-gray-300 lg:px-2 sm:pl-0 ${preferredFont(fontsize)} font-medium text-gray-900 sm:w-auto lg:table-cell align-top ${order && order[itemindex]?.screenreader ? "hidden md:flex justify-end gap-2" : ""} ${order && order[itemindex]?.stack ? "hidden" : ""} ${itemstyle}`}
+                                                        onClick={item?.onclick}
+                                                        onDoubleClick={item?.ondoubleclick}
+                                                    >
+                                                        <span className={`hidden lg:flex ${setPosition(order && order[itemindex]?.position, false)}`}>
+                                                            {item.value}
+                                                        </span>
+                                                        {
+                                                            (itemindex === 0) ? (
+                                                                <dl className="font-normal flex flex-col lg:hidden w-full border border-black px-2 pb-1">
+                                                                    {
+                                                                        order?.map((col, colindex) => (
+                                                                            <div
+                                                                                key={colindex}
+                                                                                className={`${col.stack ? (row.items[colindex]?.value ? "" : "lg:hidden") : "lg:hidden"} flex flex-row items-start gap-1 text-sm mt-1 w-full`}
+                                                                            >
+                                                                                <dt className={`${col?.screenreader ? "hidden" : "flex"} w-1/2 flex-none text-gray-400 text-[10px] text-sm ${col.name ? "" : "hidden"}`}>
+                                                                                    {col.name ? `${col.name}:` : ""}
+                                                                                </dt>
+                                                                                <dd className={`flex ${col?.screenreader ? "w-full" : "w-1/2"} flex-none text-gray-600 break-all`}>
+                                                                                    {row.items[colindex]?.value}
+                                                                                </dd>
+                                                                            </div>
+                                                                        ))
+                                                                    }
+                                                                </dl>
+                                                            ) : null
+                                                        }
+                                                    </td>
+                                                ))
+                                            ) : null
+                                        }
+                                    </tr>
+                                ))
+                            ) : null
+                        }
+                        {
+                            (!loading && data?.length && total?.length) ? (
                                 <tr
                                     className={`hover:bg-gray-100 ${rowstyle}`}
                                 >
@@ -196,17 +248,17 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                         }
                                     </td>
                                 </tr>
-                            )
+                            ) : null
                         }
                         {
-                            (!data?.length) && (
+                            (!loading && !data?.length) ? (
                                 <tr>
                                     <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-sm text-gray-500 lg:table-cell"></td>
                                     <td colSpan={100} className="w-full max-w-0 py-4 border-b border-gray-200 pl-4 pr-6 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6">
-                                        {loading ? "Loading..." : "No record listed."}
+                                        No record retrieved.
                                     </td>
                                 </tr>
-                            )
+                            ) : null
                         }
                     </tbody>
                 </table>

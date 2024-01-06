@@ -7,6 +7,7 @@ const initialState = {
     receive: [],
     shown: false,
     manager: false,
+    ledger: false,
     notifier: false,
     perpage: 150,
     display: {
@@ -17,7 +18,7 @@ const initialState = {
     header: {
         items: [
             { name: 'Product Name', stack: false, sort: 'product_name' },
-            { name: 'Part No.', stack: true, sort: 'variant_serial', size: 100 },
+            { name: 'Part No.', stack: true, sort: 'variant_serial', size: 140 },
             { name: 'Supplier', stack: true, sort: 'supplier_name', size: 220 },
             { name: 'Date', stack: true, sort: 'time', size: 100 },
             { name: 'Category', stack: true, sort: 'category', size: 140 },
@@ -36,6 +37,15 @@ const initialState = {
             { name: 'Stocks', stack: true, sort: 'stocks', size: 150 },
             { name: 'Cost', stack: true, sort: 'cost', size: 160 },
             { name: 'Price', stack: true, sort: 'price', size: 160 },
+        ]
+    },
+    history: {
+        items: [
+            { name: 'Product Name', stack: false },
+            { name: 'Time', stack: true, sort: 'time', size: 250 },
+            { name: 'Quantity', stack: true, sort: 'category', size: 150 },
+            { name: 'Mode of Transaction', stack: true, sort: 'transaction', size: 200 },
+            { name: 'Branch', stack: true, sort: 'store', size: 200 },
         ]
     },
     print: []
@@ -72,6 +82,12 @@ const inventorySlice = createSlice({
         resetInventoryManager: (state) => {
             state.manager = false
         },
+        showInventoryLedger: (state) => {
+            state.ledger = true
+        },
+        resetInventoryLedger: (state) => {
+            state.ledger = false
+        },
         setInventoryNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -86,6 +102,7 @@ const inventorySlice = createSlice({
             state.item = {}
             state.receive = []
             state.manager = false
+            state.ledger = false
             state.notifier = false
         }
     }
@@ -104,6 +121,8 @@ export const {
     setInventoryNotifier,
     showInventoryManager,
     resetInventoryManager,
+    showInventoryLedger,
+    resetInventoryLedger,
     setInventoryDisplay,
     resetInventory
 } = inventorySlice.actions

@@ -87,6 +87,20 @@ const byTransfer = handler(async (req, res) => {
     })
 })
 
+const byInventory = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { item, time } = helper.fields
+    let params = [p(param.item).Exactly()]
+    let clause = [f(item).IsEqual()]
+    let series = [f(time).Asc()]
+    let limits = undefined
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -95,5 +109,6 @@ module.exports = {
     _search,
     _specify,
     _findone,
-    byTransfer
+    byTransfer,
+    byInventory
 }

@@ -2,7 +2,7 @@ import { ArchiveBoxArrowDownIcon, ArrowPathIcon, PresentationChartLineIcon, Prin
 import { saveAs } from 'file-saver'
 import moment from "moment"
 import { useEffect, useState } from 'react'
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
@@ -12,10 +12,13 @@ import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
+import ReportsModalStoreItem from "./reports.modal.store-item"
+import { setReportInventory, setReportShowItem } from "./reports.reducer"
 import { useInventoryValuationReportMutation } from "./reports.services"
 
 const ReportsFormInventoryValuation = () => {
     const auth = useAuth()
+    const dispatch = useDispatch()
     const reportSelector = useSelector(state => state.reports)
     const [refetch, setRefetch] = useState(false)
     const [data, setdata] = useState()
@@ -26,6 +29,7 @@ const ReportsFormInventoryValuation = () => {
     const [filters, setFilters] = useState({ asof: sqlDate(), store: "", category: "" })
     const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
     const [mounted, setMounted] = useState(false)
+    const [isPreparing, setIsPreparing] = useState(false)
     useEffect(() => { setMounted(true) }, [])
 
     useEffect(() => {
@@ -48,11 +52,29 @@ const ReportsFormInventoryValuation = () => {
     const [libCategories, setLibCategoies] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
-    const [allInventory] = useInventoryValuationReportMutation()
     const [allCategories] = useFetchAllCategoryMutation()
+    const [allInventory, { isLoading }] = useInventoryValuationReportMutation()
+
+    const refetchInstance = async () => {
+        if (reportSelector.report === "Inventory Valuation") {
+            await allInventory({ store: filters.store, category: filters.category, asof: filters.asof })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setdata(res.data)
+                    }
+                })
+                .catch(err => {
+                    console.error(err)
+                    setIsPreparing(false)
+                })
+        }
+        setRefetch(false)
+    }
 
     useEffect(() => {
         const instantiate = async () => {
+            setIsPreparing(true)
             await allBranches()
                 .unwrap()
                 .then(res => {
@@ -65,7 +87,10 @@ const ReportsFormInventoryValuation = () => {
                         }))
                     }
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    console.error(err)
+                    setIsPreparing(false)
+                })
             await allCategories()
                 .unwrap()
                 .then(res => {
@@ -78,24 +103,21 @@ const ReportsFormInventoryValuation = () => {
                         }))
                     }
                 })
-                .catch(err => console.error(err))
-            if (reportSelector.report === "Inventory Valuation") {
-                await allInventory({ store: filters.store, category: filters.category, asof: filters.asof })
-                    .unwrap()
-                    .then(res => {
-                        console.log(res)
-                        if (res.success) {
-                            setdata(res.data)
-                        }
-                    })
-                    .catch(err => console.error(err))
-            }
-            setRefetch(false)
+                .catch(err => {
+                    console.error(err)
+                    setIsPreparing(false)
+                })
+            refetchInstance()
         }
-        if (!isEmpty(reportSelector.report) || refetch) {
+        if (!isEmpty(reportSelector.report)) {
             instantiate()
         }
-    }, [reportSelector.report, refetch])
+    }, [reportSelector.report])
+
+    useEffect(() => {
+        if (refetch) refetchInstance()
+    }, [refetch])
+
 
     const columns = {
         style: '',
@@ -162,15 +184,22 @@ const ReportsFormInventoryValuation = () => {
         ]
     }
 
+    const toggleStoreItem = (item) => {
+        dispatch(setReportInventory(item))
+        dispatch(setReportShowItem(true))
+    }
+
     useEffect(() => {
         if (data) {
             let tempdata = sorted ? sortBy(data, sorted) : data
             setrecords(tempdata?.map((item, i) => {
                 return {
                     key: item.id,
-                    items: items(item)
+                    items: items(item),
+                    onclick: () => toggleStoreItem(item)
                 }
             }))
+            setIsPreparing(false)
         }
     }, [data, sorted, reportSelector.report])
 
@@ -256,7 +285,9 @@ const ReportsFormInventoryValuation = () => {
                                     {columns.items[n].name}
                                 </span>
                                 <span className="text-lg font-semibold">
-                                    {total(data)[n]?.value}
+                                    {isLoading
+                                        ? <div className="skeleton-loading w-1/2"></div>
+                                        : total(data)[n]?.value}
                                 </span>
                             </div>
                         ))
@@ -270,8 +301,10 @@ const ReportsFormInventoryValuation = () => {
                     setPage={setstartpage}
                     itemsperpage={itemsperpage}
                     keeppagination={true}
+                    loading={isLoading || isPreparing}
                     total={total(data)}
                 />
+                <ReportsModalStoreItem />
             </>
         ) : null
     )

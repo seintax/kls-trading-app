@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
-import { isAdmin, isDev, isEmpty } from "../../../utilities/functions/string.functions"
+import { cleanDisplay, isAdmin, isDev, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
@@ -79,13 +79,15 @@ const PriceIndex = () => {
         dispatch(setPriceShown(false))
     }, [])
 
+    const productName = cleanDisplay(`${inventorySelector.item.product_name} (${inventorySelector.item.category}/${inventorySelector.item.variant_serial}/${inventorySelector.item.variant_model}/${inventorySelector.item.variant_brand}`)
+
     return (
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">
             <div className="w-full sticky -top-5 pt-5 lg:pt-0 z-10">
                 {
                     (isDev(auth) || isAdmin(auth)) ? (
                         <DataHeader
-                            name={`Price Adjustment for: ${inventorySelector.item.product_name} (${inventorySelector.item.category}/${inventorySelector.item.variant_serial}/${inventorySelector.item.variant_model}/${inventorySelector.item.variant_brand})`}
+                            name={`Price Adjustment for: ${productName})`}
                             returncallback={returnToList}
                         />
                     ) : null

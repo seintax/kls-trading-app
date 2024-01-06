@@ -7,8 +7,10 @@ const initialState = {
     notifier: false,
     cashier: false,
     showmenu: false,
+    showitem: false,
     receipt: false,
     transaction: {},
+    inventory: {},
     perpage: 150,
     display: {
         name: "Report",
@@ -25,6 +27,9 @@ const reportsSlice = createSlice({
         },
         setReportTransaction: (state, action) => {
             state.transaction = action.payload
+        },
+        setReportInventory: (state, action) => {
+            state.inventory = action.payload
         },
         resetReportName: (state) => {
             state.report = ""
@@ -50,15 +55,20 @@ const reportsSlice = createSlice({
         resetReportManager: (state) => {
             state.manager = false
         },
+        setReportShowItem: (state, action) => {
+            state.showitem = action.payload
+        },
         setReportNotifier: (state, action) => {
             state.notifier = action.payload
         },
         resetReport: (state) => {
             state.report = ""
             state.transaction = {}
+            state.inventory = {}
             state.manager = false
             state.notifier = false
             state.showmenu = false
+            state.showitem = false
             state.receipt = false
         }
     }
@@ -78,6 +88,8 @@ export const {
     resetReportManager,
     setReportNotifier,
     setReportTransaction,
+    setReportInventory,
+    setReportShowItem,
     resetReport
 } = reportsSlice.actions
 
