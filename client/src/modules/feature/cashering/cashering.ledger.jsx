@@ -40,8 +40,8 @@ const CasheringLedger = () => {
 
     const [distinctBranch] = useDistinctBranchMutation()
     const [firstCredit] = useByFirstCreditMutation()
-    const [byCodeDispensing] = useByCodeDispensingMutation()
-    const [byCodeReturned] = useByCodeReturnedMutation()
+    const [byCodeDispensing, { isLoading: dispensedLoading }] = useByCodeDispensingMutation()
+    const [byCodeReturned, { isLoading: returnedLoading }] = useByCodeReturnedMutation()
     const [byOngoingCredit] = useByOngoingCreditMutation()
 
     useEffect(() => {
@@ -111,6 +111,7 @@ const CasheringLedger = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
+                            console.log(res)
                             if (res.recordCount > 0) {
                                 dispatch(setCreditItem(res?.arrayResult[0]))
                                 return
@@ -190,6 +191,10 @@ const CasheringLedger = () => {
     }
 
     const onSubmit = () => {
+        if (returnedLoading || dispensedLoading) {
+            toast.showWarning("Please wait for the page data to be fully loaded.")
+            return
+        }
         let hasReturn = dispensingSelector?.data?.filter(f => f.toreturn > 0).length > 0
         if (hasReturn) {
             let returns = dispensingSelector?.data?.filter(f => f.toreturn > 0)
@@ -315,79 +320,16 @@ const CasheringLedger = () => {
                             <div>{NumFn.currency(dataSelector.item.partial)}</div>
                         </div>
                     </div>
-                    {/* <div className={`flex w-[100% - 40px] isolate relative no-select ${tab === "RETURN" ? "pt-5" : "pb-5"}`}>
-                        <div className={`flex w-full justify-between items-center px-3 py-4 border border-secondary-500 bg-primary-400 transition ease-in-out duration-300 ${tab === "RETURN" ? "absolute left-0 top-0 w-full z-2 hover:bg-primary-300 bg-gradient-to-b from-white via-white to-primary-300 cursor-pointer" : "mx-5"}`} onClick={() => setTab("DISPENSE")}>
-                            <div className="flex items-center gap-3">
-                                <ChevronRightIcon className="w-4 h-4 text-secondary-500" />
-                                <span>
-                                    Purchase Value ({dispensingSelector?.data?.length} items):
-                                </span>
-                            </div>
-                            <span className="ml-auto text-gray-800 pr-2">
-                                {NumFn.currency(dataSelector.item.net)}
-                            </span>
-                        </div>
-                        <div className={`flex w-full justify-between items-center px-3 py-4 border border-secondary-500 bg-primary-400 transition ease-in-out duration-300 ${tab === "DISPENSE" ? "absolute left-0 bottom-0 w-full z-2 hover:bg-primary-300 bg-gradient-to-b from-white via-white to-primary-300 cursor-pointer" : "mx-5"}`} onClick={() => setTab("RETURN")}>
-                            <div className="flex items-center gap-3">
-                                <ChevronRightIcon className="w-4 h-4 text-secondary-500" />
-                                <span>
-                                    Return Value ({returnedSelector?.data?.length} items):
-                                </span>
-                            </div>
-                            <span className="ml-auto text-gray-800 pr-2">
-                                {NumFn.currency(dataSelector.item.return)}
-                            </span>
-                        </div>
-                    </div> */}
-                    <div className="w-full h-full overflow-y-scroll px-5 bg-gray-300">
+                    <div className="w-full h-full overflow-y-scroll px-5 pb-5 lg:pb-12 bg-gray-300">
                         <div className="pt-5 px-3 text-sm md:text-base">Returned:</div>
                         <CasheringLedgerReturned />
                         <div className="pt-5 px-3 text-sm md:text-base">Purchased:</div>
                         <CasheringLedgerPurchase />
                         <div className="py-1 w-full flex flex-col gap-2 lg:gap-0 lg:flex-row justify-between mt-3">
                             <button className="button-blue w-full lg:w-fit text-lg" onClick={() => onPrint()}>Reprint Receipt</button>
-                            <button className="button-link w-full lg:w-fit text-lg" onClick={() => onSubmit()}>Save Changes</button>
+                            <button className="button-link w-full lg:w-fit text-lg" disabled={returnedLoading || dispensedLoading} onClick={() => onSubmit()}>Save Changes</button>
                         </div>
                     </div>
-                    {/* {
-                        (tab === "DISPENSE") ? (
-                            <>
-                                <div className="p-1 text-sm font-bold">
-                                    <div className="flex justify-between items-center px-3 py-3 pr-4">
-                                        <div className="flex items-center gap-3">
-                                            <span>
-                                                Purchase Breakdown: ({dispensingSelector?.data?.length} items):
-                                            </span>
-                                        </div>
-                                        <span className="ml-auto text-gray-800">
-                                            {NumFn.currency(dataSelector.item.net)}
-                                        </span>
-                                    </div>
-                                </div>
-                                <CasheringLedgerPurchase />
-                                <div className="py-1 w-full flex flex-col gap-2 lg:gap-0 lg:flex-row justify-between">
-                                    <button className="button-blue w-full lg:w-fit text-lg" onClick={() => onPrint()}>Reprint Receipt</button>
-                                    <button className="button-link w-full lg:w-fit text-lg" onClick={() => onSubmit()}>Save Changes</button>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className="p-1 text-sm font-bold">
-                                    <div className="flex justify-between items-center px-3 py-3 pr-4">
-                                        <div className="flex items-center gap-3">
-                                            <span>
-                                                Itemized Return: ({returnedSelector?.data?.length} items):
-                                            </span>
-                                        </div>
-                                        <span className="ml-auto text-gray-800">
-                                            {NumFn.currency(dataSelector.item.return)}
-                                        </span>
-                                    </div>
-                                </div>
-                                <CasheringLedgerReturned />
-                            </>
-                        )
-                    } */}
 
                 </Transition.Child>
             </Transition >

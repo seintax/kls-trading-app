@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
+import { StrFn } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { setReturnedItem, showReturnedManager } from "./returned.reducer"
@@ -51,17 +52,23 @@ const CasheringLedgerReturned = () => {
                     </div>
             },
             { value: NumFn.currency(item.price) },
-            { value: item.dispense },
+            { value: item.quantity },
             { value: NumFn.currency(item.total) },
             { value: NumFn.currency(item.less + item.markdown) },
             { value: NumFn.currency(item.net) },
-            { value: item.returned || "" },
+            {
+                value: <div className="flex flex-col">
+                    <span>{NumFn.currency(item.refund_return_net)}</span>
+                    <span className="text-sm text-gray-500">REF#{StrFn.formatWithZeros(item.refund, 6)}</span>
+                </div>
+            },
             { value: "" }
         ]
     }
 
     useEffect(() => {
         if (returnedSelector?.data) {
+            console.log(returnedSelector?.data)
             let data = sorted
                 ? sortBy(returnedSelector?.data, sorted)
                 : returnedSelector?.data

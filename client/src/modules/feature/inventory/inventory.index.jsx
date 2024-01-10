@@ -14,6 +14,7 @@ import HistoryIndex from "./inventory.history"
 import InventoryRecords from "./inventory.records"
 import { resetInventoryManager, setInventoryData, setInventoryNotifier } from "./inventory.reducer"
 import { useFetchAllInventoryBranchMutation } from "./inventory.services"
+import StocksIndex from "./inventory.stocks"
 
 const InventoryIndex = () => {
     const auth = useAuth()
@@ -133,6 +134,7 @@ const InventoryIndex = () => {
     if (priceSelector.shown) return <PriceIndex />
     if (dataSelector.manager) return <AdjustmentIndex />
     if (dataSelector.ledger) return <HistoryIndex />
+    if (dataSelector.stocks) return <StocksIndex />
 
     return (
         <DataIndex

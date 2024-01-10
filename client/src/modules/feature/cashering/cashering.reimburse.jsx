@@ -148,12 +148,16 @@ const CasheringReimburse = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        setIsSubmitting(true)
         let balance = total - (payments?.reduce((prev, curr) => prev + amount(curr.applyamt || 0), 0) + amount(credit))
         if (balance > 0) {
             toast.showWarning("Please apply the full returned amount.")
             return
         }
+        if (transactionSelector.item.method === "CREDIT" && !creditSelector.item.id) {
+            toast.showError("This transaction cannot detect an ongoing credit.")
+            return
+        }
+        setIsSubmitting(true)
         let hasReturn = dispensingSelector?.data?.filter(f => f.toreturn > 0).length > 0
         if (hasReturn) {
             let payment = payments?.filter(f => f.applyamt > 0)
@@ -241,14 +245,17 @@ const CasheringReimburse = () => {
             }
             if (transactionSelector.item.method === "CREDIT") {
                 let returned = amount(creditSelector.item.returned) + amount(total)
-                let outstand = amount(creditSelector.item.outstand) - amount(total)
+                let outstand = amount(creditSelector.item.total) - returned
+                let toreimburse = amount(creditSelector.item.partial) + amount(creditSelector.item.payment) - amount(creditSelector.item.reimburse)
+                let reimburse = amount(creditSelector.item.reimburse) + toreimburse
                 data = {
                     ...data,
                     credit: {
                         creditor: creditSelector.item.creditor,
+                        balance: outstand < 0 ? 0 : outstand,
                         returned: returned,
                         outstand: outstand < 0 ? 0 : outstand,
-                        reimburse: outstand < 0 ? Math.abs(outstand) : 0,
+                        reimburse: reimburse,
                         status: outstand > 0 ? "ON-GOING" : "PAID",
                         id: creditSelector.item.id
                     }
@@ -267,6 +274,8 @@ const CasheringReimburse = () => {
                     })
                 }
             }
+            console.log(creditSelector.item)
+            console.log(data)
             await createReturn(data)
                 .unwrap()
                 .then(res => {
@@ -336,7 +345,7 @@ const CasheringReimburse = () => {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-1 w-1/3">
-                                <label htmlFor="amount" className="text-xs text-gray-500">Remaining:</label>
+                                <label htmlFor="amount" className="text-xs text-gray-500">Cash Balance:</label>
                                 <div className="flex border border-white border-b-secondary-500 p-0.5 items-center">
                                     <input
                                         type="text"
@@ -423,7 +432,7 @@ const CasheringReimburse = () => {
                                 className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
                             />
                         </div> */}
-                        <div className="flex justify-end mt-5">
+                        <div className="flex justify-end mt-5 gap-2">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
                             <button type="submit" className="button-submit" disabled={isSubmitting}>
                                 Add Option

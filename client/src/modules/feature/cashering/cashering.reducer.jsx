@@ -8,6 +8,7 @@ const initialState = {
     notifier: false,
     receipts: false,
     ledger: false,
+    loading: false,
     perpage: 150,
     display: {
         name: "Transaction",
@@ -42,6 +43,9 @@ const transactionSlice = createSlice({
         },
         resetTransactionItem: (state) => {
             state.item = {}
+        },
+        setTransactionLoading: (state, action) => {
+            state.loading = action.payload
         },
         showTransactionManager: (state) => {
             state.manager = true
@@ -85,6 +89,7 @@ export const {
     setTransactionData,
     setTransactionItem,
     resetTransactionItem,
+    setTransactionLoading,
     setTransactionNotifier,
     showTransactionManager,
     resetTransactionManager,

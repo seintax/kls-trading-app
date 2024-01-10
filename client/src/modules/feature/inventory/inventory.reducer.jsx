@@ -8,6 +8,7 @@ const initialState = {
     shown: false,
     manager: false,
     ledger: false,
+    stocks: false,
     notifier: false,
     perpage: 150,
     display: {
@@ -18,15 +19,15 @@ const initialState = {
     header: {
         items: [
             { name: 'Product Name', stack: false, sort: 'product_name' },
-            { name: 'Part No.', stack: true, sort: 'variant_serial', size: 140 },
-            { name: 'Supplier', stack: true, sort: 'supplier_name', size: 220 },
+            { name: 'Part No.', stack: true, sort: 'variant_serial', size: 150 },
+            { name: 'Supplier', stack: true, sort: 'supplier_name', size: 200 },
             { name: 'Date', stack: true, sort: 'time', size: 100 },
             { name: 'Category', stack: true, sort: 'category', size: 140 },
-            { name: 'Stocks', stack: true, sort: 'stocks', size: 100, position: "center" },
-            { name: 'Cost', stack: true, sort: 'cost', size: 120, position: "center" },
-            { name: 'Price', stack: true, sort: 'price', size: 120, position: "center" },
+            { name: 'Stocks', stack: true, sort: 'stocks', size: 100 },
+            { name: 'Cost', stack: true, sort: 'cost', size: 120 },
+            { name: 'Price', stack: true, sort: 'price', size: 120 },
             { name: '', stack: true, sort: 'store', size: 120, position: "right" },
-            { name: '', stack: false, screenreader: 'Action', size: 180 }
+            { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     },
     printable: {
@@ -45,6 +46,15 @@ const initialState = {
             { name: 'Time', stack: true, sort: 'time', size: 250 },
             { name: 'Quantity', stack: true, sort: 'category', size: 150 },
             { name: 'Mode of Transaction', stack: true, sort: 'transaction', size: 200 },
+            { name: 'Branch', stack: true, sort: 'store', size: 200 },
+        ]
+    },
+    stockage: {
+        items: [
+            { name: 'Product Name', stack: false },
+            { name: 'Date', stack: true, sort: 'time', size: 250 },
+            { name: 'Stocks', stack: true, sort: 'stocks', size: 150 },
+            { name: 'Acquisition', stack: true, sort: 'acquisition', size: 200 },
             { name: 'Branch', stack: true, sort: 'store', size: 200 },
         ]
     },
@@ -88,6 +98,12 @@ const inventorySlice = createSlice({
         resetInventoryLedger: (state) => {
             state.ledger = false
         },
+        showInventoryStocks: (state) => {
+            state.stocks = true
+        },
+        resetInventoryStocks: (state) => {
+            state.stocks = false
+        },
         setInventoryNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -103,6 +119,7 @@ const inventorySlice = createSlice({
             state.receive = []
             state.manager = false
             state.ledger = false
+            state.stocks = false
             state.notifier = false
         }
     }
@@ -123,6 +140,8 @@ export const {
     resetInventoryManager,
     showInventoryLedger,
     resetInventoryLedger,
+    showInventoryStocks,
+    resetInventoryStocks,
     setInventoryDisplay,
     resetInventory
 } = inventorySlice.actions

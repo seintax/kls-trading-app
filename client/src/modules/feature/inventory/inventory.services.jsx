@@ -94,6 +94,14 @@ export const inventoryApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['receiving']
         }),
+        byStockRecordInventory: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bystockrecord`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['receiving']
+        }),
         sqlAcquireInventory: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}/sqlacquire`,
@@ -117,5 +125,6 @@ export const {
     useByStocksInventoryMutation,
     useByTransmitInventoryMutation,
     useByItemInventoryMutation,
+    useByStockRecordInventoryMutation,
     useSqlAcquireInventoryMutation,
 } = inventoryApiSlice
