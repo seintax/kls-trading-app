@@ -64,7 +64,7 @@ const PermissionManage = () => {
                 inner: JSON.stringify(inner)
                     .replace("{", "{\n\t")
                     .replaceAll(":", ": ")
-                    .replace(`,"`, `,\n\t"`)
+                    .replaceAll(`,"`, `,\n\t"`)
                     .replace("}", "\n}")
                     .replace("null", ""),
                 continues: false

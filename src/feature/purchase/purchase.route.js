@@ -12,5 +12,6 @@ router.get('/purchase/id', secure, service._findone)
 router.get('/purchase/search', secure, service._search)
 router.get('/purchase/specify', service._specify)
 router.get('/purchase/bydate', service.byDate)
+router.get('/purchase/byfilter', service.byFilter)
 
 module.exports = router

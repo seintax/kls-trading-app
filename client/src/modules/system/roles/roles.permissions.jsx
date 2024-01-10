@@ -43,6 +43,7 @@ const RolesPermissions = () => {
             await allPermissions()
                 .unwrap()
                 .then(res => {
+                    console.log(res)
                     if (res.success) {
                         if (!dataSelector.item.permission) {
                             setPermissions(formatToJSONObject(res?.arrayResult))
@@ -56,6 +57,7 @@ const RolesPermissions = () => {
             setInstantiated(true)
         }
         instantiate()
+        console.log(JSON.parse(dataSelector.item.permission))
         setPermissions(repairObject(JSON.parse(dataSelector.item.permission)))
         setCached(dataSelector.item.permission)
         setIsDirty(false)
@@ -204,19 +206,33 @@ const RolesPermissions = () => {
         let menucount = propCount(permissions)
         let permcount = propCount(libPermissions)
         let newProps = []
-        if (menucount !== permcount) {
-            for (const prop in libPermissions) {
-                if (!permissions.hasOwnProperty(prop)) {
-                    newProps.push(prop)
+        // if (menucount !== permcount) {
+
+        // }
+        for (const prop in libPermissions) {
+            if (!permissions.hasOwnProperty(prop)) {
+                newProps.push(prop)
+                undercard = {
+                    ...undercard,
+                    [prop]: libPermissions[prop]
+                }
+                continue
+            }
+            for (const subProp in libPermissions[prop]) {
+                if (!permissions[prop].hasOwnProperty(subProp)) {
+                    newProps.push(`${prop}: ${subProp}`)
                     undercard = {
                         ...undercard,
-                        [prop]: libPermissions[prop]
+                        [prop]: {
+                            ...libPermissions[prop],
+                            [subProp]: libPermissions[prop][subProp]
+                        }
                     }
                 }
             }
         }
         if (undercard) {
-            if (window.confirm(`Do you wish to update this permission with the following configuration?\n\n${newProps.join(", ")}`)) {
+            if (window.confirm(`Do you wish to update this permission with the following configuration?\n\n\t${newProps.join("\n\t")}`)) {
                 let newPermissions = {
                     ...permissions,
                     ...undercard
