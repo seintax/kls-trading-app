@@ -70,6 +70,14 @@ export const purchaseApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['purchase']
         }),
+        byFilterPurchase: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byfilter`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['purchase']
+        }),
     })
 })
 
@@ -82,4 +90,5 @@ export const {
     useSearchPurchaseMutation,
     useSpecifyPurchaseMutation,
     useByDatePurchaseMutation,
+    useByFilterPurchaseMutation,
 } = purchaseApiSlice

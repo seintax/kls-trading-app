@@ -122,7 +122,7 @@ const InventoryIndex = () => {
     const actions = () => {
         return [
             { label: `Print Inventory`, callback: printInventory },
-            { label: `Export Inventory`, callback: () => { } },
+            { label: `Export Inventory`, callback: exportData },
         ]
     }
 

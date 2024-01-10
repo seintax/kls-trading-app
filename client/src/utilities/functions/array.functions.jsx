@@ -55,6 +55,11 @@ export function AttribDestruct(dataArray) {
     })
 }
 
+export const getOneObject = (arr) => {
+    if (arr.length === 1) return arr[0]
+    return undefined
+}
+
 export const sortBy = (function () {
     var toString = Object.prototype.toString,
         parse = function (value) { return value },
