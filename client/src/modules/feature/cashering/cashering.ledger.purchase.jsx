@@ -28,7 +28,7 @@ const CasheringLedgerPurchase = () => {
 
     const actions = (item) => {
         return [
-            { type: 'button', trigger: () => selectItem(item), label: 'Return' },
+            { type: 'button', trigger: () => selectItem(item), label: 'Return', hidden: item.dispense === 0 },
         ]
     }
 

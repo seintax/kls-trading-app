@@ -12,7 +12,7 @@ import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import { setSearchKey } from "../../../utilities/redux/slices/searchSlice"
 import { setPriceShown } from "../price/price.reducer"
-import { setInventoryItem, setInventoryNotifier, setInventoryPrint, showInventoryLedger, showInventoryManager } from "./inventory.reducer"
+import { setInventoryItem, setInventoryNotifier, setInventoryPrint, showInventoryLedger, showInventoryManager, showInventoryStocks } from "./inventory.reducer"
 import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
 
 const InventoryRecords = ({ isLoading }) => {
@@ -57,6 +57,13 @@ const InventoryRecords = ({ isLoading }) => {
         dispatch(setPriceShown(true))
     }
 
+    const toggleStocks = (item) => {
+        const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
+        dispatch(setSearchKey(productName))
+        dispatch(setInventoryItem(item))
+        dispatch(showInventoryStocks(true))
+    }
+
     const toggleHistory = (item) => {
         const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
         dispatch(setSearchKey(productName))
@@ -87,6 +94,7 @@ const InventoryRecords = ({ isLoading }) => {
 
     const actions = (item) => {
         return [
+            { type: 'button', trigger: () => toggleStocks(item), label: 'Stocks' },
             { type: 'button', trigger: () => toggleView(item), label: 'View' },
             { type: 'button', trigger: () => togglePrices(item), label: 'Prices' },
             // { type: 'button', trigger: () => toggleView(item), label: 'View', hidden: roleSelector.access.permission["inventory"]?.show }

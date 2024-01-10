@@ -151,6 +151,20 @@ const byItem = handler(async (req, res) => {
     })
 })
 
+const byStockRecord = handler(async (req, res) => {
+    const param = getstocks.parameters(req.query)
+    const { product, variant, store, id } = getstocks.fields
+    let params = [p(param.product).Exactly(), p(param.variant).Exactly(), p(param.branch).Exactly()]
+    let clause = [f(product).IsEqual(), f(variant).IsEqual(), f(store).IsEqual()]
+    let series = [f(id).Desc()]
+    let limits = 1
+    const builder = getstocks.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -163,5 +177,6 @@ module.exports = {
     byStocks,
     byTransmit,
     byProduct,
-    byItem
+    byItem,
+    byStockRecord
 }

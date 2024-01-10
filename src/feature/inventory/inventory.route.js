@@ -17,6 +17,7 @@ router.get('/inventory/bystocks', service.byStocks)
 router.get('/inventory/bytransmit', service.byTransmit)
 router.get('/inventory/byproduct', service.byProduct)
 router.get('/inventory/byitem', service.byItem)
+router.get('/inventory/bystockrecord', service.byStockRecord)
 
 router.post('/inventory/sqlacquire', complex.sqlAcquire)
 
