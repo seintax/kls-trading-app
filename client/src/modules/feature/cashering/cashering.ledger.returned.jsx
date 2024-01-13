@@ -68,7 +68,6 @@ const CasheringLedgerReturned = () => {
 
     useEffect(() => {
         if (returnedSelector?.data) {
-            console.log(returnedSelector?.data)
             let data = sorted
                 ? sortBy(returnedSelector?.data, sorted)
                 : returnedSelector?.data

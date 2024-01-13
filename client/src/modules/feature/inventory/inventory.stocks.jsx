@@ -29,7 +29,6 @@ const StocksIndex = () => {
             })
                 .unwrap()
                 .then(res => {
-                    console.log(res)
                     if (res.success) {
                         setdata(res?.arrayResult)
                     }

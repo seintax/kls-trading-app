@@ -21,7 +21,6 @@ const ReportsMenu = () => {
     const currentRole = getOneObject(roleSelector.cache.filter(f => f.name === auth.role))
     const reportPermissions = currentRole ? JSON.parse(currentRole.permission) : undefined
     const parsedPermissions = reportPermissions ? reportPermissions["reports-menu"] : undefined
-    console.log(parsedPermissions)
 
     return (
         <div className="absolute mt-14 flex flex-col w-[300px] p-3 no-select gap-x-2 bg-white z-10 border border-gray-300">

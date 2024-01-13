@@ -87,6 +87,31 @@ const byBranch = handler(async (req, res) => {
     })
 })
 
+const byFilter = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { count, arrive, source, destination, time, date } = helper.fields
+    let statusClause = []
+    if (req.query.status === 'PENDING') {
+        statusClause = [f(arrive).IsEqual("0")]
+    }
+    if (req.query.status === 'PARTIALLY RECEIVED') {
+        statusClause = [f(arrive).Greater("0"), f(arrive).Lesser(f(count).value)]
+    }
+    if (req.query.status === 'FULLY RECEIVED') {
+        statusClause = [f(count).IsField(f(arrive).value)]
+    }
+
+    let params = [p(param.source).Contains(), p(param.destination).Contains()]
+    let clause = [f(source).Like(), f(destination).Like(), ...statusClause]
+    let series = [f(date).Desc(), f(time).Desc()]
+    let limits = undefined
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -96,4 +121,5 @@ module.exports = {
     _specify,
     _findone,
     byBranch,
+    byFilter,
 }

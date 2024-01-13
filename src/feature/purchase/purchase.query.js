@@ -88,21 +88,25 @@ const byDate = handler(async (req, res) => {
 
 const byFilter = handler(async (req, res) => {
     const param = helper.parameters(req.query)
-    const { supplier, store, status, receivedtotal, id } = helper.fields
-    let statusClause = []
-    if (req.query === 'PENDING') {
-        statusClause = [f(status).IsEqual("PENDING"), f(receivedtotal).IsEqual(0)]
+    const { supplier, store, status, receivedtotal, time, date } = helper.fields
+    let statusClause = [f(status).Like("'%%'")]
+    let supplierClause = [f(supplier).Like("'%%'")]
+    if (req.query.status === 'PENDING') {
+        statusClause = [f(status).IsEqual("PENDING"), f(receivedtotal).IsEqual("0")]
     }
-    if (req.query === 'PARTIALLY RECEIVED') {
-        statusClause = [f(status).IsEqual("PENDING"), f(receivedtotal).Greater(0)]
+    if (req.query.status === 'PARTIALLY RECEIVED') {
+        statusClause = [f(status).IsEqual("PENDING"), f(receivedtotal).Greater("0")]
     }
-    if (req.query === 'CLOSED') {
+    if (req.query.status === 'CLOSED') {
         statusClause = [f(status).IsEqual("CLOSED")]
     }
+    if (req.query.supplier) {
+        supplierClause = [f(supplier).IsEqual(req.query.supplier)]
+    }
 
-    let params = [p(param.supplier).Exactly(), p(param.branch).Exactly()]
-    let clause = [f(supplier).IsEqual(), f(store).IsEqual(), ...statusClause]
-    let series = [f(id).Desc()]
+    let params = [p(param.branch).Contains()]
+    let clause = [f(store).Like(), ...supplierClause, ...statusClause]
+    let series = [f(date).Desc(), f(time).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {

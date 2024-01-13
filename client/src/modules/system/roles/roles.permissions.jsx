@@ -43,7 +43,6 @@ const RolesPermissions = () => {
             await allPermissions()
                 .unwrap()
                 .then(res => {
-                    console.log(res)
                     if (res.success) {
                         if (!dataSelector.item.permission) {
                             setPermissions(formatToJSONObject(res?.arrayResult))
@@ -57,7 +56,6 @@ const RolesPermissions = () => {
             setInstantiated(true)
         }
         instantiate()
-        console.log(JSON.parse(dataSelector.item.permission))
         setPermissions(repairObject(JSON.parse(dataSelector.item.permission)))
         setCached(dataSelector.item.permission)
         setIsDirty(false)

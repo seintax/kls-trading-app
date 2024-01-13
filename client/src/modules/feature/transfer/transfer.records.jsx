@@ -58,12 +58,22 @@ const TransferRecords = () => {
         ]
     }
 
+    const defineStatus = (item) => {
+        if (item.count === item.arrive) {
+            return <span className="text-gray-300">FULLY RECEIVED</span>
+        }
+        if (item.arrive > 0) {
+            return <span className="text-green-600">PARTIALLY RECEIVED</span>
+        }
+        return <span className="text-blue-600">PENDING</span>
+    }
+
     const items = (item) => {
         return [
             { value: StrFn.formatWithZeros(item.id, 6) },
             { value: item.category },
             { value: longDate(item.date) },
-            { value: item.status },
+            { value: defineStatus(item) },
             { value: <span className="bg-blue-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.source}</span> },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.destination}</span> },
             { value: <DataOperation actions={actions(item)} /> }

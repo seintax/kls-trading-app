@@ -70,6 +70,14 @@ export const transferApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['transfer']
         }),
+        byFilterTransfer: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byfilter`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['transfer']
+        }),
     })
 })
 
@@ -82,4 +90,5 @@ export const {
     useSearchTransferMutation,
     useSpecifyTransferMutation,
     useByBranchTransferMutation,
+    useByFilterTransferMutation,
 } = transferApiSlice

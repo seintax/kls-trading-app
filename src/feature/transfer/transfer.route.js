@@ -13,5 +13,6 @@ router.get('/transfer/search', secure, service._search)
 router.post('/transfer/specify', service._specify)
 
 router.get('/transfer/bybranch', service.byBranch)
+router.get('/transfer/byfilter', service.byFilter)
 
 module.exports = router
