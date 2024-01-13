@@ -7,7 +7,7 @@ import DataError from "./data.error"
 import DataLoading from "./data.loading"
 import DataNoRecord from "./data.norecord"
 
-const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, overrideLoading = false, isError, inputLink, children, plain = false }) => {
+const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, overrideLoading = false, isError, inputLink, filterArray, filterCallback, children, plain = false }) => {
     const location = useLocation()
     const dispatch = useDispatch()
 
@@ -35,7 +35,7 @@ const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, ove
                         {display.text}
                     </p>
                 </div>
-                <div className={`flex flex-row-reverse gap-3 mt-4 sm:mt-0 sm:flex-none ${display.show ? "sm:ml-16" : "ml-auto"}`}>
+                <div className={`flex flex-wrap mt-4 lg:mt-0 flex-row-reverse gap-3 items-center sm:flex-none ${display.show ? "sm:ml-16" : "ml-auto"}`}>
                     {
                         sorts?.length
                             ? <MenuSelect options={sorts} callback={sortcallback} />
@@ -43,12 +43,32 @@ const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, ove
                     }
                     {
                         (actions?.map((action, index) => (
-                            <div key={index} className="">
-                                <Link onClick={action?.callback} className={`${action?.hidden ? "hidden" : "button-link"}`}>
+                            <div key={index} className="w-full px-2 lg:w-fit lg:px-0">
+                                <Link onClick={action?.callback} className={`${action?.hidden ? "hidden" : "button-link"} w-full`}>
                                     {action.label}
                                 </Link>
                             </div>
                         )))
+                    }
+                    {
+                        filterArray?.length ? (
+                            <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 w-full  px-2 lg:w-fit lg:px-0">
+                                {
+                                    filterArray?.map(el => (
+                                        <div key={el.id} className="w-full lg:w-fit">
+                                            {el?.component()}
+                                        </div>
+                                    ))
+                                }
+                                <button
+                                    className="button-action w-full lg:w-fit"
+                                    onClick={filterCallback
+                                        ? () => filterCallback()
+                                        : () => { }}>
+                                    Apply Filter
+                                </button>
+                            </div>
+                        ) : null
                     }
                 </div>
             </div>

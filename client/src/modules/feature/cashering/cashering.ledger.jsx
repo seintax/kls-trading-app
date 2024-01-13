@@ -111,7 +111,6 @@ const CasheringLedger = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
-                            console.log(res)
                             if (res.recordCount > 0) {
                                 dispatch(setCreditItem(res?.arrayResult[0]))
                                 return

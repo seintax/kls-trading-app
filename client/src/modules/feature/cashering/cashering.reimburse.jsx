@@ -274,8 +274,6 @@ const CasheringReimburse = () => {
                     })
                 }
             }
-            console.log(creditSelector.item)
-            console.log(data)
             await createReturn(data)
                 .unwrap()
                 .then(res => {

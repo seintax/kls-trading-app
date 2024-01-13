@@ -61,6 +61,10 @@ class Field {
         return this.value ? `${this.value} = ${val ? `'${val}'` : "?"}` : ""
     }
 
+    IsField(val) {
+        return this.value ? `${this.value} = ${val}` : ""
+    }
+
     NotEqual(val = undefined) {
         return this.value ? `${this.value} <> ${val ? `'${val}'` : "?"}` : ""
     }

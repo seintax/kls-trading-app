@@ -57,13 +57,23 @@ const PurchaseRecords = () => {
         ]
     }
 
+    const defineStatus = (item) => {
+        if (item.status === "PENDING" && item.receivedtotal > 0) {
+            return <span className="text-green-600">PARTIALLY RECEIVED</span>
+        }
+        if (item.status === "PENDING" && item.receivedtotal === 0) {
+            return <span className="text-blue-600">PENDING</span>
+        }
+        return <span className="text-gray-300">{item.status}</span>
+    }
+
     const items = (item) => {
         return [
             { value: item.supplier_name },
             { value: StrFn.formatWithZeros(item.id, 6) },
             { value: longDate(item.date) },
             { value: item.category },
-            { value: item.status },
+            { value: defineStatus(item) },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
