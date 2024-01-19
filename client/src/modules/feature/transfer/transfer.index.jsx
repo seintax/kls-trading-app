@@ -14,8 +14,8 @@ const TransferIndex = () => {
     // const [allTransfer, { isLoading, isError, isSuccess }] = useFetchAllTransferMutation()
     const auth = useAuth()
     // const [allTransfer, { isLoading, isError }] = useByBranchTransferMutation()
-    const [allTransfer, { isLoading, isError }] = useByFilterTransferMutation()
-    const [allBranches] = useFetchAllBranchMutation()
+    const [allTransfer, { isLoading: transferLoading, isError }] = useByFilterTransferMutation()
+    const [allBranches, { isLoading: branchLoading }] = useFetchAllBranchMutation()
     const dataSelector = useSelector(state => state.transfer)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
@@ -158,10 +158,11 @@ const TransferIndex = () => {
                 filterCallback={filterCallback}
                 data={dataSelector.data}
                 isError={isError}
-                isLoading={isLoading}
+                isLoading={transferLoading || branchLoading}
                 plain={true}
+                overrideLoading={true}
             >
-                <TransferRecords />
+                <TransferRecords isLoading={transferLoading || branchLoading} />
             </DataIndex >
         )
     )

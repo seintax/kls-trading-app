@@ -17,7 +17,7 @@ const CasheringComplexBrowse = () => {
 
     const [allMasterlist] = useFetchAllMasterlistMutation()
     const [allVariants] = useByAllProductVariantMutation()
-    const [allBrowser] = useFetchAllBrowserByBranchMutation()
+    const [allBrowser, { isLoading }] = useFetchAllBrowserByBranchMutation()
 
     useEffect(() => {
         const instantiate = async () => {
@@ -89,10 +89,21 @@ const CasheringComplexBrowse = () => {
     return (
         <div className="flex flex-col w-full gap-0 py-5 text-sm md:text-base">
             {
-                records?.map(item => (
+                !isLoading && records?.map(item => (
                     <div key={item?.id} className="flex flex-col md:flex-row justify-between py-4 lg:py-2 hover:bg-gray-200 cursor-pointer px-5" onClick={() => selectProduct(item)} >
                         <span>{item?.product}</span>
                         <span className="text-gray-500">{item?.variants?.length || 0} VARIANT/S</span>
+                    </div>
+                ))
+            }
+            {
+                isLoading && Array.from({ length: 40 }, (_, i) => i)?.map(item => (
+                    <div key={`brws${item}`} className="flex flex-col md:flex-row gap-1 justify-between py-4 lg:py-2 px-5">
+                        <div className={`skeleton-loading w-full ${item % 2 !== 0 ? "lg:w-1/3" : "lg:w-1/2"}`}></div>
+                        <div className="w-[150px] flex items-center gap-2">
+                            <div className="skeleton-loading-rounded w-8"></div>
+                            <div className="skeleton-loading w-full"></div>
+                        </div>
                     </div>
                 ))
             }

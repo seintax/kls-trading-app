@@ -11,7 +11,7 @@ import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import { setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
 import { useDeleteTransferMutation } from "./transfer.services"
 
-const TransferRecords = () => {
+const TransferRecords = ({ isLoading }) => {
     const dataSelector = useSelector(state => state.transfer)
     const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
@@ -112,6 +112,7 @@ const TransferRecords = () => {
                 setsorted={setsorted}
                 setPage={setstartpage}
                 itemsperpage={dataSelector?.perpage}
+                loading={isLoading}
             />
         </>
     )

@@ -93,11 +93,11 @@ const AppIndex = () => {
     const { logout } = useLogout()
     const auth = useAuth()
 
-    const [allRoles] = useFetchAllRolesMutation()
-    const [allPermissions] = useFetchAllPermissionMutation()
+    const [allRoles, { isLoading: rolesLoading }] = useFetchAllRolesMutation()
+    const [allPermissions, { isLoading: permissionsLoading }] = useFetchAllPermissionMutation()
+    const [accountConfig, { isLoading: configLoading }] = useByAccountConfigMutation()
     const [createRole] = useCreateRolesMutation()
     const [updateAccount] = useUpdateAccountMutation()
-    const [accountConfig] = useByAccountConfigMutation()
     const defaultConfig = {
         discount: "Amount",
         ratelimit: 100,
@@ -239,6 +239,7 @@ const AppIndex = () => {
                 sidebarSideMenu={sidebarSideMenu}
                 setSidebarSideMenu={setSidebarSideMenu}
                 setSideMenuItems={setSideMenuItems}
+                isLoading={configLoading || permissionsLoading || rolesLoading}
             />
             <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5 bg-red-200">
                 <AppBreadcrumbs location={locationSelector.location} />

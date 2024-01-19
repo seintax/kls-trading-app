@@ -117,7 +117,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                             className="transition ease-in-out duration-200"
                                         >
                                             <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
-                                                <div className="skeleton-loading-rounded"></div>
+                                                <div className="skeleton-loading-rounded w-6"></div>
                                             </td>
                                             {
                                                 (order?.length) ? (
