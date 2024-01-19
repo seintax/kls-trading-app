@@ -15,9 +15,9 @@ import { useByFilterPurchaseMutation } from "./purchase.services"
 const PurchaseIndex = () => {
     const auth = useAuth()
     // const [allPurchase, { isLoading, isError }] = useByDatePurchaseMutation()
-    const [allPurchase, { isLoading, isError }] = useByFilterPurchaseMutation()
-    const [allSuppliers] = useFetchAllSupplierMutation()
-    const [allBranches] = useFetchAllBranchMutation()
+    const [allPurchase, { isLoading: purchaseLoading, isError }] = useByFilterPurchaseMutation()
+    const [allSuppliers, { isLoading: supplierLoading }] = useFetchAllSupplierMutation()
+    const [allBranches, { isLoading: branchLoading }] = useFetchAllBranchMutation()
     const dataSelector = useSelector(state => state.purchase)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
@@ -169,10 +169,11 @@ const PurchaseIndex = () => {
                 filterCallback={filterCallback}
                 data={dataSelector.data}
                 isError={isError}
-                isLoading={isLoading}
+                isLoading={purchaseLoading || supplierLoading || branchLoading}
                 plain={true}
+                overrideLoading={true}
             >
-                <PurchaseRecords />
+                <PurchaseRecords isLoading={purchaseLoading || supplierLoading || branchLoading} />
             </DataIndex >
         )
     )

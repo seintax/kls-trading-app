@@ -11,7 +11,7 @@ import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import { setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
 import { useDeletePurchaseMutation } from "./purchase.services"
 
-const PurchaseRecords = () => {
+const PurchaseRecords = ({ isLoading }) => {
     const dataSelector = useSelector(state => state.purchase)
     const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
@@ -111,6 +111,7 @@ const PurchaseRecords = () => {
                 setsorted={setsorted}
                 setPage={setstartpage}
                 itemsperpage={dataSelector?.perpage}
+                loading={isLoading}
             />
         </>
     )

@@ -165,7 +165,7 @@ const reports = {
                         AND
                     acct_store=branch
                         AND
-                    (rtrn_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                    DATE(rtrn_time + INTERVAL 8 HOUR)=day
             ) AS refunds,
             (
                 SELECT 
@@ -176,7 +176,7 @@ const reports = {
                         AND
                     paym_store=branch
                         AND
-                    (paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                    DATE(paym_time + INTERVAL 8 HOUR)=day
             ) AS cash_sales,
             (
                 SELECT 
@@ -187,7 +187,7 @@ const reports = {
                         AND
                     paym_store=branch
                         AND
-                    (paym_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59' 
+                    DATE(paym_time + INTERVAL 8 HOUR)=day
             ) AS credit_collection
         FROM 
             pos_sales_transaction

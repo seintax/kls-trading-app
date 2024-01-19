@@ -8,7 +8,7 @@ import { isEmpty } from "../../../functions/string.functions.jsx"
 import useAuth from "../../../hooks/useAuth.jsx"
 import AppNavigation from "./app.navigation.jsx"
 
-export default function AppSideBar({ sidebarSideMenu, setSidebarSideMenu, setSideMenuItems }) {
+export default function AppSideBar({ sidebarSideMenu, setSidebarSideMenu, setSideMenuItems, isLoading }) {
     const auth = useAuth()
     const location = useLocation()
     const navigate = useNavigate()
@@ -222,6 +222,20 @@ export default function AppSideBar({ sidebarSideMenu, setSidebarSideMenu, setSid
         )
     }
 
+    const renderNavigationSkeleton = () => {
+        return (
+            Array.from({ length: 12 }, (_, i) => i)?.map(num => (
+                <div
+                    key={`navSkel${num}`}
+                    className="text-black hover:bg-gradient-to-b border border-transparent group flex items-center px-1.5 lg:px-2 py-2.5 text-xs font-medium rounded-md gap-3"
+                >
+                    <span className="skeleton-loading-rounded w-8"></span>
+                    <div className="skeleton-loading"></div>
+                </div>
+            ))
+        )
+    }
+
     const renderLabels = () => {
         return (
             <nav className="flex flex-col space-y-1 px-2 pb-4">
@@ -242,7 +256,7 @@ export default function AppSideBar({ sidebarSideMenu, setSidebarSideMenu, setSid
             <div className="w-16 fixed inset-y-0 flex lg:w-56 no-select">
                 <div className="flex flex-grow flex-col overflow-y-auto border-r border-r-black text-white bg-white scroll-sm">
                     <div className="mt-20 px-1 flex flex-grow flex-col">
-                        {renderNavigation()}
+                        {isLoading ? renderNavigationSkeleton() : renderNavigation()}
                     </div>
                 </div>
             </div>
