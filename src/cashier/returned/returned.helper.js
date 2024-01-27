@@ -89,4 +89,22 @@ const returned = new Table("pos_return_dispensing", {
     },
 ])
 
+returned.register('returned_stock_audit',
+    `
+    SELECT 
+        invt_store AS branch,
+        rsal_trans AS reference,
+        (rsal_time + INTERVAL 8 HOUR) AS time,
+        rsal_quantity AS quantity
+    FROM 
+        pos_return_dispensing,
+        pos_stock_inventory
+    WHERE
+        rsal_item=invt_id AND                                 
+        DATE(rsal_time + INTERVAL 8 HOUR) < '@asof' AND 
+        rsal_product='@product' AND
+        rsal_variant='@variant' AND
+        invt_cost='@cost' AND
+        invt_store LIKE '%@store%'`)
+
 module.exports = returned

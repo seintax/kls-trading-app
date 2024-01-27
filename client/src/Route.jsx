@@ -9,6 +9,7 @@ import DashboardIndex from "./modules/feature/dashboard/dashboard.index"
 import DeliveryIndex from "./modules/feature/delivery/delivery.index"
 import AdjustmentIndex from "./modules/feature/inventory-item/inventory.item.index"
 import InventoryIndex from "./modules/feature/inventory/inventory.index"
+import InventoryPrices from "./modules/feature/inventory/inventory.prices"
 import ReceivingRecords from "./modules/feature/inventory/inventory.receiveing"
 import PurchaseIndex from "./modules/feature/purchase/purchase.index"
 import TransferIndex from "./modules/feature/transfer/transfer.index"
@@ -53,7 +54,10 @@ const AppRoute = () => {
                     <Route path="/complex-cashering" element={<CasheringComplexIndex />} />
                     <Route path="/purchase-order" element={<PurchaseIndex />} />
                     <Route path="/delivery" element={<DeliveryIndex />} />
-                    <Route path="/inventory" element={<InventoryIndex />} />
+                    <Route path="/inventory">
+                        <Route index element={<InventoryIndex />} />
+                        <Route path="price-checker" element={<InventoryPrices />} />
+                    </Route>
                     <Route path="/stock-transfer" element={<TransferIndex />} />
                     <Route path="/receiving" element={<ReceivingRecords />} />
                     <Route path="/stock-adjustment" element={<AdjustmentIndex />} />

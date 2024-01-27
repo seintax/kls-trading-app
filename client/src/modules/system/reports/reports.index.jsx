@@ -6,6 +6,7 @@ import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import ReportsFormCashierSummary from "./reports.form.cashier-summary"
 import ReportsFormExpenses from "./reports.form.expenses"
 import ReportsFormExpensesSummary from "./reports.form.expenses-summary"
+import ReportsFormInventoryReport from "./reports.form.inventory-report"
 import ReportsFormInventoryValuation from "./reports.form.inventory-valuation"
 import ReportsFormReceipts from "./reports.form.receipts"
 import ReportsFormSales from "./reports.form.sales"
@@ -42,6 +43,7 @@ const ReportsIndex = () => {
                 <ReportsFormReceipts />
                 <ReportsFormCashierSummary />
                 <ReportsFormInventoryValuation />
+                <ReportsFormInventoryReport />
             </div>
         </div>
     )

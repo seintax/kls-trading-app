@@ -1,4 +1,4 @@
-import { ArchiveBoxArrowDownIcon, ArrowPathIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicons/react/24/outline"
+import { ArchiveBoxArrowDownIcon, ArrowPathIcon, ExclamationTriangleIcon, PresentationChartLineIcon, PrinterIcon } from "@heroicons/react/24/outline"
 import { saveAs } from 'file-saver'
 import moment from "moment"
 import { useEffect, useState } from 'react'
@@ -6,17 +6,17 @@ import { useDispatch, useSelector } from "react-redux"
 import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { sqlDate } from "../../../utilities/functions/datetime.functions"
-import { NumFn, currency } from "../../../utilities/functions/number.funtions"
-import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
+import { currency } from "../../../utilities/functions/number.funtions"
+import { cleanDisplay, getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
-import ReportsModalStoreItem from "./reports.modal.store-item"
-import { setReportInventory, setReportShowItem } from "./reports.reducer"
-import { useInventoryValuationReportMutation } from "./reports.services"
+import ReportsModalStockLedger from "./reports.modal.stock-ledger"
+import { setReportFilter, setReportInventory, setReportShowLedger } from "./reports.reducer"
+import { useInventoryReportMutation } from "./reports.services"
 
-const ReportsFormInventoryValuation = () => {
+const ReportsFormInventoryReport = () => {
     const auth = useAuth()
     const dispatch = useDispatch()
     const reportSelector = useSelector(state => state.reports)
@@ -26,9 +26,9 @@ const ReportsFormInventoryValuation = () => {
     const [records, setrecords] = useState()
     const [sorted, setsorted] = useState()
     const [startpage, setstartpage] = useState(1)
+    const [showDiscrepancy, setShowDiscrepancy] = useState(false)
     const itemsperpage = 150
-    const [filters, setFilters] = useState({ asof: sqlDate(), store: "", category: "" })
-    const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
+    const [filters, setFilters] = useState({ asof: sqlDate(), store: "JT-MAIN", category: "" })
     const [mounted, setMounted] = useState(false)
     const [isPreparing, setIsPreparing] = useState(false)
     useEffect(() => { setMounted(true) }, [])
@@ -54,10 +54,10 @@ const ReportsFormInventoryValuation = () => {
 
     const [allBranches] = useFetchAllBranchMutation()
     const [allCategories] = useFetchAllCategoryMutation()
-    const [allInventory, { isLoading }] = useInventoryValuationReportMutation()
+    const [allInventory, { isLoading }] = useInventoryReportMutation()
 
     const refetchInstance = async () => {
-        if (reportSelector.report === "Inventory Valuation") {
+        if (reportSelector.report === "Inventory Report") {
             await allInventory({ store: filters.store, category: filters.category, asof: filters.asof })
                 .unwrap()
                 .then(res => {
@@ -119,88 +119,85 @@ const ReportsFormInventoryValuation = () => {
         if (refetch) refetchInstance()
     }, [refetch])
 
-
     const columns = {
         style: '',
         items: [
             { name: 'Item', stack: false, sort: 'inventory' },
-            { name: 'Part No.', stack: false, sort: 'variant1', size: 120 },
-            { name: 'In Stock', stack: true, sort: 'stocks', size: 120 },
-            { name: 'Cost', stack: true, sort: 'cost', size: 150 },
-            { name: 'Inventory Value', stack: true, size: 150 },
-            { name: 'Retail Value', stack: true, size: 150 },
-            { name: 'Potential Profit', stack: true, size: 150 },
-            { name: 'Margin', stack: true, size: 130 },
+            { name: 'Beginning', stack: true, sort: 'beginning', size: 150 },
+            { name: 'Goods In', stack: true, sort: 'goodsin', size: 150 },
+            { name: 'Purchase', stack: true, sort: 'purchase', size: 150 },
+            { name: 'Adjustment', stack: true, sort: 'adjustment', size: 150 },
+            { name: 'Sold', stack: true, sort: 'sold', size: 150 },
+            { name: 'Goods Out', stack: true, sort: 'goodsout', size: 150 },
+            { name: 'Deducted', stack: true, sort: 'deducted', size: 150 },
+            { name: 'End Balance', stack: true, sort: 'endbalance', size: 150 },
         ]
     }
 
-    const reformatCode = (code) => {
-        let codeArr = code.split("-")
-        let firstTag = codeArr.shift()
-        return codeArr.join("-").slice(3, 15)
-    }
-
-    const cleanDisplay = (value) => {
-        let formatted = value
-        if (formatted?.includes("/-")) {
-            formatted = value.replaceAll("/-", "")
-        }
-        if (formatted?.includes("-/")) {
-            formatted = formatted.replaceAll("-/", "")
-        }
-        if (formatted?.slice(-2) === "//") {
-            return formatted.replace("//", "")
-        }
-        if (formatted?.slice(-1) === "/") {
-            return formatted.substring(0, formatted.length - 1)
-        }
-        return formatted
+    const calculatedEndBalance = (item) => {
+        return item.endbalance + item.pending
     }
 
     const items = (item) => {
+        const cost = item.cost || 0
         return [
             { value: cleanDisplay(item.inventory) },
-            { value: item.variant1 },
-            { value: currency(item.stocks).replace(".00", "") },
-            { value: currency(item.cost) },
-            { value: currency(item.value) },
-            { value: currency(item.retail) },
-            { value: currency(item.profit) },
-            { value: NumFn.acctg.percent(item.profit / item.retail) },
+            { value: item.beginning ? `(${item.beginning}) ${currency(cost * item.beginning)}` : "-" },
+            { value: item.goodsin ? `(${item.goodsin}) ${currency(cost * item.goodsin)}` : "-" },
+            { value: item.purchase ? `(${item.purchase}) ${currency(cost * item.purchase)}` : "-" },
+            { value: item.adjustment ? `(${item.adjustment}) ${currency(cost * item.adjustment)}` : "-" },
+            { value: item.sold ? `(${item.sold}) ${currency(cost * item.sold)}` : "-" },
+            { value: item.goodsout ? `(${item.goodsout}) ${currency(cost * item.goodsout)}` : "-" },
+            { value: item.deducted ? `(${item.deducted}) ${currency(cost * item.deducted)}` : "-" },
+            {
+                value: <span className={hasDiscrepancy(item) ? "text-red-500" : "text-black"}>
+                    {calculatedEndBalance(item) ? `(${calculatedEndBalance(item)}) ${currency(cost * calculatedEndBalance(item))}` : "-"}
+                </span>
+            },
         ]
     }
 
     const total = (item) => {
-        let retail = item?.reduce((prev, curr) => prev + (curr.retail || 0), 0)
-        let profit = item?.reduce((prev, curr) => prev + (curr.profit || 0), 0)
         return [
             { value: "OVERALL SUMMARY" },
-            { value: "" },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.stocks || 0), 0)).replace(".00", "") },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.cost || 0), 0)) },
-            { value: currency(item?.reduce((prev, curr) => prev + (curr.value || 0), 0)) },
-            { value: currency(retail) },
-            { value: currency(profit) },
-            { value: NumFn.acctg.percent(profit / retail) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.beginning || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.goodsin || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.purchase || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.sold || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.goodsout || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.adjustment || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.endbalance || 0), 0)) },
+            { value: currency(item?.reduce((prev, curr) => prev + ((curr.cost || 0) * curr.return || 0), 0)) },
         ]
     }
 
     const toggleStoreItem = (item) => {
+        dispatch(setReportFilter({ asof: filters.asof, branch: filters.store }))
         dispatch(setReportInventory(item))
-        dispatch(setReportShowItem(true))
+        dispatch(setReportShowLedger(true))
+    }
+
+    const hasDiscrepancy = (item) => {
+        const totalIn = item.beginning + item.goodsin + item.purchase + item.adjustment
+        const totalOut = item.sold + item.goodsout + item.deducted
+        const computedEndBalance = totalIn - totalOut
+        const validEndBalance = item.endbalance + item.pending
+        return validEndBalance !== computedEndBalance
     }
 
     useEffect(() => {
         if (data) {
-            let filter = data
+            let filtered = data
+            if (showDiscrepancy) {
+                filtered = data?.filter(item => hasDiscrepancy(item))
+            }
             if (searchSelector.searchKey) {
                 let sought = searchSelector.searchKey?.toLowerCase()
-                filter = data?.filter(f => (
-                    cleanDisplay(f.inventory)?.toLowerCase()?.includes(sought) ||
-                    f.variant1?.toLowerCase()?.includes(sought)
+                filtered = filtered?.filter(f => (
+                    cleanDisplay(f.inventory)?.toLowerCase()?.includes(sought)
                 ))
             }
-            let tempdata = sorted ? sortBy(filter, sorted) : filter
+            let tempdata = sorted ? sortBy(filtered, sorted) : filtered
             setrecords(tempdata?.map((item, i) => {
                 return {
                     key: item.id,
@@ -210,7 +207,7 @@ const ReportsFormInventoryValuation = () => {
             }))
             setIsPreparing(false)
         }
-    }, [data, sorted, reportSelector.report, searchSelector.searchKey])
+    }, [data, sorted, reportSelector.report, showDiscrepancy, searchSelector.searchKey])
 
     const printData = () => {
         if (records?.length) {
@@ -237,12 +234,16 @@ const ReportsFormInventoryValuation = () => {
         }
     }
 
+    const toggleDiscrepancies = () => {
+        setShowDiscrepancy(prev => !prev)
+    }
+
     const reLoad = () => {
         setRefetch(true)
     }
 
     return (
-        (reportSelector.manager && reportSelector.report === "Inventory Valuation") ? (
+        (reportSelector.manager && reportSelector.report === "Inventory Report") ? (
             <>
                 <div className="w-full uppercase font-bold flex flex-col lg:flex-row justify-start gap-3 lg:gap-0 lg:justify-between lg:items-center no-select text-base lg:text-lg px-3 lg:px-0">
                     <div className="flex gap-4 ml-14 items-center lg:ml-16 py-2 text-sm lg:text-base">
@@ -252,7 +253,7 @@ const ReportsFormInventoryValuation = () => {
                     <div className="flex flex-wrap lg:flex-nowrap items-center gap-2">
                         <input type="date" name="asof" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.asof} onChange={onChange} />
                         <select name="store" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.store} onChange={onChange}>
-                            <option value="" className="text-gray-500 font-bold">ALL STORES</option>
+                            {/* <option value="" className="text-gray-500 font-bold">ALL STORES</option> */}
                             {
                                 isEmpty(getBranch(auth))
                                     ? (
@@ -280,6 +281,9 @@ const ReportsFormInventoryValuation = () => {
                             <button className="button-red py-2" onClick={() => printData()}>
                                 <PrinterIcon className="w-5 h-5" />
                             </button>
+                            <button className={`report-button py-2 ${showDiscrepancy ? "bg-green-400 hover:bg-green-600" : ""}`} onClick={() => toggleDiscrepancies()}>
+                                <ExclamationTriangleIcon className="w-5 h-5" />
+                            </button>
                             <button className="report-button py-2" onClick={() => exportData()}>
                                 <ArchiveBoxArrowDownIcon className="w-5 h-5" />
                             </button>
@@ -288,7 +292,7 @@ const ReportsFormInventoryValuation = () => {
                 </div>
                 <div className="flex w-full gap-2 mt-4 overflow-x-auto lg:overflow-x-none">
                     {
-                        Array.from({ length: 6 }, (_, i) => i + 2)?.map(n => (
+                        Array.from({ length: 8 }, (_, i) => i + 1)?.map(n => (
                             <div key={n} className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
                                 <span className="text-gray-500 no-select">
                                     {columns.items[n].name}
@@ -313,10 +317,10 @@ const ReportsFormInventoryValuation = () => {
                     loading={isLoading || isPreparing}
                     total={total(data)}
                 />
-                <ReportsModalStoreItem />
+                <ReportsModalStockLedger />
             </>
         ) : null
     )
 }
 
-export default ReportsFormInventoryValuation
+export default ReportsFormInventoryReport

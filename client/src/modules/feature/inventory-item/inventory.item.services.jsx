@@ -70,6 +70,14 @@ export const adjustmentApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['adjustment']
         }),
+        byAuditAdjustment: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byaudit`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['adjustment']
+        }),
         sqlAdjustment: builder.mutation({
             query: (body) => ({
                 url: `${ENDPOINT_URL}/sqladjustment`,
@@ -90,5 +98,6 @@ export const {
     useSearchAdjustmentMutation,
     useSpecifyAdjustmentMutation,
     useByInventoryAdjustmentMutation,
+    useByAuditAdjustmentMutation,
     useSqlAdjustmentMutation,
 } = adjustmentApiSlice

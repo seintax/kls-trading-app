@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from "react-redux"
-import { Link, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { setLocationPath } from "../../redux/slices/locateSlice"
 import MenuSelect from "../forminput/menu.select"
 import DataError from "./data.error"
@@ -44,9 +44,9 @@ const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, ove
                     {
                         (actions?.map((action, index) => (
                             <div key={index} className="w-full px-2 lg:w-fit lg:px-0">
-                                <Link onClick={action?.callback} className={`${action?.hidden ? "hidden" : "button-link"} w-full`}>
+                                <button onClick={action?.callback} className={`${action?.hidden ? "hidden" : "button-link"} w-full`}>
                                     {action.label}
-                                </Link>
+                                </button>
                             </div>
                         )))
                     }

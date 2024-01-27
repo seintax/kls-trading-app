@@ -13,6 +13,7 @@ router.get('/adjustment/id', secure, service._findone)
 router.get('/adjustment/search', secure, service._search)
 router.post('/adjustment/specify', service._specify)
 router.get('/adjustment/byinventory', service.byInventory)
+router.get('/adjustment/byaudit', service.byAudit)
 
 router.post('/adjustment/sqladjustment', complex.sqlAdjustment)
 

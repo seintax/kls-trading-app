@@ -6,11 +6,11 @@ import { shortDate12TimePst } from "../../../utilities/functions/datetime.functi
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import { cleanDisplay, exactSearch, isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
+import usePermissions from "../../../utilities/hooks/usePermissions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
-import { setSearchKey } from "../../../utilities/redux/slices/searchSlice"
 import { setPriceShown } from "../price/price.reducer"
 import { setInventoryItem, setInventoryNotifier, setInventoryPrint, showInventoryLedger, showInventoryManager, showInventoryStocks } from "./inventory.reducer"
 import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./inventory.services"
@@ -18,7 +18,6 @@ import { useDeleteInventoryMutation, useUpdateInventoryMutation } from "./invent
 const InventoryRecords = ({ isLoading }) => {
     const auth = useAuth()
     const dataSelector = useSelector(state => state.inventory)
-    const roleSelector = useSelector(state => state.roles)
     const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
@@ -27,6 +26,7 @@ const InventoryRecords = ({ isLoading }) => {
     const [sorted, setsorted] = useState()
     const columns = dataSelector.header
     const toast = useToast()
+    const permissions = usePermissions()
 
     const [deleteInventory] = useDeleteInventoryMutation()
     const [updateAcquisition] = useUpdateInventoryMutation()
@@ -45,28 +45,28 @@ const InventoryRecords = ({ isLoading }) => {
 
     const toggleView = (item) => {
         const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
-        dispatch(setSearchKey(productName))
+        // dispatch(setSearchKey(productName))
         dispatch(setInventoryItem(item))
         dispatch(showInventoryManager())
     }
 
     const togglePrices = (item) => {
         const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
-        dispatch(setSearchKey(productName))
+        // dispatch(setSearchKey(productName))
         dispatch(setInventoryItem(item))
         dispatch(setPriceShown(true))
     }
 
     const toggleStocks = (item) => {
         const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
-        dispatch(setSearchKey(productName))
+        // dispatch(setSearchKey(productName))
         dispatch(setInventoryItem(item))
         dispatch(showInventoryStocks(true))
     }
 
     const toggleHistory = (item) => {
         const productName = cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)
-        dispatch(setSearchKey(productName))
+        // dispatch(setSearchKey(productName))
         dispatch(setInventoryItem(item))
         dispatch(showInventoryLedger(true))
     }
@@ -95,9 +95,8 @@ const InventoryRecords = ({ isLoading }) => {
     const actions = (item) => {
         return [
             { type: 'button', trigger: () => toggleStocks(item), label: 'Stocks' },
-            { type: 'button', trigger: () => toggleView(item), label: 'View' },
-            { type: 'button', trigger: () => togglePrices(item), label: 'Prices' },
-            // { type: 'button', trigger: () => toggleView(item), label: 'View', hidden: roleSelector.access.permission["inventory"]?.show }
+            { type: 'button', trigger: () => togglePrices(item), label: 'Prices', hidden: !permissions?.inventory_menu?.view_price },
+            { type: 'button', trigger: () => toggleView(item), label: 'View', hidden: !permissions?.inventory_menu?.view_adjustment }
         ]
     }
 

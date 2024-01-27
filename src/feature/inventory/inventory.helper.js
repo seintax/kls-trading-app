@@ -124,4 +124,20 @@ inventory.register("inventory_update_addition_adjustment",
             )
         WHERE invt_id=@id`)
 
+inventory.register("inventory_by_product_variant",
+    `
+    SELECT 
+        REPLACE(CONCAT(prod_name, ' ', IFNULL(vrnt_serial,''), ' ', IFNULL(vrnt_model,''), ' ', IFNULL(vrnt_brand,'')), '  ', ' ') AS inventory,
+        invt_cost AS cost,
+        invt_price AS price
+    FROM pos_stock_inventory 
+    LEFT JOIN pos_stock_masterlist
+        ON prod_id=invt_product
+    LEFT JOIN lib_variant
+        ON vrnt_id=invt_variant
+    WHERE
+        CONCAT(prod_name, ' ', IFNULL(vrnt_serial,''), ' ', IFNULL(vrnt_model,''), ' ', IFNULL(vrnt_brand,'')) LIKE '%@search%'
+    GROUP BY inventory,invt_cost,invt_price,invt_product,invt_variant
+    `)
+
 module.exports = inventory

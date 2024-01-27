@@ -8,7 +8,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
-import { setDeliveryItem, setDeliveryNotifier, showDeliveryManager } from "./delivery.reducer"
+import { setDeliveryItem, showDeliveryManager } from "./delivery.reducer"
 import { useDeleteDeliveryMutation } from "./delivery.services"
 
 const DeliveryRecords = () => {
@@ -31,7 +31,7 @@ const DeliveryRecords = () => {
 
     const toggleDelete = (item) => {
         assignDeleteCallback({ item: item, callback: handleDelete })
-        dispatch(showDelete({ description: "Email address", reference: item.name }))
+        dispatch(showDelete({ description: "DR No.", reference: StrFn.formatWithZeros(item.id, 6) }))
     }
 
     const handleDelete = async (item) => {

@@ -1,5 +1,5 @@
 const handler = require("express-async-handler")
-const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force } = require("../../utilities/callback.utility")
+const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force, mysqlpool } = require("../../utilities/callback.utility")
 const helper = require('./adjustment.helper')
 const { Param, Field } = require("../../utilities/builder.utility")
 
@@ -87,6 +87,22 @@ const byInventory = handler(async (req, res) => {
     })
 })
 
+const byAudit = handler(async (req, res) => {
+    const sql = helper
+        .statement("adjustment_stock_audit")
+        .inject({
+            asof: req.query.asof,
+            product: req.query.product,
+            variant: req.query.variant,
+            cost: req.query.cost,
+            store: req.query.branch
+        })
+    await mysqlpool.query(sql, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed({ data: ans }, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -96,4 +112,5 @@ module.exports = {
     _specify,
     _findone,
     byInventory,
+    byAudit,
 }

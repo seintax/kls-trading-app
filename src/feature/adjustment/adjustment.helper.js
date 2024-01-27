@@ -52,4 +52,22 @@ const adjustment = new Table("pos_stock_adjustment", {
     },
 ])
 
+adjustment.register('adjustment_stock_audit',
+    `
+    SELECT 
+        invt_store AS branch,
+        adjt_details AS reference,
+        (adjt_time + INTERVAL 8 HOUR) AS time,
+        adjt_quantity AS quantity
+    FROM 
+        pos_stock_adjustment,
+        pos_stock_inventory
+    WHERE
+        adjt_item=invt_id AND                                 
+        DATE(adjt_time + INTERVAL 8 HOUR) < '@asof' AND 
+        adjt_product='@product' AND
+        adjt_variant='@variant' AND
+        invt_cost='@cost' AND
+        invt_store LIKE '%@store%'`)
+
 module.exports = adjustment

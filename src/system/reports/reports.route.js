@@ -12,5 +12,6 @@ router.get('/reports/expensessummary', secure, service.expenses_summary)
 router.get('/reports/cashiersummary', secure, service.cashier_summary)
 router.get('/reports/inventoryvaluation', secure, service.inventory_valuation)
 router.get('/reports/bystoreitem', secure, service.by_store_item)
+router.get('/reports/inventoryreport', secure, service.inventory_report)
 
 module.exports = router

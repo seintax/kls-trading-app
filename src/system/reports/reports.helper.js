@@ -213,6 +213,26 @@ const reports = {
         ORDER BY DATE(trns_time + INTERVAL 8 HOUR) DESC
         `
     ),
+    by_store_item: new Query("inventory_stocks_by_store_item", `
+        SELECT
+            stre_code AS code,
+            stre_name AS name,
+            SUM(invt_stocks) AS stocks
+        FROM 
+            pos_archive_store
+                LEFT JOIN 
+                    pos_stock_inventory
+                        ON
+                            invt_product='@product' AND
+                            invt_variant='@variant' AND
+                            invt_cost='@cost' AND
+                            invt_store=stre_code 
+        WHERE
+            stre_code<>'JT-TESTING'
+        GROUP BY stre_code,stre_name
+        ORDER BY stre_name;
+        `
+    ),
     inventory_valuation: new Query("inventory_valuation", `
         SELECT
             CONCAT(prod_name, ' - ', IFNULL(vrnt_serial,''), '/', IFNULL(vrnt_model,''), '/', IFNULL(vrnt_brand,'')) AS inventory,
@@ -300,24 +320,175 @@ const reports = {
         ORDER BY inventory,invt_cost,invt_product,invt_variant;
         `
     ),
-    by_store_item: new Query("inventory_stocks_by_store_item", `
+    inventory_report: new Query("inventory_report", `
         SELECT
-            stre_code AS code,
-            stre_name AS name,
-            SUM(invt_stocks) AS stocks
+            CONCAT(prod_name, ' ', IFNULL(vrnt_serial,''), ' ', IFNULL(vrnt_model,''), ' ', IFNULL(vrnt_brand,'')) AS inventory,
+            prod_name AS product,
+            vrnt_serial AS variant1,
+            vrnt_model AS variant2,
+            vrnt_brand AS variant3,
+            invt_product AS productid,
+            invt_variant AS variantid,
+            invt_cost AS cost,
+            SUM(IF(invt_acquisition='MIGRATION',invt_received,0)) AS beginning,
+            SUM(IF(invt_acquisition='TRANSFER',invt_received,0)) AS goodsin,
+            IFNULL(received,0) AS purchase,
+            IFNULL(adjusted,0) AS adjustment,
+            IFNULL(dispensed,0) AS sold,
+            IFNULL(transfered,0) AS goodsout,
+            IFNULL(loses,0) AS deducted,
+            IFNULL(returned,0) AS return,
+            IFNULL(ontransit,0) AS pending,
+            SUM(invt_stocks) AS endbalance
         FROM 
-            pos_archive_store
-            LEFT JOIN 
-                pos_stock_inventory
-                    ON
-                        invt_product='@product' AND
-                        invt_variant='@variant' AND
-                        invt_cost='@cost' AND
-                        invt_store=stre_code 
-        WHERE
-            stre_code<>'JT-TESTING'
-        GROUP BY stre_code,stre_name
-        ORDER BY stre_name;
+            pos_stock_inventory a
+                LEFT JOIN 
+                    pos_stock_masterlist
+                        ON prod_id=invt_product 
+                LEFT JOIN
+                    lib_variant 
+                        ON vrnt_id=invt_variant                
+                LEFT JOIN
+                    (
+                        SELECT 
+                            rcpt_product,
+                            rcpt_variant,
+                            IFNULL(invt_cost,0) AS rcpt_cost,
+                            SUM(rcpt_quantity) AS received
+                        FROM 
+                            pos_delivery_receipt, 
+                            pos_stock_inventory  
+                        WHERE
+                            invt_receipt=rcpt_id AND
+                            DATE(rcpt_time + INTERVAL 8 HOUR) <= '@asof' AND
+                            invt_store LIKE '%@store%'
+                        GROUP BY rcpt_product,rcpt_variant,invt_cost
+                    ) b
+                        ON b.rcpt_product=a.invt_product AND 
+                        b.rcpt_variant=a.invt_variant AND 
+                        b.rcpt_cost=IFNULL(a.invt_cost,0)
+                LEFT JOIN
+                    (
+                        SELECT 
+                            sale_product, 
+                            sale_variant, 
+                            IFNULL(invt_cost,0) AS sale_cost,
+                            SUM(sale_dispense) AS dispensed
+                        FROM 
+                            pos_sales_dispensing,
+                            pos_stock_inventory
+                        WHERE
+                            sale_item=invt_id AND 
+                            DATE(sale_time + INTERVAL 8 HOUR) <= '@asof' AND 
+                            invt_store LIKE '%@store%'
+                        GROUP BY sale_product,sale_variant,invt_cost
+                    ) c 
+                        ON c.sale_product=a.invt_product AND 
+                        c.sale_variant=a.invt_variant AND
+                        c.sale_cost=IFNULL(a.invt_cost,0)                
+                LEFT JOIN 
+                    (
+                        SELECT 
+                            trni_product, 
+                            trni_variant,
+                            IFNULL(invt_cost,0) AS trni_cost,
+                            SUM(trni_received) AS transfered
+                        FROM 
+                            pos_transfer_receipt,
+                            pos_stock_inventory
+                        WHERE
+                            trni_item=invt_id AND                    
+                            trni_arrival <= '@asof' AND 
+                            invt_store LIKE '%@store%'
+                        GROUP BY trni_product,trni_variant,trni_cost
+                    ) d 
+                        ON d.trni_product=a.invt_product AND 
+                        d.trni_variant=a.invt_variant AND 
+                        d.trni_cost=IFNULL(a.invt_cost,0)
+                LEFT JOIN 
+                    (
+                        SELECT 
+                            rsal_product, 
+                            rsal_variant, 
+                            IFNULL(invt_cost,0) AS rsal_cost,
+                            SUM(rsal_quantity) AS returned
+                        FROM 
+                            pos_return_dispensing,
+                            pos_stock_inventory
+                        WHERE
+                            rsal_item=invt_id AND 
+                            DATE(rsal_time + INTERVAL 8 HOUR) <= '@asof' AND 
+                            invt_store LIKE '%@store%'
+                        GROUP BY rsal_product,rsal_variant,rsal_cost
+                    ) e 
+                        ON e.rsal_product=a.invt_product AND 
+                        e.rsal_variant=a.invt_variant AND 
+                        e.rsal_cost=IFNULL(a.invt_cost,0)
+                LEFT JOIN 
+                    (
+                        SELECT 
+                            adjt_product, 
+                            adjt_variant, 
+                            IFNULL(invt_cost,0) AS adjt_cost,
+                            SUM(adjt_quantity) AS adjusted
+                        FROM 
+                            pos_stock_adjustment,
+                            pos_stock_inventory
+                        WHERE
+                            adjt_item=invt_id AND 
+                            adjt_details='Add Inventory' AND
+                            DATE(adjt_time + INTERVAL 8 HOUR) <= '@asof' AND 
+                            invt_store LIKE '%@store%'
+                        GROUP BY adjt_product,adjt_variant,adjt_cost
+                    ) f 
+                        ON f.adjt_product=a.invt_product AND 
+                        f.adjt_variant=a.invt_variant AND 
+                        f.adjt_cost=IFNULL(a.invt_cost,0)           
+                LEFT JOIN 
+                    (
+                        SELECT 
+                            trni_product, 
+                            trni_variant,
+                            IFNULL(invt_cost,0) AS trni_cost,
+                            SUM(trni_quantity) AS ontransit
+                        FROM 
+                            pos_transfer_receipt,
+                            pos_stock_inventory
+                        WHERE
+                            trni_item=invt_id AND 
+                            (trni_received IS NULL OR trni_received=0) AND                   
+                            DATE(trni_time + INTERVAL 8 HOUR) <= '@asof' AND 
+                            invt_store LIKE '%@store%'
+                        GROUP BY trni_product,trni_variant,trni_cost
+                    ) g 
+                        ON g.trni_product=a.invt_product AND 
+                        g.trni_variant=a.invt_variant AND 
+                        g.trni_cost=IFNULL(a.invt_cost,0)
+                LEFT JOIN 
+                    (
+                        SELECT 
+                            adjt_product, 
+                            adjt_variant, 
+                            IFNULL(invt_cost,0) AS adjt_cost,
+                            SUM(adjt_quantity) AS loses
+                        FROM 
+                            pos_stock_adjustment,
+                            pos_stock_inventory
+                        WHERE
+                            adjt_item=invt_id AND 
+                            adjt_details<>'Add Inventory' AND
+                            DATE(adjt_time + INTERVAL 8 HOUR) <= '@asof' AND 
+                            invt_store LIKE '%@store%'
+                        GROUP BY adjt_product,adjt_variant,adjt_cost
+                    ) h 
+                        ON h.adjt_product=a.invt_product AND 
+                        h.adjt_variant=a.invt_variant AND 
+                        h.adjt_cost=IFNULL(a.invt_cost,0)  
+        WHERE 
+            invt_store LIKE '%@store%' AND
+            invt_category LIKE '%@category%' 
+        GROUP BY inventory,invt_cost,invt_product,invt_variant,invt_store,received,dispensed,transfered,returned,adjusted,ontransit,loses
+        ORDER BY inventory,invt_cost,invt_product,invt_variant;
         `
     ),
 }

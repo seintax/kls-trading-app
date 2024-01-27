@@ -97,8 +97,8 @@ const PaymentCustomer = () => {
 
     const onReset = () => {
         setCustomer({
-            customer: "0",
-            customer_name: "Walkin Customer",
+            customer: "4339",
+            customer_name: "Walkin",
             customer_address: "",
             newcustomer: "",
             newaddress: "",

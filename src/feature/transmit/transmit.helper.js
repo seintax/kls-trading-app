@@ -62,4 +62,24 @@ const transmit = new Table("pos_transfer_receipt", {
     },
 ])
 
+transmit.register('transmit_stock_audit',
+    `
+    SELECT 
+        invt_store AS branch,
+        CONCAT('To: ',trnr_store) AS reference,
+        (trni_time + INTERVAL 8 HOUR) AS time,
+        trni_received AS quantity
+    FROM 
+        pos_transfer_receipt
+            LEFT JOIN pos_transfer_request
+                ON trnr_id=trni_transfer,
+        pos_stock_inventory
+    WHERE
+        trni_item=invt_id AND                                 
+        DATE(trni_time + INTERVAL 8 HOUR) < '@asof' AND 
+        trni_product='@product' AND
+        trni_variant='@variant' AND
+        invt_cost='@cost' AND
+        invt_store LIKE '%@store%'`)
+
 module.exports = transmit

@@ -96,4 +96,22 @@ const dispensing = new Table("pos_sales_dispensing", {
     },
 ])
 
+dispensing.register('dispensing_stock_audit',
+    `
+    SELECT 
+        invt_store AS branch,
+        sale_trans AS reference,
+        (sale_time + INTERVAL 8 HOUR) AS time,
+        sale_dispense AS quantity
+    FROM 
+        pos_sales_dispensing,
+        pos_stock_inventory
+    WHERE
+        sale_item=invt_id AND                                 
+        DATE(sale_time + INTERVAL 8 HOUR) < '@asof' AND 
+        sale_product='@product' AND
+        sale_variant='@variant' AND
+        invt_cost='@cost' AND
+        invt_store LIKE '%@store%'`)
+
 module.exports = dispensing

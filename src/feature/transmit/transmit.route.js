@@ -14,6 +14,7 @@ router.get('/transmit/search', secure, service._search)
 router.post('/transmit/specify', service._specify)
 router.get('/transmit/bytransfer', service.byTransfer)
 router.get('/transmit/byinventory', service.byInventory)
+router.get('/transmit/byaudit', service.byAudit)
 
 router.post('/transmit/sqltransmit', complex.sqlTransmit)
 
