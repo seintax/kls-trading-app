@@ -53,7 +53,7 @@ const TransmitListing = () => {
 
     const toggleDelete = (item) => {
         assignDeleteCallback({ item: item, callback: handleDelete })
-        dispatch(showDelete({ description: "Purchase Order Item", reference: item.product }))
+        dispatch(showDelete({ description: "Stock Transfer Item", reference: item.product }))
     }
 
     const handleDelete = async (item) => {
@@ -88,14 +88,6 @@ const TransmitListing = () => {
                 }
             })
             .catch(err => console.error(err))
-        // await deleteTransmit({ id: item.id })
-        //     .unwrap()
-        //     .then(res => {
-        //         if (res.success) {
-        //             dispatch(setTransmitNotifier(true))
-        //         }
-        //     })
-        //     .catch(err => console.error(err))
         return true
     }
 

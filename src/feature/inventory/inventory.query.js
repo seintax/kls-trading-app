@@ -4,6 +4,7 @@ const helper = require('./inventory.helper')
 const getbranch = require('./inventory.branch')
 const getstocks = require('./inventory.stocks')
 const { Param, Field } = require("../../utilities/builder.utility")
+const inventory = require("./inventory.helper")
 
 function p(object) {
     return new Param(object.alias, object.param)
@@ -165,6 +166,17 @@ const byStockRecord = handler(async (req, res) => {
     })
 })
 
+const byPriceCheck = handler(async (req, res) => {
+    const sql = helper
+        .statement("inventory_by_product_variant")
+        .inject({ search: req.query.search })
+    const builder = helper.format(sql)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -178,5 +190,6 @@ module.exports = {
     byTransmit,
     byProduct,
     byItem,
-    byStockRecord
+    byStockRecord,
+    byPriceCheck,
 }

@@ -39,6 +39,10 @@ const percent = (value) => {
     return `${decimalFormat.format(amount(value || 0) * 100)}%`
 }
 
+const acctgNumber = (value) => {
+    return value ? value : "-"
+}
+
 const acctgAmount = (value) => {
     // return value ? Number(Number(value?.toString()?.replaceAll(",", ""))?.toFixed(2) || 0) : "-"
     return value ? parseFloat(value || 0) : "-"
@@ -61,7 +65,8 @@ const Utils = {
     acctg: {
         amount: acctgAmount,
         currency: acctgCurrency,
-        percent: acctgPercent
+        percent: acctgPercent,
+        number: acctgNumber,
     }
 }
 

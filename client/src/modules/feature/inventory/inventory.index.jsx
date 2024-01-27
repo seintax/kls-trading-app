@@ -2,6 +2,7 @@ import { saveAs } from 'file-saver'
 import moment from "moment"
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
@@ -18,6 +19,7 @@ import StocksIndex from "./inventory.stocks"
 
 const InventoryIndex = () => {
     const auth = useAuth()
+    const navigate = useNavigate()
     const [allInventory, { isLoading, isError, isSuccess }] = useFetchAllInventoryBranchMutation()
     const dataSelector = useSelector(state => state.inventory)
     const priceSelector = useSelector(state => state.price)
@@ -119,8 +121,13 @@ const InventoryIndex = () => {
         }
     })
 
+    const priceChecker = useCallback(() => {
+        navigate("/inventory/price-checker")
+    })
+
     const actions = () => {
         return [
+            { label: `Price Checker`, callback: priceChecker },
             { label: `Print Inventory`, callback: printInventory },
             { label: `Export Inventory`, callback: exportData },
         ]

@@ -13,5 +13,6 @@ router.get('/returned/search', secure, service._search)
 router.post('/returned/specify', service._specify)
 router.get('/returned/bycode', service.byCode)
 router.get('/returned/byinventory', service.byInventory)
+router.get('/returned/byaudit', service.byAudit)
 
 module.exports = router

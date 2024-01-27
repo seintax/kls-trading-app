@@ -8,6 +8,7 @@ const initialState = {
     cashier: false,
     showmenu: false,
     showitem: false,
+    showledger: false,
     receipt: false,
     transaction: {},
     inventory: {},
@@ -16,6 +17,10 @@ const initialState = {
         name: "Report",
         text: "A list of all reports registered in the system."
     },
+    filter: {
+        asof: '',
+        branch: ''
+    }
 }
 
 const reportsSlice = createSlice({
@@ -30,6 +35,9 @@ const reportsSlice = createSlice({
         },
         setReportInventory: (state, action) => {
             state.inventory = action.payload
+        },
+        setReportFilter: (state, action) => {
+            state.filter = action.payload
         },
         resetReportName: (state) => {
             state.report = ""
@@ -58,6 +66,9 @@ const reportsSlice = createSlice({
         setReportShowItem: (state, action) => {
             state.showitem = action.payload
         },
+        setReportShowLedger: (state, action) => {
+            state.showledger = action.payload
+        },
         setReportNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -69,6 +80,7 @@ const reportsSlice = createSlice({
             state.notifier = false
             state.showmenu = false
             state.showitem = false
+            state.showledger = false
             state.receipt = false
         }
     }
@@ -89,7 +101,9 @@ export const {
     setReportNotifier,
     setReportTransaction,
     setReportInventory,
+    setReportFilter,
     setReportShowItem,
+    setReportShowLedger,
     resetReport
 } = reportsSlice.actions
 

@@ -63,6 +63,21 @@ export const formatVariant = (serial, model, brand) => {
         ?.join("/")
 }
 
+export const reformatCode = (code) => {
+    let codeArr = code.split("-")
+    let firstTag = codeArr.shift()
+    return codeArr.join("-").slice(3, 15)
+}
+
+export const reformatIfCode = (value) => {
+    if (!value.includes("-")) return value
+    let codeArr = value.split("-")
+    if (codeArr.length !== 3) return value
+    if (codeArr[0].length !== 8) return value
+    let firstTag = codeArr.shift()
+    return codeArr.join("-").slice(3, 15)
+}
+
 export const YesNoFromBoolean = (bool) => {
     if (bool) return "Yes"
     return "No"

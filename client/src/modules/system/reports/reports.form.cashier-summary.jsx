@@ -227,14 +227,14 @@ const ReportsFormCashierSummary = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex w-full gap-2 mt-4 overflow-x-auto lg:overflow-x-none">
+                <div className="flex w-full gap-2 mt-4 min-h-[64px] overflow-x-auto lg:overflow-x-none">
                     {
                         Array.from({ length: 8 }, (_, i) => i + 2)?.map(n => (
                             <div key={n} className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
-                                <span className="text-gray-500 no-select">
+                                <span className="text-gray-500 whitespace-nowrap text-xs no-select">
                                     {columns.items[n].name}
                                 </span>
-                                <span className="text-lg font-semibold">
+                                <span className="text-base lg:text-lg font-semibold">
                                     {total(data)[n]?.value}
                                 </span>
                             </div>

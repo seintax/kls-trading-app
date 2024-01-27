@@ -110,6 +110,18 @@ const by_store_item = handler(async (req, res) => {
     })
 })
 
+const inventory_report = handler(async (req, res) => {
+    const sql = helper.inventory_report.inject({
+        store: req.query.store,
+        category: req.query.category,
+        asof: req.query.asof
+    })
+    await mysqlpool.query(sql, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed({ data: ans }, req))
+    })
+})
+
 module.exports = {
     sales_by_item,
     sales_by_category,
@@ -120,4 +132,5 @@ module.exports = {
     cashier_summary,
     inventory_valuation,
     by_store_item,
+    inventory_report,
 }

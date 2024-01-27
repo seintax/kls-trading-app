@@ -8,7 +8,7 @@ import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
 import { momentPST, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { currency } from "../../../utilities/functions/number.funtions"
-import { StrFn, getBranch, isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, getBranch, isEmpty, reformatCode } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataRecords from "../../../utilities/interface/datastack/data.records"
 import { useByDateRangeTransactionMutation } from "../../feature/cashering/cashering.services"
@@ -123,12 +123,6 @@ const ReportsFormReceipts = () => {
             { name: 'Type', stack: true, sort: 'method', size: 120 },
             { name: 'Total', stack: true, sort: 'total', size: 150 },
         ]
-    }
-
-    const reformatCode = (code) => {
-        let codeArr = code.split("-")
-        let firstTag = codeArr.shift()
-        return codeArr.join("-").slice(3, 15)
     }
 
     const items = (item) => {

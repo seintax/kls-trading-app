@@ -55,14 +55,16 @@ const ReportsModalStoreItem = () => {
                     leave="transition ease-in-out duration-500 transform"
                     leaveFrom="translate-y-0"
                     leaveTo="translate-y-full"
-                    className="flex flex-col gap-2 bg-white w-full h-full text-sm mt-0 px-3 pb-48"
+                    className="flex flex-col gap-2 bg-white w-full h-full text-sm mt-0 px-3 pb-48 overflow-y-auto"
                 >
-                    <div className="pl-1 pt-3 text-gray-500 font-bold text-lg flex items-center gap-4">
-                        <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOff()} />
-                        <span>{cleanDisplay(reportSelector.inventory?.inventory)}</span>
+                    <div className="sticky top-0 bg-white text-gray-500 font-bold text-lg">
+                        <div className="flex items-center gap-4 pl-1 py-3">
+                            <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOff()} />
+                            <span>{cleanDisplay(reportSelector.inventory?.inventory)}</span>
+                        </div>
+                        <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                     </div>
                     <div className="flex flex-col w-full px-2 text-base gap-3">
-                        <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                         <div className="flex flex-col">
                             <div className="flex justify-between">
                                 <span className="font-semibold">Cost</span>

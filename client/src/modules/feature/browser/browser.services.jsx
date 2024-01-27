@@ -39,6 +39,14 @@ export const browserApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['dispensing']
         }),
+        byAuditDispensing: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/dispensing/byaudit`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['dispensing']
+        }),
         byCodeReturned: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/returned/bycode`,
@@ -50,6 +58,14 @@ export const browserApiSlice = apiSlice.injectEndpoints({
         byInventoryReturned: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/returned/byinventory`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['returned']
+        }),
+        byAuditReturned: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/returned/byaudit`,
                 method: 'GET',
                 params
             }),
@@ -87,8 +103,10 @@ export const {
     useFetchAllBrowserByBranchMutation,
     useByCodeDispensingMutation,
     useByInventoryDispensingMutation,
+    useByAuditDispensingMutation,
     useByCodeReturnedMutation,
     useByInventoryReturnedMutation,
+    useByAuditReturnedMutation,
     useByCodePaymentMutation,
     useCreateBrowserBySqlTransactionMutation,
     useCreateReturnBySqlTransactionMutation,

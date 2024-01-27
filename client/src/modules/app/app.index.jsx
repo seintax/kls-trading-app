@@ -51,6 +51,7 @@ const menulist = (config) => {
             icon: ShoppingCartIcon,
             cascade: false,
             children: [
+                { name: "Price Checker", href: "/price-checker" },
                 { name: "Purchase Order", href: "/purchase-order" },
                 { name: "Delivery", href: "/delivery" },
                 { name: "Stock Transfer", href: "/stock-transfer" },

@@ -270,12 +270,12 @@ const RolesPermissions = () => {
                 {
                     (destructToJSONArray(permissions)?.map((permission, i) => (
                         <div key={permission.name} className="flex flex-col w-3/4 bg-white border border-secondary-500 text-white rounded-md px-5 py-5 gap-5">
-                            <div className="text-[15px] w-full bg-gradient-to-r from-primary-300 from-primary-300 text-secondary-500 font-bold p-3">
+                            <div className="text-[15px] w-full bg-gradient-to-r from-primary-300 from-primary-300 text-black font-bold p-3">
                                 {formatPropName(permission.name)}
                             </div>
-                            <div className="flex flex-wrap gap-5 justify-start">
+                            <div className="flex flex-wrap gap-1 justify-start">
                                 <div className="flex gap-5 pl-3 pr-1.5 py-1.5 bg-gradient-to-r from-primary-300 to-white text-secondary-500 items-center justify-between w-3/4">
-                                    <span className="font-bold">
+                                    <span className="font-bold text-gray-700">
                                         Switch All
                                     </span>
                                     <span className="isolate inline-flex rounded-md shadow-sm">
@@ -298,7 +298,7 @@ const RolesPermissions = () => {
                                 {
                                     arrayProps(permission.json)?.map((prop, index) => (
                                         <div key={prop.name} className="flex gap-5 pl-3 pr-1.5 py-1.5 bg-gradient-to-r from-secondary-500 to-primary-400 items-center justify-between w-3/4">
-                                            <span className="font-bold">
+                                            <span className="font-bold text-gray-900">
                                                 {formatPropName(prop.name)}
                                             </span>
                                             <span className="isolate inline-flex rounded-md shadow-sm">
