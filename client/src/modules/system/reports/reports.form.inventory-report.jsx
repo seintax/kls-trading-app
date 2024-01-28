@@ -135,7 +135,7 @@ const ReportsFormInventoryReport = () => {
     }
 
     const calculatedEndBalance = (item) => {
-        return item.endbalance + item.pending
+        return item.endbalance - item.pending
     }
 
     const items = (item) => {
@@ -178,10 +178,10 @@ const ReportsFormInventoryReport = () => {
     }
 
     const hasDiscrepancy = (item) => {
-        const totalIn = item.beginning + item.goodsin + item.purchase + item.adjustment
-        const totalOut = item.sold + item.goodsout + item.deducted
+        const totalIn = item.beginning + item.goodsin + item.purchase + item.adjustment + item.unreceived
+        const totalOut = item.sold + item.goodsout + item.deducted + item.pending
         const computedEndBalance = totalIn - totalOut
-        const validEndBalance = item.endbalance + item.pending
+        const validEndBalance = item.endbalance
         return validEndBalance !== computedEndBalance
     }
 

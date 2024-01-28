@@ -66,9 +66,9 @@ transmit.register('transmit_stock_audit',
     `
     SELECT 
         invt_store AS branch,
-        CONCAT('To: ',trnr_store) AS reference,
+        CONCAT('To: ',trnr_store, IF(trni_arrival IS NULL,' (Pending)', '')) AS reference,
         (trni_time + INTERVAL 8 HOUR) AS time,
-        trni_received AS quantity
+        IF(trni_arrival IS NULL,trni_quantity,trni_received) AS quantity
     FROM 
         pos_transfer_receipt
             LEFT JOIN pos_transfer_request
