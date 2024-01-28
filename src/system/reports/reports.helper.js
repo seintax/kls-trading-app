@@ -316,7 +316,7 @@ const reports = {
             invt_store LIKE '%@store%' AND
             invt_category LIKE '%@category%' AND
             (invt_time + INTERVAL 8 HOUR) < '@asof 23:59:59'
-        GROUP BY inventory,invt_cost,invt_product,invt_variant,dispensed,sale_cost
+        GROUP BY inventory,invt_cost,invt_product,invt_variant,dispensed
         ORDER BY inventory,invt_cost,invt_product,invt_variant;
         `
     ),
@@ -339,6 +339,7 @@ const reports = {
             IFNULL(loses,0) AS deducted,
             IFNULL(returned,0) AS return,
             IFNULL(ontransit,0) AS pending,
+            SUM(IF(invt_acquisition='TRANSMIT',invt_received,0)) AS unreceived,
             SUM(invt_stocks) AS endbalance
         FROM 
             pos_stock_inventory a
@@ -487,7 +488,7 @@ const reports = {
         WHERE 
             invt_store LIKE '%@store%' AND
             invt_category LIKE '%@category%' 
-        GROUP BY inventory,invt_cost,invt_product,invt_variant,invt_store,received,dispensed,transfered,returned,adjusted,ontransit,loses
+        GROUP BY inventory,invt_cost,invt_store,invt_product,invt_variant,received,dispensed,transfered,returned,adjusted,ontransit,loses
         ORDER BY inventory,invt_cost,invt_product,invt_variant;
         `
     ),

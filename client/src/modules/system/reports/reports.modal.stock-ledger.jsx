@@ -28,14 +28,14 @@ const ReportsModalStockLedger = () => {
     const [stockReturned, { isLoading: returnedLoading, isSuccess: returnedSuccess }] = useByAuditReturnedMutation()
 
     const dispensingTotal = dispensingrecord?.reduce((prev, curr) => prev + curr.quantity, 0)
-    const transmitedTotal = transmitrecord?.reduce((prev, curr) => prev + curr.quantity, 0)
+    const transmitedTotal = transmitrecord?.reduce((prev, curr) => prev + (!curr.reference.includes("Pending") ? curr.quantity : 0), 0)
     const adjustmentTotal = adjustmentrecord?.reduce((prev, curr) => prev + (curr.reference === "Add Inventory" ? curr.quantity : 0), 0)
     const deductionTotal = adjustmentrecord?.reduce((prev, curr) => prev + (curr.reference !== "Add Inventory" ? curr.quantity : 0), 0)
     const returnedTotal = returnedrecord?.reduce((prev, curr) => prev + curr.quantity, 0)
     const stockCost = reportSelector.inventory?.cost || 0
-    const totalIn = reportSelector.inventory.beginning + reportSelector.inventory.goodsin + reportSelector.inventory.purchase + reportSelector.inventory.adjustment
-    const totalOut = reportSelector.inventory.sold + reportSelector.inventory.goodsout + reportSelector.inventory.deducted
-    const balance = reportSelector.inventory.endbalance + reportSelector.inventory.pending
+    const totalIn = reportSelector.inventory.beginning + reportSelector.inventory.goodsin + reportSelector.inventory.purchase + reportSelector.inventory.adjustment + reportSelector.inventory.unreceived
+    const totalOut = reportSelector.inventory.sold + reportSelector.inventory.goodsout + reportSelector.inventory.deducted + reportSelector.inventory.pending
+    const balance = reportSelector.inventory.endbalance
     const completedFetch = dispensingSuccess && transmitSuccess && adjustmentSuccess && returnedSuccess
 
     const instantiate = async () => {
@@ -116,20 +116,20 @@ const ReportsModalStockLedger = () => {
     }
 
     const computeDiscrepancy = (item) => {
-        const totalIn = item.beginning + item.goodsin + item.purchase + item.adjustment
-        const totalOut = item.sold + item.goodsout + item.deducted
+        const totalIn = item.beginning + item.goodsin + item.purchase + item.adjustment + item.unreceived
+        const totalOut = item.sold + item.goodsout + item.deducted + item.pending
         const computedEndBalance = totalIn - totalOut
-        const validEndBalance = item.endbalance + item.pending
+        const validEndBalance = item.endbalance
         return validEndBalance - Math.abs(computedEndBalance)
     }
 
     const typeOfDiscrepancy = (item) => {
-        const totalIn = item.beginning + item.goodsin + item.purchase + item.adjustment
-        const totalOut = item.sold + item.goodsout + item.deducted
+        const totalIn = item.beginning + item.goodsin + item.purchase + item.adjustment + item.unreceived
+        const totalOut = item.sold + item.goodsout + item.deducted + item.pending
         const computedEndBalance = totalIn - totalOut
-        const validEndBalance = item.endbalance + item.pending
+        const validEndBalance = item.endbalance
         const discrepancy = validEndBalance - Math.abs(computedEndBalance)
-        return discrepancy === 0 ? "" : (discrepancy < 0 ? "Missing" : "Excess")
+        return discrepancy === 0 ? "" : (discrepancy < 0 ? "(Missing)" : "(Excess)")
     }
 
     return (
@@ -203,9 +203,19 @@ const ReportsModalStockLedger = () => {
 
                                     {NumFn.acctg.number(reportSelector.inventory.adjustment)}
                                 </span>
+                                <span className="font-semibold w-[600px] text-right">
+                                    {NumFn.acctg.currency(stockCost * reportSelector.inventory.adjustment)}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="font-semibold w-full">Unreceived</span>
+                                <span className="font-semibold w-[300px] text-right">
+
+                                    {NumFn.acctg.number(reportSelector.inventory.unreceived)}
+                                </span>
                                 <span className="flex justify-between font-semibold w-[600px] text-right">
                                     <span className="ml-8 text-gray-500">({totalIn})</span>
-                                    {NumFn.acctg.currency(stockCost * reportSelector.inventory.adjustment)}
+                                    {NumFn.acctg.currency(stockCost * reportSelector.inventory.unreceived)}
                                 </span>
                             </div>
                             <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
@@ -238,7 +248,6 @@ const ReportsModalStockLedger = () => {
                                     {NumFn.acctg.currency(stockCost * reportSelector.inventory.deducted)}
                                 </span>
                             </div>
-                            <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                             <div className="flex justify-between">
                                 <span className="font-semibold w-full">Pending Transfer</span>
                                 <span className="font-semibold w-[300px] text-right">
@@ -248,6 +257,7 @@ const ReportsModalStockLedger = () => {
                                     {NumFn.acctg.currency(stockCost * reportSelector.inventory.pending)}
                                 </span>
                             </div>
+                            <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                             <div className="flex justify-between">
                                 <span className="font-semibold w-full">End Balance</span>
                                 <span className="font-semibold w-[300px] text-right">
@@ -256,12 +266,12 @@ const ReportsModalStockLedger = () => {
                                 </span>
                                 <span className="flex justify-between font-semibold w-[600px] text-right">
                                     <span className="ml-8 text-gray-500">({balance})</span>
-                                    {NumFn.acctg.currency(stockCost * reportSelector.inventory.endbalance)}
+                                    {NumFn.acctg.currency(stockCost * (reportSelector.inventory.endbalance))}
                                 </span>
                             </div>
                             <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                             <div className={`flex justify-between ${computeDiscrepancy(reportSelector.inventory) !== 0 ? "text-red-600" : ""}`}>
-                                <span className="font-semibold w-full">Discrepancy ({typeOfDiscrepancy(reportSelector.inventory)})</span>
+                                <span className="font-semibold w-full">Discrepancy {typeOfDiscrepancy(reportSelector.inventory)}</span>
                                 <span className="font-semibold w-[600px] text-right">
                                     {NumFn.acctg.number(computeDiscrepancy(reportSelector.inventory))}
                                 </span>
@@ -299,7 +309,7 @@ const ReportsModalStockLedger = () => {
                                 <>
                                     <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                                     <span className="font-semibold w-full text-gray-500">
-                                        Returned Record:
+                                        Returned Data:
                                     </span>
                                     {
                                         returnedrecord?.map(item => (
@@ -343,7 +353,7 @@ const ReportsModalStockLedger = () => {
                                     }
                                     <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                                     <span className="font-semibold w-full text-gray-500">
-                                        Adjusted Record:
+                                        Adjusted Data:
                                     </span>
                                     {
                                         adjustmentrecord?.map(item => (
@@ -399,9 +409,11 @@ const ReportsModalStockLedger = () => {
                                             </div>
                                         ) : null
                                     }
+
+                                    <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                                     <div className="flex flex-col gap-2">
-                                        <span className="font-semibold border-t border-b py-2 w-full text-gray-500">
-                                            Dispensed Record:
+                                        <span className="font-semibold py-2 w-full text-gray-500">
+                                            Sold Data:
                                         </span>
                                         {
                                             dispensingrecord?.map(item => (
@@ -433,7 +445,7 @@ const ReportsModalStockLedger = () => {
                                             dispensingrecord?.length ? (
                                                 <div className="flex justify-between hover:bg-gray-300 cursor-pointer">
                                                     <span className="font-semibold px-3 py-2 w-1/2 text-sm text-gray-500">
-                                                        Total Dispensed:
+                                                        Total Sold:
                                                     </span>
                                                     <span className="font-semibold px-3 py-2 w-1/2 text-sm text-right">
                                                         {dispensingLoading
@@ -443,9 +455,10 @@ const ReportsModalStockLedger = () => {
                                                 </div>
                                             ) : null
                                         }
+                                        <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                                         <div className="flex justify-between mb-3">
-                                            <span className="font-semibold border-t border-b py-2 w-full text-gray-500">
-                                                Goods Out Record:
+                                            <span className="font-semibold py-2 w-full text-gray-500">
+                                                Goods Out Data:
                                             </span>
                                         </div>
                                         {
@@ -488,6 +501,7 @@ const ReportsModalStockLedger = () => {
                                                 </div>
                                             ) : null
                                         }
+                                        <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
                                     </div>
                                 </>
                             ) : (
