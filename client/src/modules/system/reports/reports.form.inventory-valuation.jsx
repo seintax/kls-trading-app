@@ -216,8 +216,8 @@ const ReportsFormInventoryValuation = () => {
         if (records?.length) {
             localStorage.setItem("reports", JSON.stringify({
                 title: reportSelector.report,
-                subtext1: `as of: ${moment(new Date()).format("MMMM DD, YYYY")}`,
-                subtext2: `Branch: ${filters.store || "All"}`,
+                subtext1: `as of: ${moment(filters.asof).format("MMMM DD, YYYY")}`,
+                subtext2: `Branch: ${filters.store || "All"} | Category: ${filters.category || "All"}`,
                 columns: columns,
                 total: total(data),
                 data: records

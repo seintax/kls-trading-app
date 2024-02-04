@@ -75,7 +75,7 @@ export const reformatIfCode = (value) => {
     if (codeArr.length !== 3) return value
     if (codeArr[0].length !== 8) return value
     let firstTag = codeArr.shift()
-    return codeArr.join("-").slice(3, 15)
+    return codeArr.join("-").slice(3, value.length - 1)
 }
 
 export const YesNoFromBoolean = (bool) => {

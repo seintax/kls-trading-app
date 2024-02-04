@@ -1,22 +1,29 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { momentOffset } from "../../../utilities/functions/datetime.functions"
-import { cleanDisplay } from "../../../utilities/functions/string.functions"
+import { cleanDisplay, isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import useAuth from "../../../utilities/hooks/useAuth"
+import usePermissions from "../../../utilities/hooks/usePermissions"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import DataOperation from "../../../utilities/interface/datastack/data.operation"
 import DataRecords from '../../../utilities/interface/datastack/data.records'
-import { resetInventoryStocks } from "./inventory.reducer"
+import { resetInventoryStocks, setInventoryItem, showInventoryManager } from "./inventory.reducer"
 import { useByStockRecordInventoryMutation } from "./inventory.services"
 
 const StocksIndex = () => {
+    const auth = useAuth()
     const dataSelector = useSelector(state => state.inventory)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [data, setdata] = useState()
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
     const [sorted, setsorted] = useState()
     const columns = dataSelector.stockage
+    const permissions = usePermissions()
 
     const [stockRecord, { isLoading }] = useByStockRecordInventoryMutation()
 
@@ -37,28 +44,37 @@ const StocksIndex = () => {
             return
         }
 
-        if (dataSelector.item.id) {
+        if (dataSelector.stocks && dataSelector.item.store) {
             instantiate()
         }
-    }, [dataSelector.item.id])
+    }, [dataSelector.item.store, dataSelector.stocks])
 
-    const actions = (item) => {
-        return []
+    const toggleView = (item) => {
+        dispatch(setInventoryItem(item))
+        dispatch(resetInventoryStocks())
+        dispatch(showInventoryManager())
     }
 
-    const identifyQuantity = (item) => {
-        if (item.transaction === "DISPENSE") return item.dispense || 0
-        if (item.transaction === "RETURNED") return item.quantity || 0
-        if (item.transaction === "TRANSFER") return item.quantity || 0
+    const actions = (item) => {
+        return [
+            { type: 'button', trigger: () => toggleView(item), label: 'Adjust', hidden: !permissions?.inventory_menu?.view_adjustment }
+        ]
     }
 
     const items = (item) => {
         return [
-            { value: cleanDisplay(`${dataSelector.item.product_name} ${dataSelector.item.variant_serial} ${dataSelector.item.variant_model} ${dataSelector.item.variant_brand}`) },
+            { value: cleanDisplay(`${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}`) },
             { value: momentOffset(item.time, 480, "MM-DD-YYYY") },
             { value: `${item.stocks}/${item.received}` },
             { value: item.acquisition },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
+            {
+                value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN")
+                    ? <DataOperation actions={actions(item)} />
+                    : item.store === "JT-MAIN"
+                        ? ""
+                        : <DataOperation actions={actions(item)} />
+            },
         ]
     }
 
@@ -76,10 +92,17 @@ const StocksIndex = () => {
     }, [data, sorted])
 
     const returnToList = useCallback(() => {
+        if (dataSelector.item.inventory) {
+            dispatch(resetInventoryStocks())
+            navigate(-1)
+            return
+        }
         dispatch(resetInventoryStocks())
     }, [])
 
-    const productName = cleanDisplay(`${dataSelector.item.product_name} (${dataSelector.item.category}/${dataSelector.item.variant_serial}/${dataSelector.item.variant_model}/${dataSelector.item.variant_brand})`)
+    const productName = dataSelector.item.inventory
+        ? cleanDisplay(dataSelector.item.inventory)
+        : cleanDisplay(`${dataSelector.item.product_name} (${dataSelector.item.category}/${dataSelector.item.variant_serial}/${dataSelector.item.variant_model}/${dataSelector.item.variant_brand})`)
 
     return (
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">

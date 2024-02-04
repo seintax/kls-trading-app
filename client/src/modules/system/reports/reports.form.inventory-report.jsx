@@ -126,7 +126,7 @@ const ReportsFormInventoryReport = () => {
             { name: 'Beginning', stack: true, sort: 'beginning', size: 150 },
             { name: 'Goods In', stack: true, sort: 'goodsin', size: 150 },
             { name: 'Purchase', stack: true, sort: 'purchase', size: 150 },
-            { name: 'Adjustment', stack: true, sort: 'adjustment', size: 150 },
+            { name: 'Adjusted', stack: true, sort: 'adjustment', size: 150 },
             { name: 'Sold', stack: true, sort: 'sold', size: 150 },
             { name: 'Goods Out', stack: true, sort: 'goodsout', size: 150 },
             { name: 'Deducted', stack: true, sort: 'deducted', size: 150 },
@@ -143,16 +143,15 @@ const ReportsFormInventoryReport = () => {
         return [
             { value: cleanDisplay(item.inventory) },
             { value: item.beginning ? `(${item.beginning}) ${currency(cost * item.beginning)}` : "-" },
-            { value: item.goodsin ? `(${item.goodsin}) ${currency(cost * item.goodsin)}` : "-" },
+            { value: (item.goodsin + item.unreceived) ? `(${(item.goodsin + item.unreceived)}) ${currency(cost * (item.goodsin + item.unreceived))}` : "-" },
             { value: item.purchase ? `(${item.purchase}) ${currency(cost * item.purchase)}` : "-" },
             { value: item.adjustment ? `(${item.adjustment}) ${currency(cost * item.adjustment)}` : "-" },
             { value: item.sold ? `(${item.sold}) ${currency(cost * item.sold)}` : "-" },
-            { value: item.goodsout ? `(${item.goodsout}) ${currency(cost * item.goodsout)}` : "-" },
+            { value: (item.goodsout + item.pending) ? `(${(item.goodsout + item.pending)}) ${currency(cost * (item.goodsout + item.pending))}` : "-" },
             { value: item.deducted ? `(${item.deducted}) ${currency(cost * item.deducted)}` : "-" },
             {
-                value: <span className={hasDiscrepancy(item) ? "text-red-500" : "text-black"}>
-                    {calculatedEndBalance(item) ? `(${calculatedEndBalance(item)}) ${currency(cost * calculatedEndBalance(item))}` : "-"}
-                </span>
+                value: calculatedEndBalance(item) ? `(${calculatedEndBalance(item)}) ${currency(cost * calculatedEndBalance(item))}` : "-",
+                style: hasDiscrepancy(item) ? "text-red-500" : "text-black"
             },
         ]
     }
@@ -213,8 +212,8 @@ const ReportsFormInventoryReport = () => {
         if (records?.length) {
             localStorage.setItem("reports", JSON.stringify({
                 title: reportSelector.report,
-                subtext1: `as of: ${moment(new Date()).format("MMMM DD, YYYY")}`,
-                subtext2: `Branch: ${filters.store || "All"}`,
+                subtext1: `as of: ${moment(filters.asof).format("MMMM DD, YYYY")}`,
+                subtext2: `Branch: ${filters.store || "All"} | Category: ${filters.category || "All"}`,
                 columns: columns,
                 total: total(data),
                 data: records

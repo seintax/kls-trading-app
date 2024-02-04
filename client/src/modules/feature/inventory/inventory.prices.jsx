@@ -1,12 +1,17 @@
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate, useParams } from "react-router-dom"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { NumFn } from "../../../utilities/functions/number.funtions"
+import { isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
+import DataOperation from "../../../utilities/interface/datastack/data.operation"
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { setSearchKey } from "../../../utilities/redux/slices/searchSlice"
+import { setInventoryItem, showInventoryStocks } from "./inventory.reducer"
 import { useByPriceCheckInventoryMutation } from "./inventory.services"
 
 const InventoryPrices = () => {
@@ -14,6 +19,7 @@ const InventoryPrices = () => {
     const toast = useToast()
     const searchSelector = useSelector(state => state.search)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [search, setSearch] = useState('')
     const [result, setResult] = useState()
     const [records, setrecords] = useState()
@@ -24,14 +30,17 @@ const InventoryPrices = () => {
             { name: 'Product Name', stack: false, sort: 'inventory' },
             { name: 'Cost', stack: true, sort: 'cost', size: 160 },
             { name: 'Price', stack: true, sort: 'price', size: 160 },
+            { name: '', stack: false, screenreader: 'Action', size: 160 },
         ]
     }
+
+    const { id } = useParams()
 
     const [transmitInventory, { isLoading, isError }] = useByPriceCheckInventoryMutation()
 
     useEffect(() => {
         const instantiate = async () => {
-            await transmitInventory({ search: searchSelector.searchKey })
+            await transmitInventory({ search: searchSelector.searchKey, branch: id })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
@@ -51,14 +60,30 @@ const InventoryPrices = () => {
         setSearch(e.target.value)
     }
 
+    const toggleStocks = (item) => {
+        dispatch(setInventoryItem(item))
+        dispatch(showInventoryStocks(true))
+        navigate('/inventory')
+    }
+
+    const toggleSearch = () => {
+        if (search.length < 4) {
+            toast.showWarning("Searched input should have atleast 4 characters.")
+            return
+        }
+        dispatch(setSearchKey(search))
+    }
+
     const onSearch = (e) => {
         if (e.code === 'Enter') {
-            if (search.length < 4) {
-                toast.showWarning("Searched input should have atleast 4 characters.")
-                return
-            }
-            dispatch(setSearchKey(search))
+            toggleSearch()
         }
+    }
+
+    const toggles = (item) => {
+        return [
+            { type: 'button', trigger: () => toggleStocks(item), label: 'Stocks' },
+        ]
     }
 
     const items = (item) => {
@@ -66,6 +91,13 @@ const InventoryPrices = () => {
             { value: item.inventory },
             { value: NumFn.currency(item.cost) },
             { value: NumFn.currency(item.price) },
+            {
+                value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN")
+                    ? <DataOperation actions={toggles(item)} />
+                    : item.store === "JT-MAIN"
+                        ? "" :
+                        <DataOperation actions={toggles(item)} />
+            },
         ]
     }
 
@@ -89,8 +121,13 @@ const InventoryPrices = () => {
         setResult()
     }
 
+    const backToList = () => {
+        navigate('/inventory')
+    }
+
     const actions = () => {
         return [
+            { label: `Back to Inventory`, callback: backToList },
             { label: `New Search`, callback: newSearch, hidden: !result },
         ]
     }
@@ -122,12 +159,18 @@ const InventoryPrices = () => {
                     <div className="flex justify-center items-center w-full h-full">
                         <div className="flex flex-col gap-2 text-lg h-32 mb-20">
                             <span>Search for a product name and variant:</span>
-                            <input
-                                type="text"
-                                onChange={onChange}
-                                onKeyDown={onSearch}
-                                placeholder="Product name, variant"
-                            />
+                            <div className="flex items-center justify-center relative">
+                                <input
+                                    type="text"
+                                    onChange={onChange}
+                                    onKeyDown={onSearch}
+                                    placeholder="Product name, variant"
+                                    className="w-full"
+                                />
+                                <button className="button-submit absolute right-[2px]" onClick={() => toggleSearch()}>
+                                    <MagnifyingGlassIcon className="h-5 w-5" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )

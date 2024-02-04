@@ -15,6 +15,7 @@ import { useSalesByCategoryReportMutation, useSalesByCollectionReportMutation, u
 
 const ReportsFormSales = () => {
     const reportSelector = useSelector(state => state.reports)
+    const searchSelector = useSelector(state => state.search)
     const [refetch, setRefetch] = useState(false)
     const [data, setdata] = useState()
     const [records, setrecords] = useState()
@@ -79,6 +80,14 @@ const ReportsFormSales = () => {
                     }
                 })
                 .catch(err => console.error(err))
+        }
+        instantiate()
+    }, [])
+
+
+    useEffect(() => {
+        const instantiate = async () => {
+            setdata([])
             if (reportSelector.report === "Daily Sales by Item") {
                 await salesByItem({ fr: filters.fr, to: filters.to, store: filters.store })
                     .unwrap()
@@ -145,8 +154,9 @@ const ReportsFormSales = () => {
     const byCollectionColumn = {
         style: '',
         items: [
-            { name: 'Type of Transaction', stack: true, sort: 'trans_type', size: 250 },
+            { name: 'Type of Transaction', stack: true, sort: 'trans_type', size: 150 },
             { name: 'Payment Method', stack: true, sort: 'payment_method', size: 150 },
+            { name: 'Branch', stack: true, sort: 'store', size: 100 },
             { name: 'No. of Transactions', stack: true, sort: 'transaction_count', size: 150 },
             { name: 'Total Collection', stack: true, sort: 'payment_total', size: 150 },
             { name: 'No. of Refunds', stack: true, sort: 'refund_count', size: 150 },
@@ -181,12 +191,25 @@ const ReportsFormSales = () => {
             return [
                 { value: item.trans_type },
                 { value: item.payment_method },
+                { value: item.store },
                 { value: item.transaction_count },
                 { value: currency(item.payment_total) },
                 { value: item.refund_count },
                 { value: currency(item.payment_refund) },
                 { value: currency(item.payment_net) },
             ]
+        }
+    }
+
+    const key = (item, index) => {
+        if (reportSelector.report === "Daily Sales by Item") {
+            return item.id
+        }
+        if (reportSelector.report === "Daily Sales by Category") {
+            return `${index}${item.category}`
+        }
+        if (reportSelector.report === "Daily Sales by Collection") {
+            return item.store
         }
     }
 
@@ -217,6 +240,7 @@ const ReportsFormSales = () => {
         return [
             { value: "OVERALL TOTAL" },
             { value: null },
+            { value: null },
             { value: item?.reduce((prev, curr) => prev + (curr.transaction_count || 0), 0) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.payment_total || 0), 0)) },
             { value: item?.reduce((prev, curr) => prev + (curr.refund_count || 0), 0) },
@@ -227,15 +251,23 @@ const ReportsFormSales = () => {
 
     useEffect(() => {
         if (data) {
-            let tempdata = sorted ? sortBy(data, sorted) : data
+            setrecords([])
+            let filtered = data
+            if (searchSelector.searchKey && reportSelector.report === "Daily Sales by Item") {
+                let sought = searchSelector.searchKey?.toLowerCase()
+                filtered = filtered?.filter(f => (
+                    `${f.product} (${f.variant1 || ""}${f.variant2 ? `/${f.variant2}` : ""}${f.variant3 ? `/${f.variant3}` : ""})`?.toLowerCase()?.includes(sought)
+                ))
+            }
+            let tempdata = sorted ? sortBy(filtered, sorted) : filtered
             setrecords(tempdata?.map((item, i) => {
                 return {
-                    key: item.id,
+                    key: key(item, i),
                     items: items(item)
                 }
             }))
         }
-    }, [data, sorted, reportSelector.report])
+    }, [data, sorted, reportSelector.report, searchSelector.searchKey])
 
     const reportColumn = () => {
         if (reportSelector.report === "Daily Sales by Item") return byItemColumn
@@ -340,7 +372,7 @@ const ReportsFormSales = () => {
                         ))
                     }
                     {
-                        reportSelector.report === "Daily Sales by Collection" && Array.from({ length: 5 }, (_, i) => i + 2)?.map(n => (
+                        reportSelector.report === "Daily Sales by Collection" && Array.from({ length: 5 }, (_, i) => i + 3)?.map(n => (
                             <div key={n} className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
                                 <span className="text-gray-500 no-select">
                                     {byCollectionColumn.items[n].name}

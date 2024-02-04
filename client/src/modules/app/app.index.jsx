@@ -12,7 +12,7 @@ import {
     UserGroupIcon,
     UsersIcon
 } from "@heroicons/react/24/outline"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { Outlet } from "react-router-dom"
 import { version } from "../../../package.json"
@@ -24,6 +24,7 @@ import AppBreadcrumbs from "../../utilities/interface/application/aesthetics/app
 import AppSideBar from "../../utilities/interface/application/navigation/app.sidebar"
 import AppSideMenu from "../../utilities/interface/application/navigation/app.sidemenu"
 import NotificationContainer from "../../utilities/interface/notification/notification.container"
+import { setOnScrollY, setScrollY } from "../../utilities/redux/slices/utilitySlice"
 import { defaultRole } from "../../utilities/variables/string.variables"
 import { useUpdateAccountMutation } from "../system/account/account.services"
 import { setSettingsConfig, setSettingsMenus, setSettingsNotifier } from "../system/config/config.reducer"
@@ -85,6 +86,7 @@ const AppIndex = () => {
     const permissionSelector = useSelector(state => state.permission)
     const roleSelector = useSelector(state => state.roles)
     const locationSelector = useSelector(state => state.locate)
+    const utilitySelector = useSelector(state => state.utility)
     const [sidebarSideMenu, setSidebarSideMenu] = useState(false)
     const [sideMenuItems, setSideMenuItems] = useState()
     const [instance, setInstance] = useState(true)
@@ -92,6 +94,7 @@ const AppIndex = () => {
     const authenticate = useAuthenticate()
     const dispatch = useDispatch()
     const { logout } = useLogout()
+    const refList = useRef()
     const auth = useAuth()
 
     const [allRoles, { isLoading: rolesLoading }] = useFetchAllRolesMutation()
@@ -234,6 +237,22 @@ const AppIndex = () => {
         return import.meta.env.MODE === "development" ? import.meta.env.VITE_API_BASE_URL : import.meta.env.VITE_API_BASE_URL_PROD
     }
 
+    useEffect(() => {
+        if (refList.current && utilitySelector.isLogged) {
+            dispatch(setScrollY(refList.current.scrollTop))
+        }
+    }, [utilitySelector.isLogged, refList])
+
+    useEffect(() => {
+        if (utilitySelector.onScrollY) {
+            refList.current.scroll({
+                top: utilitySelector.scrollY || 0,
+                behavior: 'smooth'
+            })
+            dispatch(setOnScrollY(false))
+        }
+    }, [utilitySelector.onScrollY])
+
     return (
         <div className="flex h-screen flex-col">
             <AppSideBar
@@ -244,7 +263,7 @@ const AppIndex = () => {
             />
             <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5 bg-red-200">
                 <AppBreadcrumbs location={locationSelector.location} />
-                <div className="p-0 lg:p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md relative">
+                <div ref={refList} className="p-0 lg:p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md relative">
                     <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-0 md:p-4 lg:p-6 text-xs min-h-full flex-none shadow-md bg-red-200">
                         <Outlet />
                     </div>

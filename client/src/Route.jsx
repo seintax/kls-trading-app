@@ -56,7 +56,10 @@ const AppRoute = () => {
                     <Route path="/delivery" element={<DeliveryIndex />} />
                     <Route path="/inventory">
                         <Route index element={<InventoryIndex />} />
-                        <Route path="price-checker" element={<InventoryPrices />} />
+                    </Route>
+                    <Route path="/price-checker">
+                        <Route index element={<InventoryPrices />} />
+                        <Route path=":id" element={<InventoryPrices />} />
                     </Route>
                     <Route path="/stock-transfer" element={<TransferIndex />} />
                     <Route path="/receiving" element={<ReceivingRecords />} />

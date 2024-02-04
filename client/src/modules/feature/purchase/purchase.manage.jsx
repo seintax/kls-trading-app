@@ -11,6 +11,7 @@ import useYup from "../../../utilities/hooks/useYup"
 import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataInputs from "../../../utilities/interface/datastack/data.inputs"
 import FormEl from "../../../utilities/interface/forminput/input.active"
+import { setOnScrollY } from "../../../utilities/redux/slices/utilitySlice"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
 import { useFetchAllSupplierMutation } from "../../library/supplier/supplier.services"
@@ -204,6 +205,7 @@ const PurchaseManage = () => {
     const returnToList = useCallback(() => {
         dispatch(resetPurchaseManager())
         dispatch(resetReceivableCache())
+        dispatch(setOnScrollY(true))
     }, [])
 
     const printOrder = useCallback(() => {

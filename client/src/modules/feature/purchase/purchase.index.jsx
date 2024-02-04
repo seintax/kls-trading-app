@@ -156,9 +156,12 @@ const PurchaseIndex = () => {
     }
 
     return (
-        (dataSelector.manager) ? (
-            <PurchaseManage name={`${dataSelector.display.name} Order`} />
-        ) : (
+        <>
+            {
+                (dataSelector.manager) ? (
+                    <PurchaseManage name={`${dataSelector.display.name} Order`} />
+                ) : null
+            }
             <DataIndex
                 display={{
                     ...dataSelector.display,
@@ -172,10 +175,11 @@ const PurchaseIndex = () => {
                 isLoading={purchaseLoading || supplierLoading || branchLoading}
                 plain={true}
                 overrideLoading={true}
+                hideDisplay={dataSelector.manager}
             >
                 <PurchaseRecords isLoading={purchaseLoading || supplierLoading || branchLoading} />
             </DataIndex >
-        )
+        </>
     )
 }
 
