@@ -4,10 +4,12 @@ import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { longDate } from "../../../utilities/functions/datetime.functions"
 import { StrFn } from "../../../utilities/functions/string.functions"
+import useDelay from "../../../utilities/hooks/useDelay"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
+import { setLogged } from "../../../utilities/redux/slices/utilitySlice"
 import { setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
 import { useDeletePurchaseMutation } from "./purchase.services"
 
@@ -19,12 +21,17 @@ const PurchaseRecords = ({ isLoading }) => {
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
     const [sorted, setsorted] = useState()
+    const [active, setactive] = useState()
     const columns = dataSelector.header
     const toast = useToast()
+    const delay = useDelay()
 
     const [deletePurchase] = useDeletePurchaseMutation()
 
-    const toggleView = (item) => {
+    const toggleView = async (item, index) => {
+        dispatch(setLogged())
+        await delay.asyncDelay()
+        setactive(index)
         dispatch(setPurchaseItem(item))
         dispatch(showPurchaseManager())
     }
@@ -50,9 +57,9 @@ const PurchaseRecords = ({ isLoading }) => {
         return true
     }
 
-    const actions = (item) => {
+    const actions = (item, index) => {
         return [
-            { type: 'button', trigger: () => toggleView(item), label: 'View' },
+            { type: 'button', trigger: () => toggleView(item, index), label: 'View' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
     }
@@ -67,7 +74,7 @@ const PurchaseRecords = ({ isLoading }) => {
         return <span className="text-gray-300">{item.status}</span>
     }
 
-    const items = (item) => {
+    const items = (item, index) => {
         return [
             { value: item.supplier_name },
             { value: StrFn.formatWithZeros(item.id, 6) },
@@ -75,7 +82,7 @@ const PurchaseRecords = ({ isLoading }) => {
             { value: item.category },
             { value: defineStatus(item) },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
-            { value: <DataOperation actions={actions(item)} /> }
+            { value: <DataOperation actions={actions(item, index)} /> }
         ]
     }
 
@@ -92,11 +99,11 @@ const PurchaseRecords = ({ isLoading }) => {
                 ))
             }
             let data = sorted ? sortBy(temp, sorted) : temp
-            setrecords(data?.map((item, i) => {
+            setrecords(data?.map((item, index) => {
                 return {
                     key: item.id,
-                    items: items(item),
-                    ondoubleclick: () => { },
+                    items: items(item, index),
+                    onclick: () => { setactive() },
                 }
             }))
         }
@@ -112,6 +119,7 @@ const PurchaseRecords = ({ isLoading }) => {
                 setPage={setstartpage}
                 itemsperpage={dataSelector?.perpage}
                 loading={isLoading}
+                active={active}
             />
         </>
     )

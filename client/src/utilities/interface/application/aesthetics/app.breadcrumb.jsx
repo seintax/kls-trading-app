@@ -22,6 +22,9 @@ const AppBreadcrumbs = ({ location }) => {
     }, [location])
 
     const formatPageName = (name) => {
+        if (name?.toUpperCase()?.includes("JT-")) {
+            return name.toUpperCase()
+        }
         if (name?.includes("-")) {
             return name?.split("-")?.map(f => { return StrFn.properCase(f) })?.join(" ")
         }

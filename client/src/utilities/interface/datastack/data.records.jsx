@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { isEmpty } from "../../functions/string.functions"
 import DataPagination from "./data.pagination"
 
-const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading, total, fontsize = "sm" }) => {
+const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted, rowstyle, itemstyle, keeppagination, loading, total, fontsize = "sm", active }) => {
     const refList = useRef()
     const [data, setData] = useState()
     const [order, setOrder] = useState()
@@ -164,7 +164,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                         key={row?.key || rowindex}
                                         onClick={row?.onclick}
                                         onDoubleClick={row?.ondoubleclick}
-                                        className={`hover:bg-primary-200 transition ease-in-out duration-200 ${rowstyle}`}
+                                        className={`transition ease-in-out duration-200 ${index + rowindex === active ? "bg-primary-300" : "hover:bg-primary-200"} ${rowstyle}`}
                                     >
                                         <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
                                             {index + rowindex}.
@@ -178,8 +178,8 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                                         onClick={item?.onclick}
                                                         onDoubleClick={item?.ondoubleclick}
                                                     >
-                                                        <span className={`hidden lg:flex ${setPosition(order && order[itemindex]?.position, false)}`}>
-                                                            {item.value}
+                                                        <span className={`hidden lg:flex ${setPosition(order && order[itemindex]?.position, false)} ${item?.style}`}>
+                                                            {item?.value}
                                                         </span>
                                                         {
                                                             (itemindex === 0) ? (
@@ -193,7 +193,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                                                                 <dt className={`${col?.screenreader ? "hidden" : "flex"} w-1/2 flex-none text-gray-400 text-[10px] text-sm ${col.name ? "" : "hidden"}`}>
                                                                                     {col.name ? `${col.name}:` : ""}
                                                                                 </dt>
-                                                                                <dd className={`flex ${col?.screenreader ? "w-full" : "w-1/2"} flex-none text-gray-600 break-all`}>
+                                                                                <dd className={`flex ${col?.screenreader ? "w-full" : "w-1/2"} flex-none text-gray-600 break-all ${row.items[colindex]?.style}`}>
                                                                                     {row.items[colindex]?.value}
                                                                                 </dd>
                                                                             </div>

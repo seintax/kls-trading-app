@@ -51,6 +51,7 @@ const reports = {
     ),
     sales_collection: new Query("sales_collection", `
         SELECT
+            acct_store AS store,
             paym_type AS trans_type,
             paym_method AS payment_method,
             COUNT(paym_id) AS transaction_count,

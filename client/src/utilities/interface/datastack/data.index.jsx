@@ -7,12 +7,11 @@ import DataError from "./data.error"
 import DataLoading from "./data.loading"
 import DataNoRecord from "./data.norecord"
 
-const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, overrideLoading = false, isError, inputLink, filterArray, filterCallback, children, plain = false }) => {
+const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, overrideLoading = false, isError, inputLink, filterArray, filterCallback, children, plain = false, hideDisplay = false }) => {
     const location = useLocation()
     const dispatch = useDispatch()
 
     useEffect(() => {
-        // handleTrail(location?.pathname)
         dispatch(setLocationPath(location?.pathname))
     }, [location])
 
@@ -27,7 +26,7 @@ const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, ove
     }
 
     return (
-        <div className='flex flex-col w-full h-full'>
+        <div className={`flex flex-col w-full h-full ${hideDisplay ? "hidden" : ""}`}>
             <div className="sm:flex sm:items-center w-full">
                 <div className={display.show ? "sm:flex-auto no-select px-2" : "hidden"}>
                     <h1 className="text-2xl font-semibold text-gray-900 capitalize">{display.name.toUpperCase()}</h1>

@@ -56,6 +56,7 @@ const initialState = {
             { name: 'Stocks', stack: true, sort: 'stocks', size: 150 },
             { name: 'Acquisition', stack: true, sort: 'acquisition', size: 200 },
             { name: 'Branch', stack: true, sort: 'store', size: 200 },
+            { name: '', stack: false, screenreader: 'Action', size: 160 },
         ]
     },
     print: []

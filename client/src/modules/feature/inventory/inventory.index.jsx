@@ -122,7 +122,7 @@ const InventoryIndex = () => {
     })
 
     const priceChecker = useCallback(() => {
-        navigate("/inventory/price-checker")
+        navigate(`/price-checker/${currentBranch}`)
     })
 
     const actions = () => {

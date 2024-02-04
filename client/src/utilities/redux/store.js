@@ -38,6 +38,7 @@ import authReducer from './slices/authSlice'
 import deleteReducer from "./slices/deleteSlice"
 import locateReducer from "./slices/locateSlice"
 import searchReducer from "./slices/searchSlice"
+import utilityReducer from "./slices/utilitySlice"
 
 const store = configureStore({
     reducer: {
@@ -45,6 +46,7 @@ const store = configureStore({
         auth: authReducer,
         search: searchReducer,
         locate: locateReducer,
+        utility: utilityReducer,
         deleteModal: deleteReducer,
         account: accountReducer,
         branch: branchReducer,

@@ -129,15 +129,19 @@ inventory.register("inventory_by_product_variant",
     SELECT 
         REPLACE(CONCAT(prod_name, ' ', IFNULL(vrnt_serial,''), ' ', IFNULL(vrnt_model,''), ' ', IFNULL(vrnt_brand,'')), '  ', ' ') AS inventory,
         invt_cost AS cost,
-        invt_price AS price
+        invt_price AS price,
+        invt_store AS store,
+        invt_product AS product,
+        invt_variant AS variant
     FROM pos_stock_inventory 
     LEFT JOIN pos_stock_masterlist
         ON prod_id=invt_product
     LEFT JOIN lib_variant
         ON vrnt_id=invt_variant
     WHERE
-        CONCAT(prod_name, ' ', IFNULL(vrnt_serial,''), ' ', IFNULL(vrnt_model,''), ' ', IFNULL(vrnt_brand,'')) LIKE '%@search%'
-    GROUP BY inventory,invt_cost,invt_price,invt_product,invt_variant
+        CONCAT(prod_name, ' ', IFNULL(vrnt_serial,''), ' ', IFNULL(vrnt_model,''), ' ', IFNULL(vrnt_brand,'')) LIKE '%@search%' AND invt_store LIKE '%@store%'
+    GROUP BY inventory,invt_cost,invt_price,invt_product,invt_variant,invt_store
+    ORDER BY inventory,invt_cost,invt_price
     `)
 
 module.exports = inventory

@@ -48,12 +48,13 @@ const _record = handler(async (req, res) => {
 
 const _branch = handler(async (req, res) => {
     const { branch } = getstocks.parameters(req.query)
-    const { acquisition, store, stocks, id } = getstocks.fields
+    const { acquisition, store, stocks, id, cost } = getstocks.fields
+    const { product_name, variant_serial, variant_model, variant_brand } = getstocks.included
     // let params = [p(branch).Contains(), "0", "PROCUREMENT", "TRANSFER", "MIGRATION"]
     // let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", "", ""])]
-    let params = [p(branch).Contains(), "0"]
-    let clause = [f(store).Like(), f(stocks).Greater()]
-    let series = [f(id).Asc()]
+    let params = [p(branch).Contains(), "0", (acquisition).Either(["PROCUREMENT", "TRANSFER", "MIGRATION"])]
+    let clause = [f(store).Like(), f(stocks).Greater(),]
+    let series = [f(product_name).Asc(), f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc(), f(cost).Asc()]
     let limits = undefined
     const builder = getstocks.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
@@ -154,11 +155,11 @@ const byItem = handler(async (req, res) => {
 
 const byStockRecord = handler(async (req, res) => {
     const param = getstocks.parameters(req.query)
-    const { product, variant, store, id } = getstocks.fields
+    const { product, variant, store, id, acquisition } = getstocks.fields
     let params = [p(param.product).Exactly(), p(param.variant).Exactly(), p(param.branch).Exactly()]
-    let clause = [f(product).IsEqual(), f(variant).IsEqual(), f(store).IsEqual()]
-    let series = [f(id).Desc()]
-    let limits = 1
+    let clause = [f(product).IsEqual(), f(variant).IsEqual(), f(store).IsEqual(), f(acquisition).Either(["MIGRATION", "TRANSFER", "PROCUREMENT"])]
+    let series = [f(id).Asc()]
+    let limits = undefined
     const builder = getstocks.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
@@ -169,7 +170,10 @@ const byStockRecord = handler(async (req, res) => {
 const byPriceCheck = handler(async (req, res) => {
     const sql = helper
         .statement("inventory_by_product_variant")
-        .inject({ search: req.query.search })
+        .inject({
+            search: req.query.search,
+            store: req.query.branch
+        })
     const builder = helper.format(sql)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))

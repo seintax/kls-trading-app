@@ -100,7 +100,7 @@ dispensing.register('dispensing_stock_audit',
     `
     SELECT 
         invt_store AS branch,
-        sale_trans AS reference,
+        CONCAT(sale_trans,IF(sale_returned>0,CONCAT(' (Returned: ',REPLACE(sale_returned,'.00',''),')'),'')) AS reference,
         (sale_time + INTERVAL 8 HOUR) AS time,
         sale_dispense AS quantity
     FROM 
