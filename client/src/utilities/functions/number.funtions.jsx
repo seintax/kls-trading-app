@@ -9,6 +9,12 @@ const currencyFormat = new Intl.NumberFormat('en-PH', {
     currency: 'PHP',
 })
 
+const floatFormat = new Intl.NumberFormat('en-PH', {
+    style: 'decimal',
+    currency: 'PHP',
+    minimumFractionDigits: 8
+})
+
 const randomInRange = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -35,6 +41,10 @@ export const currency = (value) => {
     return currencyFormat.format(amount(value) || 0).replace("₱", "")
 }
 
+export const float = (value) => {
+    return floatFormat.format(amount(value) || 0).replace("₱", "")
+}
+
 const percent = (value) => {
     return `${decimalFormat.format(amount(value || 0) * 100)}%`
 }
@@ -52,6 +62,10 @@ const acctgCurrency = (value) => {
     return value ? decimalFormat.format(amount(value) || 0) : "-"
 }
 
+const acctgFloat = (value) => {
+    return value ? floatFormat.format(amount(value) || 0) : "-"
+}
+
 const acctgPercent = (value) => {
     return value ? `${Number(decimalFormat.format(amount(value || 0) * 100))?.toFixed(2)}%` : "-"
 }
@@ -59,12 +73,14 @@ const acctgPercent = (value) => {
 const Utils = {
     amount,
     currency,
+    float,
     percent,
     ordinal,
     randomInRange,
     acctg: {
         amount: acctgAmount,
         currency: acctgCurrency,
+        float: acctgFloat,
         percent: acctgPercent,
         number: acctgNumber,
     }

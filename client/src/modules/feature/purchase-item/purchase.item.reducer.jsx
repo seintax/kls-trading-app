@@ -17,7 +17,7 @@ const initialState = {
             { name: 'Variant', stack: false, sort: 'variant', size: 250 },
             { name: 'Requested', stack: false, sort: 'ordered', size: 250 },
             { name: 'Received', stack: false, sort: 'received', size: 250 },
-            { name: 'Cost', stack: false, sort: 'costing', size: 250 },
+            { name: 'Cost', stack: false, sort: 'rawcost', size: 250 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     },

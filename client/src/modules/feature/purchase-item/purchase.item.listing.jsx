@@ -100,7 +100,7 @@ const ReceivableListing = () => {
             { value: item.product_name, subtext: cleanDisplay(`${item.variant_serial}/${item.variant_model}/${item.variant_brand}`) },
             { value: item.ordered, subtext: "Quantity" },
             { value: item.received, subtext: "Received" },
-            { value: NumFn.currency(item.costing), subtext: "Costing" },
+            { value: NumFn.float(item.rawcost), subtext: "Costing" },
         ]
     }
 

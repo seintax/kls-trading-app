@@ -143,11 +143,14 @@ CREATE TABLE pos_purchase_order (
     pord_order_total    decimal(10,2) DEFAULT 0,
     pord_request_total  decimal(10,2) DEFAULT 0,
     pord_received_total decimal(10,2) DEFAULT 0 COMMENT 'running total',
+    pord_raw_total      decimal(50,8) DEFAULT 0 COMMENT 'order total',
     pord_progress       varchar(30),
     pord_status         varchar(30) DEFAULT 'PENDING',
     pord_expected       date,
     pord_by             int
 );
+
+ALTER TABLE pos_purchase_order ADD COLUMN pord_raw_total decimal(50,8) DEFAULT 0 COMMENT 'order total' AFTER pord_received_total;
 
 DROP TABLE pos_purchase_receivable;
 CREATE TABLE pos_purchase_receivable (
@@ -156,10 +159,13 @@ CREATE TABLE pos_purchase_receivable (
     rcvb_product     int,
     rcvb_variant     int,
     rcvb_costing     decimal(30,2),
+    rcvb_rawcost     decimal(50,8),
     rcvb_ordered     decimal(10,2),
     rcvb_balance     decimal(10,2) DEFAULT 0,
     rcvb_received    decimal(10,2) DEFAULT 0
 );
+
+ALTER TABLE pos_purchase_receivable ADD COLUMN rcvb_rawcost decimal(50,8) AFTER rcvb_costing;
 
 DROP TABLE pos_purchase_billing;
 CREATE TABLE pos_purchase_billing (

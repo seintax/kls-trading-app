@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { longDate } from "../../../utilities/functions/datetime.functions"
+import { NumFn } from "../../../utilities/functions/number.funtions"
 import { StrFn } from "../../../utilities/functions/string.functions"
 import useDelay from "../../../utilities/hooks/useDelay"
 import useToast from "../../../utilities/hooks/useToast"
@@ -81,7 +82,13 @@ const PurchaseRecords = ({ isLoading }) => {
             { value: longDate(item.date) },
             { value: item.category },
             { value: defineStatus(item) },
-            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
+            { value: NumFn.acctg.float(item.rawtotal) },
+            {
+                value:
+                    <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">
+                        {item.store}
+                    </span>
+            },
             { value: <DataOperation actions={actions(item, index)} /> }
         ]
     }

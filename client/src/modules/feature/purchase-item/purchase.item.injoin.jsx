@@ -217,7 +217,23 @@ const ReceivableInjoin = () => {
         dispatch(resetReceivableInjoiner())
     }
 
+    const validCost = (cost) => {
+        const strCost = String(cost)
+        if (strCost?.includes(".")) {
+            const parsedCost = strCost?.split(".")
+            if (parsedCost[1].length > 8) {
+                return false
+            }
+            return true
+        }
+        return true
+    }
+
     const onSubmit = async (data) => {
+        if (!validCost(data.cost)) {
+            toast.showWarning("Allowed decimal places for cost is upto 8.")
+            return
+        }
         if (!purchaseSelector.item.id) return
         let formData = {
             receivable: {
@@ -225,6 +241,7 @@ const ReceivableInjoin = () => {
                 product: data.product,
                 variant: data.variety,
                 costing: data.costing,
+                rawcost: data.costing,
                 ordered: data.ordered,
                 balance: data.ordered,
                 id: dataSelector.item.id
