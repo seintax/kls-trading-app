@@ -20,6 +20,7 @@ const initialState = {
             { name: 'PO Date', stack: false, sort: 'date', size: 150 },
             { name: 'Category', stack: true, sort: 'category', size: 180 },
             { name: 'Status', stack: true, sort: 'status', size: 120 },
+            { name: 'Total', stack: true, sort: 'rawtotal', size: 120, position: 'right' },
             { name: '', stack: true, sort: 'store', size: 180, position: 'right' },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]

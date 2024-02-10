@@ -6,6 +6,7 @@ const receivable = new Table("pos_purchase_receivable", {
     product: 'rcvb_product',
     variant: 'rcvb_variant',
     costing: 'rcvb_costing',
+    rawcost: 'rcvb_rawcost',
     ordered: 'rcvb_ordered',
     balance: 'rcvb_balance',
     received: 'rcvb_received',

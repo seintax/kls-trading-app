@@ -156,9 +156,9 @@ const InventoryPrices = () => {
                         itemsperpage={150}
                     />
                 ) : (
-                    <div className="flex justify-center items-center w-full h-full">
+                    <div className="flex justify-center items-center w-full h-full px-2">
                         <div className="flex flex-col gap-2 text-lg h-32 mb-20">
-                            <span>Search for a product name and variant:</span>
+                            <span className="text-sm lg:text-xl">Search for a product name and variant:</span>
                             <div className="flex items-center justify-center relative">
                                 <input
                                     type="text"
@@ -167,7 +167,7 @@ const InventoryPrices = () => {
                                     placeholder="Product name, variant"
                                     className="w-full"
                                 />
-                                <button className="button-submit absolute right-[2px]" onClick={() => toggleSearch()}>
+                                <button className="button-inner absolute right-[2px]" onClick={() => toggleSearch()}>
                                     <MagnifyingGlassIcon className="h-5 w-5" />
                                 </button>
                             </div>

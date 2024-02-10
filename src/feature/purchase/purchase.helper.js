@@ -11,6 +11,7 @@ const purchase = new Table("pos_purchase_order", {
     ordertotal: 'pord_order_total',
     requesttotal: 'pord_request_total',
     receivedtotal: 'pord_received_total',
+    rawtotal: 'pord_raw_total',
     progress: 'pord_progress',
     status: 'pord_status',
     expected: 'pord_expected',
@@ -57,6 +58,11 @@ purchase.register("purchase_update_receivable",
                 FROM pos_purchase_receivable 
                 WHERE rcvb_purchase=pord_id 
             )  
+        pord_raw_total=(
+                SELECT IFNULL(SUM(rcvb_rawcost),0) 
+                FROM pos_purchase_receivable 
+                WHERE rcvb_purchase=pord_id 
+            )
         WHERE pord_id=@id`)
 
 purchase.register("purchase_update_status",
