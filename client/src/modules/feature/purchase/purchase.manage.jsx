@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { longDate, sqlDate } from "../../../utilities/functions/datetime.functions"
+import { NumFn } from "../../../utilities/functions/number.funtions"
 import { StrFn, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
@@ -90,6 +91,7 @@ const PurchaseManage = () => {
                 store: init(item.store),
                 category: init(item.category),
                 supplier: init(item.supplier),
+                rawtotal: init(item.rawtotal),
                 by: init(item.by || auth.id)
             })
         }
@@ -271,6 +273,11 @@ const PurchaseManage = () => {
                                 <FormEl.Item
                                     label="Category"
                                     value={provideValueFromLib(libCategories, dataSelector?.item?.category)}
+                                    style="text-sm lg:w-1/2"
+                                />
+                                <FormEl.Item
+                                    label="Total"
+                                    value={NumFn.acctg.float(dataSelector?.item?.rawtotal)}
                                     style="text-sm lg:w-1/2"
                                 />
                                 <div className="w-full">

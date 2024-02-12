@@ -96,7 +96,7 @@ const ReceivableInjoin = () => {
                 product: init(item.product),
                 variety: init(item.variant),
                 ordered: init(item.ordered, 0),
-                costing: init(item.costing, 0),
+                costing: init(item.rawcost, 0),
             })
         }
     }, [dataSelector.injoiner.show, instantiated, cacheVariants])
@@ -177,7 +177,7 @@ const ReceivableInjoin = () => {
                     autoComplete='off'
                     wrapper='lg:w-1/2'
                 />
-                <FormEl.Currency
+                <FormEl.Float
                     label='Purchase Cost'
                     register={register}
                     name='costing'
@@ -231,7 +231,7 @@ const ReceivableInjoin = () => {
 
     const onSubmit = async (data) => {
         if (!validCost(data.cost)) {
-            toast.showWarning("Allowed decimal places for cost is upto 8.")
+            toast.showWarning("Allowed decimal places for cost is upto 8th only.")
             return
         }
         if (!purchaseSelector.item.id) return

@@ -21,6 +21,7 @@ import Decimal from "./input.decimal"
 import Display from "./input.display"
 import Email from "./input.email"
 import File from "./input.file"
+import Float from "./input.float"
 import Group from "./input.group"
 import Item from "./input.item"
 import Listbox from "./input.listbox"
@@ -38,6 +39,7 @@ const FormEl = {
     Currency,
     Date,
     Decimal,
+    Float,
     Display,
     Email,
     File,
