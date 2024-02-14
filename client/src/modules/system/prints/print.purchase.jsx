@@ -77,8 +77,8 @@ const PrintPurchase = () => {
                     <div className="w-full flex font-bold border-b border-b-black py-2">
                         <div className="w-full">Item Name</div>
                         <div className="w-[300px] text-right">Quantity</div>
-                        <div className="w-[300px] text-right">Cost</div>
-                        <div className="w-[300px] text-right">Amount</div>
+                        <div className="w-[500px] text-right">Cost</div>
+                        <div className="w-[500px] text-right">Amount</div>
                     </div>
                     {
                         records?.map((item) => (
@@ -88,16 +88,16 @@ const PrintPurchase = () => {
                                     <span className="text-gray-500 text-xs">{item.variant_serial}/{item.variant_model}/{item.variant_brand}</span>
                                 </div>
                                 <div className="w-[300px] text-right">{item.ordered}</div>
-                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.costing)}</div>
-                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.ordered * item.costing)}</div>
+                                <div className="w-[500px] text-right">{NumFn.acctg.float(item.rawcost)}</div>
+                                <div className="w-[500px] text-right">{NumFn.acctg.float(item.ordered * item.rawcost)}</div>
                             </div>
                         ))
                     }
                     <div className="w-full flex font-bold border-t border-t-black py-2 mt-2">
                         <div className="w-full">&nbsp;</div>
                         <div className="w-[300px] text-right">&nbsp;</div>
-                        <div className="w-[300px] text-right font-bold">Total</div>
-                        <div className="w-[300px] text-right">{NumFn.acctg.currency(records?.reduce((prev, curr) => prev + ((curr.ordered || 0) * (curr.costing || 0)), 0))}</div>
+                        <div className="w-[500px] text-right font-bold">Total</div>
+                        <div className="w-[500px] text-right">{NumFn.acctg.float(records?.reduce((prev, curr) => prev + ((curr.ordered || 0) * (curr.rawcost || 0)), 0))}</div>
                     </div>
                 </div>
             </div>
