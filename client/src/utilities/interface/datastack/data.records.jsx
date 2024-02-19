@@ -11,6 +11,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
     const [order, setOrder] = useState()
     const [pages, setPages] = useState(1)
     const [index, setIndex] = useState(0)
+    const [cachedOrder, setCachedOrder] = useState()
 
     useEffect(() => {
         setOrder(columns?.items?.map(col => {
@@ -28,12 +29,14 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
         }
     }, [records, page, fontsize])
 
-    const sortcallback = (index, column) => {
+    const sortcallback = (index) => {
+        let sortedcolumns = cachedOrder ?? order
+        let column = sortedcolumns[index]
         if (column.sort && setsorted) {
-            setsorted({ prop: column.sort, desc: column.order !== "asc" })
-            let neworder = column.order === "desc" || column.order === "unsorted" ? "asc" : "desc"
-            let sortedcolumns = [...order]
+            let neworder = column.order !== "desc" ? "desc" : "asc"
             sortedcolumns[index].order = neworder
+            setsorted({ prop: column.sort, desc: neworder !== "asc" })
+            setCachedOrder(sortedcolumns)
             setOrder(sortedcolumns)
         }
     }
@@ -86,14 +89,14 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                 (order?.length) ? (
                                     order?.map((col, colindex) => (
                                         <th
-                                            key={colindex}
+                                            key={`${col.name}${colindex}`}
                                             scope="col"
                                             className={`${col.stack ? "hidden lg:table-cell" : "hidden md:table-cell"} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left ${preferredFont(fontsize)} font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
                                             style={{ width: `${col.size}px` || "300px" }}
                                         >
                                             <div
                                                 className={`w-full flex items-center ${setPosition(col.position)} gap-[10px] group ${col.sort ? "cursor-pointer" : ""}`}
-                                                onClick={() => sortcallback(colindex, col)}
+                                                onClick={() => sortcallback(colindex)}
                                             >
                                                 <span className="hidden lg:flex">{col.name}</span>
                                                 <span className={`flex lg:hidden ${col.name ? "" : "hidden"}`}>{col.name ? col.name : "Details"}</span>
