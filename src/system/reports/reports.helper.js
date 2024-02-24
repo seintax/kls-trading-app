@@ -226,7 +226,8 @@ const reports = {
                         ON
                             invt_product='@product' AND
                             invt_variant='@variant' AND
-                            invt_cost='@cost' AND
+                            invt_cost='@cost' AND                            
+                            invt_price='@price' AND
                             invt_store=stre_code 
         WHERE
             stre_code<>'JT-TESTING'
@@ -244,6 +245,7 @@ const reports = {
             invt_product AS productid,
             invt_variant AS variantid,
             invt_cost AS cost,
+            invt_price AS price,
             SUM(invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) AS stocks,
             SUM((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0)) AS value,
             SUM((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * invt_price) AS retail,
@@ -262,6 +264,7 @@ const reports = {
                             sale_product, 
                             sale_variant, 
                             invt_cost AS sale_cost,
+                            invt_price AS sale_price,
                             SUM(sale_dispense) AS dispensed
                         FROM 
                             pos_sales_dispensing,
@@ -270,17 +273,19 @@ const reports = {
                             sale_item=invt_id AND 
                             (sale_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
                             invt_store='@store'
-                        GROUP BY sale_product,sale_variant,invt_cost
+                        GROUP BY sale_product,sale_variant,invt_cost,invt_price
                     ) b 
                         ON b.sale_product=a.invt_product AND 
                         b.sale_variant=a.invt_variant AND
-                        b.sale_cost=a.invt_cost
+                        b.sale_cost=a.invt_cost AND
+                        b.sale_price=a.invt_price
                 LEFT JOIN 
                     (
                         SELECT 
                             rsal_product, 
                             rsal_variant, 
                             invt_cost AS rsal_cost,
+                            invt_price AS rsal_price,
                             SUM(rsal_quantity) AS returned
                         FROM 
                             pos_return_dispensing,
@@ -289,17 +294,19 @@ const reports = {
                             rsal_item=invt_id AND 
                             (rsal_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
                             invt_store='@store'
-                        GROUP BY rsal_product,rsal_variant,rsal_cost
+                        GROUP BY rsal_product,rsal_variant,rsal_cost,invt_price
                     ) c 
                         ON c.rsal_product=invt_product AND 
                         c.rsal_variant=invt_variant AND 
-                        c.rsal_cost=invt_cost
+                        c.rsal_cost=invt_cost AND
+                        c.rsal_price=invt_price
                 LEFT JOIN 
                     (
                         SELECT 
                             trni_product, 
                             trni_variant,
                             invt_cost AS trni_cost,
+                            invt_price AS trni_price,
                             SUM(trni_quantity) AS transfered
                         FROM 
                             pos_transfer_receipt,
@@ -308,17 +315,18 @@ const reports = {
                             trni_item=invt_id AND                                 
                             (trni_time + INTERVAL 8 HOUR) > '@asof 23:59:59' AND 
                             invt_store='@store'
-                        GROUP BY trni_product,trni_variant,trni_cost
+                        GROUP BY trni_product,trni_variant,trni_cost,invt_price
                     ) d 
                         ON d.trni_product=invt_product AND 
                         d.trni_variant=invt_variant AND 
-                        d.trni_cost=invt_cost
+                        d.trni_cost=invt_cost AND
+                        d.trni_price=invt_price
         WHERE 
             invt_store LIKE '%@store%' AND
             invt_category LIKE '%@category%' AND
             (invt_time + INTERVAL 8 HOUR) < '@asof 23:59:59'
-        GROUP BY inventory,invt_cost,invt_product,invt_variant,dispensed
-        ORDER BY inventory,invt_cost,invt_product,invt_variant;
+        GROUP BY inventory,invt_cost,invt_price,invt_product,invt_variant,dispensed
+        ORDER BY inventory,invt_cost,invt_price,invt_product,invt_variant;
         `
     ),
     inventory_report: new Query("inventory_report", `

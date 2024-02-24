@@ -81,12 +81,13 @@ const InventoryIndex = () => {
                             }), { prop: "id", desc: true }))
                         }
                         if (isDev(auth) || isAdmin(auth)) {
-                            setLibBranches(res?.arrayResult.map(item => {
+                            setLibBranches(sortBy(res?.arrayResult?.map(item => {
                                 return {
+                                    id: item.code === 'JT-TESTING' ? 99 : Number(item.id),
                                     key: item.name,
                                     value: item.code
                                 }
-                            }))
+                            }), { prop: "id", desc: false }))
                         }
                     }
                 })
