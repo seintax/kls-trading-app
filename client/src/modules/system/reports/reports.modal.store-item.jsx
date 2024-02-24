@@ -17,7 +17,8 @@ const ReportsModalStoreItem = () => {
         await storeItem({
             product: reportSelector.inventory.productid,
             variant: reportSelector.inventory.variantid,
-            cost: reportSelector.inventory.cost
+            cost: reportSelector.inventory.cost,
+            price: reportSelector.inventory.price,
         })
             .unwrap()
             .then(res => {
@@ -70,6 +71,14 @@ const ReportsModalStoreItem = () => {
                                 <span className="font-semibold">Cost</span>
                                 <span className="font-semibold">
                                     {currency(reportSelector.inventory.cost)}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex flex-col">
+                            <div className="flex justify-between">
+                                <span className="font-semibold">Price</span>
+                                <span className="font-semibold">
+                                    {currency(reportSelector.inventory.price)}
                                 </span>
                             </div>
                         </div>

@@ -102,7 +102,8 @@ const by_store_item = handler(async (req, res) => {
     const sql = helper.by_store_item.inject({
         product: req.query.product,
         variant: req.query.variant,
-        cost: req.query.cost
+        cost: req.query.cost,
+        price: req.query.price,
     })
     await mysqlpool.query(sql, (err, ans) => {
         if (err) return res.status(401).json(force(err))
