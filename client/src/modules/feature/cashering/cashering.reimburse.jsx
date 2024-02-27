@@ -157,6 +157,14 @@ const CasheringReimburse = () => {
             toast.showError("This transaction cannot detect an ongoing credit.")
             return
         }
+        if (creditBalance < 0) {
+            toast.showError("You have exceeded the allowed credit amount to process.")
+            return
+        }
+        if (cashBalance < 0) {
+            toast.showError("You have exceeded the allowed amount to reimburse.")
+            return
+        }
         setIsSubmitting(true)
         let hasReturn = dispensingSelector?.data?.filter(f => f.toreturn > 0).length > 0
         if (hasReturn) {
@@ -289,6 +297,9 @@ const CasheringReimburse = () => {
         }
     }
 
+    const cashBalance = total - (payments?.reduce((prev, curr) => prev + amount(curr.applyamt || 0), 0) + amount(credit))
+    const creditBalance = amount(creditSelector?.item?.outstand) - amount(credit)
+
     return (
         <Transition
             show={dataSelector.manager}
@@ -347,7 +358,7 @@ const CasheringReimburse = () => {
                                 <div className="flex border border-white border-b-secondary-500 p-0.5 items-center">
                                     <input
                                         type="text"
-                                        value={NumFn.currency(total - (payments?.reduce((prev, curr) => prev + amount(curr.applyamt || 0), 0) + amount(credit)))}
+                                        value={NumFn.currency(cashBalance)}
                                         autoComplete="off"
                                         readOnly
                                         className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
@@ -360,7 +371,7 @@ const CasheringReimburse = () => {
                             <div className="flex border border-white border-b-secondary-500 p-0.5 items-center">
                                 <input
                                     type="text"
-                                    value={NumFn.currency(amount(creditSelector?.item?.outstand) - amount(credit))}
+                                    value={NumFn.currency(creditBalance)}
                                     autoComplete="off"
                                     readOnly
                                     className="w-full border-none focus:border-none outline-none ring-0 focus:ring-0 focus:outline-none grow-1"
@@ -432,7 +443,7 @@ const CasheringReimburse = () => {
                         </div> */}
                         <div className="flex justify-end mt-5 gap-2">
                             <button type="button" tabIndex={-1} className="button-cancel" onClick={() => onClose()}>Cancel</button>
-                            <button type="submit" className="button-submit" disabled={isSubmitting}>
+                            <button type="submit" className="button-submit" disabled={cashBalance < 0 || creditBalance < 0 || isSubmitting}>
                                 Add Option
                             </button>
                         </div>

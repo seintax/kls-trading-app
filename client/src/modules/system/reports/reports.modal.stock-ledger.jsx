@@ -105,6 +105,7 @@ const ReportsModalStockLedger = () => {
     }
 
     useEffect(() => {
+        console.log(dispensingrecord)
         const consolidatedData = [...injectType(returnedrecord, "Return"), ...injectType(adjustmentrecord, "Adjustment"), ...injectType(dispensingrecord, "Sold"), ...injectType(transmitrecord, "Goods out")]
             ?.sort((a, b) => new Date(a.time) - new Date(b.time))
         setTimeLine(consolidatedData)
@@ -213,9 +214,17 @@ const ReportsModalStockLedger = () => {
 
                                     {NumFn.acctg.number(reportSelector.inventory.adjustment)}
                                 </span>
-                                <span className="flex justify-between font-semibold w-[600px] text-right">
-                                    <span className="ml-8 text-gray-500">({totalIn})</span>
+                                <span className="font-semibold w-[600px] text-right">
                                     {NumFn.acctg.currency(stockCost * reportSelector.inventory.adjustment)}
+                                </span>
+                            </div>
+                            <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
+                            <div className="flex justify-between">
+                                <span className="font-semibold w-full">Total In</span>
+                                <span className="font-semibold w-[300px] text-right">
+                                    {totalIn}
+                                </span>
+                                <span className="font-semibold w-[600px] text-right">
                                 </span>
                             </div>
                             <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
@@ -252,9 +261,17 @@ const ReportsModalStockLedger = () => {
 
                                     {NumFn.acctg.number(reportSelector.inventory.deducted)}
                                 </span>
-                                <span className="flex justify-between font-semibold w-[600px] text-right">
-                                    <span className="ml-8 text-gray-500">({totalOut})</span>
+                                <span className="ffont-semibold w-[600px] text-right">
                                     {NumFn.acctg.currency(stockCost * reportSelector.inventory.deducted)}
+                                </span>
+                            </div>
+                            <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
+                            <div className="flex justify-between">
+                                <span className="font-semibold w-full">Total Out</span>
+                                <span className="font-semibold w-[300px] text-right">
+                                    {totalOut}
+                                </span>
+                                <span className="font-semibold w-[600px] text-right">
                                 </span>
                             </div>
                             <hr className="w-full bg-gray-400 text-gray-400 h-0.5" />
@@ -264,8 +281,8 @@ const ReportsModalStockLedger = () => {
 
                                     {NumFn.acctg.number(reportSelector.inventory.endbalance)}
                                 </span>
-                                <span className="flex justify-between font-semibold w-[600px] text-right">
-                                    <span className="ml-8 text-gray-500">({balance})</span>
+                                <span className="font-semibold w-[600px] text-right">
+                                    {/* <span className="ml-8 text-gray-500">({balance})</span> */}
                                     {NumFn.acctg.currency(stockCost * (reportSelector.inventory.endbalance))}
                                 </span>
                             </div>
