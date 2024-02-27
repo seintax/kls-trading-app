@@ -591,3 +591,15 @@ DELETE FROM pos_delivery_request;
 DELETE FROM pos_stock_price;
 DELETE FROM pos_transfer_receipt;
 DELETE FROM pos_transfer_request;
+
+-- Reverting Returns
+
+UPDATE pos_sales_dispensing SET sale_dispense=1,sale_vat=1740,sale_total=14500,sale_markdown=1500,sale_net=13000,sale_returned=0 WHERE sale_trans='20240227-00003-000250';
+
+UPDATE pos_sales_credit SET cred_balance=13000,cred_returned=0,cred_outstand=13000,cred_status='ON-GOING' WHERE cred_trans='20240227-00003-000250';
+
+UPDATE pos_sales_transaction SET trns_vat=1740,trns_total=14500,trns_markdown=1500,trns_net=13000,trns_return=0 WHERE  trns_code='20240227-00003-000250';
+
+DELETE FROM pos_return_transaction WHERE rtrn_trans='20240227-00003-000250';
+
+DELETE FROM pos_return_dispensing WHERE rsal_trans='20240227-00003-000250';
