@@ -87,7 +87,7 @@ const CreditLedger = () => {
 
     return (
 
-        <div className="w-full">
+        <div className="flex flex-col w-full h-full">
             <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4 mb-10">
                 <ArrowLeftIcon
                     className="w-6 h-6 cursor-pointer"
