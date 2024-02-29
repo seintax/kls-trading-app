@@ -48,7 +48,7 @@ const _record = handler(async (req, res) => {
 
 const _branch = handler(async (req, res) => {
     const { branch } = getstocks.parameters(req.query)
-    const { acquisition, store, stocks, id, cost } = getstocks.fields
+    const { acquisition, store, stocks, cost } = getstocks.fields
     const { product_name, variant_serial, variant_model, variant_brand } = getstocks.included
     // let params = [p(branch).Contains(), "0", "PROCUREMENT", "TRANSFER", "MIGRATION"]
     // let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", "", ""])]

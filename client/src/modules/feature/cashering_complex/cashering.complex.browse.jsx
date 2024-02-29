@@ -22,7 +22,8 @@ const CasheringComplexBrowse = () => {
     useEffect(() => {
         const instantiate = async () => {
             if (categorySelector.data.length === 0) {
-                await allBrowser({ branch: forBranch(auth) })
+                const branch = forBranch(auth)
+                await allBrowser({ branch: branch ? branch : 'JT-MAIN' })
                     .unwrap()
                     .then(res => {
                         if (res.success) {

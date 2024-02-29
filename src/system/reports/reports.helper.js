@@ -150,7 +150,7 @@ const reports = {
         SELECT
             DATE(trns_time + INTERVAL 8 HOUR) AS day,
             SUM(trns_total) AS gross_sales,
-            SUM(trns_less + trns_markdown + IFNULL(rtrn_r_less,0) + IFNULL(rtrn_r_markdown,0)) AS discounts,
+            SUM(trns_less + trns_markdown + IFNULL(rtrn_discount,0)) AS discounts,
             SUM(trns_net) AS net_sales,
             SUM(IF(trns_method='CREDIT', trns_net - trns_partial, 0)) AS credit_sales,
             SUM(trns_partial) AS partial,
@@ -198,13 +198,18 @@ const reports = {
                         rtrn_p_total,
                         rtrn_p_less,
                         rtrn_p_markdown,
-                        rtrn_p_net,
-                        rtrn_r_less,
-                        rtrn_r_markdown,
-                        MIN(rtrn_id)
+                        rtrn_p_net
                     FROM pos_return_transaction 
-                    GROUP BY rtrn_trans,rtrn_p_total,rtrn_p_less,rtrn_p_markdown,rtrn_p_net,rtrn_r_less,rtrn_r_markdown
-                ) a ON a.rtrn_trans=trns_code,
+                    GROUP BY rtrn_trans,rtrn_p_total,rtrn_p_less,rtrn_p_markdown,rtrn_p_net
+                ) a ON a.rtrn_trans=trns_code
+                LEFT JOIN (
+                    SELECT 
+                        rtrn_trans,
+                        SUM(rtrn_r_less + rtrn_r_markdown) AS rtrn_discount
+                    FROM pos_return_transaction 
+                    WHERE DATE(rtrn_time + INTERVAL 8 HOUR)>'@to 23:59:59'
+                    GROUP BY rtrn_trans
+                ) b ON b.rtrn_trans=trns_code,
             sys_account
         WHERE 
             trns_account=acct_id AND 
