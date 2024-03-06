@@ -12,7 +12,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from "../../../utilities/interface/datastack/data.operation"
 import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { useByCodeDispensingMutation, useByCodeReturnedMutation } from "../browser/browser.services"
-import { resetCreditItem, setCreditItem } from "../credit/credit.reducer"
+import { resetCreditItem, setCreditItem, setCreditNotifier } from "../credit/credit.reducer"
 import { useByFirstCreditMutation, useByOngoingCreditMutation } from "../credit/credit.services"
 import CasheringLedgerPurchase from "./cashering.ledger.purchase"
 import CasheringLedgerReturned from "./cashering.ledger.returned"
@@ -88,14 +88,14 @@ const CasheringLedger = () => {
                     }
                 })
                 .catch(err => console.error(err))
-            await firstCredit({ code: dataSelector.item.code })
-                .unwrap()
-                .then(res => {
-                    if (res.success) {
-                        setCredits(res.distinctResult.data.length === 1 ? res.distinctResult.data[0] : undefined)
-                    }
-                })
-                .catch(err => console.error(err))
+            // await firstCredit({ code: dataSelector.item.code })
+            //     .unwrap()
+            //     .then(res => {
+            //         if (res.success) {
+            //             setCredits(res.distinctResult.data.length === 1 ? res.distinctResult.data[0] : undefined)
+            //         }
+            //     })
+            //     .catch(err => console.error(err))
             return
         }
         if (dataSelector.item.code || dispensingSelector.notifier || returnedSelector.notifier) {
@@ -104,7 +104,7 @@ const CasheringLedger = () => {
     }, [dataSelector.item.code, dispensingSelector.notifier, returnedSelector.notifier])
 
     useEffect(() => {
-        if (dataSelector.ledger) {
+        if (dataSelector.ledger || creditSelector.notifier) {
             setTab("DISPENSE")
             const asyncFunc = async () => {
                 await byOngoingCredit({ code: dataSelector.item.code })
@@ -113,16 +113,18 @@ const CasheringLedger = () => {
                         if (res.success) {
                             if (res.recordCount > 0) {
                                 dispatch(setCreditItem(res?.arrayResult[0]))
+                                dispatch(setCreditNotifier(false))
                                 return
                             }
                             dispatch(resetCreditItem())
+                            dispatch(setCreditNotifier(false))
                         }
                     })
                     .catch(err => console.error(err))
             }
             asyncFunc()
         }
-    }, [dataSelector.ledger])
+    }, [dataSelector.ledger, creditSelector.notifier])
 
     const selectItem = (item) => {
         dispatch(setDispensingItem(item))
@@ -204,8 +206,10 @@ const CasheringLedger = () => {
     }
 
     const onPrint = () => {
-        let credit = amount(credits?.total) - amount(credits?.partial)
-        let printdata = {
+        const credit = dataSelector.item.method === 'CREDIT'
+            ? amount(dataSelector.item.net) - amount(dataSelector.item.partial)
+            : 0
+        const printdata = {
             branch: branch?.data?.name || printingSelector.defaults.branch,
             address: branch?.data?.address || printingSelector.defaults.address,
             service: printingSelector.defaults.service,
@@ -234,7 +238,9 @@ const CasheringLedger = () => {
                 amount: amount(dataSelector.item.less) + amount(dataSelector.item.markdown)
             },
             total: dataSelector.item.net,
-            cash: credit > 0 ? credits.partial : dataSelector.item.tended,
+            cash: dataSelector.item.method === 'CREDIT'
+                ? dataSelector.item.partial
+                : dataSelector.item.tended,
             change: dataSelector.item.change,
             credit: credit,
             reprint: true
