@@ -349,7 +349,7 @@ const ReceiptInjoin = () => {
                 delivery: deliverySelector.item.id,
                 purchase: data.purchase,
                 supplier: data.supplier,
-                store: data.store,
+                store: deliverySelector.item.store,
                 received: data.quantity,
                 stocks: data.quantity,
                 cost: data.costing,
@@ -386,9 +386,15 @@ const ReceiptInjoin = () => {
         schema: onSchema
     }
 
+    const overrideDisplay = {
+        show: dataSelector.injoiner.show,
+        size: "w-screen lg:w-[800px] min-h-[400px]",
+        title: `Delivery Receipt Item for ${deliverySelector.item.store}`,
+    }
+
     return (
         <DataInjoin
-            display={dataSelector.injoiner}
+            display={overrideDisplay}
             formData={inputFormData}
             fields={onFields}
             change={onChange}

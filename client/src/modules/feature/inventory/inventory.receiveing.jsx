@@ -14,6 +14,7 @@ import { useByTransmitInventoryMutation } from "./inventory.services"
 const ReceivingRecords = () => {
     const auth = useAuth()
     const dataSelector = useSelector(state => state.inventory)
+    const searchSelector = useSelector(state => state.search)
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
@@ -55,6 +56,7 @@ const ReceivingRecords = () => {
     const items = (item) => {
         return [
             { value: `${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}` },
+            { value: item.variant_serial },
             { value: item.supplier_name },
             { value: item.category },
             { value: item.stocks },
@@ -66,9 +68,17 @@ const ReceivingRecords = () => {
 
     useEffect(() => {
         if (dataSelector?.receive) {
-            let data = sorted
-                ? sortBy(dataSelector?.receive, sorted)
-                : dataSelector?.receive
+            let temp = dataSelector?.receive
+            if (searchSelector.searchKey) {
+                let sought = searchSelector.searchKey?.toLowerCase()
+                temp = dataSelector?.receive?.filter(f => (
+                    `${f.product_name} ${f.variant_serial} ${f.variant_model} ${f.variant_brand}`?.toLowerCase()?.includes(sought) ||
+                    f.supplier_name?.toLowerCase()?.includes(sought) ||
+                    f.variant_serial?.toLowerCase()?.includes(sought) ||
+                    f.store?.toLowerCase()?.includes(sought)
+                ))
+            }
+            let data = sorted ? sortBy(temp, sorted) : temp
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,

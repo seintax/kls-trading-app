@@ -75,7 +75,7 @@ const DeliveryRecords = () => {
                 let sought = searchSelector.searchKey
                 temp = dataSelector?.data?.filter(f => (
                     f.supplier_name?.toLowerCase()?.includes(sought) ||
-                    f.id?.toLowerCase()?.includes(sought) ||
+                    String(f.id)?.toLowerCase()?.includes(sought) ||
                     f.store?.toLowerCase()?.includes(sought) ||
                     longDate(f.date)?.toLowerCase()?.includes(sought)
                 ))
