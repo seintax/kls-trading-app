@@ -23,6 +23,7 @@ const CreditManage = () => {
     const [change, setChange] = useState(0)
     const [payment, setPayment] = useState(0)
     const [mounted, setMounted] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     // const [createCredit] = useCreateCreditMutation()
     const [sqlSettleCredit] = useSqlSettleCreditMutation()
@@ -157,6 +158,7 @@ const CreditManage = () => {
             toast.showWarning("Please enter a payment amount.")
             return
         }
+        setIsSubmitting(true)
         let data = {
             payment: paymentSelector.paid
                 ?.filter(f => eitherIs(f.method, inclusion))
@@ -184,10 +186,14 @@ const CreditManage = () => {
             .then(res => {
                 if (res.success) {
                     toast.showCreate("Credit settlement successfully completed.")
+                    setIsSubmitting(false)
                     onCompleted()
                 }
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                setIsSubmitting(false)
+            })
     }
 
     const togglePayments = () => {
@@ -313,6 +319,7 @@ const CreditManage = () => {
                         </div>
                         <button
                             className="button-link text-base bg-gradient-to-b from-blue-400 via-blue-600 to-blue-600 px-7 disabled:from-gray-400 disabled:via-gray-600 disabled:to-gray-600"
+                            disabled={isSubmitting}
                             onClick={() => processTransaction()}
                         >
                             Process Transaction

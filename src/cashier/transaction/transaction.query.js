@@ -95,7 +95,6 @@ const byAdmin = handler(async (req, res) => {
     let series = [f(id).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)
-    console.log(builder.sql)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
