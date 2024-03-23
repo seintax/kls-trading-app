@@ -105,7 +105,6 @@ const ReportsModalStockLedger = () => {
     }
 
     useEffect(() => {
-        console.log(dispensingrecord)
         const consolidatedData = [...injectType(returnedrecord, "Return"), ...injectType(adjustmentrecord, "Adjustment"), ...injectType(dispensingrecord, "Sold"), ...injectType(transmitrecord, "Goods out")]
             ?.sort((a, b) => new Date(a.time) - new Date(b.time))
         setTimeLine(consolidatedData)

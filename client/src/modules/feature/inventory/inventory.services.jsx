@@ -94,6 +94,14 @@ export const inventoryApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['receiving']
         }),
+        byReceiptInventory: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/byreceipt`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['receiving']
+        }),
         byStockRecordInventory: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/bystockrecord`,
@@ -118,6 +126,14 @@ export const inventoryApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['receiving']
         }),
+        sqlCancelInventory: builder.mutation({
+            query: (body) => ({
+                url: `${ENDPOINT_URL}/sqlcancel`,
+                method: 'POST',
+                body
+            }),
+            providesTags: ['receiving']
+        }),
     })
 })
 
@@ -133,7 +149,9 @@ export const {
     useByStocksInventoryMutation,
     useByTransmitInventoryMutation,
     useByItemInventoryMutation,
+    useByReceiptInventoryMutation,
     useByStockRecordInventoryMutation,
     useByPriceCheckInventoryMutation,
     useSqlAcquireInventoryMutation,
+    useSqlCancelInventoryMutation,
 } = inventoryApiSlice

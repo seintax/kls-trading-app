@@ -2,6 +2,7 @@ const handler = require("express-async-handler")
 const { mysqlpool, proceed } = require("../../utilities/callback.utility")
 const getservice = require("./receivable.helper")
 const getpurchase = require("../purchase/purchase.helper")
+const getinventory = require("../inventory/inventory.helper")
 
 const sqlReceivable = handler(async (req, res) => {
     mysqlpool.getConnection((err, con) => {
@@ -77,10 +78,29 @@ const sqlReceivable = handler(async (req, res) => {
                 })
             })
 
+            var updateInventory
+            if (req.body.inventory?.receipt) {
+                updateInventory = await new Promise(async (resolve, reject) => {
+                    let receipt = req.body.inventory.receipt
+                    let cost = req.body.inventory.cost
+                    const sql = getinventory
+                        .statement("inventory_update_cost_receivable")
+                        .inject({ receipt: receipt, cost: cost })
+                    await con.query(sql, async (err, ans) => {
+                        if (err) con.rollback(() => reject(err))
+                        resolve({
+                            occurence: "updateInventory",
+                            updateResult: { receipt: receipt, alterated: ans.affectedRows }
+                        })
+                    })
+                })
+            }
+
             let result = {
                 receivable,
                 runningPurchase,
                 statusPurchase,
+                updateInventory,
                 data: req.body
             }
             con.commit((err) => {

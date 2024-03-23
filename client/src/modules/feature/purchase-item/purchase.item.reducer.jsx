@@ -7,6 +7,7 @@ const initialState = {
     manager: false,
     notifier: false,
     perpage: 150,
+    editcost: false,
     display: {
         name: "Product",
         show: false
@@ -47,6 +48,9 @@ const receivableSlice = createSlice({
     reducers: {
         setReceivableData: (state, action) => {
             state.data = action.payload
+        },
+        setReceivableEditCost: (state, action) => {
+            state.editcost = action.payload
         },
         setReceivableItem: (state, action) => {
             state.item = action.payload
@@ -92,6 +96,7 @@ const receivableReducer = receivableSlice.reducer
 
 export const {
     setReceivableData,
+    setReceivableEditCost,
     setReceivableItem,
     resetReceivableItem,
     setReceivableNotifier,

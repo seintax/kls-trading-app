@@ -256,10 +256,13 @@ const CasheringReimburse = () => {
                 let outstand = amount(creditSelector.item.total) - returned
                 let toreimburse = amount(creditSelector.item.partial) + amount(creditSelector.item.payment) - amount(creditSelector.item.reimburse)
                 let reimburse = amount(creditSelector.item.reimburse) + toreimburse
+                let onpartial = amount(creditSelector.item.partial) + outstand
+                let partial = onpartial < 0 ? 0 : onpartial
                 data = {
                     ...data,
                     credit: {
                         creditor: creditSelector.item.creditor,
+                        partial: outstand < 0 ? partial : creditSelector.item.partial,
                         balance: outstand < 0 ? 0 : outstand,
                         returned: returned,
                         outstand: outstand < 0 ? 0 : outstand,

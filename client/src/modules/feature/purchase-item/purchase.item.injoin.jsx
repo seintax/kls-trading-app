@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
 import { cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
@@ -8,8 +7,8 @@ import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useByCategoryMasterlistMutation } from "../../library/masterlist/masterlist.services"
 import { useByCategoryVariantMutation } from "../../library/variant/variant.services"
-import { resetReceivableInjoiner, resetReceivableItem, setReceivableNotifier } from "./purchase.item.reducer"
-import { useCreateReceivableMutation, useSqlReceivableMutation, useUpdateReceivableMutation } from "./purchase.item.services"
+import { resetReceivableInjoiner, resetReceivableItem, setReceivableEditCost, setReceivableNotifier } from "./purchase.item.reducer"
+import { useSqlReceivableMutation, useUpdateReceivableMutation } from "./purchase.item.services"
 
 const ReceivableInjoin = () => {
     const dataSelector = useSelector(state => state.receivable)
@@ -22,13 +21,13 @@ const ReceivableInjoin = () => {
     const { yup } = useYup()
     const toast = useToast()
 
+    const [cacheProducts, setCacheProducts] = useState()
     const [libProducts, setLibProducts] = useState()
     const [cacheVariants, setCacheVariants] = useState()
     const [libVariants, setLibVariants] = useState()
 
     const [categoryProducts, { isLoading: productLoading }] = useByCategoryMasterlistMutation()
     const [categoryVariants, { isLoading: variantLoading }] = useByCategoryVariantMutation()
-    const [createReceivable] = useCreateReceivableMutation()
     const [updateReceivable] = useUpdateReceivableMutation()
     const [sqlReceivable] = useSqlReceivableMutation()
 
@@ -47,7 +46,8 @@ const ReceivableInjoin = () => {
                 .then(res => {
                     if (res.success) {
                         // setLibProducts(FormatOptionsWithEmptyLabel(res?.arrayResult, "id", "name", "Select product"))
-                        setLibProducts(FormatOptionsNoLabel(res?.arrayResult, "id", "name"))
+                        setCacheProducts(res?.arrayResult)
+                        // setLibProducts(FormatOptionsNoLabel(res?.arrayResult, "id", "name"))
                     }
                 })
                 .catch(err => console.error(err))
@@ -76,9 +76,18 @@ const ReceivableInjoin = () => {
     }
 
     useEffect(() => {
-        if (dataSelector.injoiner.show && instantiated && cacheVariants.length) {
+        if (dataSelector.injoiner.show && instantiated && cacheVariants.length && cacheProducts.length) {
             let item = dataSelector.item
             if (item.product) {
+                let prods = cacheProducts
+                    ?.map(arr => {
+                        return {
+                            value: arr.id,
+                            key: arr.name,
+                            data: arr
+                        }
+                    })
+                setLibProducts(prods)
                 let array = cacheVariants
                     ?.filter(arr => parseInt(arr.product) === parseInt(item.product))
                     ?.map(arr => {
@@ -88,18 +97,17 @@ const ReceivableInjoin = () => {
                             data: arr
                         }
                     })
-                // setLibVariants([{ value: "", key: "Select variant", data: {} }, ...array])
                 setLibVariants(array)
+                setValues({
+                    category: init(item.category, purchaseSelector?.item?.category),
+                    variety: init(item.variant),
+                    product: init(item.product),
+                    ordered: init(item.ordered, 0),
+                    costing: init(item.rawcost, 0),
+                })
             }
-            setValues({
-                category: init(item.category, purchaseSelector?.item?.category),
-                product: init(item.product),
-                variety: init(item.variant),
-                ordered: init(item.ordered, 0),
-                costing: init(item.rawcost, 0),
-            })
         }
-    }, [dataSelector.injoiner.show, instantiated, cacheVariants])
+    }, [dataSelector.injoiner.show, instantiated])
 
     useEffect(() => {
         if (listener) {
@@ -109,11 +117,9 @@ const ReceivableInjoin = () => {
                     let array = cacheVariants?.filter(arr => parseInt(arr.product) === parseInt(product))?.map(arr => {
                         return { value: arr.id, key: cleanDisplay(`${arr.serial}/${arr.model}/${arr.brand}`), data: arr }
                     })
-                    // setLibVariants([{ value: "", key: "Select variant", data: {} }, ...array])
                     setLibVariants(array)
                     return
                 }
-                // setLibVariants([{ value: "", key: "Select variant", data: {} }])
                 setLibVariants([])
             }
         }
@@ -127,15 +133,6 @@ const ReceivableInjoin = () => {
                     register={register}
                     name='category'
                 />
-                {/* <FormEl.Select
-                    label='Product Name'
-                    register={register}
-                    name='product'
-                    errors={errors}
-                    options={libProducts}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                /> */}
                 <FormEl.SearchBox
                     label='Product Name'
                     register={register}
@@ -147,16 +144,8 @@ const ReceivableInjoin = () => {
                     items={libProducts}
                     loading={productLoading}
                     placeholder="Search for product name"
+                    readOnly={dataSelector.editcost}
                 />
-                {/* <FormEl.Select
-                    label='Variant'
-                    register={register}
-                    name='variety'
-                    errors={errors}
-                    options={libVariants}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                /> */}
                 <FormEl.SearchBox
                     label='Variant'
                     register={register}
@@ -168,6 +157,7 @@ const ReceivableInjoin = () => {
                     items={libVariants}
                     loading={variantLoading}
                     placeholder="Search for variant"
+                    readOnly={dataSelector.editcost}
                 />
                 <FormEl.Decimal
                     label='Quantity'
@@ -176,6 +166,7 @@ const ReceivableInjoin = () => {
                     errors={errors}
                     autoComplete='off'
                     wrapper='lg:w-1/2'
+                    readOnly={dataSelector.editcost}
                 />
                 <FormEl.Float
                     label='Purchase Cost'
@@ -212,6 +203,7 @@ const ReceivableInjoin = () => {
     })
 
     const onCompleted = () => {
+        dispatch(setReceivableEditCost(false))
         dispatch(setReceivableNotifier(true))
         dispatch(resetReceivableItem())
         dispatch(resetReceivableInjoiner())
@@ -250,6 +242,22 @@ const ReceivableInjoin = () => {
                 id: purchaseSelector.item.id
             }
         }
+        if (dataSelector.editcost) {
+            formData = {
+                receivable: {
+                    costing: data.costing,
+                    rawcost: data.costing,
+                    id: dataSelector.item.id
+                },
+                purchase: {
+                    id: purchaseSelector.item.id
+                },
+                inventory: {
+                    cost: data.costing,
+                    receipt: dataSelector.item.receipt_id,
+                }
+            }
+        }
         await sqlReceivable(formData)
             .unwrap()
             .then(res => {
@@ -265,6 +273,7 @@ const ReceivableInjoin = () => {
     }
 
     const closeAppender = useCallback(() => {
+        dispatch(setReceivableEditCost(false))
         dispatch(resetReceivableInjoiner())
     }, [])
 
