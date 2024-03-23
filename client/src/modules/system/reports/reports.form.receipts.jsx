@@ -26,7 +26,7 @@ const ReportsFormReceipts = () => {
     const [sorted, setsorted] = useState()
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
-    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: isEmpty(getBranch(auth)) ? "" : auth.store })
+    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: isEmpty(getBranch(auth)) ? "" : auth.store, type: '' })
     const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])
@@ -156,7 +156,12 @@ const ReportsFormReceipts = () => {
 
     useEffect(() => {
         if (data) {
-            let tempdata = sorted ? sortBy(data, sorted) : data
+            let temp = data
+            if (filters.type) {
+                let sought = filters.type
+                temp = data?.filter(f => f.method === sought)
+            }
+            let tempdata = sorted ? sortBy(temp, sorted) : temp
             setrecords(tempdata?.map((item, i) => {
                 return {
                     key: item.id,
@@ -165,16 +170,17 @@ const ReportsFormReceipts = () => {
                 }
             }))
         }
-    }, [data, sorted, reportSelector.report])
+    }, [data, sorted, reportSelector.report, filters.type])
 
     const printData = () => {
         if (records?.length) {
+            const displayedData = filters.type ? records?.filter(f => f.method === filters.type) : records
             localStorage.setItem("reports", JSON.stringify({
                 title: reportSelector.report,
                 subtext1: `Date: ${moment(filters.fr).format("MMMM DD, YYYY")} - ${moment(filters.to).format("MMMM DD, YYYY")}`,
                 subtext2: `Branch: ${filters.store || "All"}`,
                 columns: columns,
-                total: total(data),
+                total: total(displayedData),
                 data: records
             }))
             window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYY")}-${moment(filters.to).format("MMDDYYYY")}-${filters.store || "All"}`, '_blank')
@@ -183,8 +189,13 @@ const ReportsFormReceipts = () => {
 
     const exportData = () => {
         if (data?.length) {
+            const displayedData = filters.type ? data?.filter(f => f.method === filters.type) : data
             let type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
-            const ws = XLSX.utils.json_to_sheet([{ ...filters, store: filters.store || "All" }, ...data])
+            const ws = XLSX.utils.json_to_sheet([{
+                ...filters,
+                store: filters.store || "All",
+                type: filters.type || "All"
+            }, ...displayedData])
             const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
             const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
             const excelData = new Blob([excelBuffer], { type: type })
@@ -214,7 +225,7 @@ const ReportsFormReceipts = () => {
                         <select name="store" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.store} onChange={onChange}>
                             {
                                 isEmpty(getBranch(auth))
-                                    ? <option value="">All</option>
+                                    ? <option value="">All Stores</option>
                                     : null
                             }
                             {
@@ -227,6 +238,11 @@ const ReportsFormReceipts = () => {
                                     : <option key={auth.store} value={auth.store}>{auth.store}</option>
 
                             }
+                        </select>
+                        <select name="type" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.type} onChange={onChange}>
+                            <option value="">All Types</option>
+                            <option value="SALES">Sales</option>
+                            <option value="CREDIT">Credit</option>
                         </select>
                         <div className="flex gap-2">
                             <button className="button-red py-2" onClick={() => reLoad()}>

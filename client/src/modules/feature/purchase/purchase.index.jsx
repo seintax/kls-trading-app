@@ -1,3 +1,4 @@
+import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
@@ -24,6 +25,8 @@ const PurchaseIndex = () => {
     const [filters, setFilters] = useState({ status: "", supplier: "", store: isEmpty(getBranch(auth)) ? "" : auth.store })
     const [libSuppliers, setLibSuppliers] = useState([])
     const [libBranchers, setLibBranches] = useState()
+    const [records, setrecords] = useState()
+    const [results, setresults] = useState()
     const statuses = [
         "PENDING",
         "PARTIALLY RECEIVED",
@@ -76,6 +79,7 @@ const PurchaseIndex = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
+                            setresults(res?.arrayResult)
                             dispatch(setPurchaseData(res?.arrayResult))
                             dispatch(setPurchaseNotifier(false))
                             if (dataSelector.selector > 0) {
@@ -102,9 +106,29 @@ const PurchaseIndex = () => {
         dispatch(showPurchaseManager())
     }
 
+    const printList = () => {
+        if (records?.length) {
+            localStorage.setItem("reports", JSON.stringify({
+                title: "List of Purchase Orders",
+                subtext1: `as of ${moment(new Date()).format("MMMM DD, YYYY hh:mm A")}`,
+                subtext2: `Status: ${filters.status || "All"} | Supplier: ${filters.supplier || "All"} | Branch: ${filters.store || "All"}`,
+                columns: dataSelector.printout,
+                // total: total(results),
+                data: records?.map(rec => {
+                    return {
+                        key: rec.key,
+                        items: rec.print
+                    }
+                })
+            }))
+            window.open(`/#/print/reports/${moment(filters.fr).format("MMDDYYYYHHmm")}-${filters.status || "All"}-${filters.supplier || "All"}-${filters.store || "All"}`, '_blank')
+        }
+    }
+
     const actions = () => {
         return [
             { label: `Add ${dataSelector.display.name} Order`, callback: toggleNewEntry },
+            { label: `Print List`, callback: printList },
         ]
     }
 
@@ -177,7 +201,7 @@ const PurchaseIndex = () => {
                 overrideLoading={true}
                 hideDisplay={dataSelector.manager}
             >
-                <PurchaseRecords isLoading={purchaseLoading || supplierLoading || branchLoading} />
+                <PurchaseRecords isLoading={purchaseLoading || supplierLoading || branchLoading} records={records} setrecords={setrecords} />
             </DataIndex >
         </>
     )

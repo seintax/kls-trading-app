@@ -7,7 +7,7 @@ import useToast from "../../../utilities/hooks/useToast"
 import DataListing from "../../../utilities/interface/datastack/data.listing"
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import ReceivableInjoin from "./purchase.item.injoin"
-import { setReceivableData, setReceivableItem, setReceivableNotifier, showReceivableInjoiner } from "./purchase.item.reducer"
+import { setReceivableData, setReceivableEditCost, setReceivableItem, setReceivableNotifier, showReceivableInjoiner } from "./purchase.item.reducer"
 import { useByPurchaseReceivableMutation, useSqlReceivableMutation } from "./purchase.item.services"
 
 const ReceivableListing = () => {
@@ -44,6 +44,12 @@ const ReceivableListing = () => {
 
         instantiate()
     }, [dataSelector.notifier, purchaseSelector.item.id])
+
+    const toggleEditCost = (item) => {
+        dispatch(setReceivableEditCost(true))
+        dispatch(setReceivableItem(item))
+        dispatch(showReceivableInjoiner())
+    }
 
     const toggleEdit = (item) => {
         dispatch(setReceivableItem(item))
@@ -83,6 +89,11 @@ const ReceivableListing = () => {
     const controls = (item) => {
         return [
             {
+                label: 'Edit Cost',
+                trigger: () => toggleEditCost(item),
+                style: `${purchaseSelector.item.status === "CLOSED" ? "" : "hidden"}`
+            },
+            {
                 label: 'Edit',
                 trigger: () => toggleEdit(item),
                 style: `${purchaseSelector.item.status === "CLOSED" ? "hidden" : ""}`
@@ -109,7 +120,7 @@ const ReceivableListing = () => {
             let data = dataSelector?.data
             setrecords(data?.map(item => {
                 return {
-                    key: item.id,
+                    key: `${item.id}${item.receipt_id}`,
                     items: items(item),
                     controls: controls(item)
                 }

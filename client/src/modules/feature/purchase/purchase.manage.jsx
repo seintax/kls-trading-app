@@ -215,7 +215,8 @@ const PurchaseManage = () => {
             localStorage.setItem("purchase", JSON.stringify({
                 title: `Purchase Order PO-${StrFn.formatWithZeros(dataSelector.item.id, 5)}`,
                 info: dataSelector.item,
-                data: receivableSelector.data
+                data: receivableSelector.data,
+                printedby: auth.name
             }))
             window.open(`/#/print/purchase/${moment(new Date()).format("MMDDYYYY")}${StrFn.formatWithZeros(dataSelector.item.id, 5)}`, '_blank')
         }

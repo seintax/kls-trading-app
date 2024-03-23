@@ -99,6 +99,12 @@ const PrintPurchase = () => {
                         <div className="w-[500px] text-right font-bold">Total</div>
                         <div className="w-[500px] text-right">{NumFn.acctg.float(records?.reduce((prev, curr) => prev + ((curr.ordered || 0) * (curr.rawcost || 0)), 0))}</div>
                     </div>
+                    <div className="flex w-full mt-10">
+                        <span>Printed By:</span>
+                        <span className="ml-5">
+                            {print.printedby}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

@@ -82,6 +82,11 @@ const inventory = new Table("pos_stock_inventory", {
     },
 ])
 
+inventory.register("inventory_update_cost_receivable",
+    `UPDATE pos_stock_inventory SET 
+        invt_cost=@cost
+        WHERE invt_receipt=@receipt`)
+
 inventory.register("inventory_update_transfer",
     `UPDATE pos_stock_inventory SET 
         invt_stocks=invt_stocks@operator@qty,

@@ -14,12 +14,11 @@ import { setLogged } from "../../../utilities/redux/slices/utilitySlice"
 import { setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
 import { useDeletePurchaseMutation } from "./purchase.services"
 
-const PurchaseRecords = ({ isLoading }) => {
+const PurchaseRecords = ({ isLoading, records, setrecords }) => {
     const dataSelector = useSelector(state => state.purchase)
     const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
-    const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
     const [sorted, setsorted] = useState()
     const [active, setactive] = useState()
@@ -65,14 +64,14 @@ const PurchaseRecords = ({ isLoading }) => {
         ]
     }
 
-    const defineStatus = (item) => {
+    const defineStatus = (item, valueOnly = false) => {
         if (item.status === "PENDING" && item.receivedtotal > 0) {
-            return <span className="text-green-600">PARTIALLY RECEIVED</span>
+            return valueOnly ? 'PARTIALLY RECEIVED' : <span className="text-green-600">PARTIALLY RECEIVED</span>
         }
         if (item.status === "PENDING" && item.receivedtotal === 0) {
-            return <span className="text-blue-600">PENDING</span>
+            return valueOnly ? 'PENDING' : <span className="text-blue-600">PENDING</span>
         }
-        return <span className="text-gray-300">{item.status}</span>
+        return valueOnly ? item.status : <span className="text-gray-300">{item.status}</span>
     }
 
     const items = (item, index) => {
@@ -93,14 +92,26 @@ const PurchaseRecords = ({ isLoading }) => {
         ]
     }
 
+    const print = (item) => {
+        return [
+            { value: item.supplier_name },
+            { value: StrFn.formatWithZeros(item.id, 6) },
+            { value: longDate(item.date) },
+            { value: item.category },
+            { value: defineStatus(item, true) },
+            { value: NumFn.acctg.float(item.rawtotal) },
+            { value: item.store },
+        ]
+    }
+
     useEffect(() => {
         if (dataSelector?.data) {
             let temp = dataSelector?.data
             if (searchSelector.searchKey) {
-                let sought = searchSelector.searchKey
+                let sought = searchSelector.searchKey?.toLowerCase()
                 temp = dataSelector?.data?.filter(f => (
                     f.supplier_name?.toLowerCase()?.includes(sought) ||
-                    f.id?.toLowerCase()?.includes(sought) ||
+                    String(f.id)?.toLowerCase()?.includes(sought) ||
                     f.store?.toLowerCase()?.includes(sought) ||
                     longDate(f.date)?.toLowerCase()?.includes(sought)
                 ))
@@ -110,6 +121,7 @@ const PurchaseRecords = ({ isLoading }) => {
                 return {
                     key: item.id,
                     items: items(item, index),
+                    print: print(item),
                     onclick: () => { setactive() },
                 }
             }))

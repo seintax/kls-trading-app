@@ -29,6 +29,7 @@ export default function SearchBox(props) {
         optional,
         register,
         errors,
+        readOnly,
         ...rest
     } = props
 
@@ -83,12 +84,10 @@ export default function SearchBox(props) {
 
     useEffect(() => {
         if (items?.length) {
-
             // triggers on first initialization of the element
             if (initialize) {
                 let newList = items
                 setList(newList)
-
                 if (values?.hasOwnProperty(name)) {
                     if (values[name]) {
                         let loaded = newList.filter(f => String(f.value) === String(values[name]))
@@ -148,6 +147,7 @@ export default function SearchBox(props) {
 
 
     const selectItem = (item) => {
+        if (readOnly) return
         setter(name, item.value)
         setSelected(item)
         setKey(item.key)
@@ -161,6 +161,7 @@ export default function SearchBox(props) {
     }
 
     const clearKey = () => {
+        if (readOnly) return
         setSelected({ key: "", value: "", selected: false })
         setKey()
         setter(name, 0)
@@ -173,6 +174,11 @@ export default function SearchBox(props) {
         setList(items?.map(f => {
             return { ...f, selected: false }
         }))
+    }
+
+    const removeInput = () => {
+        if (readOnly) return
+        setSearch("")
     }
 
     return (
@@ -190,12 +196,13 @@ export default function SearchBox(props) {
                         onChange={onSearch}
                         onKeyDown={onKeyDown}
                         autoComplete="off"
+                        readOnly={readOnly}
                         {...rest}
                     />
                     <div className="flex gap-1 absolute right-2">
                         <XMarkIcon
                             className={`w-5 h-5 cursor-pointer ${search && !key ? "" : "hidden"}`}
-                            onClick={() => setSearch("")}
+                            onClick={() => removeInput()}
                         />
                         <XCircleIcon
                             className={`w-5 h-5 cursor-pointer ${key ? "" : "hidden"}`}
@@ -215,7 +222,7 @@ export default function SearchBox(props) {
                             list?.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="space-y-5 w-full no-select cursor-pointer hover:bg-gray-200 px-3"
+                                    className={`space-y-5 w-full no-select cursor-pointer px-3 ${readOnly ? '' : 'hover:bg-gray-200'}`}
                                     onClick={() => selectItem(item)}
                                 >
                                     <div className="relative flex items-center justify-between my-1">

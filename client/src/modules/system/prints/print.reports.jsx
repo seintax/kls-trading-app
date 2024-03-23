@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AppLogo from "../../../utilities/interface/application/aesthetics/app.logo"
 import DataPrint from "../../../utilities/interface/datastack/data.print"
 
@@ -25,17 +25,17 @@ const PrintReports = () => {
         }
     }, [mounted])
 
-    useLayoutEffect(() => {
-        if (records?.length) {
-            setTimeout(function () { window.print() }, 500)
-            window.onafterprint = function () {
-                setTimeout(function () {
-                    localStorage.removeItem(reportname)
-                    window.close()
-                }, 500)
-            }
-        }
-    }, [records])
+    // useLayoutEffect(() => {
+    //     if (records?.length) {
+    //         setTimeout(function () { window.print() }, 500)
+    //         window.onafterprint = function () {
+    //             setTimeout(function () {
+    //                 localStorage.removeItem(reportname)
+    //                 window.close()
+    //             }, 500)
+    //         }
+    //     }
+    // }, [records])
 
     const trigger = () => {
         // var css = '@page { size: portrait; }',

@@ -3,6 +3,7 @@ const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force }
 const helper = require('./inventory.helper')
 const getbranch = require('./inventory.branch')
 const getstocks = require('./inventory.stocks')
+const gettransmit = require('./inventory.transmit')
 const { Param, Field } = require("../../utilities/builder.utility")
 const inventory = require("./inventory.helper")
 
@@ -109,13 +110,13 @@ const byStocks = handler(async (req, res) => {
 })
 
 const byTransmit = handler(async (req, res) => {
-    const { branch } = getbranch.parameters(req.query)
-    const { acquisition, store, stocks, id } = getbranch.fields
+    const { branch } = gettransmit.parameters(req.query)
+    const { acquisition, store, stocks, id } = gettransmit.fields
     let params = [p(branch).Contains(), "0", "TRANSMIT"]
     let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).IsEqual()]
     let series = [f(id).Asc()]
     let limits = undefined
-    const builder = getbranch.inquiry(clause, params, series, limits)
+    const builder = gettransmit.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
@@ -147,6 +148,20 @@ const byItem = handler(async (req, res) => {
     let series = [f(id).Desc()]
     let limits = 1
     const builder = getstocks.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
+const byReceipt = handler(async (req, res) => {
+    const param = getbranch.parameters(req.query)
+    const { receipt, id } = getbranch.fields
+    let params = [p(param.receipt).Exactly()]
+    let clause = [f(receipt).IsEqual()]
+    let series = [f(id).Desc()]
+    let limits = 1
+    const builder = getbranch.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
@@ -194,6 +209,7 @@ module.exports = {
     byTransmit,
     byProduct,
     byItem,
+    byReceipt,
     byStockRecord,
     byPriceCheck,
 }
