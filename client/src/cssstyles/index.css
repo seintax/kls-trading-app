@@ -1,4 +1,5 @@
 :root {
+  --default: #bdbcbc;
   --primary: #e4e4e4;
   --secondary: #ef4444;
 }
@@ -221,6 +222,10 @@ svg.fill-primary>path {
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
+.scroll-default {
+  scrollbar-color: auto;
+}
+
 .scroll-md {
   scrollbar-width: thin;
   scrollbar-color: var(--secondary) var(--primary);
@@ -311,7 +316,7 @@ svg.fill-primary>path {
 
 .plain-input::-webkit-outer-spin-button,
 .plain-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    -moz-appearance: textfield;
+  -webkit-appearance: none;
+  margin: 0;
+  -moz-appearance: textfield;
 }

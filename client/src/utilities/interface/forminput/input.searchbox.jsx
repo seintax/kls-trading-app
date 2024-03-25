@@ -83,18 +83,20 @@ export default function SearchBox(props) {
     }, [selected])
 
     useEffect(() => {
-        if (items?.length) {
+        if (items?.length && values?.hasOwnProperty(name)) {
+            setList(items)
             // triggers on first initialization of the element
             if (initialize) {
                 let newList = items
-                setList(newList)
                 if (values?.hasOwnProperty(name)) {
                     if (values[name]) {
                         let loaded = newList.filter(f => String(f.value) === String(values[name]))
+                        // setList(loaded)
                         setter(name, loaded[0]?.value)
                         setKey(loaded[0]?.key)
+                        let match = loaded.filter(f => f.key === key).length > 0
+                        setKeyMatch(match)
                         setInitValue(loaded[0]?.value)
-                        setList(loaded)
                     }
                 }
 
@@ -125,6 +127,7 @@ export default function SearchBox(props) {
     }, [search, items, values])
 
     useEffect(() => {
+        setter(name, list[0]?.value)
         setter(`${name}_items`, list.length || 0)
         setter(`${name}_exact`, 0)
         let exact = list.filter(f => f.key?.toLowerCase().trim() === search?.toLowerCase().trim())
@@ -210,7 +213,7 @@ export default function SearchBox(props) {
                         />
                     </div>
                 </div>
-                <div className="w-full min-h-[120px] max-h-[120px] overflow-auto rounded border border-gray-300 flex flex-col mt-3">
+                <div className="w-full min-h-[120px] max-h-[120px] overflow-auto rounded border border-gray-300 flex flex-col mt-3 scroll-default">
                     <div
                         className={`text-sm py-2 px-3 text-blue-700 cursor-pointer hover:text-blue-800 hover:underline no-select ${appendSearch ? "" : "hidden"}`}
                         onClick={() => performAppend()}

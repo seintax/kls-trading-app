@@ -169,16 +169,6 @@ const TransmitInjoin = () => {
     const onFields = (errors, register, values, setValue) => {
         return (
             <>
-                {/* <FormEl.Select
-                    label='Item Name'
-                    register={register}
-                    name='item'
-                    errors={errors}
-                    options={libInventory}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                /> */}
-
                 <FormEl.SearchBox
                     label='Item Name'
                     register={register}
