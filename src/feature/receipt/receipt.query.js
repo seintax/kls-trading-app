@@ -101,6 +101,21 @@ const byRecent = handler(async (req, res) => {
     })
 })
 
+const byReceivable = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    console.log(req.query)
+    const { receivable, id } = helper.fields
+    let params = [p(param.receivable).Exactly()]
+    let clause = [f(receivable).IsEqual()]
+    let series = [f(id).Desc()]
+    let limits = 1
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 module.exports = {
     _create,
     _record,
@@ -110,5 +125,6 @@ module.exports = {
     _specify,
     _findone,
     byDelivery,
-    byRecent
+    byRecent,
+    byReceivable,
 }

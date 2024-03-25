@@ -55,6 +55,12 @@ const receivableSlice = createSlice({
         setReceivableItem: (state, action) => {
             state.item = action.payload
         },
+        appendReceivableItem: (state, action) => {
+            state.item = {
+                ...state.item,
+                ...action.payload
+            }
+        },
         resetReceivableItem: (state) => {
             state.item = {}
         },
@@ -98,6 +104,7 @@ export const {
     setReceivableData,
     setReceivableEditCost,
     setReceivableItem,
+    appendReceivableItem,
     resetReceivableItem,
     setReceivableNotifier,
     showReceivableManager,

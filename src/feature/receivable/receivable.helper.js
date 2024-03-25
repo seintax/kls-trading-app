@@ -50,21 +50,6 @@ const receivable = new Table("pos_purchase_receivable", {
             variant_option3: 'vrnt_option3',
         }
     },
-    {
-        key: "rcvb_id",
-        reference: { table: "pos_delivery_receipt", key: "rcpt_receivable" },
-        include: {
-            receipt_id: 'rcpt_id',
-            receipt_time: 'rcpt_time',
-            receipt_delivery: 'rcpt_delivery',
-            receipt_receivable: 'rcpt_receivable',
-            receipt_purchase: 'rcpt_purchase',
-            receipt_product: 'rcpt_product',
-            receipt_variant: 'rcpt_variant',
-            receipt_quantity: 'rcpt_quantity',
-            receipt_pricing: 'rcpt_pricing',
-        }
-    },
 ])
 
 receivable.register("receivable_update_delivery",

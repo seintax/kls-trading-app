@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
 import { cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
@@ -7,8 +8,9 @@ import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
 import FormEl from "../../../utilities/interface/forminput/input.active"
 import { useByCategoryMasterlistMutation } from "../../library/masterlist/masterlist.services"
 import { useByCategoryVariantMutation } from "../../library/variant/variant.services"
+import { useByReceivableReceiptMutation } from "../delivery-item/delivery.item.services"
 import { resetReceivableInjoiner, resetReceivableItem, setReceivableEditCost, setReceivableNotifier } from "./purchase.item.reducer"
-import { useSqlReceivableMutation, useUpdateReceivableMutation } from "./purchase.item.services"
+import { useCreateReceivableMutation, useSqlReceivableMutation } from "./purchase.item.services"
 
 const ReceivableInjoin = () => {
     const dataSelector = useSelector(state => state.receivable)
@@ -20,6 +22,7 @@ const ReceivableInjoin = () => {
     const [values, setValues] = useState()
     const { yup } = useYup()
     const toast = useToast()
+    const [receipt, setReceipt] = useState()
 
     const [cacheProducts, setCacheProducts] = useState()
     const [libProducts, setLibProducts] = useState()
@@ -28,7 +31,8 @@ const ReceivableInjoin = () => {
 
     const [categoryProducts, { isLoading: productLoading }] = useByCategoryMasterlistMutation()
     const [categoryVariants, { isLoading: variantLoading }] = useByCategoryVariantMutation()
-    const [updateReceivable] = useUpdateReceivableMutation()
+    const [createReceivable] = useCreateReceivableMutation()
+    const [receivableReceipt] = useByReceivableReceiptMutation()
     const [sqlReceivable] = useSqlReceivableMutation()
 
     useEffect(() => {
@@ -45,9 +49,8 @@ const ReceivableInjoin = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        // setLibProducts(FormatOptionsWithEmptyLabel(res?.arrayResult, "id", "name", "Select product"))
                         setCacheProducts(res?.arrayResult)
-                        // setLibProducts(FormatOptionsNoLabel(res?.arrayResult, "id", "name"))
+                        setLibProducts(FormatOptionsNoLabel(res?.arrayResult, "id", "name"))
                     }
                 })
                 .catch(err => console.error(err))
@@ -56,17 +59,26 @@ const ReceivableInjoin = () => {
                 .then(res => {
                     if (res.success) {
                         setCacheVariants(res?.arrayResult)
-                        // setLibVariants([{ value: "", key: "Select variant", data: {} }])
                         setLibVariants([])
                     }
                 })
                 .catch(err => console.error(err))
+            if (dataSelector?.item.id) {
+                await receivableReceipt({ receivable: dataSelector?.item.id })
+                    .unwrap()
+                    .then(res => {
+                        if (res.success && res.recordCount === 1) {
+                            setReceipt(res?.arrayResult[0])
+                        }
+                    })
+                    .catch(err => console.error(err))
+            }
             setInstantiated(true)
         }
         if (dataSelector.injoiner.show && purchaseSelector.item.id) {
             instantiate()
         }
-    }, [purchaseSelector.item.id, dataSelector.injoiner.show])
+    }, [purchaseSelector.item.id, dataSelector.injoiner.show, dataSelector.item])
 
     const init = (value, initial = "") => {
         if (!isEmpty(value)) {
@@ -76,18 +88,9 @@ const ReceivableInjoin = () => {
     }
 
     useEffect(() => {
-        if (dataSelector.injoiner.show && instantiated && cacheVariants.length && cacheProducts.length) {
+        if (dataSelector.injoiner.show && instantiated) {
             let item = dataSelector.item
             if (item.product) {
-                let prods = cacheProducts
-                    ?.map(arr => {
-                        return {
-                            value: arr.id,
-                            key: arr.name,
-                            data: arr
-                        }
-                    })
-                setLibProducts(prods)
                 let array = cacheVariants
                     ?.filter(arr => parseInt(arr.product) === parseInt(item.product))
                     ?.map(arr => {
@@ -98,16 +101,16 @@ const ReceivableInjoin = () => {
                         }
                     })
                 setLibVariants(array)
-                setValues({
-                    category: init(item.category, purchaseSelector?.item?.category),
-                    variety: init(item.variant),
-                    product: init(item.product),
-                    ordered: init(item.ordered, 0),
-                    costing: init(item.rawcost, 0),
-                })
             }
+            setValues({
+                category: init(item.category, purchaseSelector?.item?.category),
+                product: init(item.product),
+                variety: init(item.variant),
+                ordered: init(item.ordered, 0),
+                costing: init(item.rawcost, 0),
+            })
         }
-    }, [dataSelector.injoiner.show, instantiated])
+    }, [dataSelector.injoiner.show, instantiated, dataSelector.item])
 
     useEffect(() => {
         if (listener) {
@@ -254,7 +257,7 @@ const ReceivableInjoin = () => {
                 },
                 inventory: {
                     cost: data.costing,
-                    receipt: dataSelector.item.receipt_id,
+                    receipt: receipt.id
                 }
             }
         }

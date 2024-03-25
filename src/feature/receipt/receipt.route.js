@@ -14,6 +14,7 @@ router.get('/receipt/search', secure, service._search)
 router.get('/receipt/specify', service._specify)
 router.get('/receipt/bydelivery', service.byDelivery)
 router.get('/receipt/byrecent', service.byRecent)
+router.get('/receipt/byreceivable', service.byReceivable)
 
 router.post('/receipt/sqlreceipt', complex.sqlReceipt)
 
