@@ -127,7 +127,8 @@ export default function SearchBox(props) {
     }, [search, items, values])
 
     useEffect(() => {
-        setter(name, list[0]?.value)
+        let selection = list.find(f => f.key?.toLowerCase().trim() === key?.toLowerCase().trim())
+        setter(name, selection?.value)
         setter(`${name}_items`, list.length || 0)
         setter(`${name}_exact`, 0)
         let exact = list.filter(f => f.key?.toLowerCase().trim() === search?.toLowerCase().trim())
@@ -138,7 +139,7 @@ export default function SearchBox(props) {
             let match = list.filter(f => f.key === key).length > 0
             setKeyMatch(match)
         }
-    }, [list])
+    }, [list, key])
 
     useEffect(() => {
         if (keyMatch)
