@@ -103,7 +103,6 @@ const byRecent = handler(async (req, res) => {
 
 const byReceivable = handler(async (req, res) => {
     const param = helper.parameters(req.query)
-    console.log(req.query)
     const { receivable, id } = helper.fields
     let params = [p(param.receivable).Exactly()]
     let clause = [f(receivable).IsEqual()]

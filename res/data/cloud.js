@@ -1,6 +1,6 @@
 const mysql = require('mysql')
-// const cloudcredentials = 'mysql://5ec6b55hzkxra3qds94u:pscale_pw_wFVKhozWcPW3pfIT3jqO7sX5sMxuJ1jP2zGOPrn31oE@aws.connect.psdb.cloud/app-jat-tpos?ssl={"rejectUnauthorized":true}'
-const cloudcredentials = {
+
+var hs = mysql.createPool({
     host: "151.106.124.151",
     user: "u480442611_trading_root",
     password: "?sQOdM0u",
@@ -9,25 +9,9 @@ const cloudcredentials = {
     multipleStatements: true,
     connectionLimit: 10,
     queueLimit: 0
-}
-const credentials = process.env.NODE_ENV === "development" ? {
-    host: process.env.MY_SERVER,
-    user: process.env.MY_USER,
-    password: process.env.MY_PASSWORD,
-    database: process.env.MY_DATABASE,
-    waitForConnections: true,
-    multipleStatements: true,
-    connectionLimit: 10,
-    queueLimit: 0
-} : cloudcredentials
+})
 
-var server = process.env.NODE_ENV === "development" ? process.env.MY_SERVER : "hostinger.ph"
-var database = process.env.NODE_ENV === "development" ? process.env.MY_DATABASE : "trading_db"
-
-var pool = mysql.createPool(credentials)
-var cloud = mysql.createPool(cloudcredentials)
-
-pool.getConnection((err, con) => {
+hs.getConnection((err, con) => {
     if (err) {
         console.log(`\x1b[41m`, `ERROR`, '\x1b[0m', `Failed to load server @ ${process.env.MY_SERVER}/${process.env.MY_DATABASE}`)
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
@@ -44,14 +28,10 @@ pool.getConnection((err, con) => {
         }
     }
     else {
-        console.log(`\x1b[45m`, `MYSQL`, '\x1b[0m', `@ ${server}/${database}\n`)
+        console.log(`\x1b[43m`, `CLOUD`, '\x1b[0m', `@ hostinger.ph/mysql:production\n`)
     }
     if (con) con.release()
     return
 })
 
-module.exports = {
-    pool,
-    mysql,
-    cloud
-}
+module.exports = hs
