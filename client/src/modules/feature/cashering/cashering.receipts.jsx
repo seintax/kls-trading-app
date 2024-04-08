@@ -3,7 +3,7 @@ import { ArrowLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { sortBy } from "../../../utilities/functions/array.functions"
-import { short12Time, sqlDate } from "../../../utilities/functions/datetime.functions"
+import { momentPSTShort12, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
 import { exactSearch, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -100,7 +100,7 @@ const CasheringReceipts = () => {
     const items = (item) => {
         return [
             { value: item.code?.split("-")[2] },
-            { value: short12Time(item.time) },
+            { value: momentPSTShort12(item.time) },
             { value: item.method },
             { value: item.status },
             { value: NumFn.currency(item.markdown + item.less) },

@@ -149,15 +149,15 @@ const reports = {
     cashier_summary: new Query("cashier_summary", `
         SELECT
             DATE(trns_time + INTERVAL 8 HOUR) AS day,
-            SUM(trns_total) AS gross_sales,
-            SUM(trns_less + trns_markdown + IFNULL(rtrn_discount,0)) AS discounts,
-            SUM(trns_net) AS net_sales,
-            SUM(IF(trns_method='CREDIT', trns_net - trns_partial, 0)) AS credit_sales,
-            SUM(trns_partial) AS partial,
+            SUM(IFNULL(trns_total,0)) AS gross_sales,
+            SUM(IFNULL(trns_less,0) + IFNULL(trns_markdown,0) + IFNULL(rtrn_discount,0)) AS discounts,
+            SUM(IFNULL(trns_net,0)) AS net_sales,
+            SUM(IF(trns_method='CREDIT', IFNULL(trns_net,0) - IFNULL(trns_partial,0), 0)) AS credit_sales,
+            SUM(IFNULL(trns_partial,0)) AS partial,
             acct_store AS branch,
             (
                 SELECT 
-                    SUM(rtrn_r_net)
+                    SUM(IFNULL(rtrn_r_net,0))
                 FROM 
                     pos_return_transaction,
                     sys_account  
@@ -170,7 +170,7 @@ const reports = {
             ) AS refunds,
             (
                 SELECT 
-                    SUM(paym_amount)
+                    SUM(IFNULL(paym_amount,0))
                 FROM pos_payment_collection 
                 WHERE 
                     paym_type='SALES' 
@@ -181,7 +181,7 @@ const reports = {
             ) AS cash_sales,
             (
                 SELECT 
-                    SUM(paym_amount)
+                    SUM(IFNULL(paym_amount,0))
                 FROM pos_payment_collection 
                 WHERE 
                     paym_type='CREDIT' 
@@ -205,7 +205,7 @@ const reports = {
                 LEFT JOIN (
                     SELECT 
                         rtrn_trans,
-                        SUM(rtrn_r_less + rtrn_r_markdown) AS rtrn_discount
+                        SUM(IFNULL(rtrn_r_less,0) + IFNULL(rtrn_r_markdown,0)) AS rtrn_discount
                     FROM pos_return_transaction 
                     WHERE DATE(rtrn_time + INTERVAL 8 HOUR)>'@to 23:59:59'
                     GROUP BY rtrn_trans
