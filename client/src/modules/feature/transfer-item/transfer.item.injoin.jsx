@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FormatOptionsNoLabel } from "../../../utilities/functions/array.functions"
 import { amount } from "../../../utilities/functions/number.funtions"
-import { cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
+import { StrFn, cleanDisplay, isEmpty } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import useYup from "../../../utilities/hooks/useYup"
 import DataInjoin from "../../../utilities/interface/datastack/data.injoin"
@@ -326,9 +326,14 @@ const TransmitInjoin = () => {
         schema: onSchema
     }
 
+    const display = {
+        ...dataSelector.injoiner,
+        title: `${dataSelector.injoiner.title}: ${transferSelector.item.source} to ${transferSelector.item.destination} (REF#${StrFn.formatWithZeros(transferSelector.item.id, 6)})`
+    }
+
     return (
         <DataInjoin
-            display={dataSelector.injoiner}
+            display={display}
             formData={inputFormData}
             fields={onFields}
             change={onChange}
