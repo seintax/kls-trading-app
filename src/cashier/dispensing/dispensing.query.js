@@ -1,6 +1,7 @@
 const handler = require("express-async-handler")
 const { proceed, poolwrap, poolarray, poolalter, poolinject, poolremove, force, mysqlpool } = require("../../utilities/callback.utility")
 const helper = require('./dispensing.helper')
+const getstocks = require('./dispensing.stocks')
 const { Param, Field } = require("../../utilities/builder.utility")
 
 function p(object) {
@@ -74,13 +75,13 @@ const _specify = handler(async (req, res) => {
 })
 
 const byCode = handler(async (req, res) => {
-    const param = helper.parameters(req.query)
-    const { code, id } = helper.fields
+    const param = getstocks.parameters(req.query)
+    const { code, id } = getstocks.fields
     let params = [p(param.code).Exactly()]
     let clause = [f(code).IsEqual()]
     let series = [f(id).Asc()]
     let limits = undefined
-    const builder = helper.inquiry(clause, params, series, limits)
+    const builder = getstocks.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
