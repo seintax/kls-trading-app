@@ -83,6 +83,13 @@ export const momentPST = (value, format = "YYYY-MM-DD HH:mm:ss") => {
     return moment(value).utcOffset(timeZone).format(format)
 }
 
+export const momentPSTShort12 = (value, format = "hh:mm:ss A") => {
+    // production timezone adjustment is based on the 
+    // default timezone of hostinger.com
+    const timeZone = import.meta.env.MODE === "development" ? 900 : 420
+    return moment(value).utcOffset(timeZone).format(format)
+}
+
 export const momentOffset = (value, offset, format = "YYYY-MM-DD HH:mm:ss") => {
     // production timezone adjustment is based on the 
     // default timezone of hostinger.com
