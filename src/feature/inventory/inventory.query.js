@@ -95,14 +95,14 @@ const _specify = handler(async (req, res) => {
 })
 
 const byStocks = handler(async (req, res) => {
-    const param = getbranch.parameters(req.query)
-    const { store, category, stocks, acquisition } = getbranch.fields
-    const { product_name, variant_serial, variant_model, variant_brand } = getbranch.included
+    const param = getstocks.parameters(req.query)
+    const { store, category, stocks, acquisition } = getstocks.fields
+    const { product_name, variant_serial, variant_model, variant_brand } = getstocks.included
     let params = ["0", p(param.branch).Contains(), p(param.category).Exactly(), 'TRANSMIT']
     let clause = [f(stocks).Greater(), f(store).Like(), f(category).IsEqual(), f(acquisition).NotEqual()]
     let series = [f(product_name).Asc(), f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc()]
     let limits = undefined
-    const builder = getbranch.inquiry(clause, params, series, limits)
+    const builder = getstocks.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
@@ -134,7 +134,6 @@ const byProduct = handler(async (req, res) => {
     let series = [f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc()]
     let limits = undefined
     const builder = getstocks.inquiry(clause, params, series, limits)
-    console.log(builder)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
