@@ -13,5 +13,6 @@ router.get('/purchase/search', secure, service._search)
 router.get('/purchase/specify', service._specify)
 router.get('/purchase/bydate', service.byDate)
 router.get('/purchase/byfilter', service.byFilter)
+router.patch('/purchase/bySync', service.bySync)
 
 module.exports = router
