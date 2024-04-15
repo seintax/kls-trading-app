@@ -78,6 +78,14 @@ export const purchaseApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['purchase']
         }),
+        bySyncPurchase: builder.mutation({
+            query: (body) => ({
+                url: `${ENDPOINT_URL}/bySync`,
+                method: 'PATCH',
+                body
+            }),
+            invalidatesTags: ['purchase', 'purchase/id']
+        }),
     })
 })
 
@@ -91,4 +99,5 @@ export const {
     useSpecifyPurchaseMutation,
     useByDatePurchaseMutation,
     useByFilterPurchaseMutation,
+    useBySyncPurchaseMutation,
 } = purchaseApiSlice

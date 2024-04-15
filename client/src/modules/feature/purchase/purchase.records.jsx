@@ -12,7 +12,7 @@ import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
 import { setLogged } from "../../../utilities/redux/slices/utilitySlice"
 import { setPurchaseItem, setPurchaseNotifier, showPurchaseManager } from "./purchase.reducer"
-import { useDeletePurchaseMutation } from "./purchase.services"
+import { useBySyncPurchaseMutation, useDeletePurchaseMutation } from "./purchase.services"
 
 const PurchaseRecords = ({ isLoading, records, setrecords }) => {
     const dataSelector = useSelector(state => state.purchase)
@@ -27,6 +27,7 @@ const PurchaseRecords = ({ isLoading, records, setrecords }) => {
     const delay = useDelay()
 
     const [deletePurchase] = useDeletePurchaseMutation()
+    const [syncPurchase] = useBySyncPurchaseMutation()
 
     const toggleView = async (item, index) => {
         dispatch(setLogged())
@@ -57,10 +58,22 @@ const PurchaseRecords = ({ isLoading, records, setrecords }) => {
         return true
     }
 
+    const toggleSync = async (item) => {
+        await syncPurchase({ id: item.id })
+            .unwrap()
+            .then(res => {
+                if (res.success) {
+                    dispatch(setPurchaseNotifier(true))
+                }
+            })
+            .catch(err => console.error(err))
+    }
+
     const actions = (item, index) => {
         return [
             { type: 'button', trigger: () => toggleView(item, index), label: 'View' },
-            { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
+            { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' },
+            { type: 'button', trigger: () => toggleSync(item), label: 'Sync' }
         ]
     }
 
