@@ -90,7 +90,7 @@ const PrintTransfer = () => {
                                 <div className="w-[300px] text-right">{item.quantity}</div>
                                 <div className="w-[300px] text-right">{item.received}</div>
                                 <div className="w-[300px] text-right">{NumFn.acctg.currency(item.invt_base)}</div>
-                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.received * item.invt_base)}</div>
+                                <div className="w-[300px] text-right">{NumFn.acctg.currency(item.quantity * item.invt_base)}</div>
                             </div>
                         ))
                     }
@@ -99,7 +99,7 @@ const PrintTransfer = () => {
                         <div className="w-[300px] text-right">&nbsp;</div>
                         <div className="w-[300px] text-right">&nbsp;</div>
                         <div className="w-[300px] text-right font-bold">Total</div>
-                        <div className="w-[300px] text-right">{NumFn.acctg.currency(records?.reduce((prev, curr) => prev + ((curr.received || 0) * (curr.invt_base || 0)), 0))}</div>
+                        <div className="w-[300px] text-right">{NumFn.acctg.currency(records?.reduce((prev, curr) => prev + ((curr.quantity || 0) * (curr.invt_base || 0)), 0))}</div>
                     </div>
                 </div>
             </div>

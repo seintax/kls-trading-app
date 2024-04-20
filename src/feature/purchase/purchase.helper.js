@@ -62,6 +62,8 @@ purchase.register("purchase_update_receivable",
                 SELECT SUM(IFNULL(rcvb_ordered,0) * IFNULL(rcvb_rawcost,0)) 
                 FROM pos_purchase_receivable 
                 WHERE rcvb_purchase=pord_id 
+                    AND rcvb_product IS NOT NULL 
+                    AND rcvb_variant IS NOT NULL
             )
         WHERE pord_id=@id`)
 

@@ -167,7 +167,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                         key={row?.key || rowindex}
                                         onClick={row?.onclick}
                                         onDoubleClick={row?.ondoubleclick}
-                                        className={`transition ease-in-out duration-200 ${index + rowindex === active ? "bg-primary-300" : "hover:bg-primary-200"} ${rowstyle}`}
+                                        className={`transition ease-in-out duration-200 ${index + rowindex - 1 === active ? "bg-primary-300" : "hover:bg-primary-200"} ${rowstyle}`}
                                     >
                                         <td className="hidden border-b border-gray-200 pl-6 pr-3 py-4 text-gray-500 lg:table-cell align-top no-select">
                                             {index + rowindex}.
