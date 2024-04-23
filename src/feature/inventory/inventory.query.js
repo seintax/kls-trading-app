@@ -110,13 +110,13 @@ const byStocks = handler(async (req, res) => {
 })
 
 const byTransmit = handler(async (req, res) => {
-    const { branch } = gettransmit.parameters(req.query)
-    const { acquisition, store, stocks, id } = gettransmit.fields
+    const { branch } = getstocks.parameters(req.query)
+    const { acquisition, store, stocks, id } = getstocks.fields
     let params = [p(branch).Contains(), "0", "TRANSMIT"]
     let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).IsEqual()]
     let series = [f(id).Asc()]
     let limits = undefined
-    const builder = gettransmit.inquiry(clause, params, series, limits)
+    const builder = getstocks.inquiry(clause, params, series, limits)
     await poolarray(builder, (err, ans) => {
         if (err) return res.status(401).json(force(err))
         res.status(200).json(proceed(ans, req))
