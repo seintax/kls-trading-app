@@ -20,13 +20,13 @@ const initialState = {
         items: [
             { name: 'Product Name', stack: false, sort: 'product_name' },
             { name: 'Part No.', stack: true, sort: 'variant_serial', size: 150 },
-            { name: 'Supplier', stack: true, sort: 'supplier_name', size: 200 },
+            { name: 'Inventory No.', stack: true, sort: 'supplier_name', size: 200 },
             { name: 'Date', stack: true, sort: 'time', size: 100 },
             { name: 'Category', stack: true, sort: 'category', size: 140 },
             { name: 'Stocks', stack: true, sort: 'stocks', size: 100 },
             { name: 'Cost', stack: true, sort: 'cost', size: 120 },
             { name: 'Price', stack: true, sort: 'price', size: 120 },
-            { name: '', stack: true, sort: 'store', size: 120 },
+            { name: 'Source', stack: true, sort: 'store', size: 120 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     },

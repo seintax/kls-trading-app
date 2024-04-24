@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { cleanDisplay, getBranch } from "../../../utilities/functions/string.functions"
+import { StrFn, cleanDisplay, getBranch } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
@@ -105,7 +105,7 @@ const ReceivingRecords = () => {
         return [
             { value: cleanDisplay(`${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}`) },
             { value: item.variant_serial },
-            { value: item.supplier_name },
+            { value: StrFn.formatWithZeros(item.id, 10) },
             { value: moment(item.time).format("MM-DD-YYYY") },
             { value: item.category },
             { value: `${item.stocks}/${item.received}` },

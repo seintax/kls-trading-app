@@ -10,6 +10,7 @@ import DataHeader from "../../../utilities/interface/datastack/data.header"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import DataOperation from "../../../utilities/interface/datastack/data.operation"
 import DataRecords from '../../../utilities/interface/datastack/data.records'
+import HistoryIndex from "./inventory.history"
 import { resetInventoryStocks, setInventoryItem, showInventoryManager } from "./inventory.reducer"
 import { useByStockRecordInventoryMutation } from "./inventory.services"
 
@@ -61,11 +62,21 @@ const StocksIndex = () => {
         ]
     }
 
+    const toggleHistory = (item) => {
+        dispatch(setInventoryItem(item))
+        dispatch(showInventoryLedger(true))
+    }
+
     const items = (item) => {
         return [
-            { value: cleanDisplay(`${item.product_name} ${item.variant_serial} ${item.variant_model} ${item.variant_brand}`) },
+            {
+                value: <span className="text-blue-500 hover:text-blue-700 cursor-pointer hover:underline">
+                    {cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)}
+                </span>,
+                onclick: () => toggleHistory(item)
+            },
             { value: momentOffset(item.time, 480, "MM-DD-YYYY") },
-            { value: `${item.stocks}/${item.received}` },
+            { value: `${item?.stocks ? item?.stocks : 0}/${item.received}` },
             { value: item.acquisition },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
             {
@@ -103,6 +114,8 @@ const StocksIndex = () => {
     const productName = dataSelector.item.inventory
         ? cleanDisplay(dataSelector.item.inventory)
         : cleanDisplay(`${dataSelector.item.product_name} (${dataSelector.item.category}/${dataSelector.item.variant_serial}/${dataSelector.item.variant_model}/${dataSelector.item.variant_brand})`)
+
+    if (dataSelector.ledger) return <HistoryIndex />
 
     return (
         <div className="w-full flex flex-col gap-5 -mt-5 lg:mt-0">

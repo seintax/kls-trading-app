@@ -4,7 +4,7 @@ import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { shortDate12TimePst } from "../../../utilities/functions/datetime.functions"
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { cleanDisplay, exactSearch, isAdmin, isDev } from "../../../utilities/functions/string.functions"
+import { StrFn, cleanDisplay, exactSearch, isAdmin, isDev } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import usePermissions from "../../../utilities/hooks/usePermissions"
 import useToast from "../../../utilities/hooks/useToast"
@@ -103,19 +103,31 @@ const InventoryRecords = ({ isLoading }) => {
     const items = (item) => {
         return [
             {
-                value: <span className="text-blue-500 hover:text-blue-700 cursor-pointer hover:underline">
-                    {cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)}
-                </span>,
+                value: <div className="flex flex-col">
+                    <span className="text-blue-500 hover:text-blue-700 cursor-pointer hover:underline">
+                        {cleanDisplay(`${item.product_name} ${item.variant_serial} ${item?.variant_model || ""} ${item?.variant_brand || ""}`)}
+                    </span>
+                    <span className="text-sm text-gray-400">
+                        {item.acquisition === "MIGRATION" ? <span className="text-gray-400 italic">Beginning Inventory</span> : item.supplier_name || "-"}
+                    </span>
+                </div>,
                 onclick: () => toggleHistory(item)
             },
             { value: item.variant_serial },
-            { value: item.acquisition === "MIGRATION" ? <span className="text-gray-400 italic">Beginning Inventory</span> : item.supplier_name || "-" },
+            { value: StrFn.formatWithZeros(item.id, 10) },
             { value: shortDate12TimePst(item.time) },
             { value: item.category },
             { value: `${item.stocks}/${item.received}` },
             { value: (isDev(auth) || isAdmin(auth)) ? NumFn.currency(item.cost) : "-" },
             { value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN") ? NumFn.currency(item.price) : item.store === "JT-MAIN" ? "-" : NumFn.currency(item.price) },
-            { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.store}</span> },
+            {
+                value: <div className="flex text-xs px-1 py-0.2 gap-2">
+                    {item.source === "IMPORT" ? "-" : (
+                        <span className="bg-yellow-300 rounded-sm shadow-md">{item.source}</span>
+                    )}
+
+                </div>
+            },
             {
                 value: (isDev(auth) || isAdmin(auth) || auth.store === "JT-MAIN")
                     ? <DataOperation actions={actions(item)} />
