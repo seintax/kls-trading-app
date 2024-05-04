@@ -506,6 +506,25 @@ const reports = {
         ORDER BY inventory,invt_cost,invt_product,invt_variant;
         `
     ),
+    stock_alert: new Query("stock_alert", `
+        SELECT
+            prod_name AS product,
+            CONCAT(IFNULL(vrnt_serial, '-'), '/', IFNULL(vrnt_model, '-'), '/', IFNULL(vrnt_brand, '-')) AS variant,
+            SUM(IFNULL(invt_stocks,0)) AS stocks,
+            vrnt_alert AS alert,
+            invt_category AS category
+        FROM 
+            pos_stock_inventory 
+            LEFT JOIN pos_stock_masterlist 
+                ON prod_id=invt_product 
+            LEFT JOIN lib_variant 
+                ON vrnt_id=invt_variant
+        WHERE 
+            invt_store LIKE '%@store%' AND
+            invt_category LIKE '%@category%' 
+        GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,vrnt_id,invt_category,vrnt_alert
+        ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category,vrnt_alert;
+    `)
 }
 
 module.exports = reports

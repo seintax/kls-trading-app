@@ -10,6 +10,7 @@ const variant = new Table("lib_variant", {
     option2: 'vrnt_option2',
     brand: 'vrnt_brand',
     option3: 'vrnt_option3',
+    alert: 'vrnt_alert',
 }, [
     {
         key: "vrnt_product",

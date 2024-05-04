@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router-dom"
 import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
+import ReportsFormStockAlert from "./report.form.stock-alert"
 import ReportsFormCashierSummary from "./reports.form.cashier-summary"
 import ReportsFormExpenses from "./reports.form.expenses"
 import ReportsFormExpensesSummary from "./reports.form.expenses-summary"
@@ -44,6 +45,7 @@ const ReportsIndex = () => {
                 <ReportsFormCashierSummary />
                 <ReportsFormInventoryValuation />
                 <ReportsFormInventoryReport />
+                <ReportsFormStockAlert />
             </div>
         </div>
     )
