@@ -80,6 +80,7 @@ const dispensing = new Table("pos_sales_dispensing", {
             variant_option2: 'vrnt_option2',
             variant_brand: 'vrnt_brand',
             variant_option3: 'vrnt_option3',
+            variant_alert: 'vrnt_alert',
         }
     },
 ])

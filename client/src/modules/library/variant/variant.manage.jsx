@@ -87,6 +87,7 @@ const VariantManage = () => {
                 option2: init(option2),
                 brand: init(item.brand),
                 option3: init(option3),
+                alert: init(item.alert),
             })
             if (libOptions) {
                 setLibOption1(listboxitem(libOptions, option1))
@@ -110,6 +111,14 @@ const VariantManage = () => {
     const onFields = (errors, register, values, setValue) => {
         return (
             <>
+                <FormEl.Number
+                    label="Stock Alert Level"
+                    register={register}
+                    name='alert'
+                    errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
+                />
                 <FormEl.Listbox
                     label={"Option 1"}
                     register={register}
@@ -188,7 +197,11 @@ const VariantManage = () => {
             .required('Model is required.'),
         brand: yup
             .string()
-            .required('Brand is required.')
+            .required('Brand is required.'),
+        alert: yup
+            .number()
+            .typeError("Stock Alert level is required")
+            .min(0, "Stock Alert level is required"),
     })
 
     const onClose = useCallback(() => {
@@ -208,6 +221,7 @@ const VariantManage = () => {
             option2: JSON.parse(data.option2)?.join("/"),
             model: data.model?.toUpperCase(),
             option3: JSON.parse(data.option3)?.join("/"),
+            alert: data.alert,
             brand: data.brand?.toUpperCase(),
         }
         if (dataSelector.item.id) {

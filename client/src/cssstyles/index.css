@@ -320,3 +320,14 @@ svg.fill-primary>path {
   margin: 0;
   -moz-appearance: textfield;
 }
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.bubble-drop-shadow {
+  filter: drop-shadow(0px 1px 7px #727272)
+}

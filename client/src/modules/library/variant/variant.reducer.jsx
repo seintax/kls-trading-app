@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import AppInformation from "../../../utilities/interface/application/aesthetics/app.information"
 
 const initialState = {
     name: "variant",
@@ -18,6 +19,7 @@ const initialState = {
             { name: 'Serial No.', stack: true, sort: 'serial' },
             { name: 'Model/Make', stack: true, sort: 'model', size: 250 },
             { name: 'Brand/Specs', stack: true, sort: 'brand', size: 250 },
+            { name: <div className="flex gap-2">Alert Level <AppInformation message="Signals critical alert level when item stock is lower that indicated value." /></div>, stack: true, sort: 'alert', size: 250 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
         ]
     }

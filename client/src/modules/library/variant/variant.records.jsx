@@ -63,6 +63,7 @@ const VariantRecords = () => {
             { value: <ItemView main={item.serial} subtext={item?.option1} reverse={true} /> },
             { value: <ItemView main={item.model} subtext={item?.option2} reverse={true} /> },
             { value: <ItemView main={item.brand} subtext={item?.option3} reverse={true} /> },
+            { value: <ItemView main={item.alert} subtext="QTY" reverse={true} /> },
             { value: <DataOperation actions={actions(item)} /> }
         ]
     }

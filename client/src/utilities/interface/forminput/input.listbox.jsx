@@ -69,7 +69,7 @@ export default function Listbox(props) {
             {label && (<StaticLabel name={name} label={label} optional={optional} />)}
             <StaticWrapper>
                 <div className="flex flex-col w-full gap-2">
-                    <div className="w-full min-h-[100px] max-h-[200px] overflow-auto rounded-[5px] border border-1 border-gray-300 flex flex-col">
+                    <div className="w-full min-h-[100px] max-h-[150px] overflow-auto rounded-[5px] border border-1 border-gray-300 flex flex-col">
                         {
                             list?.map((item, index) => (
                                 <div key={index} className="px-2 py-3 flex items-center cursor-pointer hover:bg-gray-300" onClick={() => selectItem(item)}>

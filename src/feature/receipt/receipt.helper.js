@@ -68,6 +68,7 @@ const receipt = new Table("pos_delivery_receipt", {
             variant_option2: 'vrnt_option2',
             variant_brand: 'vrnt_brand',
             variant_option3: 'vrnt_option3',
+            variant_alert: 'vrnt_alert',
         }
     },
     {

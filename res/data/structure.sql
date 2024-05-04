@@ -70,8 +70,11 @@ CREATE TABLE lib_variant (
     vrnt_option2     varchar(50),
     vrnt_model       varchar(99),
     vrnt_option3     varchar(50),
-    vrnt_brand       varchar(99)
+    vrnt_brand       varchar(99),
+    vrnt_alert       int DEFAULT 0
 );
+
+ALTER TABLE lib_variant ADD COLUMN vrnt_alert int DEFAULT 0;
 
 CREATE TABLE lib_inclusion (
     incl_id          int auto_increment primary key,
