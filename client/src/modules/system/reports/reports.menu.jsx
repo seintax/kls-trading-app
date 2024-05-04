@@ -73,7 +73,7 @@ const ReportsMenu = () => {
                 Inventory Report
             </span>
             <span
-                className={`${menuStyle} ${parsedPermissions && parsedPermissions["view-inventory-report"] ? "" : "hidden"}`}
+                className={`${menuStyle} ${parsedPermissions && parsedPermissions["view-stock-alert"] ? "" : "hidden"}`}
                 onClick={() => onSelectReport("Stock Alert")}
             >
                 Stock Alert
