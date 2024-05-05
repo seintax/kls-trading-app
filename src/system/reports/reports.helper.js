@@ -521,7 +521,8 @@ const reports = {
                 ON vrnt_id=invt_variant
         WHERE 
             invt_store LIKE '%@store%' AND
-            invt_category LIKE '%@category%' 
+            invt_category LIKE '%@category%' AND 
+            vrnt_alert > 0 
         GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,vrnt_id,invt_category,vrnt_alert
         ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category,vrnt_alert;
     `)
