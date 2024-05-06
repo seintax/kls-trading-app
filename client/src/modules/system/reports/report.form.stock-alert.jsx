@@ -25,7 +25,7 @@ const ReportsFormStockAlert = () => {
     const [startpage, setstartpage] = useState(1)
     const [showDiscrepancy, setShowDiscrepancy] = useState(false)
     const itemsperpage = 150
-    const [filters, setFilters] = useState({ asof: sqlDate(), store: "JT-MAIN", category: "" })
+    const [filters, setFilters] = useState({ asof: sqlDate(), store: getBranch(auth) || "JT-MAIN", category: "" })
     const [mounted, setMounted] = useState(false)
     const [isPreparing, setIsPreparing] = useState(false)
     useEffect(() => { setMounted(true) }, [])
@@ -46,7 +46,7 @@ const ReportsFormStockAlert = () => {
         }))
     }
 
-    const [libBranchers, setLibBranches] = useState()
+    const [libBranches, setLibBranches] = useState()
     const [libCategories, setLibCategoies] = useState()
 
     const [allBranches] = useFetchAllBranchMutation()
@@ -82,12 +82,19 @@ const ReportsFormStockAlert = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        setLibBranches(res?.arrayResult.map(item => {
-                            return {
-                                key: item.code,
-                                value: item.code
-                            }
-                        }))
+                        if (isEmpty(getBranch(auth))) {
+                            setLibBranches(res?.arrayResult.map(item => {
+                                return {
+                                    key: item.code,
+                                    value: item.code
+                                }
+                            }))
+                            return
+                        }
+                        setLibBranches([{
+                            key: auth.store,
+                            value: auth.store
+                        }])
                     }
                 })
                 .catch(err => {
@@ -191,7 +198,7 @@ const ReportsFormStockAlert = () => {
         if (records?.length) {
             localStorage.setItem("reports", JSON.stringify({
                 title: reportSelector.report,
-                subtext1: `as of: ${moment(filters.asof).format("MMMM DD, YYYY hh:mm A")}`,
+                subtext1: `as of: ${moment(new Date()).format("MMMM DD, YYYY hh:mm A")}`,
                 subtext2: `Branch: ${filters.store || "All"} | Category: ${filters.category || "All"}`,
                 columns: columns,
                 total: total(data),
@@ -233,13 +240,9 @@ const ReportsFormStockAlert = () => {
                         <select name="store" className="report-select-filter text-sm w-full lg:w-[200px]" value={filters.store} onChange={onChange}>
                             {/* <option value="" className="text-gray-500 font-bold">ALL STORES</option> */}
                             {
-                                isEmpty(getBranch(auth))
-                                    ? (
-                                        libBranchers?.map(branch => (
-                                            <option key={branch.key} value={branch.value}>{branch.key}</option>
-                                        ))
-                                    )
-                                    : <option key={auth.store} value={auth.store}>{auth.store}</option>
+                                libBranches?.map(branch => (
+                                    <option key={branch.key} value={branch.value}>{branch.key}</option>
+                                ))
 
                             }
                         </select>
@@ -256,12 +259,18 @@ const ReportsFormStockAlert = () => {
                             <button className="button-red py-2" onClick={() => reLoad()}>
                                 <ArrowPathIcon className="w-5 h-5" />
                             </button>
-                            <button className="button-red py-2" onClick={() => printData()}>
-                                <PrinterIcon className="w-5 h-5" />
-                            </button>
-                            <button className="report-button py-2" onClick={() => exportData()}>
-                                <ArchiveBoxArrowDownIcon className="w-5 h-5" />
-                            </button>
+                            {
+                                isEmpty(getBranch(auth)) ? (
+                                    <>
+                                        <button className="button-red py-2" onClick={() => printData()}>
+                                            <PrinterIcon className="w-5 h-5" />
+                                        </button>
+                                        <button className="report-button py-2" onClick={() => exportData()}>
+                                            <ArchiveBoxArrowDownIcon className="w-5 h-5" />
+                                        </button>
+                                    </>
+                                ) : null
+                            }
                         </div>
                     </div>
                 </div>

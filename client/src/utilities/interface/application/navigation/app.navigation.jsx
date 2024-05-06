@@ -1,9 +1,10 @@
 import { Menu, Transition } from "@headlessui/react"
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
-import { Bars3Icon, BellIcon, TicketIcon } from "@heroicons/react/24/outline"
+import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline"
 import { Fragment, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useLocation } from "react-router-dom"
+import { setReportName, showReportAlert } from "../../../../modules/system/reports/reports.reducer"
 import { StrFn, isDev } from "../../../functions/string.functions"
 import useAuth from "../../../hooks/useAuth"
 import { useDebounce } from "../../../hooks/useDebounce"
@@ -55,6 +56,11 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
             dispatch(setSearchKey(" "))
             dispatch(setSearchKey(""))
         }
+    }
+
+    const toggleAlert = () => {
+        dispatch(setReportName("Stock Alert"))
+        dispatch(showReportAlert())
     }
 
     const branchDisplay = () => {
@@ -116,6 +122,14 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                                                 )}
                                             </Menu.Item>
                                         ))}
+                                        <Menu.Item key={"Stocks Notification"} className="flex lg:hidden">
+                                            <Link
+                                                onClick={() => toggleAlert()}
+                                                className={"block px-4 py-2 text-xs text-gray-700 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200"}
+                                            >
+                                                Stock Alert
+                                            </Link>
+                                        </Menu.Item>
                                         <Menu.Item key={"Sign Out"}>
                                             <Link
                                                 onClick={() => logout()}
@@ -169,16 +183,18 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                             </div>
                         </form>
                     </div>
-                    <button
+                    {/* <button
                         type="button"
                         className="hidden lg:block rounded-full bg-primary-400 border border-white p-[7px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
+                        
                     >
                         <span className="sr-only">View notifications</span>
                         <TicketIcon className="h-5 w-5" aria-hidden="true" />
-                    </button>
+                    </button> */}
                     <button
                         type="button"
                         className="hidden lg:block rounded-full bg-primary-400 border border-white p-[5px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
+                        onClick={() => toggleAlert()}
                     >
                         <span className="sr-only">View notifications</span>
                         <BellIcon className="h-6 w-6" aria-hidden="true" />

@@ -23,7 +23,7 @@ const ReportsFormCashierSummary = () => {
     const [sorted, setsorted] = useState()
     const [startpage, setstartpage] = useState(1)
     const itemsperpage = 150
-    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: isEmpty(getBranch(auth)) ? "" : auth.store })
+    const [filters, setFilters] = useState({ fr: sqlDate(), to: sqlDate(), store: getBranch(auth) || "" })
     const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])

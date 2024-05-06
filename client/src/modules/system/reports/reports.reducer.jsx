@@ -5,6 +5,7 @@ const initialState = {
     report: "",
     manager: false,
     notifier: false,
+    showalert: false,
     cashier: false,
     showmenu: false,
     showitem: false,
@@ -41,6 +42,12 @@ const reportsSlice = createSlice({
         },
         resetReportName: (state) => {
             state.report = ""
+        },
+        showReportAlert: (state) => {
+            state.alert = true
+        },
+        resetReportAlert: (state) => {
+            state.alert = false
         },
         showReportReceipt: (state) => {
             state.receipt = true
@@ -92,6 +99,8 @@ export const {
     showReportMenu,
     setReportName,
     resetReportName,
+    showReportAlert,
+    resetReportAlert,
     showReportReceipt,
     resetReportReceipt,
     showReportCashier,
