@@ -37,7 +37,7 @@ import { useCreateRolesMutation, useFetchAllRolesMutation } from "../system/role
 
 export const userNavigation = [
     { name: "My Profile", href: "/my-profile" },
-    { name: "Activity", href: "/my-activity" },
+    // { name: "Activity", href: "/my-activity" },
 ]
 
 const menulist = (config) => {

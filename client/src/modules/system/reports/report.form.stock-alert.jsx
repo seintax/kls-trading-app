@@ -259,12 +259,18 @@ const ReportsFormStockAlert = () => {
                             <button className="button-red py-2" onClick={() => reLoad()}>
                                 <ArrowPathIcon className="w-5 h-5" />
                             </button>
-                            <button className="button-red py-2" onClick={() => printData()}>
-                                <PrinterIcon className="w-5 h-5" />
-                            </button>
-                            <button className="report-button py-2" onClick={() => exportData()}>
-                                <ArchiveBoxArrowDownIcon className="w-5 h-5" />
-                            </button>
+                            {
+                                isEmpty(getBranch(auth)) ? (
+                                    <>
+                                        <button className="button-red py-2" onClick={() => printData()}>
+                                            <PrinterIcon className="w-5 h-5" />
+                                        </button>
+                                        <button className="report-button py-2" onClick={() => exportData()}>
+                                            <ArchiveBoxArrowDownIcon className="w-5 h-5" />
+                                        </button>
+                                    </>
+                                ) : null
+                            }
                         </div>
                     </div>
                 </div>
