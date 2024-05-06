@@ -14,7 +14,7 @@ import { setLocationPath } from "../../../utilities/redux/slices/locateSlice"
 import { useDistinctBranchMutation } from "../../library/branch/branch.services"
 import { setCategoryData } from "../../library/category/category.reducer"
 import { useFetchAllCategoryMutation } from "../../library/category/category.services"
-import { resetReportCashier, showReportCashier } from "../../system/reports/reports.reducer"
+import { resetReportCashier, setReportName, showReportCashier } from "../../system/reports/reports.reducer"
 import { reloadBrowserDraftCart, removeBrowserCart, resetBrowserCart, resetBrowserManager, resetBrowserTransaction, setBrowserCategory, setBrowserSearch } from "../browser/browser.reducer"
 import { useCreateBrowserBySqlTransactionMutation } from "../browser/browser.services"
 import CasheringLedger from "../cashering/cashering.ledger"
@@ -234,6 +234,7 @@ const CasheringComplexIndex = () => {
     }
 
     const toggleViewReports = () => {
+        dispatch(setReportName("Cashier Summary"))
         dispatch(showReportCashier())
     }
 

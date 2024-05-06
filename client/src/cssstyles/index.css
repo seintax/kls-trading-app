@@ -300,27 +300,6 @@ svg.fill-primary>path {
   font-family: Helvetica, sans-serif;
 }
 
-/* #receipt {
-  display: none;
-}
-
-@media print {
-  #no-print  {
-    display: none;
-  }
-
-  #receipt  {
-    display: flex;
-  }
-} */
-
-.plain-input::-webkit-outer-spin-button,
-.plain-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-  -moz-appearance: textfield;
-}
-
 .triangle-up {
   width: 0;
   height: 0;
@@ -329,5 +308,5 @@ svg.fill-primary>path {
 }
 
 .bubble-drop-shadow {
-  filter: drop-shadow(0px 1px 7px #727272)
+  filter: drop-shadow(0px 1px 7px #727272);
 }

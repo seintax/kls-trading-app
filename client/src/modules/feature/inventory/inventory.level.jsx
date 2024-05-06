@@ -2,21 +2,21 @@ import { Transition } from "@headlessui/react"
 import { ArrowLeftIcon } from "@heroicons/react/20/solid"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import ReportsFormCashierSummary from "../../system/reports/reports.form.cashier-summary"
-import { resetReportCashier, setReportName, showReportManager } from "../../system/reports/reports.reducer"
+import ReportsFormStockAlert from "../../system/reports/report.form.stock-alert"
+import { resetReportAlert, setReportName, showReportManager } from "../../system/reports/reports.reducer"
 
-const CasheringComplexReport = () => {
+const InventoryLevelReport = () => {
     const dataSelector = useSelector(state => state.reports)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
-        if (dataSelector.cashier) setMounted(true)
-    }, [dataSelector.cashier])
+        if (dataSelector.alert) setMounted(true)
+    }, [dataSelector.alert])
 
     useEffect(() => {
         if (mounted) {
-            dispatch(setReportName("Cashier Summary"))
+            dispatch(setReportName("Stock Alert"))
             dispatch(showReportManager())
 
             return () => { }
@@ -24,13 +24,13 @@ const CasheringComplexReport = () => {
     }, [mounted])
 
     const toggleOff = () => {
-        dispatch(resetReportCashier())
+        dispatch(resetReportAlert())
     }
 
     return (
         <>
             <Transition
-                show={dataSelector.cashier}
+                show={dataSelector.alert || false}
                 enter="transition-opacity ease-linear duration-300"
                 enterFrom="opacity-0"
                 enterTo="opacity-100"
@@ -38,7 +38,7 @@ const CasheringComplexReport = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
                 className={`fixed left-16 lg:left-56 top-12 lg:top-24 mt-2 h-full w-full bg-gradient-to-r from-[#00000070] via-[#00000070] to-[#00000040] z-10 flex items-start justify-end`}
-                key="Cashier Summary"
+                key="Stock Alert"
             >
                 <Transition.Child
                     enter="transition ease-in-out duration-500 transform"
@@ -51,14 +51,13 @@ const CasheringComplexReport = () => {
                 >
                     <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4">
                         <ArrowLeftIcon className="w-6 h-6 cursor-pointer" onClick={() => toggleOff()} />
-                        <span>Report</span>
+                        <span>Stock Alert</span>
                     </div>
-                    {/* <ReportsFormSummary /> */}
-                    <ReportsFormCashierSummary />
+                    <ReportsFormStockAlert />
                 </Transition.Child>
             </Transition>
         </>
     )
 }
 
-export default CasheringComplexReport
+export default InventoryLevelReport

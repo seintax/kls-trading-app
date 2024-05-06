@@ -26,6 +26,7 @@ import AppSideMenu from "../../utilities/interface/application/navigation/app.si
 import NotificationContainer from "../../utilities/interface/notification/notification.container"
 import { setOnScrollY, setScrollY } from "../../utilities/redux/slices/utilitySlice"
 import { defaultRole } from "../../utilities/variables/string.variables"
+import InventoryLevelReport from "../feature/inventory/inventory.level"
 import { useUpdateAccountMutation } from "../system/account/account.services"
 import { setSettingsConfig, setSettingsMenus, setSettingsNotifier } from "../system/config/config.reducer"
 import { useByAccountConfigMutation } from "../system/config/config.services"
@@ -266,6 +267,7 @@ const AppIndex = () => {
                 <div ref={refList} className="p-0 lg:p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md relative">
                     <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-0 md:p-4 lg:p-6 text-xs min-h-full flex-none shadow-md bg-red-200">
                         <Outlet />
+                        <InventoryLevelReport />
                     </div>
                     <AppSideMenu
                         sidebarSideMenu={sidebarSideMenu}

@@ -4,6 +4,7 @@ import { Bars3Icon, BellIcon, TicketIcon } from "@heroicons/react/24/outline"
 import { Fragment, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useLocation } from "react-router-dom"
+import { setReportName, showReportAlert } from "../../../../modules/system/reports/reports.reducer"
 import { StrFn, isDev } from "../../../functions/string.functions"
 import useAuth from "../../../hooks/useAuth"
 import { useDebounce } from "../../../hooks/useDebounce"
@@ -55,6 +56,11 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
             dispatch(setSearchKey(" "))
             dispatch(setSearchKey(""))
         }
+    }
+
+    const toggleAlert = () => {
+        dispatch(setReportName("Stock Alert"))
+        dispatch(showReportAlert())
     }
 
     const branchDisplay = () => {
@@ -172,6 +178,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                     <button
                         type="button"
                         className="hidden lg:block rounded-full bg-primary-400 border border-white p-[7px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
+                        onClick={() => toggleAlert()}
                     >
                         <span className="sr-only">View notifications</span>
                         <TicketIcon className="h-5 w-5" aria-hidden="true" />

@@ -226,7 +226,9 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                                     key={totalindex}
                                                     className={`hidden lg:table-cell w-auto py-4 border-b border-gray-200 px-2 text-sm text-gray-900 font-bold ${itemstyle}`}
                                                 >
-                                                    {item.value}
+                                                    <span className={`hidden lg:flex ${setPosition(order && order[totalindex]?.position, false)} ${item?.style}`}>
+                                                        {item?.value}
+                                                    </span>
                                                 </td>
                                             ))
                                         ) : null
