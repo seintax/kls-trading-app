@@ -105,6 +105,30 @@ const PrintPurchase = () => {
                             {print.printedby}
                         </span>
                     </div>
+                    <div className="flex mt-12">
+                        <div className="flex w-full">
+                            <span>Prepared By:</span>
+                            <span className="ml-5"></span>
+                        </div>
+                        <div className="flex w-[300px]">
+                            <span>Received By:</span>
+                            <span className="ml-5"></span>
+                        </div>
+                    </div>
+                    <div className="flex mt-12">
+                        <div className="flex w-full">
+                            <span>1st Checked By:</span>
+                            <span className="ml-5"></span>
+                        </div>
+                        <div className="flex w-[300px]">
+                            <span>Ordered By:</span>
+                            <span className="ml-5"></span>
+                        </div>
+                    </div>
+                    <div className="flex w-full mt-12">
+                        <span>2nd Checked By:</span>
+                        <span className="ml-5"></span>
+                    </div>
                 </div>
             </div>
         </div>
