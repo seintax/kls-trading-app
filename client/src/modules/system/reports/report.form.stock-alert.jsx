@@ -59,12 +59,16 @@ const ReportsFormStockAlert = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        setdata(res.data?.map(item => {
-                            return {
-                                ...item,
-                                level: item.stocks < item.alert ? "Yes" : ""
-                            }
-                        }))
+                        setdata(
+                            res.data
+                                ?.filter(item => Number(item.stocks) <= Number(item.alert))
+                                ?.map(item => {
+                                    return {
+                                        ...item,
+                                        level: item.stocks < item.alert ? "Yes" : ""
+                                    }
+                                })
+                        )
                     }
                 })
                 .catch(err => {

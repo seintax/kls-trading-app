@@ -90,7 +90,7 @@ inventory.register("inventory_update_cost_receivable",
 
 inventory.register("inventory_update_transfer",
     `UPDATE pos_stock_inventory SET 
-        invt_stocks=invt_stocks@operator@qty,
+        invt_stocks=IFNULL(invt_stocks,0)@operator@qty,
         invt_trni_total=(
                 SELECT IFNULL(SUM(trni_quantity),0) 
                 FROM pos_transfer_receipt 
@@ -100,7 +100,7 @@ inventory.register("inventory_update_transfer",
 
 inventory.register("inventory_update_dispensing",
     `UPDATE pos_stock_inventory SET 
-        invt_stocks=invt_stocks@operator@qty,
+        invt_stocks=IFNULL(invt_stocks,0)@operator@qty,
         invt_sold_total=(
                 SELECT IFNULL(SUM(sale_dispense),0) 
                 FROM pos_sales_dispensing 
@@ -110,7 +110,7 @@ inventory.register("inventory_update_dispensing",
 
 inventory.register("inventory_update_deduction_adjustment",
     `UPDATE pos_stock_inventory SET 
-        invt_stocks=invt_stocks-@qty,
+        invt_stocks=IFNULL(invt_stocks,0)-@qty,
         invt_adjt_total=(
                 SELECT IFNULL(SUM(adjt_quantity),0) 
                 FROM pos_stock_adjustment 
@@ -121,7 +121,7 @@ inventory.register("inventory_update_deduction_adjustment",
 
 inventory.register("inventory_update_addition_adjustment",
     `UPDATE pos_stock_inventory SET 
-        invt_stocks=invt_stocks+@qty,
+        invt_stocks=IFNULL(invt_stocks,0)+@qty,
         invt_apnd_total=(
                 SELECT IFNULL(SUM(adjt_quantity),0) 
                 FROM pos_stock_adjustment 
