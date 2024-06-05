@@ -75,10 +75,10 @@ const reports = {
             DATE(sale_time + INTERVAL 8 HOUR) AS day,
             SUM(sale_total) AS gross_sales,
             SUM(rtrn_r_net) AS refunds,
-            SUM(sale_less + sale_markdown) AS discounts,
-            SUM(sale_net) AS net_sales,
-            SUM(sale_dispense * invt_cost) AS goods_cost,
-            SUM(sale_net - (sale_dispense * invt_cost)) AS gross_profit,
+            SUM(IFNULL(sale_less,0) + IFNULL(sale_markdown,0)) AS discounts,
+            SUM(IFNULL(sale_net,0)) AS net_sales,
+            SUM(IFNULL(sale_dispense,0) * IFNULL(invt_cost,0)) AS goods_cost,
+            SUM(IFNULL(sale_net,0) - (IFNULL(sale_dispense,0) * IFNULL(invt_cost,0))) AS gross_profit,
             invt_store AS branch
         FROM 
             pos_sales_dispensing
