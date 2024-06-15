@@ -32,6 +32,7 @@ import PrintInventory from "./modules/system/prints/print.inventory"
 import PrintPurchase from "./modules/system/prints/print.purchase"
 import PrintReceipt from "./modules/system/prints/print.receipt"
 import PrintReports from "./modules/system/prints/print.reports"
+import PrintStatement from "./modules/system/prints/print.statement"
 import PrintTransfer from "./modules/system/prints/print.transfer"
 import ReportsIndex from "./modules/system/reports/reports.index"
 import RolesIndex from "./modules/system/roles/roles.index"
@@ -105,6 +106,11 @@ const AppRoute = () => {
                 <Route path="reports" >
                     <Route index element={<PrintReports />} />
                     <Route path=":id" element={<PrintReports />} />
+                </Route>
+
+                <Route path="statement" >
+                    <Route index element={<PrintStatement />} />
+                    <Route path=":id" element={<PrintStatement />} />
                 </Route>
 
                 <Route path="purchase" >

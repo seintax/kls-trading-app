@@ -90,6 +90,12 @@ const ReportsMenu = () => {
             >
                 Expenses Summary
             </span>
+            <span
+                className={`${menuStyle} ${parsedPermissions && parsedPermissions["view-income-statement"] ? "" : "hidden"}`}
+                onClick={() => onSelectReport("Income Statement")}
+            >
+                Income Statement
+            </span>
             {/* <span
                 className={`${menuStyle} ${parsedPermissions && parsedPermissions["view-daily"] ? "" : "hidden"}`}
                 onClick={() => onSelectReport("Income Statement")}

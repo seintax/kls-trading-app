@@ -111,6 +111,11 @@ export const cleanDisplay = (value) => {
     return formatted
 }
 
+
+export function StringHash(str) {
+    return str ? [..."abcdefghijklmnopqrsuvwxyz0123456789"].map((e, i, a) => a[Math.floor(Math.random() * a.length)]).join('') : ""
+}
+
 const formatWithZeros = (str, maxcount) => {
     if (str) {
         let maxlen = Number(maxcount) - str?.toString().length

@@ -76,6 +76,30 @@ export function lastDayOfWeekByDate(datevalue, format = "") {
     return moment(datevalue).add(index, 'days').format(format)
 }
 
+export function firstDayOfTheMonth(datevalue) {
+    let date = new Date(datevalue)
+    return new Date(date.getFullYear(), date.getMonth(), 1)
+}
+
+export function lastDayOfTheMonth(datevalue) {
+    let date = new Date(datevalue)
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+}
+
+export function checkForSeparateMonths(date1, date2) {
+    const mo1 = moment(date1).format("MMMM, YYYY")
+    const mo2 = moment(date2).format("MMMM, YYYY")
+    return mo1 === mo2
+}
+
+export function uniqueMonthFromDates(date2) {
+    return moment(date2).format("MMMM, YYYY")
+}
+
+export function uniqueYearFromDates(date2) {
+    return moment(date2).format("YYYY")
+}
+
 export const momentPST = (value, format = "YYYY-MM-DD HH:mm:ss") => {
     // production timezone adjustment is based on the 
     // default timezone of hostinger.com

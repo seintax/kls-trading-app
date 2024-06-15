@@ -578,6 +578,29 @@ CREATE TABLE pos_shift_rcd (
     crcd_total       decimal(30,2)
 );
 
+CREATE TABLE pos_income_statement (
+    incm_id          int auto_increment primary key,
+    incm_time        timestamp DEFAULT now(),
+    incm_beg         date,
+    incm_end         date,
+    incm_month       varchar(30),
+    incm_year        int,
+    incm_noofdays    int,
+    incm_store       varchar(50),
+    incm_category    varchar(75),
+    incm_data        text,
+    incm_inventory   decimal(30,2),
+    incm_by          int
+)
+
+CREATE TABLE pos_income_statement_print (
+    prnt_id          int auto_increment primary key,
+    prnt_time        timestamp DEFAULT now(),
+    prnt_hash        text,
+    prnt_data        text,
+    prnt_by          int
+)
+
 DELETE FROM pos_sales_transaction;
 DELETE FROM pos_sales_dispensing;
 DELETE FROM pos_sales_credit;

@@ -36,6 +36,9 @@ const config = require('./src/system/config/config.route')
 
 const complex = require('./src/complex/complex.route')
 const reports = require('./src/system/reports/reports.route')
+const income = require('./src/system/income/income.route')
+const statement = require("./src/feature/statement/statement.route")
+const prints = require("./src/feature/prints/prints.route")
 const dashboard = require('./src/system/dashboard/dashboard.route')
 const migrate = require('./src/system/migrate/migrate.route')
 
@@ -73,6 +76,9 @@ module.exports = {
     config,
     complex,
     reports,
+    income,
+    statement,
+    prints,
     dashboard,
     migrate
 }

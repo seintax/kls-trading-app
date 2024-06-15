@@ -62,6 +62,9 @@ app.use('/app', approutes.config)
 
 app.use('/app', approutes.complex)
 app.use('/app', approutes.reports)
+app.use('/app', approutes.income)
+app.use('/app', approutes.statement)
+app.use('/app', approutes.prints)
 app.use('/app', approutes.dashboard)
 app.use('/app', approutes.migrate)
 

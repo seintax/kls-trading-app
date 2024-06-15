@@ -229,8 +229,8 @@ export default function AppSideBar({ sidebarSideMenu, setSidebarSideMenu, setSid
                     key={`navSkel${num}`}
                     className="text-black hover:bg-gradient-to-b border border-transparent group flex items-center px-1.5 lg:px-2 py-2.5 text-xs font-medium rounded-md gap-3"
                 >
-                    <span className="skeleton-loading-rounded w-8"></span>
-                    <div className="skeleton-loading"></div>
+                    <span className="skeleton-loading lg:w-8"></span>
+                    <div className="lg:skeleton-loading"></div>
                 </div>
             ))
         )
