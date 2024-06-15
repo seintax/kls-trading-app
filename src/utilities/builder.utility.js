@@ -57,6 +57,10 @@ class Field {
         return `(${option.join(" OR ")})`
     }
 
+    CanBeNull(val = undefined) {
+        return this.value ? `${this.value} ${val ? `= '${val}'` : "IS NULL"}` : ""
+    }
+
     IsEqual(val = undefined) {
         return this.value ? `${this.value} = ${val ? `'${val}'` : "?"}` : ""
     }
@@ -356,7 +360,9 @@ class Table {
                     conditions.push(request[prop])
                     continue
                 }
-                fields.push(`${this.fields.props_[prop]}=?`)
+                if (request[prop]) {
+                    fields.push(`${this.fields.props_[prop]}=?`)
+                }
                 parameters.push(request[prop])
             }
         }

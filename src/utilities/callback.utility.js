@@ -10,6 +10,12 @@ const proceed = (json, req) => {
     return { success: true, ...json }
 }
 
+const distinct = (res, req) => {
+    let data = { data: res?.length === 1 ? res[0] : res }
+    if (req.auth) return { success: true, ...data, length: res.length, authorized: req?.auth?.id ? true : false }
+    return { success: true, ...data, length: res.length }
+}
+
 const sqlerror = (err) => {
     return process.env.NODE_ENV === "development" ? err : {
         message: `SQL_${err.code}`,
@@ -50,7 +56,7 @@ const poolwrap = handler(async (param, callback) => {
 
 const poolarray = handler(async (param, callback) => {
     my.pool.query(param.sql, param.arr, async (err, ans) => {
-        if (err) throw new Error(err)
+        if (err) return callback(sqlerror(err))
         return callback(null, { recordCount: ans.length || 0, arrayResult: param?.fnc(param.aka, ans) })
     })
 })
@@ -60,6 +66,7 @@ const mysqlpool = my.pool
 module.exports = {
     force,
     proceed,
+    distinct,
     poolinject,
     poolalter,
     poolremove,

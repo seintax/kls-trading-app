@@ -10,6 +10,7 @@ const initialState = {
     showmenu: false,
     showitem: false,
     showledger: false,
+    showincome: false,
     receipt: false,
     transaction: {},
     inventory: {},
@@ -76,6 +77,9 @@ const reportsSlice = createSlice({
         setReportShowLedger: (state, action) => {
             state.showledger = action.payload
         },
+        setReportShowIncome: (state, action) => {
+            state.showincome = action.payload
+        },
         setReportNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -88,6 +92,7 @@ const reportsSlice = createSlice({
             state.showmenu = false
             state.showitem = false
             state.showledger = false
+            state.showincome = false
             state.receipt = false
         }
     }
@@ -113,6 +118,7 @@ export const {
     setReportFilter,
     setReportShowItem,
     setReportShowLedger,
+    setReportShowIncome,
     resetReport
 } = reportsSlice.actions
 
