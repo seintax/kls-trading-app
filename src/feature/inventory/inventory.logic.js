@@ -13,7 +13,7 @@ const sqlAcquire = handler(async (req, res) => {
                 const builder = getbranch.update(req.body.inventory)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => resolve(err))
-                    resolve({ occurence: "updateInventory", updateResult: { id: req.body.inventory.id, ans, sql: builder.sql, arr: builder.arr } })
+                    resolve({ occurence: "updateInventory", updateResult: { id: req.body.inventory.id, ans } })
                 })
             })
 
@@ -21,7 +21,7 @@ const sqlAcquire = handler(async (req, res) => {
                 const builder = gettransmit.update(req.body.transmit)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => resolve(err))
-                    resolve({ occurence: "updateTransmit", updateResult: { id: req.body.transmit.id } })
+                    resolve({ occurence: "updateTransmit", updateResult: { id: req.body.transmit.id, ans } })
                 })
             })
 
@@ -33,7 +33,7 @@ const sqlAcquire = handler(async (req, res) => {
                     })
                 await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => resolve(err))
-                    resolve({ occurence: "runningTransfer", updateResult: { id: req.body.transfer.id, alterated: ans.affectedRows } })
+                    resolve({ occurence: "runningTransfer", updateResult: { id: req.body.transfer.id, ans } })
                 })
             })
             let result = {
