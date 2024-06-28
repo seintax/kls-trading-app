@@ -20,6 +20,15 @@ const initialState = {
     settlement: false,
     enablewaive: false,
     enablecredit: false,
+    header: {
+        items: [
+            { name: 'Payment Type', stack: false, sort: 'type' },
+            { name: 'Mode', stack: true, sort: 'method', size: 150 },
+            { name: 'Reference #', stack: true, sort: 'refcode', size: 300 },
+            { name: 'Dated', stack: true, sort: 'refdate', size: 150 },
+            { name: 'Amount', stack: true, sort: 'amount', size: 190 },
+        ]
+    }
 }
 
 const paymentSlice = createSlice({

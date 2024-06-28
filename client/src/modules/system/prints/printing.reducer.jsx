@@ -47,7 +47,8 @@ const test = {
         amount: 200
     },
     total: 5400,
-    cash: 6000,
+    mode: "SALES",
+    payment: 6000,
     change: 600,
     reprint: false,
 

@@ -11,13 +11,15 @@ import useAuth from "../../../utilities/hooks/useAuth"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from "../../../utilities/interface/datastack/data.operation"
 import { useDistinctBranchMutation } from "../../library/branch/branch.services"
-import { useByCodeDispensingMutation, useByCodeReturnedMutation } from "../browser/browser.services"
+import { useByCodeDispensingMutation, useByCodePaymentMutation, useByCodeReturnedMutation } from "../browser/browser.services"
 import { resetCreditItem, setCreditItem, setCreditNotifier } from "../credit/credit.reducer"
 import { useByFirstCreditMutation, useByOngoingCreditMutation } from "../credit/credit.services"
+import CasheringLedgerPayment from "./cashering.ledger.payment"
 import CasheringLedgerPurchase from "./cashering.ledger.purchase"
 import CasheringLedgerReturned from "./cashering.ledger.returned"
 import { resetTransactionLedger } from "./cashering.reducer"
 import { setDispensingData, setDispensingItem, setDispensingNotifier, showDispensingManager } from "./dispensing.reducer"
+import { setPaymentData, setPaymentNotifier } from "./payment.reducer"
 import { setReimburseTotal, showReimburseManager } from "./reimburse.reducer"
 import { setReturnedData, setReturnedNotifier } from "./returned.reducer"
 
@@ -32,7 +34,7 @@ const CasheringLedger = () => {
     const dispatch = useDispatch()
     const [branch, setBranch] = useState()
     const [records, setrecords] = useState()
-    const [credits, setCredits] = useState()
+    const [payments, setPayments] = useState()
     const [sorted, setsorted] = useState()
     const [tab, setTab] = useState("DISPENSE")
     const columns = dispensingSelector.header
@@ -40,6 +42,7 @@ const CasheringLedger = () => {
 
     const [distinctBranch] = useDistinctBranchMutation()
     const [firstCredit] = useByFirstCreditMutation()
+    const [byCodePayment, { isLoading: paymentLoading }] = useByCodePaymentMutation()
     const [byCodeDispensing, { isLoading: dispensedLoading }] = useByCodeDispensingMutation()
     const [byCodeReturned, { isLoading: returnedLoading }] = useByCodeReturnedMutation()
     const [byOngoingCredit] = useByOngoingCreditMutation()
@@ -61,6 +64,16 @@ const CasheringLedger = () => {
 
     useEffect(() => {
         const instantiate = async () => {
+            await byCodePayment({ code: dataSelector.item.code })
+                .unwrap()
+                .then(res => {
+                    if (res.success) {
+                        setPayments(res?.arrayResult)
+                        dispatch(setPaymentData(res?.arrayResult))
+                        dispatch(setPaymentNotifier(false))
+                    }
+                })
+                .catch(err => console.error(err))
             await byCodeDispensing({ code: dataSelector.item.code })
                 .unwrap()
                 .then(res => {
@@ -238,9 +251,12 @@ const CasheringLedger = () => {
                 amount: amount(dataSelector.item.less) + amount(dataSelector.item.markdown)
             },
             total: dataSelector.item.net,
-            cash: dataSelector.item.method === 'CREDIT'
-                ? dataSelector.item.partial
-                : dataSelector.item.tended,
+            mode: dataSelector.item.method,
+            payment: payments?.reduce((prev, curr) => prev + amount(curr.amount), 0),
+            // cash: dataSelector.item.method === 'CREDIT'
+            //     ? dataSelector.item.partial
+            //     : dataSelector.item.tended,
+            partial: dataSelector.item.partial,
             change: dataSelector.item.change,
             credit: credit,
             reprint: true
@@ -326,6 +342,8 @@ const CasheringLedger = () => {
                         </div>
                     </div>
                     <div className="w-full h-full overflow-y-scroll px-5 pb-5 lg:pb-12 bg-gray-300">
+                        <div className="pt-5 px-3 text-sm md:text-base">Payment:</div>
+                        <CasheringLedgerPayment />
                         <div className="pt-5 px-3 text-sm md:text-base">Returned:</div>
                         <CasheringLedgerReturned />
                         <div className="pt-5 px-3 text-sm md:text-base">Purchased:</div>
