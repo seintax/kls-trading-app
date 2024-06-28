@@ -74,7 +74,7 @@ const acctgMonetize = (value) => {
 }
 
 const acctgFloat = (value) => {
-    return formatted = value ? floatFormat.format(amount(value) || 0) : "-"
+    return value ? floatFormat.format(amount(value) || 0) : "-"
 }
 
 const acctgPercent = (value) => {

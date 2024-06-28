@@ -91,12 +91,20 @@ const PrintReceipt = () => {
                                     (dataSelector.print?.items?.map((item, index) => (
                                         <div key={index} className="flex flex-col">
                                             <div className=" flex">
-                                                <div className="w-full">
-                                                    {item.product} <br /> {item.quantity} x {currency(item.price)}
+                                                <div className="flex flex-col w-full text-[11px]">
+                                                    <div className="w-full">{item.product}</div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-[10px]">
+                                                            {item.quantity} x {currency(item.price)}
+                                                        </span>
+                                                        <span className="text-[11px]">
+                                                            {currency(item.total)}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex w-[100px] justify-end">
+                                                {/* <div className="flex w-[100px] justify-end">
                                                     {currency(item.total)}
-                                                </div>
+                                                </div> */}
                                             </div>
                                             <div className={`${item.less > 0 ? "flex" : "hidden"} justify-between`}>
                                                 <div className="w-full text-right">
@@ -121,17 +129,33 @@ const PrintReceipt = () => {
                                 <span>Total</span>
                                 <span>{currency(dataSelector.print.total)}</span>
                             </div>
-                            <div className="w-full flex justify-between my1 text-xs pr-3">
-                                <span>Cash</span>
-                                <span>{currency(dataSelector.print.cash)}</span>
-                            </div>
+                            {
+                                dataSelector.print.mode === "SALES" ? (
+                                    <div className="w-full flex justify-between my1 text-xs pr-3">
+                                        <span>Payment</span>
+                                        <span>{currency(dataSelector.print.payment)}</span>
+                                    </div>
+                                ) : null
+                            }
+                            {
+                                dataSelector.print.mode === "CREDIT" ? (
+                                    <div className="w-full flex justify-between my-1 mb-3 text-xs pr-3">
+                                        <span>Credit</span>
+                                        <span>{currency(dataSelector.print.credit)}</span>
+                                    </div>
+                                ) : null
+                            }
+                            {
+                                dataSelector.print.mode === "CREDIT" ? (
+                                    <div className="w-full flex justify-between my-1 mb-3 text-xs pr-3">
+                                        <span>Partial</span>
+                                        <span>{currency(dataSelector.print.partial)}</span>
+                                    </div>
+                                ) : null
+                            }
                             <div className="w-full flex justify-between my-1 text-xs pr-3">
                                 <span>Change</span>
                                 <span>{currency(dataSelector.print.change)}</span>
-                            </div>
-                            <div className="w-full flex justify-between my-1 mb-3 text-xs pr-3">
-                                <span>Credit</span>
-                                <span>{currency(dataSelector.print.credit)}</span>
                             </div>
                             <div className="w-full border border-t-black border-dashed"></div>
                             <div className="font-normal text-center my-3 mb-3">

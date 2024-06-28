@@ -2,7 +2,7 @@ import React from 'react'
 
 const DataPagination = ({ itemsperpage, totalitems, itemcount, page, pages, setPage, keep, scrollToTop }) => {
     const lastItemIndex = page * itemsperpage
-    const firstItemIndex = lastItemIndex - itemsperpage
+    const firstItemIndex = lastItemIndex - itemsperpage || 0
 
     const firstPage = () => {
         if (page > 1) {

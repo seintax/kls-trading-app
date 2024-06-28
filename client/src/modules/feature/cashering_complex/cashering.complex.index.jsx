@@ -483,7 +483,9 @@ const CasheringComplexIndex = () => {
                                         amount: amount(summary.discount) + amount(summary.markdown)
                                     },
                                     total: summary.net,
-                                    cash: credit > 0 ? partial : tended,
+                                    mode: paymentSelector.method,
+                                    payment: paymentSelector?.paid?.reduce((prev, curr) => prev + amount(curr.amount), 0),
+                                    partial: partial,
                                     change: change,
                                     credit: credit
                                 }

@@ -12,15 +12,15 @@ const sqlAcquire = handler(async (req, res) => {
             let updateInventory = await new Promise(async (resolve, reject) => {
                 const builder = getbranch.update(req.body.inventory)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
-                    resolve({ occurence: "updateInventory", updateResult: { id: req.body.inventory.id } })
+                    if (err) con.rollback(() => resolve(err))
+                    resolve({ occurence: "updateInventory", updateResult: { id: req.body.inventory.id, ans, sql: builder.sql, arr: builder.arr } })
                 })
             })
 
             let updateTransmit = await new Promise(async (resolve, reject) => {
                 const builder = gettransmit.update(req.body.transmit)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
+                    if (err) con.rollback(() => resolve(err))
                     resolve({ occurence: "updateTransmit", updateResult: { id: req.body.transmit.id } })
                 })
             })
@@ -32,7 +32,7 @@ const sqlAcquire = handler(async (req, res) => {
                         id: req.body.transfer.id,
                     })
                 await con.query(sql, async (err, ans) => {
-                    if (err) con.rollback(() => reject(err))
+                    if (err) con.rollback(() => resolve(err))
                     resolve({ occurence: "runningTransfer", updateResult: { id: req.body.transfer.id, alterated: ans.affectedRows } })
                 })
             })

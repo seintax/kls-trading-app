@@ -362,8 +362,8 @@ class Table {
                 }
                 if (request[prop]) {
                     fields.push(`${this.fields.props_[prop]}=?`)
+                    parameters.push(request[prop])
                 }
-                parameters.push(request[prop])
             }
         }
         if (!this.fields.props_.id) throw new Error("The 'id' property is missing.")
