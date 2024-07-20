@@ -601,6 +601,14 @@ CREATE TABLE pos_income_statement_print (
     prnt_by          int
 )
 
+CREATE TABLE sys_notification (
+    ntfy_id         int auto_increment primary key,
+    ntfy_date       date,
+    ntfy_type       varchar(20),
+    ntfy_message    text,
+    ntfy_url        text
+);
+
 DELETE FROM pos_sales_transaction;
 DELETE FROM pos_sales_dispensing;
 DELETE FROM pos_sales_credit;

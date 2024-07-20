@@ -20,6 +20,7 @@ import { isDev, isEmpty, isYes } from "../../utilities/functions/string.function
 import useAuth from "../../utilities/hooks/useAuth"
 import useAuthenticate from "../../utilities/hooks/useAuthenticate"
 import useLogout from "../../utilities/hooks/useLogout"
+import useStockAlert from "../../utilities/hooks/useStockAlert"
 import AppBreadcrumbs from "../../utilities/interface/application/aesthetics/app.breadcrumb"
 import AppSideBar from "../../utilities/interface/application/navigation/app.sidebar"
 import AppSideMenu from "../../utilities/interface/application/navigation/app.sidemenu"
@@ -97,6 +98,7 @@ const AppIndex = () => {
     const { logout } = useLogout()
     const refList = useRef()
     const auth = useAuth()
+    const alert = useStockAlert()
 
     const [allRoles, { isLoading: rolesLoading }] = useFetchAllRolesMutation()
     const [allPermissions, { isLoading: permissionsLoading }] = useFetchAllPermissionMutation()
@@ -227,9 +229,13 @@ const AppIndex = () => {
         if (auth.role && roleSelector.cache.length) {
             let matchRoles = roleSelector.cache.filter(f => f.name === auth.role)
             let matched = matchRoles.length ? matchRoles[0] : undefined
+            let permission = JSON.parse(matched?.permission)
+            if (permission["system-config"]["stock-notification"]) {
+                alert.validate()
+            }
             dispatch(setRolesAccess({
                 ...matched,
-                permission: JSON.parse(matched?.permission)
+                permission: permission
             }))
         }
     }, [auth, roleSelector.cache])

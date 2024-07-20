@@ -2,8 +2,9 @@ import { Menu, Transition } from "@headlessui/react"
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline"
 import { Fragment, useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Link, useLocation } from "react-router-dom"
+import { setNotificationNotify } from "../../../../modules/system/notification/notification.reducer"
 import { setReportName, showReportAlert } from "../../../../modules/system/reports/reports.reducer"
 import { StrFn, isDev } from "../../../functions/string.functions"
 import useAuth from "../../../hooks/useAuth"
@@ -23,6 +24,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
         service: ""
     })
     const debounceSearch = useDebounce(text, 700)
+    const notifySelector = useSelector(state => state.notification)
     const dispatch = useDispatch()
     const location = useLocation()
 
@@ -61,6 +63,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
     const toggleAlert = () => {
         dispatch(setReportName("Stock Alert"))
         dispatch(showReportAlert())
+        viewAlertNotification()
     }
 
     const branchDisplay = () => {
@@ -68,6 +71,12 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
         if (auth.role === "SysAd" && auth.store === "SysAd") return "System Administrator"
         if (auth.store === "SysAd") return "Back Office"
         if (auth.store.includes("JT-")) return `Jally Trading - ${StrFn.properCase(auth.store?.replace("JT-", ""))} Branch`
+    }
+
+    const viewAlertNotification = () => {
+        dispatch(setNotificationNotify(false))
+        const notifyversion = localStorage.getItem("notify") || 0
+        if (notifyversion) localStorage.setItem("notify", notifyversion?.replace("NEW", "VIEWED"))
     }
 
     return (
@@ -191,14 +200,23 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                         <span className="sr-only">View notifications</span>
                         <TicketIcon className="h-5 w-5" aria-hidden="true" />
                     </button> */}
-                    <button
-                        type="button"
-                        className="hidden lg:block rounded-full bg-primary-400 border border-white p-[5px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500 ml-2.5"
-                        onClick={() => toggleAlert()}
-                    >
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    <div className="flex justify-center ml-2.5 p-2 relative isolate">
+                        <button
+                            type="button"
+                            className="hidden lg:block rounded-full bg-primary-400 border border-white p-[5px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500"
+                            onClick={() => toggleAlert()}
+                        >
+                            <span className="sr-only">View notifications</span>
+                            <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        </button>
+                        {
+                            notifySelector.notify ? (
+                                <span className="font-bold text-white bg-red-400 px-1 rounded-sm absolute bottom-0 text-[10px] blinking-text">
+                                    ALERT
+                                </span>
+                            ) : null
+                        }
+                    </div>
                 </div>
             </div>
         </div>

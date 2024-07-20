@@ -8,10 +8,12 @@ const path = require("path")
 const express = require("express")
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
+const cron = require('node-cron')
 
 const errors = require('./res/errors/errors')
 const corsoptions = require('./res/secure/options')
 const approutes = require('./routes')
+const { createNotification } = require("./src/utilities/worker.utility")
 
 const port = process.env.API_PORT || 5201
 
@@ -66,7 +68,9 @@ app.use('/app', approutes.income)
 app.use('/app', approutes.statement)
 app.use('/app', approutes.prints)
 app.use('/app', approutes.dashboard)
+app.use('/app', approutes.notification)
 app.use('/app', approutes.migrate)
+app.use('/app', approutes.test)
 
 app.all('*', (req, res) => {
     if (req.accepts('html')) {
@@ -83,6 +87,10 @@ app.all('*', (req, res) => {
 
 app.use(errors.notFound)
 app.use(errors.errhandler)
+
+cron.schedule('30 6 * * *', () => {
+    createNotification()
+})
 
 app.listen(port, () => {
     let wifi = os.networkInterfaces()['Wi-Fi']

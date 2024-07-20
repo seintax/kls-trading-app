@@ -29,6 +29,7 @@ import variantReducer from "../../modules/library/variant/variant.reducer"
 import accountReducer from "../../modules/system/account/account.reducer"
 import settingsReducer from "../../modules/system/config/config.reducer"
 import expensesReducer from "../../modules/system/expenses/expenses.reducer"
+import notificationReducer from "../../modules/system/notification/notification.reducer"
 import permissionReducer from "../../modules/system/permission/permission.reducer"
 import printingReducer from "../../modules/system/prints/printing.reducer"
 import reportsReducer from "../../modules/system/reports/reports.reducer"
@@ -81,6 +82,7 @@ const store = configureStore({
         printing: printingReducer,
         dashboard: dashboardReducer,
         price: priceReducer,
+        notification: notificationReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(apiSlice.middleware),
     devTools: true
