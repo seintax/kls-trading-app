@@ -278,7 +278,7 @@ const ReportsFormStockAlert = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex w-full gap-2 mt-4 overflow-x-auto lg:overflow-x-none">
+                <div className="flex w-full gap-2 mt-4 min-h-[70px] overflow-x-auto lg:overflow-x-none">
                     {
                         Array.from({ length: 2 }, (_, i) => i + 4)?.map(n => (
                             <div key={n} className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
