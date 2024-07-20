@@ -88,7 +88,8 @@ app.all('*', (req, res) => {
 app.use(errors.notFound)
 app.use(errors.errhandler)
 
-cron.schedule('30 6 * * *', () => {
+// vercel time 10:30PM is equivalent to 6:30AM PHT
+cron.schedule('30 22 * * *', () => {
     createNotification()
 })
 
