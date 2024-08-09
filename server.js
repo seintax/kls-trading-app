@@ -89,11 +89,12 @@ app.use(errors.notFound)
 app.use(errors.errhandler)
 
 // vercel time 10:30PM is equivalent to 6:30AM PHT
-cron.schedule('30 22 * * *', () => {
+const task = cron.schedule('30 22 * * *', () => {
     createNotification()
 })
 
 app.listen(port, () => {
+    task.start()
     let wifi = os.networkInterfaces()['Wi-Fi']
     let ether = os.networkInterfaces()['Ethernet']
     let ip = "localhost"

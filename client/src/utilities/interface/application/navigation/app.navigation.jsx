@@ -99,11 +99,18 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                             </div>
                             <Menu as="div" className="relative">
                                 <div>
-                                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-whitefocus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                                         <span className="sr-only">Open user menu</span>
-                                        <span className="h-9 w-9 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-[50%] flex items-center justify-center text-lg font-bold border border-1 border-white text-white hover:from-primary-400 hover:to-secondary-400 uppercase">
+                                        <span className="h-9 w-9 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-[50%] flex items-center justify-center text-lg font-bold border border-1 border-white text-white hover:from-primary-400 hover:to-secondary-400 uppercase text-sm ">
                                             {auth?.name?.slice(0, 1) || "U"}
                                         </span>
+                                        {
+                                            notifySelector.notify ? (
+                                                <span className="flex lg:hidden font-bold text-white bg-red-400 px-1 rounded-sm absolute -bottom-1 text-[10px] blinking-text">
+                                                    ALERT
+                                                </span>
+                                            ) : null
+                                        }
                                     </Menu.Button>
                                 </div>
                                 <Transition
@@ -123,7 +130,7 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                                                         to={item.href ? item.href : undefined}
                                                         className={classNames(
                                                             active ? "bg-gray-100" : "",
-                                                            "block px-4 py-2 text-xs text-gray-700 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200"
+                                                            "block px-4 py-2 text-xs text-gray-700 hover:bg-gradient-to-b hover:from-primary-300 hover:via-priamry-300 hover:to-primary-200"
                                                         )}
                                                     >
                                                         {item.name}
@@ -134,15 +141,15 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                                         <Menu.Item key={"Stocks Notification"} className="flex lg:hidden">
                                             <Link
                                                 onClick={() => toggleAlert()}
-                                                className={"block px-4 py-2 text-xs text-gray-700 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200"}
+                                                className={"block px-4 py-2 text-xs text-gray-700 hover:bg-gradient-to-b hover:from-primary-300 hover:via-priamry-300 hover:to-primary-200"}
                                             >
-                                                Stock Alert
+                                                Stock Alert <span className={`ml-3 text-[7px] bg-yellow-300 px-1 rounded-sm shadow-xl uppercase font-bold ${notifySelector.notify ? "" : "hidden"}`}>Critical</span>
                                             </Link>
                                         </Menu.Item>
                                         <Menu.Item key={"Sign Out"}>
                                             <Link
                                                 onClick={() => logout()}
-                                                className={"block px-4 py-2 text-xs text-gray-700 hover:bg-gradient-to-b hover:from-white hover:via-white hover:to-primary-200"}
+                                                className={"block px-4 py-2 text-xs text-gray-700 hover:bg-gradient-to-b hover:from-primary-300 hover:via-priamry-300 hover:to-primary-200"}
                                             >
                                                 Sign Out
                                             </Link>
@@ -200,10 +207,10 @@ export default function AppNavigation({ userNavigation, handleSidebarOpen, sideb
                         <span className="sr-only">View notifications</span>
                         <TicketIcon className="h-5 w-5" aria-hidden="true" />
                     </button> */}
-                    <div className="flex justify-center ml-2.5 p-2 relative isolate">
+                    <div className="hidden lg:flex justify-center ml-2.5 px-2 relative isolate">
                         <button
                             type="button"
-                            className="hidden lg:block rounded-full bg-primary-400 border border-white p-[5px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500"
+                            className="rounded-full bg-primary-400 border border-white p-[5px] text-primary-700 hover:bg-primary-500 focus:outline-none focus:bg-primary-500"
                             onClick={() => toggleAlert()}
                         >
                             <span className="sr-only">View notifications</span>

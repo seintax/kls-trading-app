@@ -230,7 +230,8 @@ const AppIndex = () => {
             let matchRoles = roleSelector.cache.filter(f => f.name === auth.role)
             let matched = matchRoles.length ? matchRoles[0] : undefined
             let permission = JSON.parse(matched?.permission)
-            if (permission["system-config"]["stock-notification"]) {
+            let sysconfig = permission["system-config"]
+            if (sysconfig && sysconfig.hasOwnProperty("stock-notification") && permission["system-config"]["stock-notification"]) {
                 alert.validate()
             }
             dispatch(setRolesAccess({
