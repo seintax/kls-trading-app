@@ -37,7 +37,12 @@ const secure = handler(async (req, res, next) => {
             })
         }
         catch (err) {
-            console.error(err)
+            if (JSON.stringify(err).includes("jwt expired")) {
+                console.error("Session Expired")
+            }
+            else {
+                console.error(err)
+            }
             res.status(401)
             throw new Error('Unauthorized: Token failed.')
         }
