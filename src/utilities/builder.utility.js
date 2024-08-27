@@ -325,7 +325,7 @@ class Table {
         const fields = []
         const values = []
         for (const prop in this.fields.props_) {
-            if (request[prop] !== null) {
+            if (request[prop] || request[prop] === 0) {
                 parameters.push(request[prop])
                 fields.push(this.fields.props_[prop])
                 values.push("?")
@@ -360,7 +360,7 @@ class Table {
                     conditions.push(request[prop])
                     continue
                 }
-                if (request[prop] !== null) {
+                if (request[prop] || request[prop] === 0) {
                     fields.push(`${this.fields.props_[prop]}=?`)
                     parameters.push(request[prop])
                 }
