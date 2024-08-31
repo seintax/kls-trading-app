@@ -8,6 +8,7 @@ const transmit = new Table("pos_transfer_receipt", {
     product: 'trni_product',
     variant: 'trni_variant',
     quantity: 'trni_quantity',
+    baseprice: 'trni_baseprice',
     pricing: 'trni_pricing',
     received: 'trni_received',
     arrival: 'trni_arrival',

@@ -102,8 +102,9 @@ const TransmitListing = () => {
         return [
             { value: cleanDisplay(`${item.product_name} | ${item.variant_serial}/${item.variant_model}/${item.variant_brand}`) },
             { value: `ITEM#${StrFn.formatWithZeros(item.item, 6)}`, subtext: "Inventory" },
-            { value: NumFn.currency(item.invt_base), subtext: "Base Price" },
+            { value: NumFn.currency(item.baseprice), subtext: "Base Price" },
             { value: item.quantity, subtext: "Quantity" },
+            { value: NumFn.currency(item.pricing), subtext: "Branch Price" },
             { value: item.received || 0, subtext: "Received" },
         ]
     }

@@ -302,11 +302,13 @@ CREATE TABLE pos_transfer_receipt (
     trni_product     int,
     trni_variant     int,
     trni_quantity    decimal(10,2),
+    trni_baseprice   decimal(30,2),
     trni_pricing     decimal(30,2),
     trni_received    decimal(10,2),
     trni_arrival     date
 );
 
+ALTER TABLE pos_transfer_receipt ADD COLUMN trni_baseprice decimal(30,2) AFTER trni_quantity;
 ALTER TABLE pos_transfer_receipt ADD COLUMN trni_pricing decimal(30,2) AFTER trni_quantity;
 ALTER TABLE pos_transfer_receipt ADD COLUMN trni_arrival date;
 

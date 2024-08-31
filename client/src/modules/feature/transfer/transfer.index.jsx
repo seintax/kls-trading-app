@@ -11,9 +11,7 @@ import { resetTransferItem, resetTransferManager, resetTransferSelector, setTran
 import { useByFilterTransferMutation } from "./transfer.services"
 
 const TransferIndex = () => {
-    // const [allTransfer, { isLoading, isError, isSuccess }] = useFetchAllTransferMutation()
     const auth = useAuth()
-    // const [allTransfer, { isLoading, isError }] = useByBranchTransferMutation()
     const [allTransfer, { isLoading: transferLoading, isError }] = useByFilterTransferMutation()
     const [allBranches, { isLoading: branchLoading }] = useFetchAllBranchMutation()
     const dataSelector = useSelector(state => state.transfer)
@@ -22,6 +20,8 @@ const TransferIndex = () => {
     const [filters, setFilters] = useState({ status: "", source: "", destination: "" })
     const [libSources, setLibSources] = useState([])
     const [libDestinations, setLibDestinations] = useState([])
+    const [records, setrecords] = useState()
+    const [results, setresults] = useState()
     const statuses = [
         "PENDING",
         "PARTIALLY RECEIVED",
@@ -67,6 +67,7 @@ const TransferIndex = () => {
                     .unwrap()
                     .then(res => {
                         if (res.success) {
+                            setresults(res?.arrayResult)
                             dispatch(setTransferData(res?.arrayResult))
                             dispatch(setTransferNotifier(false))
                             if (dataSelector.selector > 0) {
@@ -148,9 +149,12 @@ const TransferIndex = () => {
     }
 
     return (
-        (dataSelector.manager) ? (
-            <TransferManage name={dataSelector.display.name} />
-        ) : (
+        <>
+            {
+                (dataSelector.manager) ? (
+                    <TransferManage name={dataSelector.display.name} />
+                ) : null
+            }
             <DataIndex
                 display={dataSelector.display}
                 actions={actions()}
@@ -161,10 +165,11 @@ const TransferIndex = () => {
                 isLoading={transferLoading || branchLoading}
                 plain={true}
                 overrideLoading={true}
+                hideDisplay={dataSelector.manager}
             >
-                <TransferRecords isLoading={transferLoading || branchLoading} />
+                <TransferRecords isLoading={transferLoading || branchLoading} records={records} setrecords={setrecords} />
             </DataIndex >
-        )
+        </>
     )
 }
 

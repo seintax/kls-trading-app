@@ -3,28 +3,35 @@ import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { longDate } from "../../../utilities/functions/datetime.functions"
+import { currency } from "../../../utilities/functions/number.funtions"
 import { StrFn } from "../../../utilities/functions/string.functions"
+import useDelay from "../../../utilities/hooks/useDelay"
 import useToast from "../../../utilities/hooks/useToast"
 import DataOperation from '../../../utilities/interface/datastack/data.operation'
 import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
+import { setLogged } from "../../../utilities/redux/slices/utilitySlice"
 import { setTransferItem, setTransferNotifier, showTransferManager } from "./transfer.reducer"
 import { useDeleteTransferMutation } from "./transfer.services"
 
-const TransferRecords = ({ isLoading }) => {
+const TransferRecords = ({ isLoading, records, setrecords }) => {
     const dataSelector = useSelector(state => state.transfer)
     const searchSelector = useSelector(state => state.search)
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
-    const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
     const [sorted, setsorted] = useState()
+    const [active, setactive] = useState()
     const columns = dataSelector.header
     const toast = useToast()
+    const delay = useDelay()
 
     const [deleteTransfer] = useDeleteTransferMutation()
 
-    const toggleView = (item) => {
+    const toggleView = async (item, index) => {
+        dispatch(setLogged())
+        await delay.asyncDelay()
+        setactive(index)
         dispatch(setTransferItem(item))
         dispatch(showTransferManager())
     }
@@ -50,10 +57,10 @@ const TransferRecords = ({ isLoading }) => {
         return true
     }
 
-    const actions = (item) => {
+    const actions = (item, index) => {
         return [
             // { type: 'button', trigger: () => toggleEdit(item), label: 'View' },
-            { type: 'button', trigger: () => toggleView(item), label: 'View' },
+            { type: 'button', trigger: () => toggleView(item, index), label: 'View' },
             { type: 'button', trigger: () => toggleDelete(item), label: 'Delete' }
         ]
     }
@@ -68,15 +75,16 @@ const TransferRecords = ({ isLoading }) => {
         return <span className="text-blue-600">PENDING</span>
     }
 
-    const items = (item) => {
+    const items = (item, index) => {
         return [
             { value: StrFn.formatWithZeros(item.id, 6) },
             { value: item.category },
             { value: longDate(item.date) },
             { value: defineStatus(item) },
+            { value: currency(item.value) },
             { value: <span className="bg-blue-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.source}</span> },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.destination}</span> },
-            { value: <DataOperation actions={actions(item)} /> }
+            { value: <DataOperation actions={actions(item, index)} /> }
         ]
     }
 
@@ -93,10 +101,10 @@ const TransferRecords = ({ isLoading }) => {
                 ))
             }
             let data = sorted ? sortBy(temp, sorted) : temp
-            setrecords(data?.map((item, i) => {
+            setrecords(data?.map((item, index) => {
                 return {
                     key: item.id,
-                    items: items(item),
+                    items: items(item, index),
                     ondoubleclick: () => { },
                 }
             }))
@@ -113,6 +121,7 @@ const TransferRecords = ({ isLoading }) => {
                 setPage={setstartpage}
                 itemsperpage={dataSelector?.perpage}
                 loading={isLoading}
+                active={active}
             />
         </>
     )
