@@ -34,6 +34,7 @@ const initialState = {
                 { size: "w-[150px]" },
                 { size: "w-[150px]" },
                 { size: "w-[150px]" },
+                { size: "w-[150px]" },
             ]
         },
     },

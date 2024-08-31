@@ -108,6 +108,7 @@ const TransmitInjoin = () => {
                 variety_name: init(variant),
                 variety: init(item.variant),
                 cost: init(item.inventory_cost),
+                baseprice: init(item.baseprice),
                 pricing: init(item.pricing),
                 stocks: init(amount(source?.stocks) + amount(item.quantity)),
                 remaining: init(source?.stocks),
@@ -134,7 +135,8 @@ const TransmitInjoin = () => {
                             variety_name: cleanDisplay(`${selected?.data?.variant_serial} / ${selected?.data?.variant_model} / ${selected?.data?.variant_brand}`),
                             variety: selected?.data?.variant,
                             cost: selected?.data?.cost,
-                            pricing: selected?.data?.base,
+                            baseprice: selected?.data?.base,
+                            pricing: selected?.data?.pricing,
                             stocks: selected?.data?.stocks,
                             balance: selected?.data?.stocks,
                             remaining: parseInt(selected?.data?.stocks) - parseInt(listener["quantity"] || 0),
@@ -150,6 +152,7 @@ const TransmitInjoin = () => {
                     variety_name: "",
                     variety: "",
                     cost: "",
+                    baseprice: "",
                     pricing: "",
                     stocks: "",
                     balance: "",
@@ -192,9 +195,9 @@ const TransmitInjoin = () => {
                     name='source'
                 />
                 <FormEl.Display
-                    label='Price'
+                    label='Base Price'
                     register={register}
-                    name='pricing'
+                    name='baseprice'
                 />
                 <FormEl.Display
                     label='Available Stocks'
@@ -214,6 +217,14 @@ const TransmitInjoin = () => {
                     register={register}
                     name='remaining'
                     errors={errors}
+                />
+                <FormEl.Decimal
+                    label='Branch Pricing'
+                    register={register}
+                    name='pricing'
+                    errors={errors}
+                    autoComplete='off'
+                    wrapper='lg:w-1/2'
                 />
             </>
         )
@@ -269,6 +280,7 @@ const TransmitInjoin = () => {
                 product: data.product,
                 variant: data.variety,
                 quantity: data.quantity,
+                baseprice: data.baseprice,
                 pricing: data.pricing,
                 id: dataSelector.item.id
             },
@@ -291,7 +303,7 @@ const TransmitInjoin = () => {
                 received: data.quantity,
                 stocks: data.quantity,
                 cost: data.cost,
-                base: data.pricing,
+                base: data.baseprice,
                 price: data.pricing,
                 acquisition: "TRANSMIT",
                 source: data.source,

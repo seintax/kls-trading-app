@@ -15,7 +15,6 @@ import { useByFilterPurchaseMutation } from "./purchase.services"
 
 const PurchaseIndex = () => {
     const auth = useAuth()
-    // const [allPurchase, { isLoading, isError }] = useByDatePurchaseMutation()
     const [allPurchase, { isLoading: purchaseLoading, isError }] = useByFilterPurchaseMutation()
     const [allSuppliers, { isLoading: supplierLoading }] = useFetchAllSupplierMutation()
     const [allBranches, { isLoading: branchLoading }] = useFetchAllBranchMutation()

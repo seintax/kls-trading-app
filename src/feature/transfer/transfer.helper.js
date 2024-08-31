@@ -21,7 +21,7 @@ transfer.register("transfer_update_transmit",
                 WHERE trni_transfer=trnr_id
             ),
         trnr_value=(
-                SELECT IFNULL(SUM(trni_quantity * trni_pricing),0) 
+                SELECT IFNULL(SUM(trni_quantity * trni_baseprice),0) 
                 FROM pos_transfer_receipt 
                 WHERE trni_transfer=trnr_id
             ),
