@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import * as XLSX from 'xlsx'
 import { sortBy } from "../../../utilities/functions/array.functions"
-import { sqlDate } from "../../../utilities/functions/datetime.functions"
+import { shortDate, sqlDate } from "../../../utilities/functions/datetime.functions"
 import { NumFn, currency } from "../../../utilities/functions/number.funtions"
 import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -125,10 +125,11 @@ const ReportsFormInventoryValuation = () => {
         items: [
             { name: 'Item', stack: false, sort: 'inventory' },
             { name: 'Part No.', stack: false, sort: 'variant1', size: 120 },
-            { name: 'In Stock', stack: true, sort: 'stocks', size: 120 },
-            { name: 'Cost', stack: true, sort: 'cost', size: 120 },
+            { name: 'Date', stack: false, sort: 'date', size: 160 },
+            { name: 'In Stock', stack: true, sort: 'stocks', size: 80 },
+            { name: 'Cost', stack: true, sort: 'cost', size: 80 },
             { name: 'SRP', stack: true, sort: 'price', size: 120 },
-            { name: 'Inventory Value', stack: true, size: 150 },
+            { name: 'Inv. Value', stack: true, size: 130 },
             { name: 'Retail Value', stack: true, size: 150 },
             { name: 'Potential Profit', stack: true, size: 150 },
             { name: 'Margin', stack: true, size: 130 },
@@ -162,6 +163,7 @@ const ReportsFormInventoryValuation = () => {
         return [
             { value: cleanDisplay(item.inventory) },
             { value: item.variant1 },
+            { value: shortDate(item.date) },
             { value: currency(item.stocks).replace(".00", "") },
             { value: currency(item.cost) },
             { value: currency(item.price) },

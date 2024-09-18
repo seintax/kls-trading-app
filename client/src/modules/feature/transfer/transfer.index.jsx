@@ -1,6 +1,9 @@
+import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import Datepicker from "react-tailwindcss-datepicker"
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
+import { sqlDate } from "../../../utilities/functions/datetime.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
 import DataIndex from "../../../utilities/interface/datastack/data.index"
 import { useFetchAllBranchMutation } from "../../library/branch/branch.services"
@@ -17,16 +20,30 @@ const TransferIndex = () => {
     const dataSelector = useSelector(state => state.transfer)
     const dispatch = useDispatch()
     const [mounted, setMounted] = useState(false)
-    const [filters, setFilters] = useState({ status: "", source: "", destination: "" })
+    const [filters, setFilters] = useState({ status: "", source: "", destination: "", fr: sqlDate(), to: sqlDate(), dated: false })
     const [libSources, setLibSources] = useState([])
     const [libDestinations, setLibDestinations] = useState([])
     const [records, setrecords] = useState()
     const [results, setresults] = useState()
+    const [range, setRange] = useState({ startDate: sqlDate(), endDate: sqlDate() })
     const statuses = [
         "PENDING",
         "PARTIALLY RECEIVED",
         "FULLY RECEIVED",
     ]
+
+    const onRangeChange = (newValue) => {
+        setRange(newValue)
+        setFilters(prev => ({
+            ...prev,
+            fr: newValue.startDate,
+            to: newValue.endDate
+        }))
+    }
+
+    const onCheckChange = (e) => {
+        setFilters(prev => ({ ...prev, dated: e.target.checked }))
+    }
 
     useEffect(() => { setMounted(true) }, [])
 
@@ -62,7 +79,10 @@ const TransferIndex = () => {
                 await allTransfer({
                     status: filters.status,
                     source: filters.source,
-                    destination: filters.destination
+                    destination: filters.destination,
+                    dated: filters.dated,
+                    fr: filters.fr,
+                    to: filters.to,
                 })
                     .unwrap()
                     .then(res => {
@@ -94,9 +114,28 @@ const TransferIndex = () => {
         dispatch(showTransferManager())
     }
 
+    const printList = () => {
+        if (records?.length) {
+            localStorage.setItem("reports", JSON.stringify({
+                title: "List of Stock Transfers",
+                subtext1: `as of ${moment(new Date()).format("MMMM DD, YYYY hh:mm A")}`,
+                subtext2: `Status: ${filters.dated ? `${filters.fr}-${filters.to}` : "All"} | ${filters.status || "All"} | Supplier: ${filters.supplier || "All"} | Branch: ${filters.store || "All"}`,
+                columns: dataSelector.printout,
+                data: records?.map(rec => {
+                    return {
+                        key: rec.key,
+                        items: rec.print
+                    }
+                })
+            }))
+            window.open(`/#/print/reports/${filters.dated ? `${filters.fr}-${filters.to}` : "All"}-${filters.status || "All"}-${filters.supplier || "All"}-${filters.store || "All"}`, '_blank')
+        }
+    }
+
     const actions = () => {
         return [
             { label: `Add ${dataSelector.display.name}`, callback: toggleNewEntry },
+            { label: `Print List`, callback: printList },
         ]
     }
 
@@ -138,7 +177,23 @@ const TransferIndex = () => {
         </select>
     }
 
+    const renderDateFilter = () => {
+        return <div className="flex gap-3">
+            <div className="flex items-center">
+                <input type="checkbox" name="dated" id="dated" onChange={onCheckChange} checked={filters.dated} />
+            </div>
+            <Datepicker
+                value={range}
+                onChange={onRangeChange}
+                showShortcuts={true}
+                disabled={!filters.dated}
+                readOnly
+            />
+        </div>
+    }
+
     const filterArray = [
+        { id: "dates", component: renderDateFilter },
         { id: "status", component: renderStatus },
         { id: "source", component: renderSource },
         { id: "destination", component: renderDestination }

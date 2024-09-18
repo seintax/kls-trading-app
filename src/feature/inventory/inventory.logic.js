@@ -62,7 +62,7 @@ const sqlCancel = handler(async (req, res) => {
             if (err) return err
             let updateDestinationInventory = await new Promise(async (resolve, reject) => {
                 const builder = getbranch.update(req.body.destination)
-                // console.log('updateDestinationInventory', builder.sql)
+                // console.info('updateDestinationInventory', builder.sql)
                 // resolve(true)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
@@ -72,7 +72,7 @@ const sqlCancel = handler(async (req, res) => {
 
             let updateTransmit = await new Promise(async (resolve, reject) => {
                 const builder = gettransmit.update(req.body.transmit)
-                // console.log('updateTransmit', builder.sql)
+                // console.info('updateTransmit', builder.sql)
                 // resolve(true)
                 await con.query(builder.sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
@@ -86,7 +86,7 @@ const sqlCancel = handler(async (req, res) => {
                     .inject({
                         id: req.body.transfer.id,
                     })
-                // console.log('runningTransfer', sql)
+                // console.info('runningTransfer', sql)
                 // resolve(true)
                 await con.query(sql, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))
@@ -102,7 +102,7 @@ const sqlCancel = handler(async (req, res) => {
                         operator: req.body.source.operator,
                         qty: req.body.source.quantity
                     })
-                // console.log('updateSourceInventory', sql)
+                // console.info('updateSourceInventory', sql)
                 // resolve(true)
                 await con.query(sql, builder.arr, async (err, ans) => {
                     if (err) con.rollback(() => reject(err))

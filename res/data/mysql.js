@@ -29,7 +29,7 @@ var cloud = mysql.createPool(cloudcredentials)
 
 pool.getConnection((err, con) => {
     if (err) {
-        console.log(`\x1b[41m`, `ERROR`, '\x1b[0m', `Failed to load server @ ${process.env.MY_SERVER}/${process.env.MY_DATABASE}`)
+        console.info(`\x1b[41m`, `ERROR`, '\x1b[0m', `Failed to load server @ ${process.env.MY_SERVER}/${process.env.MY_DATABASE}`)
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
             console.error(`\x1b[41m`, `ERROR`, '\x1b[0m', 'PROTOCOL_CONNECTION_LOST: Database connection was closed.\n')
         }
@@ -44,7 +44,7 @@ pool.getConnection((err, con) => {
         }
     }
     else {
-        console.log(`\x1b[45m`, `MYSQL`, '\x1b[0m', `@ ${server}/${database}\n`)
+        console.info(`\x1b[45m`, `MYSQL`, '\x1b[0m', `@ ${server}/${database}\n`)
     }
     if (con) con.release()
     return

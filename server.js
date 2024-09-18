@@ -105,11 +105,11 @@ app.listen(port, () => {
         ip = ether[1].address
     }
     if (wifi === undefined && ether === undefined) {
-        console.log('Serving via localhost...\n')
+        console.info('Serving via localhost...\n')
         console.error(`\x1b[41m`, `ERROR`, '\x1b[0m', `No ethernet or wifi network.`)
     }
     else {
-        console.log(`Serving at ${ip} on port ${port}`)
-        console.log(`Started on ${new Date()}.\n`)
+        console.info(`Serving at ${ip} on port ${port}`)
+        console.info(`Started on ${new Date()}.\n`)
     }
 })
