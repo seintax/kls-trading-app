@@ -26,10 +26,9 @@ const TransmitInjoin = () => {
     const [libInventory, setLibInventory] = useState()
     const [libSuppliers, setLibSuppliers] = useState()
 
+
     const [stockedInventory, { isLoading: stockLoading }] = useByStocksInventoryMutation()
     const [allSuppliers, { isLoading: supplierLoading }] = useFetchAllSupplierMutation()
-    // const [createTransmit] = useCreateTransmitBySqlTransactionMutation()
-    // const [updateTransmit] = useUpdateTransmitMutation()
     const [sqlTransmit] = useSqlTransmitMutation()
 
     useEffect(() => {
@@ -113,7 +112,7 @@ const TransmitInjoin = () => {
                 stocks: init(amount(source?.stocks) + amount(item.quantity)),
                 remaining: init(source?.stocks),
                 quantity: init(item.quantity),
-                category: init(source?.category),
+                category: init(item?.prod_category),
                 source: init(item.destination_source),
                 destination: transferSelector.item.destination,
             })
@@ -218,14 +217,24 @@ const TransmitInjoin = () => {
                     name='remaining'
                     errors={errors}
                 />
-                <FormEl.Decimal
-                    label='Branch Pricing'
-                    register={register}
-                    name='pricing'
-                    errors={errors}
-                    autoComplete='off'
-                    wrapper='lg:w-1/2'
-                />
+                {
+                    (dataSelector?.item?.destination_acquisition === "TRANSFER")
+                        ? <FormEl.Display
+                            label='Branch Pricing'
+                            register={register}
+                            name='pricing'
+                            errors={errors}
+                        />
+                        : <FormEl.Decimal
+                            label='Branch Pricing'
+                            register={register}
+                            name='pricing'
+                            errors={errors}
+                            autoComplete='off'
+                            wrapper='lg:w-1/2'
+
+                        />
+                }
             </>
         )
     }
@@ -351,6 +360,7 @@ const TransmitInjoin = () => {
             change={onChange}
             submit={onSubmit}
             closecallback={closeAppender}
+            disablectrl={dataSelector?.item?.destination_acquisition === "TRANSFER"}
         />
     )
 }

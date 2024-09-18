@@ -91,6 +91,7 @@ const byFilter = handler(async (req, res) => {
     const param = helper.parameters(req.query)
     const { count, arrive, source, destination, time, date } = helper.fields
     let statusClause = []
+    let datedClause = []
     if (req.query.status === 'PENDING') {
         statusClause = [f(arrive).IsEqual("0")]
     }
@@ -100,9 +101,12 @@ const byFilter = handler(async (req, res) => {
     if (req.query.status === 'FULLY RECEIVED') {
         statusClause = [f(count).IsField(f(arrive).value)]
     }
+    if (req.query.dated === 'true') {
+        datedClause = [f(date).Between(p(param.fr).Exactly(), p(param.to).Exactly())]
+    }
 
     let params = [p(param.source).Contains(), p(param.destination).Contains()]
-    let clause = [f(source).Like(), f(destination).Like(), ...statusClause]
+    let clause = [f(source).Like(), f(destination).Like(), ...statusClause, ...datedClause]
     let series = [f(date).Desc(), f(time).Desc()]
     let limits = undefined
     const builder = helper.inquiry(clause, params, series, limits)

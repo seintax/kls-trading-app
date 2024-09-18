@@ -251,6 +251,7 @@ const reports = {
             invt_variant AS variantid,
             invt_cost AS cost,
             invt_price AS price,
+            (MAX(invt_time) + INTERVAL 8 HOUR) AS date,
             SUM(invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) AS stocks,
             SUM((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * IFNULL(invt_cost,0)) AS value,
             SUM((invt_stocks + IFNULL(dispensed,0) + IFNULL(transfered,0) - IFNULL(returned,0)) * invt_price) AS retail,

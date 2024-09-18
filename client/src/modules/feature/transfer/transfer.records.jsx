@@ -75,6 +75,12 @@ const TransferRecords = ({ isLoading, records, setrecords }) => {
         return <span className="text-blue-600">PENDING</span>
     }
 
+    const statusValue = (item) => {
+        if (item.count === item.arrive) return "FULLY RECEIVED"
+        if (item.arrive > 0) return "PARTIALLY RECEIVED"
+        return "PENDING"
+    }
+
     const items = (item, index) => {
         return [
             { value: StrFn.formatWithZeros(item.id, 6) },
@@ -85,6 +91,18 @@ const TransferRecords = ({ isLoading, records, setrecords }) => {
             { value: <span className="bg-blue-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.source}</span> },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.destination}</span> },
             { value: <DataOperation actions={actions(item, index)} /> }
+        ]
+    }
+
+    const print = (item) => {
+        return [
+            { value: StrFn.formatWithZeros(item.id, 6) },
+            { value: item.category },
+            { value: longDate(item.date) },
+            { value: statusValue(item) },
+            { value: currency(item.value) },
+            { value: item.source },
+            { value: item.destination },
         ]
     }
 
@@ -105,6 +123,7 @@ const TransferRecords = ({ isLoading, records, setrecords }) => {
                 return {
                     key: item.id,
                     items: items(item, index),
+                    print: print(item),
                     ondoubleclick: () => { },
                 }
             }))
