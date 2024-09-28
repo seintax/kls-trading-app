@@ -88,6 +88,7 @@ const TransferRecords = ({ isLoading, records, setrecords }) => {
             { value: longDate(item.date) },
             { value: defineStatus(item) },
             { value: currency(item.value) },
+            { value: currency(item.srp) },
             { value: <span className="bg-blue-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.source}</span> },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.destination}</span> },
             { value: <DataOperation actions={actions(item, index)} /> }
@@ -101,6 +102,7 @@ const TransferRecords = ({ isLoading, records, setrecords }) => {
             { value: longDate(item.date) },
             { value: statusValue(item) },
             { value: currency(item.value) },
+            { value: currency(item.srp) },
             { value: item.source },
             { value: item.destination },
         ]

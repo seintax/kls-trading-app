@@ -288,10 +288,12 @@ CREATE TABLE pos_transfer_request (
     trnr_status      varchar(30) DEFAULT 'ON-GOING',
     trnr_count       int DEFAULT 0 COMMENT 'running count',
     trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
+    trnr_srp         decimal(30,2) DEFAULT 0 COMMENT 'running srp'
     trnr_arrive      int DEFAULT 0
 );
 
 ALTER TABLE pos_transfer_request ADD COLUMN trnr_arrive int DEFAULT 0;
+ALTER TABLE pos_transfer_request ADD COLUMN trnr_srp decimal(30,2) DEFAULT 0 COMMENT 'running srp' AFTER trnr_value;
 
 DROP TABLE pos_transfer_receipt;
 CREATE TABLE pos_transfer_receipt (

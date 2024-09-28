@@ -19,7 +19,8 @@ const initialState = {
             { name: 'Category', stack: true, sort: 'category', size: 280 },
             { name: 'TR Date', stack: false, sort: 'date', size: 180 },
             { name: 'Status', stack: true, sort: 'status', size: 180 },
-            { name: 'Value', stack: true, sort: 'value', size: 180 },
+            { name: 'Total Cost', stack: true, sort: 'value', size: 180 },
+            { name: 'Total SRP', stack: true, sort: 'srp', size: 180 },
             { name: 'Source', stack: true, sort: 'source', size: 150 },
             { name: 'Destination', stack: true, sort: 'destination', size: 150 },
             { name: '', stack: false, screenreader: 'Action', size: 200 }
@@ -31,7 +32,8 @@ const initialState = {
             { name: 'Category', stack: true, sort: 'category', size: 280 },
             { name: 'TR Date', stack: false, sort: 'date', size: 180 },
             { name: 'Status', stack: true, sort: 'status', size: 180 },
-            { name: 'Value', stack: true, sort: 'value', size: 180 },
+            { name: 'Total Cost', stack: true, sort: 'value', size: 180 },
+            { name: 'Total SRP', stack: true, sort: 'srp', size: 180 },
             { name: 'Source', stack: true, sort: 'source', size: 150 },
             { name: 'Destination', stack: true, sort: 'destination', size: 150 },
         ]
