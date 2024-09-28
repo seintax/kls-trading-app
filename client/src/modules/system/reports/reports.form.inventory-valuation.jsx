@@ -180,6 +180,7 @@ const ReportsFormInventoryValuation = () => {
         return [
             { value: "OVERALL SUMMARY" },
             { value: "" },
+            { value: "" },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.stocks || 0), 0)).replace(".00", "") },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.cost || 0), 0)) },
             { value: currency(item?.reduce((prev, curr) => prev + (curr.price || 0), 0)) },
@@ -293,7 +294,7 @@ const ReportsFormInventoryValuation = () => {
                 </div>
                 <div className="flex w-full gap-2 mt-4 overflow-x-auto lg:overflow-x-none">
                     {
-                        Array.from({ length: 7 }, (_, i) => i + 2)?.map(n => (
+                        Array.from({ length: 7 }, (_, i) => i + 3)?.map(n => (
                             <div key={n} className="flex flex-col w-[200px] lg:w-full py-3 px-5 border border-gray-400 hover:bg-gray-200 transition ease-in duration-300 flex-none lg:flex-1">
                                 <span className="text-gray-500 no-select">
                                     {columns.items[n].name}
