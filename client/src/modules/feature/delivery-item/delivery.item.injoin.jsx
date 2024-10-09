@@ -24,6 +24,7 @@ const ReceiptInjoin = () => {
     const { yup } = useYup()
     const toast = useToast()
     const [recentPrice, setRecentPrice] = useState(null)
+    const [disableSubmit, setDisableSubmit] = useState(false)
 
     const [libReceivables, setLibReceivables] = useState()
     const [libSuppliers, setLibSuppliers] = useState()
@@ -149,13 +150,15 @@ const ReceiptInjoin = () => {
     }
 
     useEffect(() => {
-
         if (listener && dataSelector.injoiner.show) {
             if (element === "receivable") {
                 let receivable = listener[element]
                 if (receivable) {
                     let selection = libReceivables?.filter(f => parseInt(f.value) === parseInt(receivable))
                     let selected = selection?.length ? selection[0] : undefined
+
+                    let remaining = parseInt(selected?.data?.balance) - parseInt(listener["quantity"] || 0)
+                    setDisableSubmit(remaining < 0)
                     if (selected?.data) {
                         setValues({
                             purchase: selected?.data?.purchase,
@@ -167,7 +170,7 @@ const ReceiptInjoin = () => {
                             variety: selected?.data?.variant,
                             ordered: selected?.data?.ordered,
                             balance: selected?.data?.balance,
-                            remaining: parseInt(selected?.data?.balance) - parseInt(listener["quantity"] || 0),
+                            remaining: remaining,
                             received: selected?.data?.received,
                             receiving: parseInt(selected?.data?.received) + parseInt(listener["quantity"] || 0),
                             purchase_receivedtotal: selected?.data?.purchase_receivedtotal,
@@ -196,8 +199,10 @@ const ReceiptInjoin = () => {
                 })
             }
             if (element === "quantity") {
+                let remaining = parseInt(listener["balance"] || 0) - parseInt(listener["quantity"] || 0)
+                setDisableSubmit(remaining < 0)
                 setValues({
-                    remaining: parseInt(listener["balance"] || 0) - parseInt(listener["quantity"] || 0),
+                    remaining: remaining,
                     receiving: parseInt(listener["received"] || 0) + parseInt(listener["quantity"] || 0),
                     receivedtotal: parseInt(listener["purchase_receivedtotal"] || 0) + parseInt(listener["quantity"] || 0),
                 })
@@ -210,7 +215,6 @@ const ReceiptInjoin = () => {
     }
 
     const onFields = (errors, register, values, setValue) => {
-
 
         return (
             <>
@@ -400,6 +404,7 @@ const ReceiptInjoin = () => {
             change={onChange}
             submit={onSubmit}
             closecallback={closeAppender}
+            disablesubmit={disableSubmit}
         />
     )
 }

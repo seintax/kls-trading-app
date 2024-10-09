@@ -1,6 +1,8 @@
+import { saveAs } from 'file-saver'
 import moment from "moment"
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
+import * as XLSX from 'xlsx'
 import { FormatOptionsWithEmptyLabel } from "../../../utilities/functions/array.functions"
 import { getBranch, isEmpty } from "../../../utilities/functions/string.functions"
 import useAuth from "../../../utilities/hooks/useAuth"
@@ -124,10 +126,32 @@ const PurchaseIndex = () => {
         }
     }
 
+    const exportData = () => {
+        if (dataSelector?.data?.length) {
+            let type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+            const ws = XLSX.utils.json_to_sheet([{ ...filters }, ...dataSelector?.data?.map(f => {
+                return {
+                    supplier_name: f.supplier_name,
+                    id: f.id,
+                    date: f.date,
+                    category: f.category,
+                    status: f.status,
+                    rawtotal: f.rawtotal,
+                    store: f.store,
+                }
+            })])
+            const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
+            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+            const excelData = new Blob([excelBuffer], { type: type })
+            saveAs(excelData, `purchase_order_export_on_${moment(new Date()).format('YYYY_MM_DD_HH_mm_ss')}.xlsx`)
+        }
+    }
+
     const actions = () => {
         return [
             { label: `Add ${dataSelector.display.name} Order`, callback: toggleNewEntry },
-            { label: `Print List`, callback: printList },
+            { label: `Print`, callback: printList },
+            { label: `Export`, callback: exportData },
         ]
     }
 

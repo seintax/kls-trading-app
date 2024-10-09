@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useForm } from "react-hook-form"
 import SpinnerIcon from "../../../assets/SpinnerIcon"
 
-const DataInjoin = ({ display, formData, fields, change, submit, closecallback, segmented = false, disablectrl = false }) => {
+const DataInjoin = ({ display, formData, fields, change, submit, closecallback, segmented = false, disablectrl = false, disablesubmit = false }) => {
     const [populated, setPopulated] = useState(false)
     const isEdit = !!formData.id
     const {
@@ -118,7 +118,7 @@ const DataInjoin = ({ display, formData, fields, change, submit, closecallback, 
                                         <button
                                             type="submit"
                                             className={`button-submit`}
-                                            disabled={isSubmitting || disablectrl}
+                                            disabled={disablesubmit || isSubmitting || disablectrl}
                                         >
                                             {isSubmitting && <SpinnerIcon />}
                                             {isSubmitting ? "Saving..." : "Save"}

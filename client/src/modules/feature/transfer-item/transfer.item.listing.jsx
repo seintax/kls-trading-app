@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { NumFn } from "../../../utilities/functions/number.funtions"
-import { StrFn, cleanDisplay } from "../../../utilities/functions/string.functions"
+import { StrFn, cleanDisplay, exactSearch } from "../../../utilities/functions/string.functions"
 import useToast from "../../../utilities/hooks/useToast"
 import DataListing from "../../../utilities/interface/datastack/data.listing"
 import { showDelete } from "../../../utilities/redux/slices/deleteSlice"
@@ -17,6 +17,7 @@ const TransmitListing = () => {
     const { assignDeleteCallback } = useModalContext()
     const dispatch = useDispatch()
     const [records, setrecords] = useState()
+    const [search, setsearch] = useState("")
     const toast = useToast()
     const layout = dataSelector.listing.layout
     const header = {
@@ -111,7 +112,16 @@ const TransmitListing = () => {
 
     useEffect(() => {
         if (dataSelector?.data) {
-            let data = dataSelector?.data
+            let sought = search?.toLowerCase()
+            let data = sought
+                ? dataSelector?.data?.filter(f => (
+                    f.product_name?.toLowerCase()?.includes(sought) ||
+                    cleanDisplay(`${f.product_name} ${f.variant_serial} ${f?.variant_model || ""} ${f?.variant_brand || ""}`)?.toLowerCase()?.includes(sought) ||
+                    `${f.variant_serial}/${f.variant_model}/${f.variant_brand}`?.toLowerCase()?.includes(sought) ||
+                    exactSearch(sought, f.ordered) ||
+                    exactSearch(sought, f.received)
+                ))
+                : dataSelector?.data
             setrecords(data?.map((item, i) => {
                 return {
                     key: item.id,
@@ -120,7 +130,7 @@ const TransmitListing = () => {
                 }
             }))
         }
-    }, [dataSelector?.data])
+    }, [dataSelector?.data, search])
 
     const appendList = useCallback(() => {
         dispatch(showTransmitInjoiner())
@@ -132,6 +142,12 @@ const TransmitListing = () => {
 
     return (
         <>
+            <div className="w-full flex gap-3 items-center sticky top-[45px] bg-white">
+                <div className="w-fit border border-gray-400 rounded-md px-1">
+                    <input type="search" className="border-none outline-none ring-0 focus:border-none focus:ring-0 focus:outline-none w-[300px]" placeholder="Search item" onChange={(e) => setsearch(e.target.value)} value={search} />
+                </div>
+                {search && (<span>Found: {records?.length} result/s</span>)}
+            </div>
             <DataListing
                 reference={transferSelector.item.id}
                 header={header}

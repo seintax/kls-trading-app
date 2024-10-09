@@ -108,6 +108,7 @@ const TransmitInjoin = () => {
                 variety: init(item.variant),
                 cost: init(item.inventory_cost),
                 baseprice: init(item.baseprice),
+                price: init(item.price),
                 pricing: init(item.pricing),
                 stocks: init(amount(source?.stocks) + amount(item.quantity)),
                 remaining: init(source?.stocks),
@@ -135,6 +136,7 @@ const TransmitInjoin = () => {
                             variety: selected?.data?.variant,
                             cost: selected?.data?.cost,
                             baseprice: selected?.data?.base,
+                            price: selected?.data.price,
                             pricing: selected?.data?.pricing,
                             stocks: selected?.data?.stocks,
                             balance: selected?.data?.stocks,
@@ -152,6 +154,7 @@ const TransmitInjoin = () => {
                     variety: "",
                     cost: "",
                     baseprice: "",
+                    price: "",
                     pricing: "",
                     stocks: "",
                     balance: "",
@@ -196,7 +199,7 @@ const TransmitInjoin = () => {
                 <FormEl.Display
                     label='Base Price'
                     register={register}
-                    name='baseprice'
+                    name='price'
                 />
                 <FormEl.Display
                     label='Available Stocks'
