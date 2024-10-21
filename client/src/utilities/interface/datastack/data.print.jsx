@@ -31,7 +31,7 @@ const DataPrint = ({ columns, records, total, header, heading, trigger, rowstyle
                         <tr className={`${columns?.style}`}>
                             <th
                                 scope="col"
-                                className={`sticky top-0 z-10 bg-gray-200 backdrop-blur border border-1 border-gray-300 py-3.5 px-2 text-xs font-semibold text-gray-900 w-[50px] bg-gray-200 text-left`}
+                                className={`sticky top-0 z-10 backdrop-blur border border-1 border-gray-300 py-3.5 px-2 text-xs font-semibold text-gray-900 w-[50px] bg-gray-200 text-left`}
                             >
                                 #
                             </th>
@@ -79,7 +79,7 @@ const DataPrint = ({ columns, records, total, header, heading, trigger, rowstyle
 
                         }
                         {
-                            (total?.length) && (
+                            (total?.length) ? (
                                 <tr
                                     className={`hover:bg-gray-100 ${rowstyle}`}
                                 >
@@ -97,16 +97,16 @@ const DataPrint = ({ columns, records, total, header, heading, trigger, rowstyle
                                         ) : null
                                     }
                                 </tr>
-                            )
+                            ) : null
                         }
                         {
-                            (!data?.length) && (
+                            (!data?.length) ? (
                                 <tr>
                                     <td colSpan={100} className="w-full py-4 border-b border-gray-200 pl-4 pr-6 text-xs font-medium text-gray-900 sm:pl-6">
                                         No record listed.
                                     </td>
                                 </tr>
-                            )
+                            ) : null
                         }
                     </tbody>
                 </table>

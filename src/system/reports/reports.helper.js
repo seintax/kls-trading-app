@@ -526,6 +526,33 @@ const reports = {
             vrnt_alert > 0 
         GROUP BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,vrnt_id,invt_category,vrnt_alert
         ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,invt_category,vrnt_alert;
+    `),
+    stock_adjustment: new Query("stock_adjustment", `
+        SELECT 
+            adjt_id AS id,
+            invt_id AS item,
+            (adjt_time + INTERVAL 8 HOUR) AS time,
+            prod_name AS product,
+            CONCAT(IFNULL(vrnt_serial, '-'), '/', IFNULL(vrnt_model, '-'), '/', IFNULL(vrnt_brand, '-')) AS variant,
+            adjt_operator AS operation,
+            adjt_quantity AS quantity,
+            adjt_remarks AS remarks,
+            acct_fullname AS user,
+            adjt_store AS branch
+        FROM 
+            pos_stock_adjustment,
+            pos_stock_inventory,
+            pos_stock_masterlist,
+            lib_variant,
+            sys_account
+        WHERE 
+            adjt_item = invt_id AND 
+            adjt_product = prod_id AND 
+            adjt_variant = vrnt_id AND 
+            adjt_by = acct_id AND
+            adjt_store LIKE '%@store%' AND
+            (adjt_time + INTERVAL 8 HOUR) BETWEEN '@fr 00:00:01' AND '@to 23:59:59'
+        ORDER BY prod_name,vrnt_serial,vrnt_model,vrnt_brand,adjt_id;
     `)
 }
 

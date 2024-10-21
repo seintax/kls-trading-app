@@ -11,7 +11,7 @@ import DataRecords from '../../../utilities/interface/datastack/data.records'
 import { setCreditCustomer, setCreditHistory } from "./credit.reducer"
 import { useByCustomerCreditMutation } from "./credit.services"
 
-const CreditLedger = () => {
+const CreditLedger = ({ currentBranch }) => {
     const auth = useAuth()
     const dataSelector = useSelector(state => state.credit)
     const dispatch = useDispatch()
@@ -19,6 +19,7 @@ const CreditLedger = () => {
     const [records, setrecords] = useState()
     const [startpage, setstartpage] = useState(1)
     const [sorted, setsorted] = useState()
+    const [current, setcurrent] = useState(false)
     const columns = dataSelector.header
     const toast = useToast()
 
@@ -69,7 +70,8 @@ const CreditLedger = () => {
 
     useEffect(() => {
         if (data) {
-            let temp = sorted ? sortBy(data, sorted) : data
+            let filter = current ? data : data?.filter(f => f.account_store === currentBranch)
+            let temp = sorted ? sortBy(filter, sorted) : filter
             setrecords(temp?.map((item, i) => {
                 return {
                     key: item.id,
@@ -78,7 +80,7 @@ const CreditLedger = () => {
                 }
             }))
         }
-    }, [data, sorted])
+    }, [data, sorted, current])
 
     const toggleOff = () => {
         dispatch(setCreditCustomer(undefined))
@@ -86,14 +88,19 @@ const CreditLedger = () => {
     }
 
     return (
-
         <div className="flex flex-col w-full h-full">
-            <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center gap-4 mb-10">
-                <ArrowLeftIcon
-                    className="w-6 h-6 cursor-pointer"
-                    onClick={() => toggleOff()}
-                />
-                <span>Credit History for: {dataSelector.customer.customer_name}</span>
+            <div className="pl-1 pt-3 text-secondary-500 font-bold text-lg flex items-center justify-between gap-4 mb-10">
+                <div className="flex items-center gap-4">
+                    <ArrowLeftIcon
+                        className="w-6 h-6 cursor-pointer"
+                        onClick={() => toggleOff()}
+                    />
+                    <span>Credit History for: {dataSelector.customer.customer_name}</span>
+                </div>
+                <div className="flex items-center gap-4 text-gray-700">
+                    <span className="text-sm">BRANCH: {current ? "ALL" : currentBranch}</span>
+                    <button className="button-action" onClick={() => setcurrent(prev => !prev)}>{current ? `Show ${currentBranch}` : "Show All"}</button>
+                </div>
             </div>
             <DataRecords
                 page={startpage}

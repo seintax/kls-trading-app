@@ -94,6 +94,14 @@ export const reportsApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['reports']
         }),
+        stockAdjustmentReport: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/stockadjustment`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['reports']
+        }),
     })
 })
 
@@ -109,4 +117,5 @@ export const {
     useInventoryByStoreItemReportMutation,
     useInventoryReportMutation,
     useStockAlertReportMutation,
+    useStockAdjustmentReportMutation,
 } = reportsApiSlice

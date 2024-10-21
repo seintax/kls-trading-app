@@ -7,7 +7,7 @@ import DataError from "./data.error"
 import DataLoading from "./data.loading"
 import DataNoRecord from "./data.norecord"
 
-const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, overrideLoading = false, isError, inputLink, filterArray, filterCallback, children, plain = false, hideDisplay = false }) => {
+const DataIndex = ({ display, actions, sorts, sortselection, sortcallback, data, isLoading, overrideLoading = false, isError, inputLink, filterArray, filterCallback, children, plain = false, hideDisplay = false }) => {
     const location = useLocation()
     const dispatch = useDispatch()
 
@@ -37,7 +37,7 @@ const DataIndex = ({ display, actions, sorts, sortcallback, data, isLoading, ove
                 <div className={`flex flex-wrap mt-4 lg:mt-0 flex-row-reverse gap-3 items-center sm:flex-none ${display.show ? "sm:ml-16" : "ml-auto"}`}>
                     {
                         sorts?.length
-                            ? <MenuSelect options={sorts} callback={sortcallback} />
+                            ? <MenuSelect options={sorts} callback={sortcallback} selection={sortselection} />
                             : null
                     }
                     {
