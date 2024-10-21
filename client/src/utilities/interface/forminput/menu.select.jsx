@@ -6,8 +6,9 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function MenuSelect({ options, callback }) {
-    const [selected, setSelected] = useState(options ? options[0] : undefined)
+export default function MenuSelect({ options, callback, selection }) {
+    const selectedOption = selection ? options?.find(f => f.value === selection) : undefined
+    const [selected, setSelected] = useState(options ? (selectedOption || options[0]) : undefined)
 
     const onSelect = (option) => {
         setSelected(option)

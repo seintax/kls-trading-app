@@ -9,6 +9,7 @@ const initialState = {
     notifier: false,
     customer: undefined,
     history: undefined,
+    branch: "JT-MAIN",
     perpage: 150,
     display: {
         name: "Credit",
@@ -72,6 +73,9 @@ const creditSlice = createSlice({
         resetCreditManager: (state) => {
             state.manager = false
         },
+        setCreditBranch: (state, action) => {
+            state.branch = action.payload
+        },
         setCreditNotifier: (state, action) => {
             state.notifier = action.payload
         },
@@ -100,6 +104,7 @@ export const {
     setCreditHistory,
     setCreditShown,
     resetCreditShown,
+    setCreditBranch,
     setCreditNotifier,
     showCreditManager,
     resetCreditManager,

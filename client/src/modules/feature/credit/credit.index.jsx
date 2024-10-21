@@ -10,7 +10,7 @@ import CreditLedger from "./credit.ledger"
 import CreditManage from "./credit.manage"
 import CreditPayment from "./credit.payments"
 import CreditRecords from "./credit.records"
-import { resetCreditManager, setCreditData, setCreditNotifier } from "./credit.reducer"
+import { resetCreditManager, setCreditBranch, setCreditData, setCreditNotifier } from "./credit.reducer"
 import { useByUnsettledCreditMutation } from "./credit.services"
 
 const CreditIndex = () => {
@@ -97,6 +97,7 @@ const CreditIndex = () => {
 
     const sortcallback = (option) => {
         setCurrentBranch(option.value)
+        dispatch(setCreditBranch(option.value))
         dispatch(setCreditNotifier(true))
     }
 
@@ -109,6 +110,7 @@ const CreditIndex = () => {
                     display={dataSelector.display}
                     actions={actions()}
                     sorts={libBranches}
+                    sortselection={dataSelector.branch}
                     sortcallback={sortcallback}
                     data={dataSelector.data}
                     isError={isError}
@@ -120,7 +122,7 @@ const CreditIndex = () => {
             )
         ) : (
             (dataSelector.history === "Credit") ? (
-                <CreditLedger />
+                <CreditLedger currentBranch={currentBranch} />
             ) : (
                 <CreditPayment />
             )

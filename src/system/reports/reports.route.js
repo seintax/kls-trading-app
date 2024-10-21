@@ -14,5 +14,6 @@ router.get('/reports/inventoryvaluation', secure, service.inventory_valuation)
 router.get('/reports/bystoreitem', secure, service.by_store_item)
 router.get('/reports/inventoryreport', secure, service.inventory_report)
 router.get('/reports/stockalert', secure, service.stock_alert)
+router.get('/reports/stockadjustment', secure, service.stock_adjustment)
 
 module.exports = router
