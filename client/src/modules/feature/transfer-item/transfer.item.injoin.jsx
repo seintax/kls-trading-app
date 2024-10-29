@@ -39,14 +39,24 @@ const TransmitInjoin = () => {
         }
     }, [dataSelector.injoiner.show])
 
+    const acqTag = (item) => {
+        if (item.acquisition === "TRANSFER") return `TR-${StrFn.formatWithZeros(item.transfer, 6)}`
+        if (item.acquisition === "MIGRATION") return `MG-${StrFn.formatWithZeros(item.id, 6)}`
+        if (item.acquisition === "PROCUREMENT") return `PO-${StrFn.formatWithZeros(item.purchase, 6)}`
+        return `XX-${StrFn.formatWithZeros(item.id, 6)}`
+    }
+
     useEffect(() => {
         const instantiate = async () => {
             await stockedInventory({ branch: transferSelector.item.source, category: transferSelector.item.category })
                 .unwrap()
                 .then(res => {
                     if (res.success) {
+                        console.log(res)
                         let array = res?.arrayResult?.map(arr => {
-                            let invName = `${arr.product_name} - ${arr.variant_serial || "-"}/${arr.variant_model || "-"}/${arr.variant_brand || "-"}`
+                            let tagName = `[${acqTag(arr)}]`
+                            let quantity = `(QTY: ${arr.stocks})`
+                            let invName = `${arr.product_name} - ${arr.variant_serial || "-"}/${arr.variant_model || "-"}/${arr.variant_brand || "-"} ${tagName} ${quantity}`
                             return {
                                 value: arr.id,
                                 key: cleanDisplay(invName),

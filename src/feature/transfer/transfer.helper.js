@@ -9,6 +9,7 @@ const transfer = new Table("pos_transfer_request", {
     date: 'trnr_date',
     status: 'trnr_status',
     count: 'trnr_count',
+    cost: 'trnr_cost',
     value: 'trnr_value',
     srp: 'trnr_srp',
     arrive: 'trnr_arrive'
@@ -18,6 +19,11 @@ transfer.register("transfer_update_transmit",
     `UPDATE pos_transfer_request SET 
         trnr_count=(
                 SELECT IFNULL(SUM(trni_quantity),0) 
+                FROM pos_transfer_receipt 
+                WHERE trni_transfer=trnr_id
+            ),
+        trnr_cost=(
+                SELECT IFNULL(SUM(trni_quantity * trni_cost),0) 
                 FROM pos_transfer_receipt 
                 WHERE trni_transfer=trnr_id
             ),
