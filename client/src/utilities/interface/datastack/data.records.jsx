@@ -81,7 +81,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                         <tr className={`${columns?.style}`}>
                             <th
                                 scope="col"
-                                className={`hidden lg:table-cell sticky top-0 z-5 bg-gray-200 border-b border-gray-300 py-3.5 pr-3 text-left font-semibold text-gray-900 sm:pl-6 w-[50px] bg-gray-200 align-top no-select shadow-sm`}
+                                className={`hidden lg:table-cell sticky top-0 z-5 bg-gray-200 border-b border-gray-300 py-3.5 pr-3 text-left font-semibold text-gray-900 sm:pl-6 w-[50px] align-top no-select shadow-sm`}
                             >
                                 #
                             </th>
@@ -91,7 +91,7 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                                         <th
                                             key={`${col.name}${colindex}`}
                                             scope="col"
-                                            className={`${col.stack ? "hidden lg:table-cell" : "hidden md:table-cell"} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left relative ${preferredFont(fontsize)} font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
+                                            className={`${col.stack ? "hidden lg:table-cell" : "hidden md:table-cell"} sticky top-0 z-5 border-b border-gray-300 py-3.5 px-2 sm:pl-3 text-left ${preferredFont(fontsize)} font-semibold text-gray-900 bg-gray-200 align-top shadow-sm ${col.style}`}
                                             style={{ width: `${col.size}px` || "300px" }}
                                         >
                                             <div
@@ -110,7 +110,6 @@ const DataRecords = ({ columns, records, page, setPage, itemsperpage, setsorted,
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
-
                         {
                             (loading) ? (
                                 Array.from({ length: 20 }, (_, i) => i)

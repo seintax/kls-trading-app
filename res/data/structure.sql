@@ -287,6 +287,7 @@ CREATE TABLE pos_transfer_request (
     trnr_date        date,
     trnr_status      varchar(30) DEFAULT 'ON-GOING',
     trnr_count       int DEFAULT 0 COMMENT 'running count',
+    trnr_cost        decimal(30,2) DEFAULT 0 COMMENT 'running cost',
     trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
     trnr_srp         decimal(30,2) DEFAULT 0 COMMENT 'running srp'
     trnr_arrive      int DEFAULT 0
@@ -294,6 +295,7 @@ CREATE TABLE pos_transfer_request (
 
 ALTER TABLE pos_transfer_request ADD COLUMN trnr_arrive int DEFAULT 0;
 ALTER TABLE pos_transfer_request ADD COLUMN trnr_srp decimal(30,2) DEFAULT 0 COMMENT 'running srp' AFTER trnr_value;
+ALTER TABLE pos_transfer_request ADD COLUMN trnr_cost decimal(30,2) DEFAULT 0 COMMENT 'running cost' AFTER trnr_count;
 
 DROP TABLE pos_transfer_receipt;
 CREATE TABLE pos_transfer_receipt (
@@ -304,6 +306,7 @@ CREATE TABLE pos_transfer_receipt (
     trni_product     int,
     trni_variant     int,
     trni_quantity    decimal(10,2),
+    trni_cost        decimal(30,2),
     trni_baseprice   decimal(30,2),
     trni_pricing     decimal(30,2),
     trni_received    decimal(10,2),
@@ -312,6 +315,7 @@ CREATE TABLE pos_transfer_receipt (
 
 ALTER TABLE pos_transfer_receipt ADD COLUMN trni_baseprice decimal(30,2) AFTER trni_quantity;
 ALTER TABLE pos_transfer_receipt ADD COLUMN trni_pricing decimal(30,2) AFTER trni_quantity;
+ALTER TABLE pos_transfer_receipt ADD COLUMN trni_cost decimal(30,2) AFTER trni_quantity;
 ALTER TABLE pos_transfer_receipt ADD COLUMN trni_arrival date;
 
 CREATE TABLE pos_acctg_accounts (
@@ -641,3 +645,21 @@ UPDATE pos_sales_transaction SET trns_vat=1740,trns_total=14500,trns_markdown=15
 DELETE FROM pos_return_transaction WHERE rtrn_trans='20240227-00003-000250';
 
 DELETE FROM pos_return_dispensing WHERE rsal_trans='20240227-00003-000250';
+
+-- Displaying the result of a subquery into a single field with concatenation
+
+SELECT 
+    trns_code,
+    COALESCE(
+        (
+            SELECT 
+                GROUP_CONCAT(a.category SEPARATOR ', ')
+            FROM 
+                (SELECT DISTINCT prod_category AS category, sale_trans AS trans 
+                FROM pos_sales_dispensing, pos_stock_masterlist 
+                WHERE sale_product=prod_id) a
+            WHERE a.trans = trns_code
+        ),
+        'No Category'
+    ) AS concatenated_category
+FROM pos_sales_transaction LIMIT 10;

@@ -78,6 +78,14 @@ export const inventoryApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags: ['receipt']
         }),
+        byStocksInfoInventory: builder.mutation({
+            query: (params) => ({
+                url: `${ENDPOINT_URL}/bystocksinfo`,
+                method: 'GET',
+                params
+            }),
+            providesTags: ['receipt']
+        }),
         byTransmitInventory: builder.mutation({
             query: (params) => ({
                 url: `${ENDPOINT_URL}/bytransmit`,
@@ -147,6 +155,7 @@ export const {
     useSearchInventoryMutation,
     useSpecifyInventoryMutation,
     useByStocksInventoryMutation,
+    useByStocksInfoInventoryMutation,
     useByTransmitInventoryMutation,
     useByItemInventoryMutation,
     useByReceiptInventoryMutation,

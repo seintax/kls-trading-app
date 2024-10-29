@@ -109,6 +109,21 @@ const byStocks = handler(async (req, res) => {
     })
 })
 
+const byStocksInfo = handler(async (req, res) => {
+    const param = helper.parameters(req.query)
+    const { store, category, stocks, acquisition } = helper.fields
+    const { product_name, variant_serial, variant_model, variant_brand } = helper.included
+    let params = ["0", p(param.branch).Contains(), p(param.category).Exactly(), 'TRANSMIT']
+    let clause = [f(stocks).Greater(), f(store).Like(), f(category).IsEqual(), f(acquisition).NotEqual()]
+    let series = [f(product_name).Asc(), f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc()]
+    let limits = undefined
+    const builder = helper.inquiry(clause, params, series, limits)
+    await poolarray(builder, (err, ans) => {
+        if (err) return res.status(401).json(force(err))
+        res.status(200).json(proceed(ans, req))
+    })
+})
+
 const byTransmit = handler(async (req, res) => {
     const { branch } = getstocks.parameters(req.query)
     const { acquisition, store, stocks, id } = getstocks.fields
@@ -206,6 +221,7 @@ module.exports = {
     _specify,
     _findone,
     byStocks,
+    byStocksInfo,
     byTransmit,
     byProduct,
     byItem,
