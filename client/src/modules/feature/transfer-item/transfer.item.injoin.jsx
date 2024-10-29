@@ -302,6 +302,7 @@ const TransmitInjoin = () => {
                 product: data.product,
                 variant: data.variety,
                 quantity: data.quantity,
+                cost: data.cost,
                 baseprice: data.baseprice,
                 pricing: data.pricing,
                 id: dataSelector.item.id
