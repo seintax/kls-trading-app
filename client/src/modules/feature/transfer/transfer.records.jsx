@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useModalContext } from "../../../utilities/context/modal.context"
 import { sortBy } from '../../../utilities/functions/array.functions'
 import { longDate } from "../../../utilities/functions/datetime.functions"
-import { currency } from "../../../utilities/functions/number.funtions"
+import { currency, NumFn } from "../../../utilities/functions/number.funtions"
 import { StrFn } from "../../../utilities/functions/string.functions"
 import useDelay from "../../../utilities/hooks/useDelay"
 import useToast from "../../../utilities/hooks/useToast"
@@ -87,7 +87,7 @@ const TransferRecords = ({ isLoading, records, setrecords }) => {
             { value: item.category },
             { value: longDate(item.date) },
             { value: defineStatus(item) },
-            { value: currency(item.cost) },
+            { value: NumFn.acctg.float(item.cost) },
             { value: currency(item.srp) },
             { value: <span className="bg-blue-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.source}</span> },
             { value: <span className="bg-yellow-300 text-xs px-1 py-0.2 rounded-sm shadow-md">{item.destination}</span> },
