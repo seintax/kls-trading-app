@@ -287,7 +287,7 @@ CREATE TABLE pos_transfer_request (
     trnr_date        date,
     trnr_status      varchar(30) DEFAULT 'ON-GOING',
     trnr_count       int DEFAULT 0 COMMENT 'running count',
-    trnr_cost        decimal(30,2) DEFAULT 0 COMMENT 'running cost',
+    trnr_cost        decimal(50,8) DEFAULT 0 COMMENT 'running cost',
     trnr_value       decimal(30,2) DEFAULT 0 COMMENT 'running value',
     trnr_srp         decimal(30,2) DEFAULT 0 COMMENT 'running srp'
     trnr_arrive      int DEFAULT 0
@@ -306,7 +306,7 @@ CREATE TABLE pos_transfer_receipt (
     trni_product     int,
     trni_variant     int,
     trni_quantity    decimal(10,2),
-    trni_cost        decimal(30,2),
+    trni_cost        decimal(50,8),
     trni_baseprice   decimal(30,2),
     trni_pricing     decimal(30,2),
     trni_received    decimal(10,2),

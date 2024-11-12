@@ -52,7 +52,6 @@ const TransmitInjoin = () => {
                 .unwrap()
                 .then(res => {
                     if (res.success) {
-                        console.log(res)
                         let array = res?.arrayResult?.map(arr => {
                             let tagName = `[${acqTag(arr)}]`
                             let quantity = `(QTY: ${arr.stocks})`
@@ -60,11 +59,9 @@ const TransmitInjoin = () => {
                             return {
                                 value: arr.id,
                                 key: cleanDisplay(invName),
-                                data: arr
-                                // key: `(ITEM#${StrFn.formatWithZeros(arr.id, 6)}) ${arr.product_name} | ${arr.variant_serial || "-"}/${arr.variant_model || "-"}/${arr.variant_brand || "-"}`,
+                                data: arrayResult
                             }
                         })
-                        // setLibInventory([{ value: "", key: "Select inventory item", data: {} }, ...array])
                         setLibInventory(array)
                     }
                 })
