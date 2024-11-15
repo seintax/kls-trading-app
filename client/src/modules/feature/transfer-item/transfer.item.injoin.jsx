@@ -59,7 +59,7 @@ const TransmitInjoin = () => {
                             return {
                                 value: arr.id,
                                 key: cleanDisplay(invName),
-                                data: arrayResult
+                                data: arr
                             }
                         })
                         setLibInventory(array)
@@ -98,7 +98,7 @@ const TransmitInjoin = () => {
     }
 
     useEffect(() => {
-        if (dataSelector.injoiner.show && instantiated && libInventory.length) {
+        if (dataSelector.injoiner.show && instantiated && libInventory?.length) {
             let item = dataSelector.item
             let variant = item.variant
                 ? cleanDisplay(`${item.variant_serial}/${item.variant_model}/${item.variant_brand}`)
