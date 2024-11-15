@@ -59,7 +59,7 @@ const TransmitInjoin = () => {
                             return {
                                 value: arr.id,
                                 key: cleanDisplay(invName),
-                                data: res?.arrayResult
+                                data: arr
                             }
                         })
                         setLibInventory(array)
