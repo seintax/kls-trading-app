@@ -51,8 +51,6 @@ const _branch = handler(async (req, res) => {
     const { branch } = getstocks.parameters(req.query)
     const { acquisition, store, stocks, cost } = getstocks.fields
     const { product_name, variant_serial, variant_model, variant_brand } = getstocks.included
-    // let params = [p(branch).Contains(), "0", "PROCUREMENT", "TRANSFER", "MIGRATION"]
-    // let clause = [f(store).Like(), f(stocks).Greater(), f(acquisition).Either(["", "", ""])]
     let params = [p(branch).Contains(), "0"]
     let clause = [f(store).Like(), f(stocks).Greater(), (acquisition).Either(["PROCUREMENT", "TRANSFER", "MIGRATION"])]
     let series = [f(product_name).Asc(), f(variant_serial).Asc(), f(variant_model).Asc(), f(variant_brand).Asc(), f(cost).Asc()]
