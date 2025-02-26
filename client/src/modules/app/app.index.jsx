@@ -269,10 +269,10 @@ const AppIndex = () => {
                 setSideMenuItems={setSideMenuItems}
                 isLoading={configLoading || permissionsLoading || rolesLoading}
             />
-            <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5 bg-red-200">
+            <main className="flex flex-col pl-16 lg:pl-56 w-full flex-grow overflow-hidden bg-[#e4e4e4] z-5">
                 <AppBreadcrumbs location={locationSelector.location} />
                 <div ref={refList} className="p-0 lg:p-5 flex flex-col flex-grow bg-[#e4e4e4] overflow-auto scroll-md relative">
-                    <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-0 md:p-4 lg:p-6 text-xs min-h-full flex-none shadow-md bg-red-200">
+                    <div className="w-full flex flex-col bg-white border border-1 border-gray-300 items-start p-0 md:p-4 lg:p-6 text-xs min-h-full flex-none shadow-md">
                         <Outlet />
                         <InventoryLevelReport />
                     </div>

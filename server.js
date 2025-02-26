@@ -15,7 +15,7 @@ const corsoptions = require('./res/secure/options')
 const approutes = require('./routes')
 const { createNotification } = require("./src/utilities/worker.utility")
 
-const port = process.env.API_PORT || 5201
+const port = process.env.API_PORT || 5200
 
 const app = express()
 

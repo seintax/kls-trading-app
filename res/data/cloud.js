@@ -13,7 +13,7 @@ var hs = mysql.createPool({
 
 hs.getConnection((err, con) => {
     if (err) {
-        console.info(`\x1b[41m`, `ERROR`, '\x1b[0m', `Failed to load server @ ${process.env.MY_SERVER}/${process.env.MY_DATABASE}`)
+        console.info(`\x1b[41m`, `ERROR`, '\x1b[0m', `Failed to load server @ hostinger.ph/mysql:production`)
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
             console.error(`\x1b[41m`, `ERROR`, '\x1b[0m', 'PROTOCOL_CONNECTION_LOST: Database connection was closed.\n')
         }

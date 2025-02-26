@@ -523,7 +523,7 @@ const CasheringComplexIndex = () => {
                     <select
                         value={category}
                         onChange={onCategory}
-                        className="w-full md:w-fit text-xs md:text-sm border-[#4baf4f] outline-none ring-0 focus:ring-0 focus:outline-none grow-1 bg-[#4baf4f] focus:border-[#4baf4f] focus:border-b-gray-200 text-white border border-b-gray-200 border border-b-gray-200"
+                        className="w-full md:w-fit text-xs md:text-sm border-[#4baf4f] outline-none ring-0 focus:ring-0 focus:outline-none grow-1 bg-[#4baf4f] focus:border-[#4baf4f] focus:border-b-gray-200 text-white border border-b-gray-200"
                     >
                         {
                             libCategories?.map(item => (
@@ -751,19 +751,19 @@ const CasheringComplexIndex = () => {
             <PaymentBrowser />
             <div className="flex flex-col fixed bottom-12 right-6 gap-2">
                 <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewInventory()}>
-                    <ShoppingCartIcon className="w-5 md:w-7 w-5 md:h-7" />
+                    <ShoppingCartIcon className="w-5 md:w-7 md:h-7" />
                 </div>
                 <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReceipts()}>
-                    <ReceiptRefundIcon className="w-5 md:w-7 w-5 md:h-7" />
+                    <ReceiptRefundIcon className="w-5 md:w-7 md:h-7" />
                 </div>
                 <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewCheque()}>
-                    <DocumentCheckIcon className="w-5 md:w-7 w-5 md:h-7" />
+                    <DocumentCheckIcon className="w-5 md:w-7 md:h-7" />
                 </div>
                 <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewCredits()}>
-                    <DocumentTextIcon className="w-5 md:w-7 w-5 md:h-7" />
+                    <DocumentTextIcon className="w-5 md:w-7 md:h-7" />
                 </div>
                 <div className="w-fit p-2 md:p-3 cursor-pointer rounded-full shadow-md bg-[#4baf4f] border border-white text-gray-200 hover:bg-[#2c7f2e]" onClick={() => toggleViewReports()}>
-                    <DocumentChartBarIcon className="w-5 md:w-7 w-5 md:h-7" />
+                    <DocumentChartBarIcon className="w-5 md:w-7 md:h-7" />
                 </div>
             </div>
             <CasheringReceipts />

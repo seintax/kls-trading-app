@@ -123,7 +123,7 @@ const CasheringComplexVariant = () => {
                 <div className="sticky top-0 bg-white flex flex-col md:flex-row px-3 py-5 gap-2 md:gap-8 border-b border-b-gray-500 border-dashed">
                     <div className="flex gap-8">
                         <span onClick={() => onClose()}>
-                            <XMarkIcon className="w-5 md:w-7 w-5 md:h-7 cursor-pointer" />
+                            <XMarkIcon className="w-5 md:w-7 md:h-7 cursor-pointer" />
                         </span>
                         <span className="text-sm md:text-lg font-bold">
                             {browserSelector.product.product}
