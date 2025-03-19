@@ -28,7 +28,7 @@ hs.getConnection((err, con) => {
         }
     }
     else {
-        console.info(`\x1b[43m`, `CLOUD`, '\x1b[0m', `@ hostinger.ph/mysql:production\n`)
+        console.info(`\x1b[43m`, `CLOUD`, '\x1b[0m', `@ hostinger.ph/mysql.io\n`)
     }
     if (con) con.release()
     return
