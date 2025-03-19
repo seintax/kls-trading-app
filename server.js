@@ -71,6 +71,7 @@ app.use('/app', approutes.dashboard)
 app.use('/app', approutes.notification)
 app.use('/app', approutes.migrate)
 app.use('/app', approutes.test)
+app.use('/app', approutes.database)
 
 app.all('*', (req, res) => {
     if (req.accepts('html')) {

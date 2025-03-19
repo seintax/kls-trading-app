@@ -25,6 +25,7 @@ import AccountIndex from "./modules/system/account/account.index"
 import AccountLogin from "./modules/system/account/account.login"
 import MyProfile from "./modules/system/account/account.profile"
 import ConfigIndex from "./modules/system/config/config.index"
+import DatabaseIndex from "./modules/system/databases/database.index"
 import ExpensesIndex from "./modules/system/expenses/expenses.index"
 import PermissionIndex from "./modules/system/permission/permission.index"
 import PrintBase from "./modules/system/prints/print.base"
@@ -85,6 +86,7 @@ const AppRoute = () => {
                     <Route path="/roles" element={<RolesIndex />} />
                     <Route path="/permissions" element={<PermissionIndex />} />
                     <Route path="/settings" element={<ConfigIndex />} />
+                    <Route path="/database" element={<DatabaseIndex />} />
 
                     <Route path="/my-profile" element={<MyProfile />} />
                 </Route>

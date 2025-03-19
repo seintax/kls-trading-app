@@ -1,7 +1,6 @@
 const mysql = require('mysql')
-// const cloudcredentials = 'mysql://5ec6b55hzkxra3qds94u:pscale_pw_wFVKhozWcPW3pfIT3jqO7sX5sMxuJ1jP2zGOPrn31oE@aws.connect.psdb.cloud/app-jat-tpos?ssl={"rejectUnauthorized":true}'
 const cloudcredentials = {
-    host: "151.106.124.151",
+    host: "srv547.hstgr.io",
     user: "u480442611_trading_root",
     password: "?sQOdM0u",
     database: "u480442611_trading_db",

@@ -43,6 +43,7 @@ const dashboard = require('./src/system/dashboard/dashboard.route')
 const migrate = require('./src/system/migrate/migrate.route')
 const test = require('./src/system/test/test.route')
 const notification = require("./src/system/notification/notification.route")
+const database = require("./src/system/database/database.route")
 
 module.exports = {
     transaction,
@@ -85,4 +86,5 @@ module.exports = {
     notification,
     migrate,
     test,
+    database
 }

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { userNavigation } from "../../../../modules/app/app.index.jsx"
 import { setSettingsUpdater } from "../../../../modules/system/config/config.reducer.jsx"
-import { isEmpty } from "../../../functions/string.functions.jsx"
+import { isDev, isEmpty } from "../../../functions/string.functions.jsx"
 import useAuth from "../../../hooks/useAuth.jsx"
 import AppNavigation from "./app.navigation.jsx"
 
@@ -218,6 +218,20 @@ export default function AppSideBar({ sidebarSideMenu, setSidebarSideMenu, setSid
                         </div>
                     )
                 ))}
+                {
+                    isDev(auth) && (
+                        <div
+                            className={`${location.pathname.startsWith("/database") ? activeLink : normalLink} group flex items-center px-1.5 lg:px-2 py-2 text-xs font-medium rounded-md cursor-pointer`}
+                            onClick={() => navigate("/database")}
+                        >
+                            <ChevronRightIcon
+                                className="text-secondary-600 mr-3 flex-shrink-0 h-6 w-6 group-hover:text-secondary-600"
+                                aria-hidden="true"
+                            />
+                            <span className="hidden lg:block">Database</span>
+                        </div>
+                    )
+                }
             </nav>
         )
     }
